@@ -1,0 +1,36 @@
+{
+  "name": "ainft-js",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "build": "rm -rf ./dist && tsc",
+    "test": "jest"
+  },
+  "files": [
+    "/dist"
+  ],
+  "repository": "git@github.com:ainft-team/ainft-js.git",
+  "keywords": [
+    "ainetwork",
+    "ain",
+    "TypeScript",
+    "AINFT",
+    "NFT",
+    "SDK"
+  ],
+  "author": "Crypto X Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "axios": "^0.26.1"
+  }
+}
