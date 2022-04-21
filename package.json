@@ -22,7 +22,7 @@
     "NFT",
     "SDK"
   ],
-  "author": "Crypto X Team",
+  "author": "AINFT Team",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^27.4.1",
