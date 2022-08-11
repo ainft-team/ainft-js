@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { ENDPOINT } from './constants';
+
 export async function getStatus() {
-  return (await axios.get('https://ainft-api-dev.ainetwork.ai/status')).data;
-}
+  return (await axios.get(`${ENDPOINT}/status`)).data;
+};
