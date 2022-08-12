@@ -6,6 +6,11 @@ NFT bots, NFT frontends, and/or NFT devices.
 ## Requirements
 - node >= 16
 
+## ENVs
+```
+NODE_ENV=dev||prod
+```
+
 ## Usage
 
 ### Develop
