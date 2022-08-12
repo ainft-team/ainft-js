@@ -1,4 +1,4 @@
-export const DEV_ENVRONMENT = process.env.DEV_ENVIRONMENT || null;
-export const ENDPOINT = DEV_ENVRONMENT ?
+export const NODE_ENV = process.env.NODE_ENV;
+export const ENDPOINT = NODE_ENV === 'prod' ?
     'https://ainft-api-dev.ainetwork.ai' :
     'https://ainft-api.ainetwork.ai';
