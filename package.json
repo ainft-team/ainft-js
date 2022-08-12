@@ -7,8 +7,9 @@
     "node": ">=16"
   },
   "scripts": {
-    "build": "rm -rf ./dist && tsc",
-    "test": "jest"
+    "build": "rm -rf ./dist && NODE_ENV=prod tsc",
+    "dev": "rm -rf ./dist && NODE_ENV=dev tsc",
+    "test": "NODE_ENV=dev jest"
   },
   "files": [
     "/dist"
