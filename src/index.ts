@@ -24,7 +24,7 @@ export default class AinftJs {
 
     this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
     this.signatureData = Date.now().toString();
-    this.signature = this.buildSignature(this.signatureData);
+    this.signature = this.signData(this.signatureData);
 
     this.assets = new Assets(this.baseUrl);
     this.discord = new Discord(
@@ -41,7 +41,7 @@ export default class AinftJs {
     this.discord.setBaseUrl(baseUrl);
   }
 
-  buildSignature(data: any) {
+  signData(data: any) {
     this.ain.wallet.add(this.accessAccount.privateKey);
     return this.ain.wallet.sign(data, this.accessAccount.address);
   }
