@@ -2,7 +2,7 @@ import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
 import Assets from './assets';
 import Discord from './discord';
-import { ENDPOINT, BLOCKCHAIN_CHAINID, BLOCKCHAIN_ENDPOINT } from './constants';
+import { AINFT_SERVER_ENDPOINT, BLOCKCHAIN_CHAINID, BLOCKCHAIN_ENDPOINT } from './constants';
 import { Account } from './types';
 
 export default class AinftJs {
@@ -14,7 +14,7 @@ export default class AinftJs {
   public discord: Discord;
   public ain: Ain;
 
-  constructor(baseUrl = ENDPOINT, accessAccount: Account) {
+  constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccount: Account) {
     this.baseUrl = baseUrl;
     this.accessAccount = accessAccount;
 
