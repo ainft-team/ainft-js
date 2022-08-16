@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { ConnectAppParams } from './types';
 
 export default class Discord {
   private baseUrl: string;
@@ -23,11 +22,11 @@ export default class Discord {
     this.baseUrl = `${baseUrl}/discord`;
   }
 
-  connectDiscordWithApp({
-    appId,
-    discordServerId,
-    userId,
-  }: ConnectAppParams) {
+  connectDiscordWithApp(
+    appId: string,
+    discordServerId: string | number,
+    userId: string,
+  ) {
     return axios
       .post(`${this.baseUrl}/register`, {
         appId,
