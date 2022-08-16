@@ -24,7 +24,7 @@ export default class Discord {
 
   connectDiscordWithApp(
     appId: string,
-    discordServerId: string | number,
+    discordServerId: string,
     userId: string,
   ) {
     return axios
