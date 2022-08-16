@@ -2,6 +2,7 @@ import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
 import Assets from './assets';
 import Discord from './discord';
+import EventManager from './event';
 import {
   AINFT_SERVER_ENDPOINT,
   AIN_BLOCKCHAIN_CHAINID,
@@ -16,6 +17,7 @@ export default class AinftJs {
   public signatureData: any;
   public assets: Assets;
   public discord: Discord;
+  public eventManager: EventManager;
   public ain: Ain;
 
   constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccount: Account) {
@@ -28,6 +30,12 @@ export default class AinftJs {
 
     this.assets = new Assets(this.baseUrl);
     this.discord = new Discord(
+      this.baseUrl,
+      this.accessAccount.address,
+      this.signature,
+      this.signatureData
+    );
+    this.eventManager = new EventManager(
       this.baseUrl,
       this.accessAccount.address,
       this.signature,
