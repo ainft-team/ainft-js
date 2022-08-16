@@ -2,7 +2,11 @@ import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
 import Assets from './assets';
 import Discord from './discord';
-import { AINFT_SERVER_ENDPOINT, BLOCKCHAIN_CHAINID, BLOCKCHAIN_ENDPOINT } from './constants';
+import {
+  AINFT_SERVER_ENDPOINT,
+  AIN_BLOCKCHAIN_CHAINID,
+  AIN_BLOCKCHAIN_ENDPOINT,
+} from './constants';
 import { Account } from './types';
 
 export default class AinftJs {
@@ -18,7 +22,7 @@ export default class AinftJs {
     this.baseUrl = baseUrl;
     this.accessAccount = accessAccount;
 
-    this.ain = new Ain(BLOCKCHAIN_ENDPOINT, BLOCKCHAIN_CHAINID);
+    this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
     this.signatureData = Date.now().toString();
     this.signature = this.buildSignature(this.signatureData);
 
