@@ -22,11 +22,13 @@ export interface InstanceParams {
   [key: string]: any;
 }
 export interface TaskInstance {
+  id?: string;
   taskTypeId: string;
   params: InstanceParams;
 }
 
 export interface RewardInstance {
+  id?: string;
   rewardTypeId: string;
   type: RewardType;
   amount: number;
@@ -41,8 +43,8 @@ export interface TokenomicsEvent {
   eventId: string;
   appId: string;
   description: string;
-  taskInstances: Array<TaskInstance>;
-  rewardInstances: Array<RewardInstance>;
+  taskInstanceList: Array<TaskInstance>;
+  rewardInstanceList: Array<RewardInstance>;
   startAt: number;
   endAt: number;
 }
