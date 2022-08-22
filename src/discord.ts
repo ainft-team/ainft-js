@@ -37,6 +37,8 @@ export default class Discord {
         accessAinAddress: this.accessAddress,
       })
       .then((res) => res.data)
-      .catch((e) => e);
+      .catch((e) => {
+        throw e.response.data;
+      });
   }
 }
