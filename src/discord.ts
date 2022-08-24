@@ -25,7 +25,7 @@ export default class Discord {
   connectDiscordWithApp(
     appId: string,
     discordServerId: string,
-    userId: string,
+    userId: string
   ) {
     return axios
       .post(`${this.baseUrl}/register`, {
@@ -36,6 +36,15 @@ export default class Discord {
         data: this.signatureData,
         accessAinAddress: this.accessAddress,
       })
+      .then((res) => res.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  getConnectedApps(discordServerId: string) {
+    return axios
+      .get(`${this.baseUrl}/${discordServerId}/apps`)
       .then((res) => res.data)
       .catch((e) => {
         throw e.response.data;

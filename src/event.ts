@@ -70,7 +70,7 @@ export default class EventManager {
         data: this.signatureData,
       })
       .then((res) => res.data)
-      .catch(e => {
+      .catch((e) => {
         throw e.response.data;
       });
   }
@@ -87,6 +87,24 @@ export default class EventManager {
           data: this.signatureData,
         },
       })
+      .then((res) => res.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  getTaskTypeList() {
+    return axios
+      .get(`${this.baseUrl}/task-types`)
+      .then((res) => res.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  getRewardTypeList() {
+    return axios
+      .get(`${this.baseUrl}/reward-types`)
       .then((res) => res.data)
       .catch((e) => {
         throw e.response.data;
