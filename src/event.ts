@@ -70,7 +70,7 @@ export default class EventManager {
         data: this.signatureData,
       })
       .then((res) => res.data)
-      .catch(e => {
+      .catch((e) => {
         throw e.response.data;
       });
   }
@@ -83,6 +83,36 @@ export default class EventManager {
           eventId,
           userId,
           accessAinAddress: this.accessAddress,
+          signature: this.signature,
+          data: this.signatureData,
+        },
+      })
+      .then((res) => res.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  getTaskTypeList() {
+    return axios
+      .get(`${this.baseUrl}/task-types`, {
+        data: {
+          acceessAinAddress: this.accessAddress,
+          signature: this.signature,
+          data: this.signatureData,
+        }
+      })
+      .then((res) => res.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  getRewardTypeList() {
+    return axios
+      .get(`${this.baseUrl}/reward-types`, {
+        data: {
+          acceessAinAddress: this.accessAddress,
           signature: this.signature,
           data: this.signatureData,
         },
