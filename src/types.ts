@@ -54,12 +54,12 @@ export interface TaskInstance {
 
 export interface RewardType {
   id: string;
-  rewardTypeId: string;
   category: RewardTypeCategory;
+  description: string;
   params: {
-    name: string;
-    description: string;
-    contractAddress?: string;
+    name: true;
+    description: true;
+    contractAddress?: true;
   } & InstanceParams;
 }
 

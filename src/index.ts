@@ -58,3 +58,5 @@ export default class AinftJs {
     return (await axios.get(`${this.baseUrl}/status`)).data;
   }
 }
+
+export * from './types';

@@ -32,6 +32,7 @@ export default class EventManager {
     rewardInstanceList,
     startAt,
     endAt,
+    platform,
   }: CreateEventParams) {
     return axios
       .post(`${this.baseUrl}/create`, {
@@ -43,6 +44,7 @@ export default class EventManager {
         rewardInstanceList,
         startAt,
         endAt,
+        platform,
         accessAinAddress: this.accessAddress,
         signature: this.signature,
         data: this.signatureData,
@@ -95,14 +97,8 @@ export default class EventManager {
 
   getTaskTypeList() {
     return axios
-      .get(`${this.baseUrl}/task-types`, {
-        data: {
-          acceessAinAddress: this.accessAddress,
-          signature: this.signature,
-          data: this.signatureData,
-        }
-      })
-      .then((res) => res.data)
+      .get(`${this.baseUrl}/task-types`)
+      .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
       });
@@ -110,14 +106,8 @@ export default class EventManager {
 
   getRewardTypeList() {
     return axios
-      .get(`${this.baseUrl}/reward-types`, {
-        data: {
-          acceessAinAddress: this.accessAddress,
-          signature: this.signature,
-          data: this.signatureData,
-        },
-      })
-      .then((res) => res.data)
+      .get(`${this.baseUrl}/reward-types`)
+      .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
       });
