@@ -100,3 +100,7 @@ export interface TokenomicsEvent {
 export interface CreateEventParams extends TokenomicsEvent {
   userId: string;
 }
+
+export interface MappedEvents {
+  [eventId: string]: Array<string>;
+}
