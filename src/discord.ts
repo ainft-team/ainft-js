@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { MappedEvents } from './types';
 
 export default class Discord {
   private baseUrl: string;
@@ -42,9 +43,21 @@ export default class Discord {
       });
   }
 
-  getConnectedApps(discordServerId: string) {
+  getConnectedApps(discordServerId: string): Promise<string> {
     return axios
       .get(`${this.baseUrl}/${discordServerId}/apps`)
+      .then((res) => res.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  getConnectedTasksWithChannel(
+    discordServerId: string,
+    discordChannelId: string
+  ): Promise<MappedEvents> {
+    return axios
+      .get(`${this.baseUrl}/${discordServerId}/${discordChannelId}/tasks`)
       .then((res) => res.data)
       .catch((e) => {
         throw e.response.data;

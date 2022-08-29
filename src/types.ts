@@ -39,6 +39,7 @@ export interface RewardInstance {
     description: string;
   } & InstanceParams;
 }
+
 export interface TokenomicsEvent {
   eventId: string;
   appId: string;
@@ -47,8 +48,13 @@ export interface TokenomicsEvent {
   rewardInstanceList: Array<RewardInstance>;
   startAt: number;
   endAt: number;
+  platform?: string;
 }
 
 export interface CreateEventParams extends TokenomicsEvent {
   userId: string;
+}
+
+export interface MappedEvents {
+  [eventId: string]: Array<string>;
 }
