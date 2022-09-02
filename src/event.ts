@@ -96,7 +96,7 @@ export default class EventManager {
     smartGalleryPosId,
     taskInstanceId,
     data: _data,
-  }: AddEventActivityParams) {
+  }: AddEventActivityParams): Promise<string> {
     const data = {
       appId,
       userId,
@@ -109,7 +109,7 @@ export default class EventManager {
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .post(`${this.baseUrl}/${eventId}/add-activity`, { data, signature })
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
       });
