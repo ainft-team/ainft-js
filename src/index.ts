@@ -20,6 +20,7 @@ export default class AinftJs {
 
   constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccount: Account) {
     this.baseUrl = baseUrl;
+    // NOTE(liayoo): added to avoid an uninitialized error
     this.accessAccount = accessAccount;
 
     this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
@@ -48,6 +49,7 @@ export default class AinftJs {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
     this.ain.wallet.add(_accessAccount.privateKey);
+    this.accessAccount = _accessAccount;
   }
 
   async getStatus() {
