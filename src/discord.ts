@@ -46,7 +46,7 @@ export default class Discord {
   getConnectedApps(discordServerId: string): Promise<string> {
     return axios
       .get(`${this.baseUrl}/${discordServerId}/apps`)
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
       });
@@ -58,7 +58,7 @@ export default class Discord {
   ): Promise<MappedEvents> {
     return axios
       .get(`${this.baseUrl}/${discordServerId}/${discordChannelId}/tasks`)
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
       });
