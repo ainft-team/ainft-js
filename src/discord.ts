@@ -46,7 +46,16 @@ export default class Discord {
       });
   }
 
-  getConnectedTasksWithChannel(
+  getConnectedEventsByServer(discordServerId: string): Promise<MappedEvents> {
+    return axios
+      .get(`${this.baseUrl}/${discordServerId}/events`)
+      .then((res) => res.data.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  getConnectedTasksByChannel(
     discordServerId: string,
     discordChannelId: string
   ): Promise<MappedEvents> {
