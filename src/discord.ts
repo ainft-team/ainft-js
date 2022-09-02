@@ -1,22 +1,21 @@
 import axios from 'axios';
+import Ain from '@ainblockchain/ain-js';
+import stringify  = require('fast-json-stable-stringify');
 import { MappedEvents } from './types';
 
 export default class Discord {
   private baseUrl: string;
   public accessAddress: string;
-  public signature: string;
-  public signatureData: any;
+  public ain: Ain;
 
   constructor(
     baseUrl: string,
     accessAddress: string,
-    signature: string,
-    signatureData: any
+    ain: Ain,
   ) {
     this.baseUrl = `${baseUrl}/discord`;
     this.accessAddress = accessAddress;
-    this.signature = signature;
-    this.signatureData = signatureData;
+    this.ain = ain;
   }
 
   setBaseUrl(baseUrl: string) {
@@ -28,15 +27,10 @@ export default class Discord {
     discordServerId: string,
     userId: string
   ) {
+    const data = { appId, discordServerId, userId, timestamp: Date.now() };
+    const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .post(`${this.baseUrl}/register`, {
-        appId,
-        discordServerId,
-        userId,
-        signature: this.signature,
-        data: this.signatureData,
-        accessAinAddress: this.accessAddress,
-      })
+      .post(`${this.baseUrl}/register`, { data, signature })
       .then((res) => res.data)
       .catch((e) => {
         throw e.response.data;

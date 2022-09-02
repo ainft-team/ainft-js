@@ -1,22 +1,21 @@
+import Ain from '@ainblockchain/ain-js';
 import axios from 'axios';
-import { CreateEventParams, TokenomicsEvent } from './types';
+import stringify = require('fast-json-stable-stringify');
+import { AddEventActivityParams, CreateEventParams, TokenomicsEvent } from './types';
 
 export default class EventManager {
   private baseUrl: string;
   public accessAddress: string;
-  public signature: string;
-  public signatureData: any;
+  public ain: Ain;
 
   constructor(
     baseUrl: string,
     accessAddress: string,
-    signature: string,
-    signatureData: any
+    ain: Ain,
   ) {
     this.baseUrl = `${baseUrl}/event`;
     this.accessAddress = accessAddress;
-    this.signature = signature;
-    this.signatureData = signatureData;
+    this.ain = ain;
   }
 
   setBaseUrl(baseUrl: string) {
@@ -34,21 +33,21 @@ export default class EventManager {
     endAt,
     platform,
   }: CreateEventParams) {
+    const data = {
+      appId,
+      userId,
+      eventId,
+      description,
+      taskInstanceList,
+      rewardInstanceList,
+      startAt,
+      endAt,
+      platform,
+      timestamp: Date.now(),
+    };
+    const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .post(`${this.baseUrl}/create`, {
-        appId,
-        userId,
-        eventId,
-        description,
-        taskInstanceList,
-        rewardInstanceList,
-        startAt,
-        endAt,
-        platform,
-        accessAinAddress: this.accessAddress,
-        signature: this.signature,
-        data: this.signatureData,
-      })
+      .post(`${this.baseUrl}/create`, { data, signature })
       .then((res) => res.data)
       .catch((e) => {
         throw e.response.data;
@@ -61,16 +60,16 @@ export default class EventManager {
     userId: string,
     payload: Partial<TokenomicsEvent>
   ) {
+    const data = {
+      appId,
+      eventId,
+      userId,
+      payload,
+      timestamp: Date.now(),
+    };
+    const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .put(`${this.baseUrl}/update`, {
-        appId,
-        eventId,
-        userId,
-        payload,
-        accessAinAddress: this.accessAddress,
-        signature: this.signature,
-        data: this.signatureData,
-      })
+      .put(`${this.baseUrl}/update`, { data, signature })
       .then((res) => res.data)
       .catch((e) => {
         throw e.response.data;
@@ -78,8 +77,18 @@ export default class EventManager {
   }
 
   deleteEvent(appId: string, eventId: string, userId: string) {
+    const data = { appId, eventId, userId, timestamp: Date.now() };
+    const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .delete(`${this.baseUrl}/delete`, {
+      .delete(`${this.baseUrl}/delete`, { 
+        data: { data, signature },
+      })
+      .then((res) => res.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
         data: {
           appId,
           eventId,
