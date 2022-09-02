@@ -99,7 +99,11 @@ export interface CreateEventParams extends TokenomicsEvent {
   userId: string;
 }
 
-export interface MappedEvents {
+export interface EventIdListByChannel {
+  [channelId: string]: Array<string>;
+}
+
+export interface TaskIdListByEventId {
   [eventId: string]: Array<string>;
 }
 
