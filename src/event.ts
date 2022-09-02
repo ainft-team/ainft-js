@@ -89,15 +89,26 @@ export default class EventManager {
       });
   }
 
-        data: {
-          appId,
-          eventId,
-          userId,
-          accessAinAddress: this.accessAddress,
-          signature: this.signature,
-          data: this.signatureData,
-        },
-      })
+  addEventActivity({
+    appId,
+    userId,
+    eventId,
+    smartGalleryPosId,
+    taskInstanceId,
+    data: _data,
+  }: AddEventActivityParams) {
+    const data = {
+      appId,
+      userId,
+      eventId,
+      smartGalleryPosId,
+      taskInstanceId,
+      data: _data,
+      timestamp: Date.now(),
+    };
+    const signature = this.ain.wallet.sign(stringify(data));
+    return axios
+      .post(`${this.baseUrl}/${eventId}/add-activity`, { data, signature })
       .then((res) => res.data)
       .catch((e) => {
         throw e.response.data;
