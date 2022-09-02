@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
 import stringify  = require('fast-json-stable-stringify');
-import { MappedEvents } from './types';
+import { ChannelIdToEventIdList, EventIdToTaskIdList } from './types';
 
 export default class Discord {
   private baseUrl: string;
@@ -46,7 +46,7 @@ export default class Discord {
       });
   }
 
-  getConnectedEventsByServer(discordServerId: string): Promise<MappedEvents> {
+  getConnectedEventsByServer(discordServerId: string): Promise<ChannelIdToEventIdList> {
     return axios
       .get(`${this.baseUrl}/${discordServerId}/events`)
       .then((res) => res.data.data)
@@ -58,7 +58,7 @@ export default class Discord {
   getConnectedTasksByChannel(
     discordServerId: string,
     discordChannelId: string
-  ): Promise<MappedEvents> {
+  ): Promise<EventIdToTaskIdList> {
     return axios
       .get(`${this.baseUrl}/${discordServerId}/${discordChannelId}/tasks`)
       .then((res) => res.data.data)
