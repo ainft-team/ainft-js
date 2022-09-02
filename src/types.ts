@@ -9,7 +9,6 @@ export enum RewardTypeCategory {
 export enum RewardDistributeType {
   ON_ACTIVITY = 'ON_ACTIVITY',
   MANUAL = 'MANUAL',
-  // CRON = 'CRON',
 }
 
 export enum TaskTypeCategory {
@@ -69,7 +68,6 @@ export interface RewardInstance {
   category: RewardTypeCategory;
   amount: number;
   distributeAt: RewardDistributeType;
-  // distributeCronTime?: any;
   params: {
     name: string;
     description: string;
@@ -104,3 +102,16 @@ export interface CreateEventParams extends TokenomicsEvent {
 export interface MappedEvents {
   [eventId: string]: Array<string>;
 }
+
+export interface AddActivityParams {
+  appId: string,
+  userId: string,
+  eventId?: string,
+  smartGalleryPosId?: string,
+  taskInstanceId?: string,
+  data: any,
+};
+
+export interface AddEventActivityParams extends AddActivityParams {
+  eventId: string,
+};
