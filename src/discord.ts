@@ -37,9 +37,9 @@ export default class Discord {
       });
   }
 
-  getConnectedApps(discordServerId: string): Promise<string> {
+  getConnectedApp(discordServerId: string): Promise<string> {
     return axios
-      .get(`${this.baseUrl}/${discordServerId}/apps`)
+      .get(`${this.baseUrl}/${discordServerId}/app`)
       .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
