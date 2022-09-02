@@ -13,8 +13,6 @@ import { Account } from './types';
 export default class AinftJs {
   private baseUrl: string;
   public accessAccount: Account;
-  public signature: string;
-  public signatureData: any;
   public assets: Assets;
   public discord: Discord;
   public eventManager: EventManager;
@@ -22,24 +20,22 @@ export default class AinftJs {
 
   constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccount: Account) {
     this.baseUrl = baseUrl;
+    // NOTE(liayoo): added to avoid an uninitialized error
     this.accessAccount = accessAccount;
 
     this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
-    this.signatureData = Date.now().toString();
-    this.signature = this.signData(this.signatureData);
+    this.setAccessAccount(accessAccount);
 
     this.assets = new Assets(this.baseUrl);
     this.discord = new Discord(
       this.baseUrl,
       this.accessAccount.address,
-      this.signature,
-      this.signatureData
+      this.ain,
     );
     this.eventManager = new EventManager(
       this.baseUrl,
       this.accessAccount.address,
-      this.signature,
-      this.signatureData
+      this.ain,
     );
   }
 
@@ -49,9 +45,11 @@ export default class AinftJs {
     this.discord.setBaseUrl(baseUrl);
   }
 
-  signData(data: any) {
-    this.ain.wallet.add(this.accessAccount.privateKey);
-    return this.ain.wallet.sign(data, this.accessAccount.address);
+  setAccessAccount(_accessAccount: Account) {
+    // NOTE(liayoo): always have only 1 access account for now
+    this.ain.wallet.clear();
+    this.ain.wallet.add(_accessAccount.privateKey);
+    this.accessAccount = _accessAccount;
   }
 
   async getStatus() {
