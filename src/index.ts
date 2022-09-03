@@ -1,55 +1,51 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
-import Assets from './assets';
+import { Account } from '@ainblockchain/ain-js/lib/types';
+import Asset from './asset';
 import Discord from './discord';
-import EventManager from './event';
+import Event from './event';
 import {
   AINFT_SERVER_ENDPOINT,
   AIN_BLOCKCHAIN_CHAINID,
   AIN_BLOCKCHAIN_ENDPOINT,
 } from './constants';
-import { Account } from './types';
 
 export default class AinftJs {
   private baseUrl: string;
   public accessAccount: Account;
-  public assets: Assets;
+  public asset: Asset;
   public discord: Discord;
-  public eventManager: EventManager;
+  public event: Event;
   public ain: Ain;
 
-  constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccount: Account) {
+  constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccountPrivateKey: string) {
     this.baseUrl = baseUrl;
     // NOTE(liayoo): added to avoid an uninitialized error
-    this.accessAccount = accessAccount;
+    this.accessAccount = {
+      address: '',
+      private_key: '',
+      public_key: ''
+    };
 
     this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
-    this.setAccessAccount(accessAccount);
+    this.setAccessAccount(accessAccountPrivateKey);
 
-    this.assets = new Assets(this.baseUrl);
-    this.discord = new Discord(
-      this.baseUrl,
-      this.accessAccount.address,
-      this.ain,
-    );
-    this.eventManager = new EventManager(
-      this.baseUrl,
-      this.accessAccount.address,
-      this.ain,
-    );
+    this.asset = new Asset(this.baseUrl, this.ain);
+    this.discord = new Discord(this.baseUrl, this.ain);
+    this.event = new Event(this.baseUrl, this.ain);
   }
 
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
-    this.assets.setBaseUrl(baseUrl);
+    this.asset.setBaseUrl(baseUrl);
     this.discord.setBaseUrl(baseUrl);
   }
 
-  setAccessAccount(_accessAccount: Account) {
+  setAccessAccount(accessAccountPrivateKey: string) {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
-    this.ain.wallet.add(_accessAccount.privateKey);
-    this.accessAccount = _accessAccount;
+    this.ain.wallet.addAndSetDefaultAccount(accessAccountPrivateKey);
+    this.accessAccount = this.ain.wallet.defaultAccount as Account;
   }
 
   async getStatus() {
