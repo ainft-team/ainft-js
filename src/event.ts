@@ -83,7 +83,19 @@ export default class Event {
       });
   }
 
-  addEventActivity({
+  get(appId: string, eventId: string) {
+    const data = { appId, eventId, timestamp: Date.now() };
+    const signature = this.ain.wallet.sign(stringify(data));
+    return axios
+      .get(`${this.baseUrl}/${eventId}`, {
+        params: { appId },
+        data: { data, signature },
+      })
+      .then((res) => res.data.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
 
   addActivity({
     appId,
