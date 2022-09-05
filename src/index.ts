@@ -12,7 +12,6 @@ import {
 
 export default class AinftJs {
   private baseUrl: string;
-  public accessAccount: Account;
   public asset: Asset;
   public discord: Discord;
   public event: Event;
@@ -20,13 +19,6 @@ export default class AinftJs {
 
   constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccountPrivateKey: string) {
     this.baseUrl = baseUrl;
-    // NOTE(liayoo): added to avoid an uninitialized error
-    this.accessAccount = {
-      address: '',
-      private_key: '',
-      public_key: ''
-    };
-
     this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
     this.setAccessAccount(accessAccountPrivateKey);
 
@@ -41,11 +33,14 @@ export default class AinftJs {
     this.discord.setBaseUrl(baseUrl);
   }
 
+  getAccessAccount() {
+    return this.ain.wallet.defaultAccount;
+  }
+
   setAccessAccount(accessAccountPrivateKey: string) {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
     this.ain.wallet.addAndSetDefaultAccount(accessAccountPrivateKey);
-    this.accessAccount = this.ain.wallet.defaultAccount as Account;
   }
 
   async getStatus() {
