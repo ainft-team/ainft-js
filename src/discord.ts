@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
 import stringify  = require('fast-json-stable-stringify');
-import { TaskIdListByEventId, EventIdListByChannel } from './types';
+import { TaskIdListByEventId, EventInfo } from './types';
 
 export default class Discord {
   private baseUrl: string;
@@ -31,7 +31,7 @@ export default class Discord {
       });
   }
 
-  getConnectedApp(appId: string, discordServerId: string): Promise<string> {
+  getConnectedApp(discordServerId: string, appId: string = ''): Promise<string> {
     const data = { appId, timestamp: Date.now() };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
@@ -47,7 +47,7 @@ export default class Discord {
   getConnectedEventsByServer(
     appId: string,
     discordServerId: string,
-  ): Promise<EventIdListByChannel> {
+  ): Promise<EventInfo[]> {
     const data = { appId, timestamp: Date.now() };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios

@@ -75,32 +75,30 @@ export interface RewardInstance {
   } & InstanceParams;
 }
 
-export interface TokenomicsEvent {
+export interface CreateEventParams {
   eventId: string;
   appId: string;
+  userId: string;
   description: string;
   taskInstanceList: Array<TaskInstance>;
   rewardInstanceList: Array<RewardInstance>;
   startAt: number;
   endAt: number;
-  status?: EventStatus;
   platform?: Platforms;
-  rewardHistory?: {
-    [rewardHistoryId: string]: boolean;
-  };
-  activityHistory?: {
-    [activityId: string]: boolean;
-  };
-  createdAt?: number;
-  updatedAt?: number;
 }
 
-export interface CreateEventParams extends TokenomicsEvent {
-  userId: string;
-}
-
-export interface EventIdListByChannel {
-  [channelId: string]: Array<string>;
+export interface EventInfo {
+  id: string,
+  appId: string,
+  startAt: number,
+  endAt: number,
+  description: string,
+  taskInstances: { [key: string]: TaskInstance },
+  rewardInstances: { [key: string]: RewardInstance },
+  status?: EventStatus,
+  platform?: string,
+  createdAt?: number,
+  updatedAt?: number,
 }
 
 export interface TaskIdListByEventId {

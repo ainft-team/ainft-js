@@ -1,7 +1,7 @@
 import Ain from '@ainblockchain/ain-js';
 import axios from 'axios';
 import stringify = require('fast-json-stable-stringify');
-import { AddEventActivityParams, CreateEventParams, TokenomicsEvent } from './types';
+import { AddEventActivityParams, CreateEventParams } from './types';
 
 export default class Event {
   private baseUrl: string;
@@ -52,7 +52,7 @@ export default class Event {
     appId: string,
     eventId: string,
     userId: string,
-    payload: Partial<TokenomicsEvent>
+    payload: Partial<CreateEventParams>
   ) {
     const data = {
       appId,
