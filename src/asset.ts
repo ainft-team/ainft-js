@@ -7,12 +7,12 @@ export default class Asset {
   private ain: Ain;
 
   constructor(baseUrl: string, ain: Ain) {
-    this.baseUrl = `${baseUrl}/assets`;
+    this.baseUrl = `${baseUrl}/asset`;
     this.ain = ain;
   }
 
   setBaseUrl(baseUrl: string) {
-    this.baseUrl = `${baseUrl}/assets`;
+    this.baseUrl = `${baseUrl}/asset`;
   }
 
   async getUserNftList(appId: string, ethAddress: string) {
