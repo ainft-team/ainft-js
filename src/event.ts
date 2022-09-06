@@ -1,20 +1,14 @@
 import Ain from '@ainblockchain/ain-js';
 import axios from 'axios';
 import stringify = require('fast-json-stable-stringify');
-import { AddEventActivityParams, CreateEventParams, TokenomicsEvent } from './types';
+import { AddEventActivityParams, CreateEventParams } from './types';
 
-export default class EventManager {
+export default class Event {
   private baseUrl: string;
-  public accessAddress: string;
   public ain: Ain;
 
-  constructor(
-    baseUrl: string,
-    accessAddress: string,
-    ain: Ain,
-  ) {
+  constructor(baseUrl: string, ain: Ain) {
     this.baseUrl = `${baseUrl}/event`;
-    this.accessAddress = accessAddress;
     this.ain = ain;
   }
 
@@ -22,7 +16,7 @@ export default class EventManager {
     this.baseUrl = `${baseUrl}/event`;
   }
 
-  createEvent({
+  create({
     appId,
     userId,
     eventId,
@@ -54,11 +48,11 @@ export default class EventManager {
       });
   }
 
-  updateEvent(
+  update(
     appId: string,
     eventId: string,
     userId: string,
-    payload: Partial<TokenomicsEvent>
+    payload: Partial<CreateEventParams>
   ) {
     const data = {
       appId,
@@ -76,7 +70,7 @@ export default class EventManager {
       });
   }
 
-  deleteEvent(appId: string, eventId: string, userId: string) {
+  delete(appId: string, eventId: string, userId: string) {
     const data = { appId, eventId, userId, timestamp: Date.now() };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
@@ -89,7 +83,21 @@ export default class EventManager {
       });
   }
 
-  addEventActivity({
+  get(appId: string, eventId: string) {
+    const data = { appId, eventId, timestamp: Date.now() };
+    const signature = this.ain.wallet.sign(stringify(data));
+    return axios
+      .get(`${this.baseUrl}/${eventId}`, {
+        params: { appId },
+        data: { data, signature },
+      })
+      .then((res) => res.data.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  addActivity({
     appId,
     userId,
     eventId,
@@ -115,18 +123,26 @@ export default class EventManager {
       });
   }
 
-  getTaskTypeList() {
+  getTaskTypeList(appId: string) {
+    const data = { appId, timestamp: Date.now() };
+    const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .get(`${this.baseUrl}/task-types`)
+      .get(`${this.baseUrl}/task-types`, {
+        data: { data, signature },
+      })
       .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
       });
   }
 
-  getRewardTypeList() {
+  getRewardTypeList(appId: string) {
+    const data = { appId, timestamp: Date.now() };
+    const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .get(`${this.baseUrl}/reward-types`)
+      .get(`${this.baseUrl}/reward-types`, {
+        data: { data, signature },
+      })
       .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
