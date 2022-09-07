@@ -148,4 +148,35 @@ export default class Event {
         throw e.response.data;
       });
   }
+
+  async getPendingRewards(appId: string, userId: string, eventId: string) {
+    const data = { appId, userId, eventId, timestamp: Date.now() };
+    const signature = this.ain.wallet.sign(stringify(data));
+    return axios
+      .get(`${this.baseUrl}/pending-rewards`, {
+        data: { data, signature },
+      })
+      .then((res) => res.data.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  async reward(appId: string, userId: string, eventId: string, amount?: number) {
+    const data: any = {
+      appId,
+      userId,
+      eventId,
+      timestamp: Date.now(),
+    };
+    if (amount !== undefined) data.amount = amount;
+    const signature = this.ain.wallet.sign(stringify(data));
+    return axios
+      .post(`${this.baseUrl}/reward`, { data, signature })
+      .then((res) => res.data.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
 }
