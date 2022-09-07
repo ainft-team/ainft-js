@@ -2,6 +2,7 @@ import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
 import { Account } from '@ainblockchain/ain-js/lib/types';
 import Asset from './asset';
+import Auth from './auth';
 import Discord from './discord';
 import Event from './event';
 import {
@@ -13,6 +14,7 @@ import {
 export default class AinftJs {
   private baseUrl: string;
   public asset: Asset;
+  public auth: Auth;
   public discord: Discord;
   public event: Event;
   public ain: Ain;
@@ -23,6 +25,7 @@ export default class AinftJs {
     this.setAccessAccount(accessAccountPrivateKey);
 
     this.asset = new Asset(this.baseUrl, this.ain);
+    this.auth = new Auth(this.baseUrl, this.ain);
     this.discord = new Discord(this.baseUrl, this.ain);
     this.event = new Event(this.baseUrl, this.ain);
   }
@@ -30,7 +33,9 @@ export default class AinftJs {
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
     this.asset.setBaseUrl(baseUrl);
+    this.auth.setBaseUrl(baseUrl);
     this.discord.setBaseUrl(baseUrl);
+    this.event.setBaseUrl(baseUrl);
   }
 
   getAccessAccount() {

@@ -117,3 +117,11 @@ export interface AddActivityParams {
 export interface AddEventActivityParams extends AddActivityParams {
   eventId: string,
 };
+
+export interface User {
+  id: string,
+  address: string,
+  ethAddresses?: {
+    [ethAddress: string]: boolean,
+  },
+}
