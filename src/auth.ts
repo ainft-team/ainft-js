@@ -27,7 +27,7 @@ export default class Auth {
       .get(`${this.baseUrl}/user`, {
         data: { data, signature },
       })
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
       });
@@ -43,7 +43,7 @@ export default class Auth {
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .post(`${this.baseUrl}/user/ethAddress`, { data, signature })
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
       });
@@ -61,7 +61,7 @@ export default class Auth {
       .delete(`${this.baseUrl}/user/ethAddress`, {
         data: { data, signature },
       })
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
       });
