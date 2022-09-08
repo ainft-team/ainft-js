@@ -1,7 +1,7 @@
 import Ain from '@ainblockchain/ain-js';
 import axios from 'axios';
 import stringify = require('fast-json-stable-stringify');
-import { AddEventActivityParams, CreateEventParams } from './types';
+import { AddEventActivityParams, CreateEventParams, RewardOptions } from './types';
 
 export default class Event {
   private baseUrl: string;
@@ -162,14 +162,14 @@ export default class Event {
       });
   }
 
-  async reward(appId: string, userId: string, eventId: string, amount?: number) {
+  async reward(appId: string, userId: string, eventId: string, options?: RewardOptions) {
     const data: any = {
       appId,
       userId,
       eventId,
       timestamp: Date.now(),
     };
-    if (amount !== undefined) data.amount = amount;
+    if (options) data.options = options;
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .post(`${this.baseUrl}/reward`, { data, signature })

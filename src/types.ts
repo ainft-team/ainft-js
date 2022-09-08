@@ -125,4 +125,8 @@ export interface User {
   ethAddresses?: {
     [ethAddress: string]: boolean,
   },
-}
+};
+
+export interface RewardOptions {
+  amount?: number;
+};
