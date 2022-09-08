@@ -2,9 +2,10 @@
 # yarn lockfile v1
 
 
-ainft-js@./ainft-js-0.0.0.tgz:
+"@ainft-team/ainft-js@0.0.0":
   version "0.0.0"
-  resolved "./ainft-js-0.0.0.tgz#51dd81b5e89cb21b282577f54707f0e1c26a0e00"
+  resolved "https://registry.yarnpkg.com/@ainft-team/ainft-js/-/ainft-js-0.0.0.tgz#e45134960b9dbeb2b2548267d8387ec38622ac58"
+  integrity sha512-tWHwmtwFdQvP2MW66DIOXYDW8oi4hitocHICvbO/l2VSQmX+mvHwlxyNH0bevM3pG8K1ztxKe/dgk7XSAJVR8Q==
   dependencies:
     axios "^0.26.1"
 

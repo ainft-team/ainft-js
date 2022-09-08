@@ -1,5 +1,5 @@
 /* Contains sample code for the SDK. */
-const AinftJs = require('ainft-js').default;
+const AinftJs = require('@ainft-team/ainft-js');
 
 async function main() {
   const ainftJs = new AinftJs();
