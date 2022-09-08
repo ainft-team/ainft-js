@@ -15,11 +15,19 @@ export default class Asset {
     this.baseUrl = `${baseUrl}/asset`;
   }
 
-  async getUserNftList(appId: string, ethAddress: string) {
+  async getUserNftList(
+    appId: string,
+    chainId: string,
+    ethAddress: string,
+    contractAddress?: string,
+  ) {
     const data = { appId, timestamp: Date.now() };
     const signature = this.ain.wallet.sign(stringify(data));
+    const url = contractAddress
+      ? `${this.baseUrl}/nft/${chainId}/${ethAddress}/${contractAddress}`
+      : `${this.baseUrl}/nft/${chainId}/${ethAddress}`
     return axios
-      .get(`${this.baseUrl}/nft-list/${ethAddress}`, {
+      .get(url, {
         data: { data, signature },
       })
       .then((res) => res.data.data)
