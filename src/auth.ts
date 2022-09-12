@@ -17,15 +17,25 @@ export default class Auth {
   }
 
   getUser(appId: string, userId: string): Promise<User> {
-    const data = {
+    const timestamp = Date.now();
+    const querystring = {
       appId,
       userId,
-      timestamp: Date.now(),
+    };
+    const data = {
+      method: 'GET',
+      path: '/auth/user',
+      timestamp,
+      querystring: stringify(querystring),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .get(`${this.baseUrl}/user`, {
-        data: { data, signature },
+        params: querystring,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
       })
       .then((res) => res.data.data)
       .catch((e) => {
@@ -34,15 +44,26 @@ export default class Auth {
   }
 
   addUserEthAddress(appId: string, userId: string, ethAddress: string): Promise<User> {
-    const data = {
+    const timestamp = Date.now();
+    const body = {
       appId,
       userId,
       ethAddress,
-      timestamp: Date.now(),
+    };
+    const data = {
+      method: 'POST',
+      path: '/auth/user/ethAddress',
+      timestamp,
+      body: stringify(body),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .post(`${this.baseUrl}/user/ethAddress`, { data, signature })
+      .post(`${this.baseUrl}/user/ethAddress`, body, {
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
+      })
       .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
@@ -50,16 +71,26 @@ export default class Auth {
   }
 
   removeUserEthAddress(appId: string, userId: string, ethAddress: string): Promise<User> {
-    const data = {
+    const timestamp = Date.now();
+    const querystring = {
       appId,
       userId,
       ethAddress,
-      timestamp: Date.now(),
+    };
+    const data = {
+      method: 'DELETE',
+      path: '/auth/user/ethAddress',
+      timestamp,
+      querystring: stringify(querystring),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .delete(`${this.baseUrl}/user/ethAddress`, {
-        data: { data, signature },
+        params: querystring,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
       })
       .then((res) => res.data.data)
       .catch((e) => {

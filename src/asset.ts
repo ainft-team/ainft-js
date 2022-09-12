@@ -21,14 +21,25 @@ export default class Asset {
     ethAddress: string,
     contractAddress?: string,
   ) {
-    const data = { appId, timestamp: Date.now() };
+    const timestamp = Date.now();
+    const querystring = { appId };
+    const data = {
+      method: 'GET',
+      path: '/asset/nft',
+      timestamp,
+      querystring: stringify(querystring),
+    };
     const signature = this.ain.wallet.sign(stringify(data));
     const url = contractAddress
       ? `${this.baseUrl}/nft/${chainId}/${ethAddress}/${contractAddress}`
       : `${this.baseUrl}/nft/${chainId}/${ethAddress}`
     return axios
       .get(url, {
-        data: { data, signature },
+        params: querystring,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
       })
       .then((res) => res.data.data)
       .catch((e) => {
@@ -37,11 +48,22 @@ export default class Asset {
   }
 
   async getUserCreditBalance(appId: string, symbol: string, userId: string) {
-    const data = { appId, timestamp: Date.now() };
+    const timestamp = Date.now();
+    const querystring = { appId, timestamp: Date.now() };
+    const data = {
+      method: 'GET',
+      path: '/asset/credit',
+      timestamp,
+      querystring: stringify(querystring),
+    };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .get(`${this.baseUrl}/credit/${appId}/${symbol}/${userId}`, {
-        data: { data, signature },
+        params: querystring,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
       })
       .then((res) => res.data.data)
       .catch((e) => {
