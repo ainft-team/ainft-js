@@ -23,18 +23,18 @@ export default class Asset {
   ) {
     const timestamp = Date.now();
     const querystring = { appId };
+    const trailingUrl = contractAddress
+      ? `nft/${chainId}/${ethAddress}/${contractAddress}`
+      : `nft/${chainId}/${ethAddress}`;
     const data = {
       method: 'GET',
-      path: '/asset/nft',
+      path: `/asset/${trailingUrl}`,
       timestamp,
       querystring: stringify(querystring),
     };
     const signature = this.ain.wallet.sign(stringify(data));
-    const url = contractAddress
-      ? `${this.baseUrl}/nft/${chainId}/${ethAddress}/${contractAddress}`
-      : `${this.baseUrl}/nft/${chainId}/${ethAddress}`
     return axios
-      .get(url, {
+      .get(`${this.baseUrl}/${trailingUrl}`, {
         params: querystring,
         headers: {
           'X-AINFT-Date': timestamp,
@@ -49,16 +49,17 @@ export default class Asset {
 
   async getUserCreditBalance(appId: string, symbol: string, userId: string) {
     const timestamp = Date.now();
-    const querystring = { appId, timestamp: Date.now() };
+    const querystring = { appId };
+    const trailingUrl = `credit/${appId}/${symbol}/${userId}`;
     const data = {
       method: 'GET',
-      path: '/asset/credit',
+      path: `/asset/${trailingUrl}`,
       timestamp,
       querystring: stringify(querystring),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .get(`${this.baseUrl}/credit/${appId}/${symbol}/${userId}`, {
+      .get(`${this.baseUrl}/${trailingUrl}`, {
         params: querystring,
         headers: {
           'X-AINFT-Date': timestamp,

@@ -48,7 +48,7 @@ export default class Discord {
     const querystring = { appId };
     const data = {
       method: 'GET',
-      path: '/discord/app',
+      path: `/discord/${discordServerId}/app`,
       timestamp,
       querystring: stringify(querystring)
     }
@@ -75,7 +75,7 @@ export default class Discord {
     const querystring = { appId };
     const data = {
       method: 'GET',
-      path: '/discord/events',
+      path: `/discord/${discordServerId}/events`,
       timestamp,
       querystring: stringify(querystring),
     };
@@ -103,7 +103,7 @@ export default class Discord {
     const querystring = { appId };
     const data = {
       method: 'GET',
-      path: '/discord/tasks',
+      path: `/discord/${discordServerId}/${discordChannelId}/tasks`,
       timestamp,
       querystring: stringify(querystring),
     };

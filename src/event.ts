@@ -125,7 +125,7 @@ export default class Event {
     const querystring = { appId, eventId };
     const data = {
       method: 'GET',
-      path: '/event/get',
+      path: `/event/${eventId}`,
       timestamp,
       querystring: stringify(querystring),
     };
