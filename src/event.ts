@@ -287,4 +287,34 @@ export default class Event {
         throw e.response.data;
       });
   }
+
+  async getRewardHistory(
+    appId: string,
+    userId: string,
+    eventId: string
+  ) {
+    const timestamp = Date.now();
+    const query = {
+      appId,
+      userId
+    }
+    const data = {
+      method: 'GET',
+      path: `/event/${eventId}/reward-history`,
+      timestamp,
+      querystring: stringify(query)
+    }
+    const signature = this.ain.wallet.sign(stringify(data));
+    return axios.get(`${this.baseUrl}/${eventId}/reward-history`, {
+      params: query,
+      headers: {
+        'X-AINFT-Date': timestamp,
+        Authorization: `AINFT ${signature}`,
+      },
+    })
+    .then((res) => res.data.data)
+    .catch((e) => {
+      throw e.response.data;
+    })
+  }
 }
