@@ -1,7 +1,8 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
 import stringify  = require('fast-json-stable-stringify');
-import { TaskIdListByEventId, EventInfo } from './types';
+import { TaskIdListByEventId, EventInfo, HttpMethod } from './types';
+import { buildData } from './util';
 
 export default class Discord {
   private baseUrl: string;
@@ -16,27 +17,47 @@ export default class Discord {
     this.baseUrl = `${baseUrl}/discord`;
   }
 
-  connectDiscordWithApp(
-    appId: string,
-    discordServerId: string,
-    userId: string
-  ) {
-    const data = { appId, discordServerId, userId, timestamp: Date.now() };
-    const signature = this.ain.wallet.sign(stringify(data));
+  signData(data: any) {
+    if (typeof data !== 'string') {
+      return this.ain.wallet.sign(stringify(data));
+    }
+
+    return this.ain.wallet.sign(data);
+  }
+
+  connectDiscordWithApp(appId: string, discordServerId: string) {
+    const timestamp = Date.now();
+    const body = { appId, discordServerId };
+    const data = buildData(HttpMethod.POST, '/discord/register', timestamp, body);
+    const signature = this.signData(data);
     return axios
-      .post(`${this.baseUrl}/register`, { data, signature })
+      .post(`${this.baseUrl}/register`, body, {
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
+      })
       .then((res) => res.data)
       .catch((e) => {
         throw e.response.data;
       });
   }
 
-  getConnectedApp(discordServerId: string, appId: string = ''): Promise<string> {
-    const data = { appId, timestamp: Date.now() };
-    const signature = this.ain.wallet.sign(stringify(data));
+  getConnectedApp(
+    discordServerId: string,
+    appId: string = ''
+  ): Promise<string> {
+    const timestamp = Date.now();
+    const query = { appId };
+    const data = buildData(HttpMethod.GET, `/discord/${discordServerId}/app`, timestamp, query);
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/${discordServerId}/app`, {
-        data: { data, signature },
+        params: query,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
       })
       .then((res) => res.data.data)
       .catch((e) => {
@@ -46,13 +67,22 @@ export default class Discord {
 
   getConnectedEventsByServer(
     appId: string,
-    discordServerId: string,
+    discordServerId: string
   ): Promise<EventInfo[]> {
-    const data = { appId, timestamp: Date.now() };
-    const signature = this.ain.wallet.sign(stringify(data));
+    const timestamp = Date.now();
+    const query = { appId };
+    const data = buildData(
+      HttpMethod.GET,
+      `/discord/${discordServerId}/events`
+    , timestamp, query);
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/${discordServerId}/events`, {
-        data: { data, signature },
+        params: query,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
       })
       .then((res) => res.data.data)
       .catch((e) => {
@@ -65,11 +95,22 @@ export default class Discord {
     discordServerId: string,
     discordChannelId: string
   ): Promise<TaskIdListByEventId> {
-    const data = { appId, timestamp: Date.now() };
-    const signature = this.ain.wallet.sign(stringify(data));
+    const timestamp = Date.now();
+    const query = { appId };
+    const data = buildData(
+      HttpMethod.GET,
+      `/discord/${discordServerId}/${discordChannelId}/tasks`,
+      timestamp,
+      query
+    );
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/${discordServerId}/${discordChannelId}/tasks`, {
-        data: { data, signature },
+        params: query,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
       })
       .then((res) => res.data.data)
       .catch((e) => {

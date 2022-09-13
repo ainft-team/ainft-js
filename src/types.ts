@@ -27,6 +27,13 @@ export enum EventStatus {
   DEPRECATED = 'DEPRECATED',
 }
 
+export enum HttpMethod {
+  POST = 'POST',
+  GET = 'GET',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+}
+
 export interface Account {
   address: string;
   privateKey: string;
