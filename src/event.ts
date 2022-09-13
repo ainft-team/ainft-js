@@ -164,7 +164,6 @@ export default class Event {
     const body = {
       appId,
       userId,
-      eventId,
       smartGalleryPosId,
       taskInstanceId,
       data: _data,
