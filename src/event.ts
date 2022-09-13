@@ -61,15 +61,23 @@ export default class Event {
       });
   }
 
-  update(
-    appId: string,
-    eventId: string,
-    payload: Partial<CreateEventParams>
-  ) {
+  update({
+    appId,
+    eventId,
+    description,
+    startAt,
+    endAt,
+    taskInstanceList,
+    rewardInstanceList,
+  }: Partial<CreateEventParams>) {
     const timestamp = Date.now();
     const body = {
       appId,
-      payload,
+      description,
+      startAt,
+      endAt,
+      taskInstanceList,
+      rewardInstanceList,
     };
     const data = {
       method: 'PUT',
