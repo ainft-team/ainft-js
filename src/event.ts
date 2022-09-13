@@ -5,7 +5,9 @@ import {
   AddEventActivityParams,
   CreateEventParams,
   RewardOptions,
+  HttpMethod,
 } from './types';
+import { buildData } from './util';
 
 export default class Event {
   private baseUrl: string;
@@ -18,6 +20,14 @@ export default class Event {
 
   setBaseUrl(baseUrl: string) {
     this.baseUrl = `${baseUrl}/event`;
+  }
+
+  signData(data: any) {
+    if (typeof data !== 'string') {
+      return this.ain.wallet.sign(stringify(data));
+    }
+
+    return this.ain.wallet.sign(data);
   }
 
   create({
@@ -41,13 +51,8 @@ export default class Event {
       endAt,
       platform,
     };
-    const data = {
-      method: 'POST',
-      path: '/event/',
-      timestamp,
-      body: stringify(body),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+    const data = buildData(HttpMethod.POST, '/event/', timestamp, body);
+    const signature = this.signData(data);
     return axios
       .post(`${this.baseUrl}/`, body, {
         headers: {
@@ -79,13 +84,13 @@ export default class Event {
       taskInstanceList,
       rewardInstanceList,
     };
-    const data = {
-      method: 'PUT',
-      path: `/event/${eventId}`,
+    const data = buildData(
+      HttpMethod.PUT,
+      `/event/${eventId}`,
       timestamp,
-      body: stringify(body),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+      body
+    );
+    const signature = this.signData(data);
     return axios
       .put(`${this.baseUrl}/${eventId}`, body, {
         headers: {
@@ -102,13 +107,13 @@ export default class Event {
   delete(appId: string, eventId: string) {
     const timestamp = Date.now();
     const query = { appId };
-    const data = {
-      method: 'DELETE',
-      path: `/event/${eventId}`,
+    const data = buildData(
+      HttpMethod.DELETE,
+      `/event/${eventId}`,
       timestamp,
-      querystring: stringify(query),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+      query
+    );
+    const signature = this.signData(data);
     return axios
       .delete(`${this.baseUrl}/${eventId}`, {
         params: query,
@@ -126,13 +131,13 @@ export default class Event {
   get(appId: string, eventId: string) {
     const timestamp = Date.now();
     const query = { appId };
-    const data = {
-      method: 'GET',
-      path: `/event/${eventId}`,
+    const data = buildData(
+      HttpMethod.GET,
+      `/event/${eventId}`,
       timestamp,
-      querystring: stringify(query),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+      query
+    );
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/${eventId}`, {
         params: query,
@@ -164,13 +169,13 @@ export default class Event {
       taskInstanceId,
       data: _data,
     };
-    const data = {
-      method: 'POST',
-      path: `/event/${eventId}/activity`,
+    const data = buildData(
+      HttpMethod.POST,
+      `/event/${eventId}/activity`,
       timestamp,
-      body: stringify(body),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+      body
+    );
+    const signature = this.signData(data);
     return axios
       .post(`${this.baseUrl}/${eventId}/activity`, body, {
         headers: {
@@ -187,13 +192,13 @@ export default class Event {
   getTaskTypeList(appId: string) {
     const timestamp = Date.now();
     const query = { appId };
-    const data = {
-      method: 'GET',
-      path: '/event/task-types',
+    const data = buildData(
+      HttpMethod.GET,
+      '/event/task-types',
       timestamp,
-      querystring: stringify(query),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+      query
+    );
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/task-types`, {
         params: query,
@@ -211,13 +216,13 @@ export default class Event {
   getRewardTypeList(appId: string) {
     const timestamp = Date.now();
     const query = { appId };
-    const data = {
-      method: 'GET',
-      path: '/event/reward-types',
+    const data = buildData(
+      HttpMethod.GET,
+      '/event/reward-types',
       timestamp,
-      querystring: stringify(query),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+      query
+    );
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/reward-types`, {
         params: query,
@@ -235,13 +240,13 @@ export default class Event {
   async getPendingRewards(appId: string, userId: string, eventId: string) {
     const timestamp = Date.now();
     const query = { appId, userId };
-    const data = {
-      method: 'GET',
-      path: `/event/${eventId}/pending-rewards`,
+    const data = buildData(
+      HttpMethod.GET,
+      `/event/${eventId}/pending-rewards`,
       timestamp,
-      querystring: stringify(query),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+      query
+    );
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/${eventId}/pending-rewards`, {
         params: query,
@@ -268,13 +273,13 @@ export default class Event {
       userId,
     };
     if (options) body.options = options;
-    const data = {
-      method: 'POST',
-      path: `/event/${eventId}/reward`,
+    const data = buildData(
+      HttpMethod.POST,
+      `/event/${eventId}/reward`,
       timestamp,
-      body: stringify(body),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+      body
+    );
+    const signature = this.signData(data);
     return axios
       .post(`${this.baseUrl}/${eventId}/reward`, body, {
         headers: {
@@ -288,33 +293,30 @@ export default class Event {
       });
   }
 
-  async getRewardHistory(
-    appId: string,
-    userId: string,
-    eventId: string
-  ) {
+  async getRewardHistory(appId: string, userId: string, eventId: string) {
     const timestamp = Date.now();
     const query = {
       appId,
-      userId
-    }
-    const data = {
-      method: 'GET',
-      path: `/event/${eventId}/reward-history`,
+      userId,
+    };
+    const data = buildData(
+      HttpMethod.GET,
+      `/event/${eventId}/reward-history`,
       timestamp,
-      querystring: stringify(query)
-    }
-    const signature = this.ain.wallet.sign(stringify(data));
-    return axios.get(`${this.baseUrl}/${eventId}/reward-history`, {
-      params: query,
-      headers: {
-        'X-AINFT-Date': timestamp,
-        Authorization: `AINFT ${signature}`,
-      },
-    })
-    .then((res) => res.data.data)
-    .catch((e) => {
-      throw e.response.data;
-    })
+      query
+    );
+    const signature = this.signData(data);
+    return axios
+      .get(`${this.baseUrl}/${eventId}/reward-history`, {
+        params: query,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
+      })
+      .then((res) => res.data.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
   }
 }

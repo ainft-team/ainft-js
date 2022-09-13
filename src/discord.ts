@@ -1,7 +1,8 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
 import stringify  = require('fast-json-stable-stringify');
-import { TaskIdListByEventId, EventInfo } from './types';
+import { TaskIdListByEventId, EventInfo, HttpMethod } from './types';
+import { buildData } from './util';
 
 export default class Discord {
   private baseUrl: string;
@@ -16,19 +17,19 @@ export default class Discord {
     this.baseUrl = `${baseUrl}/discord`;
   }
 
-  connectDiscordWithApp(
-    appId: string,
-    discordServerId: string,
-  ) {
+  signData(data: any) {
+    if (typeof data !== 'string') {
+      return this.ain.wallet.sign(stringify(data));
+    }
+
+    return this.ain.wallet.sign(data);
+  }
+
+  connectDiscordWithApp(appId: string, discordServerId: string) {
     const timestamp = Date.now();
     const body = { appId, discordServerId };
-    const data = {
-      method: 'POST',
-      path: '/discord/register',
-      timestamp,
-      body: stringify(body)
-    }
-    const signature = this.ain.wallet.sign(stringify(data));
+    const data = buildData(HttpMethod.POST, '/discord/register', timestamp, body);
+    const signature = this.signData(data);
     return axios
       .post(`${this.baseUrl}/register`, body, {
         headers: {
@@ -42,16 +43,14 @@ export default class Discord {
       });
   }
 
-  getConnectedApp(discordServerId: string, appId: string = ''): Promise<string> {
+  getConnectedApp(
+    discordServerId: string,
+    appId: string = ''
+  ): Promise<string> {
     const timestamp = Date.now();
     const query = { appId };
-    const data = {
-      method: 'GET',
-      path: `/discord/${discordServerId}/app`,
-      timestamp,
-      querystring: stringify(query),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+    const data = buildData(HttpMethod.GET, `/discord/${discordServerId}/app`, timestamp, query);
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/${discordServerId}/app`, {
         params: query,
@@ -68,17 +67,15 @@ export default class Discord {
 
   getConnectedEventsByServer(
     appId: string,
-    discordServerId: string,
+    discordServerId: string
   ): Promise<EventInfo[]> {
     const timestamp = Date.now();
     const query = { appId };
-    const data = {
-      method: 'GET',
-      path: `/discord/${discordServerId}/events`,
-      timestamp,
-      querystring: stringify(query),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+    const data = buildData(
+      HttpMethod.GET,
+      `/discord/${discordServerId}/events`
+    , timestamp, query);
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/${discordServerId}/events`, {
         params: query,
@@ -100,13 +97,13 @@ export default class Discord {
   ): Promise<TaskIdListByEventId> {
     const timestamp = Date.now();
     const query = { appId };
-    const data = {
-      method: 'GET',
-      path: `/discord/${discordServerId}/${discordChannelId}/tasks`,
+    const data = buildData(
+      HttpMethod.GET,
+      `/discord/${discordServerId}/${discordChannelId}/tasks`,
       timestamp,
-      querystring: stringify(query),
-    };
-    const signature = this.ain.wallet.sign(stringify(data));
+      query
+    );
+    const signature = this.signData(data);
     return axios
       .get(`${this.baseUrl}/${discordServerId}/${discordChannelId}/tasks`, {
         params: query,
