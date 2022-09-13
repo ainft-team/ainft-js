@@ -1,6 +1,8 @@
 import Ain from '@ainblockchain/ain-js';
 import axios from 'axios';
 import stringify = require('fast-json-stable-stringify');
+import { HttpMethod } from './types';
+import { buildData } from './util';
 
 export default class Asset {
   private baseUrl: string;
@@ -15,20 +17,39 @@ export default class Asset {
     this.baseUrl = `${baseUrl}/asset`;
   }
 
+  signData(data: any) {
+    if (typeof data !== 'string') {
+      return this.ain.wallet.sign(stringify(data));
+    }
+
+    return this.ain.wallet.sign(data);
+  }
+
   async getUserNftList(
     appId: string,
     chainId: string,
     ethAddress: string,
-    contractAddress?: string,
+    contractAddress?: string
   ) {
-    const data = { appId, timestamp: Date.now() };
-    const signature = this.ain.wallet.sign(stringify(data));
-    const url = contractAddress
-      ? `${this.baseUrl}/nft/${chainId}/${ethAddress}/${contractAddress}`
-      : `${this.baseUrl}/nft/${chainId}/${ethAddress}`
+    const timestamp = Date.now();
+    const query = { appId };
+    const trailingUrl = contractAddress
+      ? `nft/${chainId}/${ethAddress}/${contractAddress}`
+      : `nft/${chainId}/${ethAddress}`;
+    const data = buildData(
+      HttpMethod.GET,
+      `/asset/${trailingUrl}`,
+      timestamp,
+      query
+    );
+    const signature = this.signData(data);
     return axios
-      .get(url, {
-        data: { data, signature },
+      .get(`${this.baseUrl}/${trailingUrl}`, {
+        params: query,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
       })
       .then((res) => res.data.data)
       .catch((e) => {
@@ -37,11 +58,23 @@ export default class Asset {
   }
 
   async getUserCreditBalance(appId: string, symbol: string, userId: string) {
-    const data = { appId, timestamp: Date.now() };
-    const signature = this.ain.wallet.sign(stringify(data));
+    const timestamp = Date.now();
+    const query = { appId };
+    const trailingUrl = `credit/${symbol}/${userId}`;
+    const data = buildData(
+      HttpMethod.GET,
+      `/asset/${trailingUrl}`,
+      timestamp,
+      query
+    );
+    const signature = this.signData(data);
     return axios
-      .get(`${this.baseUrl}/credit/${appId}/${symbol}/${userId}`, {
-        data: { data, signature },
+      .get(`${this.baseUrl}/${trailingUrl}`, {
+        params: query,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
       })
       .then((res) => res.data.data)
       .catch((e) => {
