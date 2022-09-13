@@ -22,7 +22,6 @@ export default class Event {
 
   create({
     appId,
-    userId,
     eventId,
     description,
     taskInstanceList,
@@ -34,7 +33,6 @@ export default class Event {
     const timestamp = Date.now();
     const body = {
       appId,
-      userId,
       eventId,
       description,
       taskInstanceList,
@@ -45,13 +43,13 @@ export default class Event {
     };
     const data = {
       method: 'POST',
-      path: '/event/create',
+      path: '/event/',
       timestamp,
       body: stringify(body),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .post(`${this.baseUrl}/create`, body, {
+      .post(`${this.baseUrl}/`, body, {
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -66,25 +64,22 @@ export default class Event {
   update(
     appId: string,
     eventId: string,
-    userId: string,
     payload: Partial<CreateEventParams>
   ) {
     const timestamp = Date.now();
     const body = {
       appId,
-      eventId,
-      userId,
       payload,
     };
     const data = {
       method: 'PUT',
-      path: '/event/update',
+      path: `/event/${eventId}`,
       timestamp,
       body: stringify(body),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .put(`${this.baseUrl}/update`, body, {
+      .put(`${this.baseUrl}/${eventId}`, body, {
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -96,19 +91,19 @@ export default class Event {
       });
   }
 
-  delete(appId: string, eventId: string, userId: string) {
+  delete(appId: string, eventId: string) {
     const timestamp = Date.now();
-    const querystring = { appId, eventId, userId };
+    const query = { appId };
     const data = {
       method: 'DELETE',
-      path: '/event/delete',
+      path: `/event/${eventId}`,
       timestamp,
-      querystring: stringify(querystring),
+      querystring: stringify(query),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .delete(`${this.baseUrl}/delete`, {
-        params: querystring,
+      .delete(`${this.baseUrl}/${eventId}`, {
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -122,17 +117,17 @@ export default class Event {
 
   get(appId: string, eventId: string) {
     const timestamp = Date.now();
-    const querystring = { appId, eventId };
+    const query = { appId };
     const data = {
       method: 'GET',
       path: `/event/${eventId}`,
       timestamp,
-      querystring: stringify(querystring),
+      querystring: stringify(query),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .get(`${this.baseUrl}/${eventId}`, {
-        params: { appId },
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -163,13 +158,13 @@ export default class Event {
     };
     const data = {
       method: 'POST',
-      path: '/event/add-activity',
+      path: `/event/${eventId}/activity`,
       timestamp,
       body: stringify(body),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .post(`${this.baseUrl}/${eventId}/add-activity`, body, {
+      .post(`${this.baseUrl}/${eventId}/activity`, body, {
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -183,17 +178,17 @@ export default class Event {
 
   getTaskTypeList(appId: string) {
     const timestamp = Date.now();
-    const querystring = { appId };
+    const query = { appId };
     const data = {
       method: 'GET',
       path: '/event/task-types',
       timestamp,
-      querystring: stringify(querystring),
+      querystring: stringify(query),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .get(`${this.baseUrl}/task-types`, {
-        params: querystring,
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -207,17 +202,17 @@ export default class Event {
 
   getRewardTypeList(appId: string) {
     const timestamp = Date.now();
-    const querystring = { appId };
+    const query = { appId };
     const data = {
       method: 'GET',
       path: '/event/reward-types',
       timestamp,
-      querystring: stringify(querystring),
+      querystring: stringify(query),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .get(`${this.baseUrl}/reward-types`, {
-        params: querystring,
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -231,17 +226,17 @@ export default class Event {
 
   async getPendingRewards(appId: string, userId: string, eventId: string) {
     const timestamp = Date.now();
-    const querystring = { appId, userId, eventId };
+    const query = { appId, userId };
     const data = {
       method: 'GET',
-      path: '/event/pending-rewards',
+      path: `/event/${eventId}/pending-rewards`,
       timestamp,
-      querystring: stringify(querystring),
+      querystring: stringify(query),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .get(`${this.baseUrl}/pending-rewards`, {
-        params: querystring,
+      .get(`${this.baseUrl}/${eventId}/pending-rewards`, {
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -263,18 +258,17 @@ export default class Event {
     const body: any = {
       appId,
       userId,
-      eventId,
     };
     if (options) body.options = options;
     const data = {
       method: 'POST',
-      path: '/event/reward',
+      path: `/event/${eventId}/reward`,
       timestamp,
       body: stringify(body),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .post(`${this.baseUrl}/reward`, body, {
+      .post(`${this.baseUrl}/${eventId}/reward`, body, {
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,

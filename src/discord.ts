@@ -19,10 +19,9 @@ export default class Discord {
   connectDiscordWithApp(
     appId: string,
     discordServerId: string,
-    userId: string
   ) {
     const timestamp = Date.now();
-    const body = { appId, discordServerId, userId };
+    const body = { appId, discordServerId };
     const data = {
       method: 'POST',
       path: '/discord/register',
@@ -45,17 +44,17 @@ export default class Discord {
 
   getConnectedApp(discordServerId: string, appId: string = ''): Promise<string> {
     const timestamp = Date.now();
-    const querystring = { appId };
+    const query = { appId };
     const data = {
       method: 'GET',
       path: `/discord/${discordServerId}/app`,
       timestamp,
-      querystring: stringify(querystring)
-    }
+      querystring: stringify(query),
+    };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .get(`${this.baseUrl}/${discordServerId}/app`, {
-        params: querystring,
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -72,17 +71,17 @@ export default class Discord {
     discordServerId: string,
   ): Promise<EventInfo[]> {
     const timestamp = Date.now();
-    const querystring = { appId };
+    const query = { appId };
     const data = {
       method: 'GET',
       path: `/discord/${discordServerId}/events`,
       timestamp,
-      querystring: stringify(querystring),
+      querystring: stringify(query),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .get(`${this.baseUrl}/${discordServerId}/events`, {
-        params: querystring,
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -100,17 +99,17 @@ export default class Discord {
     discordChannelId: string
   ): Promise<TaskIdListByEventId> {
     const timestamp = Date.now();
-    const querystring = { appId };
+    const query = { appId };
     const data = {
       method: 'GET',
       path: `/discord/${discordServerId}/${discordChannelId}/tasks`,
       timestamp,
-      querystring: stringify(querystring),
+      querystring: stringify(query),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
       .get(`${this.baseUrl}/${discordServerId}/${discordChannelId}/tasks`, {
-        params: querystring,
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,

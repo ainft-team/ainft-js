@@ -18,20 +18,17 @@ export default class Auth {
 
   getUser(appId: string, userId: string): Promise<User> {
     const timestamp = Date.now();
-    const querystring = {
-      appId,
-      userId,
-    };
+    const query = { appId };
     const data = {
       method: 'GET',
-      path: '/auth/user',
+      path: `/auth/user/${userId}`,
       timestamp,
-      querystring: stringify(querystring),
+      querystring: stringify(query),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .get(`${this.baseUrl}/user`, {
-        params: querystring,
+      .get(`${this.baseUrl}/user/${userId}`, {
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -47,18 +44,17 @@ export default class Auth {
     const timestamp = Date.now();
     const body = {
       appId,
-      userId,
       ethAddress,
     };
     const data = {
       method: 'POST',
-      path: '/auth/user/ethAddress',
+      path: `/auth/user/${userId}/ethAddress`,
       timestamp,
       body: stringify(body),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .post(`${this.baseUrl}/user/ethAddress`, body, {
+      .post(`${this.baseUrl}/user/${userId}/ethAddress`, body, {
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
@@ -72,21 +68,20 @@ export default class Auth {
 
   removeUserEthAddress(appId: string, userId: string, ethAddress: string): Promise<User> {
     const timestamp = Date.now();
-    const querystring = {
+    const query = {
       appId,
-      userId,
       ethAddress,
     };
     const data = {
       method: 'DELETE',
-      path: '/auth/user/ethAddress',
+      path: `/auth/user/${userId}/ethAddress`,
       timestamp,
-      querystring: stringify(querystring),
+      querystring: stringify(query),
     };
     const signature = this.ain.wallet.sign(stringify(data));
     return axios
-      .delete(`${this.baseUrl}/user/ethAddress`, {
-        params: querystring,
+      .delete(`${this.baseUrl}/user/${userId}/ethAddress`, {
+        params: query,
         headers: {
           'X-AINFT-Date': timestamp,
           Authorization: `AINFT ${signature}`,
