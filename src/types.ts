@@ -34,6 +34,16 @@ export enum HttpMethod {
   DELETE = 'DELETE',
 }
 
+export enum StoreItemStatus {
+  AVAILABLE = 'AVAILABLE',
+  SOLD_OUT = 'SOLD_OUT',
+};
+
+export enum PurchaseStatus {
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED"
+};
+
 export interface Account {
   address: string;
   privateKey: string;
@@ -145,3 +155,47 @@ export interface StorePurchaseParams {
   itemName: string;
   quantity: number;
 }
+
+export interface Item  {
+  name: string;
+  description: string;
+  image?: string;
+  type: string;
+  subtype: string;
+  value: string;
+  quantityTotal: number;
+  quantityRemaining: number;
+  quantityOnSale: number;
+  createdAt: number;
+  updatedAt: number;
+};
+
+export interface StoreItem extends Omit<Item, 'quantityOnSale'> {
+  price: number;
+  seller: string;
+  currency: string;
+  status: StoreItemStatus;
+  saleStartAt?: number;
+  saleEndAt?: number;
+  maxPurchasePerUser?: number;
+};
+
+export interface UserItem extends Omit<Item, 'quantityTotal' | 'quantityOnSale'> {
+  quantityBought: number;
+};
+
+export interface PurchaseHistory {
+  id: string;
+  appId: string;
+  storeId: string;
+  type: string;
+  subtype: string;
+  value: string;
+  seller: string;
+  buyer: string;
+  quantity: number;
+  payment: number;
+  currency: string;
+  createdAt: number;
+  status: PurchaseStatus;
+};

@@ -1,7 +1,7 @@
 import Ain from '@ainblockchain/ain-js';
 import axios from 'axios';
 import stringify = require('fast-json-stable-stringify');
-import { HttpMethod, StorePurchaseParams } from './types';
+import { HttpMethod, PurchaseHistory, StoreItem, StorePurchaseParams, UserItem } from './types';
 import { buildData } from './util';
 
 export default class Store {
@@ -25,7 +25,7 @@ export default class Store {
     return this.ain.wallet.sign(data);
   }
 
-  getStoreItemList(appId: string, storeId: string) {
+  getStoreItemList(appId: string, storeId: string): Promise<StoreItem[]> {
     const timestamp = Date.now();
     const query = { appId };
     const data = buildData(
@@ -49,7 +49,7 @@ export default class Store {
       });
   }
 
-  getUserInventory(appId: string, userId: string) {
+  getUserInventory(appId: string, userId: string): Promise<UserItem[]> {
     const timestamp = Date.now();
     const query = { appId };
     const data = buildData(
@@ -73,7 +73,7 @@ export default class Store {
       });
   }
 
-  getStoreItemInfo(appId: string, storeId: string, itemName: string) {
+  getStoreItemInfo(appId: string, storeId: string, itemName: string): Promise<StoreItem> {
     const encodedItemName = encodeURIComponent(itemName);
     const timestamp = Date.now();
     const query = { appId };
@@ -98,13 +98,38 @@ export default class Store {
       });
   }
 
+  getUserItemInfo(appId: string, userId: string, itemName: string): Promise<UserItem> {
+    const encodedItemName = encodeURIComponent(itemName);
+    const timestamp = Date.now();
+    const query = { appId };
+    const data = buildData(
+      HttpMethod.GET,
+      `/store/inventory/${userId}/item/${encodedItemName}`,
+      timestamp,
+      query
+    );
+    const signature = this.signData(data);
+    return axios
+      .get(`${this.baseUrl}/inventory/${userId}/item/${encodedItemName}`, {
+        params: query,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
+      })
+      .then((res) => res.data.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
   purchaseStoreItem({
     appId,
     storeId,
     userId,
     itemName,
     quantity,
-  }: StorePurchaseParams) {
+  }: StorePurchaseParams): Promise<PurchaseHistory> {
     const encodedItemName = encodeURIComponent(itemName);
     const timestamp = Date.now();
     const body = {
