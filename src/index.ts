@@ -5,6 +5,7 @@ import Asset from './asset';
 import Auth from './auth';
 import Discord from './discord';
 import Event from './event';
+import Store from './store';
 import {
   AINFT_SERVER_ENDPOINT,
   AIN_BLOCKCHAIN_CHAINID,
@@ -17,6 +18,7 @@ export default class AinftJs {
   public auth: Auth;
   public discord: Discord;
   public event: Event;
+  public store: Store;
   public ain: Ain;
 
   constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccountPrivateKey: string) {
@@ -28,6 +30,7 @@ export default class AinftJs {
     this.auth = new Auth(this.baseUrl, this.ain);
     this.discord = new Discord(this.baseUrl, this.ain);
     this.event = new Event(this.baseUrl, this.ain);
+    this.store = new Store(this.baseUrl, this.ain);
   }
 
   setBaseUrl(baseUrl: string) {
@@ -36,6 +39,7 @@ export default class AinftJs {
     this.auth.setBaseUrl(baseUrl);
     this.discord.setBaseUrl(baseUrl);
     this.event.setBaseUrl(baseUrl);
+    this.store.setBaseUrl(baseUrl);
   }
 
   getAccessAccount() {

@@ -137,3 +137,11 @@ export interface User {
 export interface RewardOptions {
   amount?: number;
 };
+
+export interface StorePurchaseParams {
+  appId: string;
+  storeId: string;
+  userId: string;
+  itemName: string;
+  quantity: number;
+}
