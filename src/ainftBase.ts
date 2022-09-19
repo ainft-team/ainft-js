@@ -9,13 +9,15 @@ export default class AinftBase {
 
   constructor(
     ain: Ain,
-    baseUrl = AINFT_SERVER_ENDPOINT,
+    baseUrl?: string,
     route?: string,
   ) {
     this.route = route || '';
     this.ain = ain;
 
-    this.setBaseUrl(baseUrl);
+    if (baseUrl) {
+      this.setBaseUrl(baseUrl);
+    }
   }
 
   setBaseUrl(baseUrl: string) {
