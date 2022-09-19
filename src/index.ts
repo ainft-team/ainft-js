@@ -1,10 +1,10 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
-import { Account } from '@ainblockchain/ain-js/lib/types';
 import Asset from './asset';
 import Auth from './auth';
 import Discord from './discord';
 import Event from './event';
+import Store from './store';
 import {
   AINFT_SERVER_ENDPOINT,
   AIN_BLOCKCHAIN_CHAINID,
@@ -17,17 +17,19 @@ export default class AinftJs {
   public auth: Auth;
   public discord: Discord;
   public event: Event;
+  public store: Store;
   public ain: Ain;
 
-  constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccountPrivateKey: string) {
+  constructor(accessAccountPrivateKey: string, baseUrl = AINFT_SERVER_ENDPOINT) {
     this.baseUrl = baseUrl;
     this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
     this.setAccessAccount(accessAccountPrivateKey);
 
-    this.asset = new Asset(this.baseUrl, this.ain);
-    this.auth = new Auth(this.baseUrl, this.ain);
-    this.discord = new Discord(this.baseUrl, this.ain);
-    this.event = new Event(this.baseUrl, this.ain);
+    this.asset = new Asset(this.ain, this.baseUrl, '/asset');
+    this.auth = new Auth(this.ain, this.baseUrl, '/auth');
+    this.discord = new Discord(this.ain, this.baseUrl, '/discord');
+    this.event = new Event(this.ain, this.baseUrl, '/event');
+    this.store = new Store(this.ain, this.baseUrl, '/store');
   }
 
   setBaseUrl(baseUrl: string) {
@@ -36,6 +38,7 @@ export default class AinftJs {
     this.auth.setBaseUrl(baseUrl);
     this.discord.setBaseUrl(baseUrl);
     this.event.setBaseUrl(baseUrl);
+    this.store.setBaseUrl(baseUrl);
   }
 
   getAccessAccount() {

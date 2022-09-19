@@ -1,29 +1,9 @@
 import axios from 'axios';
-import Ain from '@ainblockchain/ain-js';
-import stringify  = require('fast-json-stable-stringify');
 import { TaskIdListByEventId, EventInfo, HttpMethod } from './types';
 import { buildData } from './util';
+import AinftBase from './ainftBase';
 
-export default class Discord {
-  private baseUrl: string;
-  public ain: Ain;
-
-  constructor(baseUrl: string, ain: Ain) {
-    this.baseUrl = `${baseUrl}/discord`;
-    this.ain = ain;
-  }
-
-  setBaseUrl(baseUrl: string) {
-    this.baseUrl = `${baseUrl}/discord`;
-  }
-
-  signData(data: any) {
-    if (typeof data !== 'string') {
-      return this.ain.wallet.sign(stringify(data));
-    }
-
-    return this.ain.wallet.sign(data);
-  }
+export default class Discord extends AinftBase {
 
   connectDiscordWithApp(appId: string, discordServerId: string) {
     const timestamp = Date.now();
