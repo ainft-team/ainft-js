@@ -21,16 +21,16 @@ export default class AinftJs {
   public store: Store;
   public ain: Ain;
 
-  constructor(baseUrl = AINFT_SERVER_ENDPOINT, accessAccountPrivateKey: string) {
+  constructor(accessAccountPrivateKey: string, baseUrl = AINFT_SERVER_ENDPOINT) {
     this.baseUrl = baseUrl;
     this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
     this.setAccessAccount(accessAccountPrivateKey);
 
-    this.asset = new Asset(this.baseUrl, this.ain, '/asset');
-    this.auth = new Auth(this.baseUrl, this.ain, '/auth');
-    this.discord = new Discord(this.baseUrl, this.ain, '/discord');
-    this.event = new Event(this.baseUrl, this.ain, '/event');
-    this.store = new Store(this.baseUrl, this.ain, '/store');
+    this.asset = new Asset(this.ain, this.baseUrl, '/asset');
+    this.auth = new Auth(this.ain, this.baseUrl, '/auth');
+    this.discord = new Discord(this.ain, this.baseUrl, '/discord');
+    this.event = new Event(this.ain, this.baseUrl, '/event');
+    this.store = new Store(this.ain, this.baseUrl, '/store');
   }
 
   setBaseUrl(baseUrl: string) {

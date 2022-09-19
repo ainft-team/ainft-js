@@ -8,8 +8,8 @@ export default class AinftBase {
   public ain: Ain;
 
   constructor(
-    baseUrl = AINFT_SERVER_ENDPOINT,
     ain: Ain,
+    baseUrl = AINFT_SERVER_ENDPOINT,
     route?: string,
   ) {
     this.route = route || '';
