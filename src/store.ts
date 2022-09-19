@@ -1,29 +1,9 @@
-import Ain from '@ainblockchain/ain-js';
 import axios from 'axios';
-import stringify = require('fast-json-stable-stringify');
+import AinftBase from './ainftBase';
 import { HttpMethod, PurchaseHistory, StoreItem, StorePurchaseParams, UserItem } from './types';
 import { buildData } from './util';
 
-export default class Store {
-  private baseUrl: string;
-  public ain: Ain;
-
-  constructor(baseUrl: string, ain: Ain) {
-    this.baseUrl = `${baseUrl}/store`;
-    this.ain = ain;
-  }
-
-  setBaseUrl(baseUrl: string) {
-    this.baseUrl = `${baseUrl}/store`;
-  }
-
-  signData(data: any) {
-    if (typeof data !== 'string') {
-      return this.ain.wallet.sign(stringify(data));
-    }
-
-    return this.ain.wallet.sign(data);
-  }
+export default class Store extends AinftBase {
 
   getStoreItemList(appId: string, storeId: string): Promise<StoreItem[]> {
     const timestamp = Date.now();

@@ -26,11 +26,11 @@ export default class AinftJs {
     this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
     this.setAccessAccount(accessAccountPrivateKey);
 
-    this.asset = new Asset(this.baseUrl, this.ain);
-    this.auth = new Auth(this.baseUrl, this.ain);
-    this.discord = new Discord(this.baseUrl, this.ain);
-    this.event = new Event(this.baseUrl, this.ain);
-    this.store = new Store(this.baseUrl, this.ain);
+    this.asset = new Asset(this.baseUrl, this.ain, '/asset');
+    this.auth = new Auth(this.baseUrl, this.ain, '/auth');
+    this.discord = new Discord(this.baseUrl, this.ain, '/discord');
+    this.event = new Event(this.baseUrl, this.ain, '/event');
+    this.store = new Store(this.baseUrl, this.ain, '/store');
   }
 
   setBaseUrl(baseUrl: string) {
