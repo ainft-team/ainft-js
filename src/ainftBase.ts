@@ -3,18 +3,21 @@ import { AINFT_SERVER_ENDPOINT } from "./constants";
 import stringify = require("fast-json-stable-stringify");
 
 export default class AinftBase {
-  public baseUrl: string;
+  public baseUrl = AINFT_SERVER_ENDPOINT;
   public route: string;
   public ain: Ain;
 
   constructor(
     ain: Ain,
-    baseUrl = AINFT_SERVER_ENDPOINT,
+    baseUrl?: string,
     route?: string,
   ) {
     this.route = route || '';
-    this.baseUrl = baseUrl + this.route;
     this.ain = ain;
+
+    if (baseUrl) {
+      this.setBaseUrl(baseUrl);
+    }
   }
 
   setBaseUrl(baseUrl: string) {
