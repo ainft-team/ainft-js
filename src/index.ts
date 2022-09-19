@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
-import { Account } from '@ainblockchain/ain-js/lib/types';
 import Asset from './asset';
 import Auth from './auth';
 import Discord from './discord';
