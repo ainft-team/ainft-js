@@ -154,7 +154,16 @@ export interface StorePurchaseParams {
   userId: string;
   itemName: string;
   quantity: number;
-}
+};
+
+export interface ItemTryOnParams {
+  appId: string,
+  userId: string,
+  itemName: string,
+  chain: string,
+  nftContractAddress: string,
+  nftTokenId: string,
+};
 
 export interface Item  {
   name: string;

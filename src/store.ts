@@ -1,6 +1,6 @@
 import axios from 'axios';
 import AinftBase from './ainftBase';
-import { HttpMethod, PurchaseHistory, StoreItem, StorePurchaseParams, UserItem } from './types';
+import { HttpMethod, ItemTryOnParams, PurchaseHistory, StoreItem, StorePurchaseParams, UserItem } from './types';
 import { buildData } from './util';
 
 export default class Store extends AinftBase {
@@ -127,6 +127,46 @@ export default class Store extends AinftBase {
     return axios
       .post(
         `${this.baseUrl}/${storeId}/item/${encodedItemName}/purchase`,
+        body,
+        {
+          headers: {
+            'X-AINFT-Date': timestamp,
+            Authorization: `AINFT ${signature}`,
+          },
+        }
+      )
+      .then((res) => res.data.data)
+      .catch((e) => {
+        throw e.response.data;
+      });
+  }
+
+  tryOnItem({
+    appId,
+    userId,
+    itemName,
+    chain,
+    nftContractAddress,
+    nftTokenId,
+  }: ItemTryOnParams): Promise<string> {
+    const encodedItemName = encodeURIComponent(itemName);
+    const timestamp = Date.now();
+    const body = {
+      appId,
+      chain,
+      nftContractAddress,
+      nftTokenId,
+    };
+    const data = buildData(
+      HttpMethod.POST,
+      `/store/inventory/${userId}/item/${encodedItemName}/try-on`,
+      timestamp,
+      body
+    );
+    const signature = this.signData(data);
+    return axios
+      .post(
+        `${this.baseUrl}/inventory/${userId}/item/${encodedItemName}/try-on`,
         body,
         {
           headers: {
