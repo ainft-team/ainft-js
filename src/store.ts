@@ -150,6 +150,7 @@ export default class Store extends AinftBase {
     nftContractAddress,
     nftTokenId,
   }: ItemTryOnParams): Promise<string> {
+    // TODO(liayoo): refactor buildData ... axios
     const encodedItemName = encodeURIComponent(itemName);
     const timestamp = Date.now();
     const body = {
