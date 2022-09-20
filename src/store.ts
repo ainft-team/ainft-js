@@ -144,6 +144,7 @@ export default class Store extends AinftBase {
   tryOnItem({
     appId,
     userId,
+    storeId,
     itemName,
     chain,
     nftContractAddress,
@@ -153,20 +154,21 @@ export default class Store extends AinftBase {
     const timestamp = Date.now();
     const body = {
       appId,
+      userId,
       chain,
       nftContractAddress,
       nftTokenId,
     };
     const data = buildData(
       HttpMethod.POST,
-      `/store/inventory/${userId}/item/${encodedItemName}/try-on`,
+      `/store/${storeId}/item/${encodedItemName}/try-on`,
       timestamp,
       body
     );
     const signature = this.signData(data);
     return axios
       .post(
-        `${this.baseUrl}/inventory/${userId}/item/${encodedItemName}/try-on`,
+        `${this.baseUrl}/${storeId}/item/${encodedItemName}/try-on`,
         body,
         {
           headers: {
