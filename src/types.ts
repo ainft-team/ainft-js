@@ -150,6 +150,14 @@ export interface GetEventActivityParams extends GetActivityParams {
   eventId: string,
 }
 
+export interface UpdateEventActivityStatusParams {
+  appId: string,
+  createdAt: number,
+  eventId: string,
+  activityId: string,
+  status: string,
+};
+
 export interface User {
   id: string,
   address: string,
