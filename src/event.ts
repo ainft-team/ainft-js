@@ -5,11 +5,12 @@ import {
   CreateEventParams,
   RewardOptions,
   HttpMethod,
+  GetEventActivityParams,
+  UpdateEventActivityStatusParams,
 } from './types';
 import { buildData } from './util';
 
 export default class Event extends AinftBase {
-
   create({
     appId,
     eventId,
@@ -165,6 +166,76 @@ export default class Event extends AinftBase {
       .then((res) => res.data.data)
       .catch((e) => {
         throw e.response.data;
+      });
+  }
+
+  getActivity({
+    appId,
+    userId,
+    eventId,
+    activityId,
+    createdAt,
+    options,
+  }: GetEventActivityParams) {
+    const timestamp = Date.now();
+    const query = {
+      appId,
+      userId,
+      activityId,
+      createdAt,
+      ...options,
+    };
+    const data = buildData(
+      HttpMethod.GET,
+      `/event/${eventId}/activity`,
+      timestamp,
+      query
+    );
+    const signature = this.signData(data);
+    return axios
+      .get(`${this.baseUrl}/${eventId}/activity`, {
+        params: query,
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
+      })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error?.response.data;
+      });
+  }
+
+  updateActivityStatus({
+    eventId,
+    activityId,
+    appId,
+    createdAt,
+    status,
+  }: UpdateEventActivityStatusParams) {
+    const timestamp = Date.now();
+    const body = {
+      appId,
+      status,
+      createdAt,
+    };
+    const data = buildData(
+      HttpMethod.PUT,
+      `/event/${eventId}/activity/${activityId}`,
+      timestamp,
+      body
+    );
+    const signature = this.signData(data);
+    return axios
+      .put(`${this.baseUrl}/${eventId}/activity/${activityId}`, body, {
+        headers: {
+          'X-AINFT-Date': timestamp,
+          Authorization: `AINFT ${signature}`,
+        },
+      })
+      .then((res) => res.data)
+      .catch((e) => {
+        throw e.response?.data;
       });
   }
 
