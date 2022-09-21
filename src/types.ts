@@ -1,3 +1,9 @@
+export interface SerializedMessage {
+  code: number;
+  message: string | undefined;
+  data: string | boolean | object | null | undefined;
+}
+
 export enum RewardTypeCategory {
   APP_CREDIT = 'APP_CREDIT',
   ERC20 = 'ERC20',
@@ -32,6 +38,13 @@ export enum HttpMethod {
   GET = 'GET',
   PUT = 'PUT',
   DELETE = 'DELETE',
+}
+
+export enum HttpMethodToAxiosMethod {
+  POST = 'post',
+  GET = 'get',
+  PUT = 'put',
+  DELETE = 'delete',
 }
 
 export enum StoreItemStatus {
@@ -208,4 +221,48 @@ export interface PurchaseHistory {
   currency: string;
   createdAt: number;
   status: PurchaseStatus;
+};
+
+export type NftMetadata = {
+  name: string,
+  description: string,
+  image: string,
+  attributes: object[],
+};
+
+export type NftToken = {
+  owner: string,
+  tokenURI: string,
+  metadata: NftMetadata,
+  isBurnt: boolean,
+};
+
+export type NftTokens = {
+  [nftTokenId: string]: NftToken,
+};
+
+export type NftCollections = {
+  [nftCollectionsAddress: string]: NftTokens,
+};
+
+export type NftContract = {
+  chain: string,
+  name: string,
+  symbol: string,
+  contractAddress: string,
+};
+
+export type UserNfts = {
+  chain: string,
+  address: string,
+  collections: NftCollections,
+};
+
+export type AppCreditInfo = {
+  name: string,
+  symbol: string,
+  totalSupply: number,
+  burnedSupply: number,
+  maxSupply: number | null,
+  createdAt: number,
 };

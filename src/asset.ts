@@ -1,32 +1,13 @@
-import axios from 'axios';
 import AinftBase from './ainftBase';
-import { HttpMethod } from './types';
-import { buildData } from './util';
+import { AppCreditInfo, HttpMethod, NftContract, NftToken, UserNfts } from './types';
 
+const prefix = 'asset';
 export default class Asset extends AinftBase {
   async getNftContractBySymbol(appId: string, symbol: string) {
-    const timestamp = Date.now();
     const query = { appId, symbol: encodeURIComponent(symbol) };
     const trailingUrl = 'nft';
-    const data = buildData(
-      HttpMethod.GET,
-      `/asset/${trailingUrl}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${trailingUrl}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const nftContract = (await this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query)) as NftContract;
+    return nftContract;
   }
 
   async getNft(
@@ -35,28 +16,10 @@ export default class Asset extends AinftBase {
     contractAddress: string,
     tokenId: string,
   ) {
-    const timestamp = Date.now();
     const query = { appId, contractAddress, tokenId };
     const trailingUrl = `nft/${chainId}`;
-    const data = buildData(
-      HttpMethod.GET,
-      `/asset/${trailingUrl}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${trailingUrl}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const nftToken = (await this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query)) as NftToken;
+    return nftToken;
   }
 
   async getUserNftList(
@@ -66,54 +29,108 @@ export default class Asset extends AinftBase {
     contractAddress?: string,
     tokenId?: string,
   ) {
-    const timestamp = Date.now();
-    const query: any = { appId };
-    if (contractAddress) query.contractAddress = contractAddress;
-    if (tokenId) query.tokenId = tokenId;
+    const query: any = {
+      appId,
+      ...contractAddress && { contractAddress },
+      ...tokenId && { tokenId },
+    };
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
-    const data = buildData(
-      HttpMethod.GET,
-      `/asset/${trailingUrl}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${trailingUrl}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const userNfts = (await this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query)) as UserNfts;
+
+    return userNfts;
+  }
+
+  async createAppCredit(
+    appId: string,
+    symbol: string,
+    name: string,
+    maxSupply?: number
+  ) {
+    const body = {
+      appId,
+      symbol,
+      name,
+      ...maxSupply && { maxSupply },
+    }
+    const trailingUrl = 'credit';
+    const appCreditInfo = (await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body)) as AppCreditInfo;
+    return appCreditInfo;
+  }
+
+  async getAppCredit(
+    appId: string,
+    symbol: string,
+  ) {
+    const query = {
+      appId,
+    }
+    const trailingUrl = `credit/${symbol}`;
+    const appCreditInfo = (await this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query)) as AppCreditInfo;
+    return appCreditInfo;
+  }
+
+  async deleteAppCredit(
+    appId: string,
+    symbol: string,
+  ) {
+    const query = {
+      appId,
+    }
+    const trailingUrl = `credit/${symbol}`;
+    await this.sendRequest(HttpMethod.DELETE, prefix, trailingUrl, query);
+  }
+
+  async mintAppCredit(
+    appId: string,
+    symbol: string,
+    to: string,
+    amount: number,
+  ) {
+    const body = {
+      appId,
+      to,
+      amount
+    };
+    const trailingUrl = `credit/${symbol}/mint`;
+    await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
+  }
+
+  async burnAppCredit(
+    appId: string,
+    symbol: string,
+    from: string,
+    amount: number,
+  ) {
+    const body = {
+      appId,
+      from,
+      amount
+    };
+    const trailingUrl = `credit/${symbol}/burn`;
+    await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
+  }
+
+  async transferAppCredit(
+    appId: string,
+    symbol: string,
+    from: string,
+    to: string,
+    amount: number,
+  ) {
+    const body = {
+      appId,
+      from,
+      to,
+      amount
+    };
+    const trailingUrl = `credit/${symbol}/transfer`;
+    await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
   }
 
   async getUserCreditBalance(appId: string, symbol: string, userId: string) {
-    const timestamp = Date.now();
     const query = { appId };
     const trailingUrl = `credit/${symbol}/${userId}`;
-    const data = buildData(
-      HttpMethod.GET,
-      `/asset/${trailingUrl}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${trailingUrl}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const balance = await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, query) as { balance: number };
+    return balance;
   }
 }
