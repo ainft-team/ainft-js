@@ -5,6 +5,7 @@ import {
   CreateEventParams,
   RewardOptions,
   HttpMethod,
+  GetEventActivityParams,
 } from './types';
 import { buildData } from './util';
 
@@ -166,6 +167,37 @@ export default class Event extends AinftBase {
       .catch((e) => {
         throw e.response.data;
       });
+  }
+
+  getActivity({
+    appId,
+    userId,
+    eventId,
+    activityId,
+    createdAt,
+    options,
+  }: GetEventActivityParams) {
+    const timestamp = Date.now();
+    const query = {
+      appId,
+      userId,
+      activityId,
+      createdAt,
+      ...options,
+    }
+    const data = buildData(HttpMethod.GET, `/event/${eventId}/activity`, timestamp, query);
+    const signature = this.signData(data);
+    return axios.get(`${this.baseUrl}/${eventId}/activity`, {
+      params: query,
+      headers: {
+        'X-AINFT-Date': timestamp,
+        Authorization: `AINFT ${signature}`,
+      },
+    })
+    .then((res) => res.data)
+    .catch((error) => {
+      throw error?.response.data;
+    });
   }
 
   getTaskTypeList(appId: string) {

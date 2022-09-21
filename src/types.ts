@@ -136,6 +136,20 @@ export interface AddEventActivityParams extends AddActivityParams {
   eventId: string,
 };
 
+export interface GetActivityParams {
+  appId: string,
+  createdAt: number,
+  userId?: string,
+  eventId?: string,
+  activityId?: string,
+  options?: any,
+};
+
+export interface GetEventActivityParams extends GetActivityParams {
+  userId: string,
+  eventId: string,
+}
+
 export interface User {
   id: string,
   address: string,
