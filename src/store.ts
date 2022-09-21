@@ -3,104 +3,33 @@ import AinftBase from './ainftBase';
 import { HttpMethod, ItemTryOnParams, PurchaseHistory, StoreItem, StorePurchaseParams, UserItem } from './types';
 import { buildData } from './util';
 
+const prefix = 'store';
 export default class Store extends AinftBase {
 
   getStoreItemList(appId: string, storeId: string): Promise<StoreItem[]> {
-    const timestamp = Date.now();
     const query = { appId };
-    const data = buildData(
-      HttpMethod.GET,
-      `/store/${storeId}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${storeId}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${storeId}`;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
   getUserInventory(appId: string, userId: string): Promise<UserItem[]> {
-    const timestamp = Date.now();
     const query = { appId };
-    const data = buildData(
-      HttpMethod.GET,
-      `/store/inventory/${userId}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/inventory/${userId}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `inventory/${userId}`;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
   getStoreItemInfo(appId: string, storeId: string, itemName: string): Promise<StoreItem> {
     const encodedItemName = encodeURIComponent(itemName);
-    const timestamp = Date.now();
     const query = { appId };
-    const data = buildData(
-      HttpMethod.GET,
-      `/store/${storeId}/item/${encodedItemName}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${storeId}/item/${encodedItemName}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${storeId}/item/${encodedItemName}`;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
   getUserItemInfo(appId: string, userId: string, itemName: string): Promise<UserItem> {
     const encodedItemName = encodeURIComponent(itemName);
-    const timestamp = Date.now();
     const query = { appId };
-    const data = buildData(
-      HttpMethod.GET,
-      `/store/inventory/${userId}/item/${encodedItemName}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/inventory/${userId}/item/${encodedItemName}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `inventory/${userId}/item/${encodedItemName}`;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
   purchaseStoreItem({
@@ -111,34 +40,13 @@ export default class Store extends AinftBase {
     quantity,
   }: StorePurchaseParams): Promise<PurchaseHistory> {
     const encodedItemName = encodeURIComponent(itemName);
-    const timestamp = Date.now();
     const body = {
       appId,
       userId,
       quantity,
     };
-    const data = buildData(
-      HttpMethod.POST,
-      `/store/${storeId}/item/${encodedItemName}/purchase`,
-      timestamp,
-      body
-    );
-    const signature = this.signData(data);
-    return axios
-      .post(
-        `${this.baseUrl}/${storeId}/item/${encodedItemName}/purchase`,
-        body,
-        {
-          headers: {
-            'X-AINFT-Date': timestamp,
-            Authorization: `AINFT ${signature}`,
-          },
-        }
-      )
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${storeId}/item/${encodedItemName}/purchase`;
+    return this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
   }
 
   tryOnItem({
@@ -150,9 +58,7 @@ export default class Store extends AinftBase {
     nftContractAddress,
     nftTokenId,
   }: ItemTryOnParams): Promise<string> {
-    // TODO(liayoo): refactor buildData ... axios
     const encodedItemName = encodeURIComponent(itemName);
-    const timestamp = Date.now();
     const body = {
       appId,
       userId,
@@ -160,27 +66,7 @@ export default class Store extends AinftBase {
       nftContractAddress,
       nftTokenId,
     };
-    const data = buildData(
-      HttpMethod.POST,
-      `/store/${storeId}/item/${encodedItemName}/try-on`,
-      timestamp,
-      body
-    );
-    const signature = this.signData(data);
-    return axios
-      .post(
-        `${this.baseUrl}/${storeId}/item/${encodedItemName}/try-on`,
-        body,
-        {
-          headers: {
-            'X-AINFT-Date': timestamp,
-            Authorization: `AINFT ${signature}`,
-          },
-        }
-      )
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${storeId}/item/${encodedItemName}/try-on`;
+    return this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
   }
 }

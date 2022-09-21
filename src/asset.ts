@@ -3,6 +3,7 @@ import { AppCreditInfo, HttpMethod, NftContract, NftToken, UserNfts } from './ty
 
 const prefix = 'asset';
 export default class Asset extends AinftBase {
+
   getNftContractBySymbol(appId: string, symbol: string): Promise<NftContract> {
     const query = { appId, symbol: encodeURIComponent(symbol) };
     const trailingUrl = 'nft';
@@ -128,6 +129,6 @@ export default class Asset extends AinftBase {
   ): Promise<{ balance: number }> {
     const query = { appId };
     const trailingUrl = `credit/${symbol}/${userId}`;
-    return this.sendRequest(HttpMethod.POST, prefix, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 }

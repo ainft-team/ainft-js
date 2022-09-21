@@ -44,7 +44,7 @@ export default class AinftBase {
       data
     );
     const signature = this.signData(dataForSignature);
-    const headers ={
+    const headers = {
       'X-AINFT-Date': timestamp,
       Authorization: `AINFT ${signature}`,
     };

@@ -82,6 +82,7 @@ export interface TaskInstance {
   params: InstanceParams;
 }
 
+// FIXME: RewardType does not match with nft-server
 export interface RewardType {
   id: string;
   category: RewardTypeCategory;
@@ -106,6 +107,33 @@ export interface RewardInstance {
   } & InstanceParams;
 }
 
+export interface DailyRewardAmount {
+  [timestamp: string]: RewardAmount;
+}
+
+export interface RewardAmount {
+  minAmount: number;
+  maxAmount: number;
+}
+
+export interface PendingRewards {
+  totalAmount: RewardAmount;
+  rewardAmounts: {
+    [id: string]: RewardAmount | DailyRewardAmount;
+  };
+  validatedActivityList: Activity[];
+}
+
+export interface RewardInfo {
+  id: string;
+  appId: string;
+  eventId: string;
+  userId: string;
+  rewardId: string;
+  amount: number;
+  createdAt: number;
+}
+
 export interface CreateEventParams {
   eventId: string;
   appId: string;
@@ -118,18 +146,22 @@ export interface CreateEventParams {
   platform?: Platforms;
 }
 
-export interface EventInfo {
-  id: string,
-  appId: string,
-  startAt: number,
-  endAt: number,
-  description: string,
-  taskInstances: { [key: string]: TaskInstance },
-  rewardInstances: { [key: string]: RewardInstance },
-  status?: EventStatus,
-  platform?: string,
-  createdAt?: number,
-  updatedAt?: number,
+export interface TokenomicsEvent {
+  appId: string;
+  eventId: string;
+  startAt: number;
+  endAt: number;
+  description: string;
+  taskInstances: { [taskInstanceId: string]: TaskInstance };
+  rewardInstances: { [rewardInstanceId: string]: RewardInstance };
+  status?: EventStatus;
+  platform?: Platforms;
+  createdAt?: number;
+  updatedAt?: number;
+};
+
+export interface EventInfo extends TokenomicsEvent {
+  id: string;
 }
 
 export interface TaskIdListByEventId {
@@ -158,6 +190,19 @@ export interface GetActivityParams {
   options?: any,
 };
 
+export enum ActivityStatus {
+  CREATED = 'CREATED',
+  REWARDED = 'REWARDED',
+  FAILED = 'FAILED',
+}
+
+export interface Activity extends AddActivityParams {
+  status: ActivityStatus,
+  createdAt?: number,
+  updatedAt?: number,
+  id?: string,
+};
+
 export interface GetEventActivityParams extends GetActivityParams {
   userId: string,
   eventId: string,
@@ -170,6 +215,16 @@ export interface UpdateEventActivityStatusParams {
   activityId: string,
   status: string,
 };
+
+export type History <Type> = {
+  [year: string]: {
+    [month: string]: {
+      [date: string]: {
+        [id: string]: Type
+      }
+    }
+  }
+}
 
 export interface User {
   id: string,

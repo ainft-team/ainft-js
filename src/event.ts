@@ -1,4 +1,3 @@
-import axios from 'axios';
 import AinftBase from './ainftBase';
 import {
   AddEventActivityParams,
@@ -7,11 +6,19 @@ import {
   HttpMethod,
   GetEventActivityParams,
   UpdateEventActivityStatusParams,
+  TokenomicsEvent,
+  Activity,
+  TaskType,
+  RewardType,
+  PendingRewards,
+  History,
+  RewardInfo,
 } from './types';
-import { buildData } from './util';
 
+const prefix = 'event';
 export default class Event extends AinftBase {
-  create({
+
+  async create({
     appId,
     eventId,
     description,
@@ -21,7 +28,6 @@ export default class Event extends AinftBase {
     endAt,
     platform,
   }: CreateEventParams) {
-    const timestamp = Date.now();
     const body = {
       appId,
       eventId,
@@ -32,22 +38,11 @@ export default class Event extends AinftBase {
       endAt,
       platform,
     };
-    const data = buildData(HttpMethod.POST, '/event/', timestamp, body);
-    const signature = this.signData(data);
-    return axios
-      .post(`${this.baseUrl}/`, body, {
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = '';
+    await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
   }
 
-  update({
+  async update({
     appId,
     eventId,
     description,
@@ -56,7 +51,6 @@ export default class Event extends AinftBase {
     taskInstanceList,
     rewardInstanceList,
   }: Partial<CreateEventParams>) {
-    const timestamp = Date.now();
     const body = {
       appId,
       description,
@@ -65,72 +59,20 @@ export default class Event extends AinftBase {
       taskInstanceList,
       rewardInstanceList,
     };
-    const data = buildData(
-      HttpMethod.PUT,
-      `/event/${eventId}`,
-      timestamp,
-      body
-    );
-    const signature = this.signData(data);
-    return axios
-      .put(`${this.baseUrl}/${eventId}`, body, {
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${eventId}`;
+    await this.sendRequest(HttpMethod.PUT, prefix, trailingUrl, body);
   }
 
-  delete(appId: string, eventId: string) {
-    const timestamp = Date.now();
+  async delete(appId: string, eventId: string) {
     const query = { appId };
-    const data = buildData(
-      HttpMethod.DELETE,
-      `/event/${eventId}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .delete(`${this.baseUrl}/${eventId}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${eventId}`;
+    await this.sendRequest(HttpMethod.DELETE, prefix, trailingUrl, query);
   }
 
-  get(appId: string, eventId: string) {
-    const timestamp = Date.now();
+  get(appId: string, eventId: string): Promise<TokenomicsEvent> {
     const query = { appId };
-    const data = buildData(
-      HttpMethod.GET,
-      `/event/${eventId}`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${eventId}`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${eventId}`;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
   addActivity({
@@ -141,7 +83,6 @@ export default class Event extends AinftBase {
     taskInstanceId,
     data: _data,
   }: AddEventActivityParams): Promise<string> {
-    const timestamp = Date.now();
     const body = {
       appId,
       userId,
@@ -149,24 +90,8 @@ export default class Event extends AinftBase {
       taskInstanceId,
       data: _data,
     };
-    const data = buildData(
-      HttpMethod.POST,
-      `/event/${eventId}/activity`,
-      timestamp,
-      body
-    );
-    const signature = this.signData(data);
-    return axios
-      .post(`${this.baseUrl}/${eventId}/activity`, body, {
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${eventId}/activity`;
+    return this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
   }
 
   getActivity({
@@ -176,8 +101,7 @@ export default class Event extends AinftBase {
     activityId,
     createdAt,
     options,
-  }: GetEventActivityParams) {
-    const timestamp = Date.now();
+  }: GetEventActivityParams): Promise<Activity | null> {
     const query = {
       appId,
       userId,
@@ -185,188 +109,65 @@ export default class Event extends AinftBase {
       createdAt,
       ...options,
     };
-    const data = buildData(
-      HttpMethod.GET,
-      `/event/${eventId}/activity`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${eventId}/activity`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data)
-      .catch((error) => {
-        throw error?.response.data;
-      });
+    const trailingUrl = `${eventId}/activity`;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
-  updateActivityStatus({
+  async updateActivityStatus({
     eventId,
     activityId,
     appId,
     createdAt,
     status,
   }: UpdateEventActivityStatusParams) {
-    const timestamp = Date.now();
     const body = {
       appId,
       status,
       createdAt,
     };
-    const data = buildData(
-      HttpMethod.PUT,
-      `/event/${eventId}/activity/${activityId}`,
-      timestamp,
-      body
-    );
-    const signature = this.signData(data);
-    return axios
-      .put(`${this.baseUrl}/${eventId}/activity/${activityId}`, body, {
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data)
-      .catch((e) => {
-        throw e.response?.data;
-      });
+    const trailingUrl = `${eventId}/activity/${activityId}`;
+    await this.sendRequest(HttpMethod.PUT, prefix, trailingUrl, body);
   }
 
-  getTaskTypeList(appId: string) {
-    const timestamp = Date.now();
+  getTaskTypeList(appId: string): Promise<TaskType[]> {
     const query = { appId };
-    const data = buildData(
-      HttpMethod.GET,
-      '/event/task-types',
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/task-types`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = 'task-types';
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
-  getRewardTypeList(appId: string) {
-    const timestamp = Date.now();
+  getRewardTypeList(appId: string): Promise<RewardType[]> {
     const query = { appId };
-    const data = buildData(
-      HttpMethod.GET,
-      '/event/reward-types',
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/reward-types`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = 'reward-types';
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
-  async getPendingRewards(appId: string, userId: string, eventId: string) {
-    const timestamp = Date.now();
+  getPendingRewards(appId: string, userId: string, eventId: string): Promise<PendingRewards> {
     const query = { appId, userId };
-    const data = buildData(
-      HttpMethod.GET,
-      `/event/${eventId}/pending-rewards`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${eventId}/pending-rewards`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${eventId}/pending-rewards`;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
-  async reward(
+  reward(
     appId: string,
     userId: string,
     eventId: string,
     options?: RewardOptions
-  ) {
-    const timestamp = Date.now();
+  ): Promise<{ amount: number }> {
     const body: any = {
       appId,
       userId,
+      ...options && { options }
     };
-    if (options) body.options = options;
-    const data = buildData(
-      HttpMethod.POST,
-      `/event/${eventId}/reward`,
-      timestamp,
-      body
-    );
-    const signature = this.signData(data);
-    return axios
-      .post(`${this.baseUrl}/${eventId}/reward`, body, {
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${eventId}/reward`;
+    return this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
   }
 
-  async getRewardHistory(appId: string, userId: string, eventId: string) {
-    const timestamp = Date.now();
+  getRewardHistory(appId: string, userId: string, eventId: string): Promise<History<RewardInfo>> {
     const query = {
       appId,
       userId,
     };
-    const data = buildData(
-      HttpMethod.GET,
-      `/event/${eventId}/reward-history`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${eventId}/reward-history`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${eventId}/reward-history`;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 }
