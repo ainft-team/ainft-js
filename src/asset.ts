@@ -63,11 +63,12 @@ export default class Asset extends AinftBase {
     appId: string,
     chainId: string,
     ethAddress: string,
-    contractAddress: string,
+    contractAddress?: string,
     tokenId?: string,
   ) {
     const timestamp = Date.now();
-    const query: any = { appId, contractAddress };
+    const query: any = { appId };
+    if (contractAddress) query.contractAddress = contractAddress;
     if (tokenId) query.tokenId = tokenId;
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
     const data = buildData(
