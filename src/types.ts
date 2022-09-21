@@ -1,7 +1,7 @@
 export interface SerializedMessage {
   code: number;
   message: string | undefined;
-  data: string | boolean | object | null | undefined;
+  data: any;
 }
 
 export enum RewardTypeCategory {

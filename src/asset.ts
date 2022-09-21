@@ -3,49 +3,45 @@ import { AppCreditInfo, HttpMethod, NftContract, NftToken, UserNfts } from './ty
 
 const prefix = 'asset';
 export default class Asset extends AinftBase {
-  async getNftContractBySymbol(appId: string, symbol: string) {
+  getNftContractBySymbol(appId: string, symbol: string): Promise<NftContract> {
     const query = { appId, symbol: encodeURIComponent(symbol) };
     const trailingUrl = 'nft';
-    const nftContract = (await this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query)) as NftContract;
-    return nftContract;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
-  async getNft(
+  getNft(
     appId: string,
     chainId: string,
     contractAddress: string,
     tokenId: string,
-  ) {
+  ): Promise<NftToken> {
     const query = { appId, contractAddress, tokenId };
     const trailingUrl = `nft/${chainId}`;
-    const nftToken = (await this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query)) as NftToken;
-    return nftToken;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query)
   }
 
-  async getUserNftList(
+  getUserNftList(
     appId: string,
     chainId: string,
     ethAddress: string,
     contractAddress?: string,
     tokenId?: string,
-  ) {
+  ): Promise<UserNfts> {
     const query: any = {
       appId,
       ...contractAddress && { contractAddress },
       ...tokenId && { tokenId },
     };
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
-    const userNfts = (await this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query)) as UserNfts;
-
-    return userNfts;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
-  async createAppCredit(
+  createAppCredit(
     appId: string,
     symbol: string,
     name: string,
     maxSupply?: number
-  ) {
+  ): Promise<AppCreditInfo> {
     const body = {
       appId,
       symbol,
@@ -53,20 +49,18 @@ export default class Asset extends AinftBase {
       ...maxSupply && { maxSupply },
     }
     const trailingUrl = 'credit';
-    const appCreditInfo = (await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body)) as AppCreditInfo;
-    return appCreditInfo;
+    return this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
   }
 
-  async getAppCredit(
+  getAppCredit(
     appId: string,
     symbol: string,
-  ) {
+  ): Promise<AppCreditInfo> {
     const query = {
       appId,
     }
     const trailingUrl = `credit/${symbol}`;
-    const appCreditInfo = (await this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query)) as AppCreditInfo;
-    return appCreditInfo;
+    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
   }
 
   async deleteAppCredit(
@@ -127,10 +121,13 @@ export default class Asset extends AinftBase {
     await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
   }
 
-  async getUserCreditBalance(appId: string, symbol: string, userId: string) {
+  getUserCreditBalance(
+    appId: string,
+    symbol: string,
+    userId: string
+  ): Promise<{ balance: number }> {
     const query = { appId };
     const trailingUrl = `credit/${symbol}/${userId}`;
-    const balance = await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, query) as { balance: number };
-    return balance;
+    return this.sendRequest(HttpMethod.POST, prefix, trailingUrl, query);
   }
 }
