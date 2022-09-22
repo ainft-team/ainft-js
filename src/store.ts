@@ -1,35 +1,32 @@
-import axios from 'axios';
 import AinftBase from './ainftBase';
 import { HttpMethod, ItemTryOnParams, PurchaseHistory, StoreItem, StorePurchaseParams, UserItem } from './types';
-import { buildData } from './util';
 
-const prefix = 'store';
 export default class Store extends AinftBase {
 
   getStoreItemList(appId: string, storeId: string): Promise<StoreItem[]> {
     const query = { appId };
     const trailingUrl = `${storeId}`;
-    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getUserInventory(appId: string, userId: string): Promise<UserItem[]> {
     const query = { appId };
     const trailingUrl = `inventory/${userId}`;
-    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getStoreItemInfo(appId: string, storeId: string, itemName: string): Promise<StoreItem> {
     const encodedItemName = encodeURIComponent(itemName);
     const query = { appId };
     const trailingUrl = `${storeId}/item/${encodedItemName}`;
-    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getUserItemInfo(appId: string, userId: string, itemName: string): Promise<UserItem> {
     const encodedItemName = encodeURIComponent(itemName);
     const query = { appId };
     const trailingUrl = `inventory/${userId}/item/${encodedItemName}`;
-    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   purchaseStoreItem({
@@ -46,7 +43,7 @@ export default class Store extends AinftBase {
       quantity,
     };
     const trailingUrl = `${storeId}/item/${encodedItemName}/purchase`;
-    return this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   tryOnItem({
@@ -67,6 +64,6 @@ export default class Store extends AinftBase {
       nftTokenId,
     };
     const trailingUrl = `${storeId}/item/${encodedItemName}/try-on`;
-    return this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }

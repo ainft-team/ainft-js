@@ -1,13 +1,12 @@
 import { TaskIdListByEventId, EventInfo, HttpMethod } from './types';
 import AinftBase from './ainftBase';
 
-const prefix = 'discord';
 export default class Discord extends AinftBase {
 
   async connectDiscordWithApp(appId: string, discordServerId: string) {
     const body = { appId, discordServerId };
     const trailingUrl = 'register';
-    await this.sendRequest(HttpMethod.POST, prefix, trailingUrl, body);
+    await this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   getConnectedApp(
@@ -16,7 +15,7 @@ export default class Discord extends AinftBase {
   ): Promise<string | null> {
     const query = { appId };
     const trailingUrl = `${discordServerId}/app`;
-    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getConnectedEventsByServer(
@@ -25,7 +24,7 @@ export default class Discord extends AinftBase {
   ): Promise<(EventInfo | null)[]> {
     const query = { appId };
     const trailingUrl = `${discordServerId}/events`;
-    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getConnectedTasksByChannel(
@@ -35,6 +34,6 @@ export default class Discord extends AinftBase {
   ): Promise<TaskIdListByEventId> {
     const query = { appId };
     const trailingUrl = `${discordServerId}/${discordChannelId}/tasks`;
-    return this.sendRequest(HttpMethod.GET, prefix, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 }
