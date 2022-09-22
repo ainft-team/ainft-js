@@ -1,3 +1,9 @@
+export interface SerializedMessage {
+  code: number;
+  message: string | undefined;
+  data: any;
+}
+
 export enum RewardTypeCategory {
   APP_CREDIT = 'APP_CREDIT',
   ERC20 = 'ERC20',
@@ -32,6 +38,13 @@ export enum HttpMethod {
   GET = 'GET',
   PUT = 'PUT',
   DELETE = 'DELETE',
+}
+
+export enum HttpMethodToAxiosMethod {
+  POST = 'post',
+  GET = 'get',
+  PUT = 'put',
+  DELETE = 'delete',
 }
 
 export enum StoreItemStatus {
@@ -74,9 +87,9 @@ export interface RewardType {
   category: RewardTypeCategory;
   description: string;
   params: {
-    name: true;
-    description: true;
-    contractAddress?: true;
+    name: string,
+    description: string,
+    contractAddress?: string,
   } & InstanceParams;
 }
 
@@ -93,6 +106,33 @@ export interface RewardInstance {
   } & InstanceParams;
 }
 
+export interface DailyRewardAmount {
+  [timestamp: string]: RewardAmount;
+}
+
+export interface RewardAmount {
+  minAmount: number;
+  maxAmount: number;
+}
+
+export interface PendingRewards {
+  totalAmount: RewardAmount;
+  rewardAmounts: {
+    [id: string]: RewardAmount | DailyRewardAmount;
+  };
+  validatedActivityList: Activity[];
+}
+
+export interface RewardInfo {
+  id: string;
+  appId: string;
+  eventId: string;
+  userId: string;
+  rewardId: string;
+  amount: number;
+  createdAt: number;
+}
+
 export interface CreateEventParams {
   eventId: string;
   appId: string;
@@ -105,18 +145,22 @@ export interface CreateEventParams {
   platform?: Platforms;
 }
 
-export interface EventInfo {
-  id: string,
-  appId: string,
-  startAt: number,
-  endAt: number,
-  description: string,
-  taskInstances: { [key: string]: TaskInstance },
-  rewardInstances: { [key: string]: RewardInstance },
-  status?: EventStatus,
-  platform?: string,
-  createdAt?: number,
-  updatedAt?: number,
+export interface TokenomicsEvent {
+  appId: string;
+  eventId: string;
+  startAt: number;
+  endAt: number;
+  description: string;
+  taskInstances: { [taskInstanceId: string]: TaskInstance };
+  rewardInstances: { [rewardInstanceId: string]: RewardInstance };
+  status?: EventStatus;
+  platform?: Platforms;
+  createdAt?: number;
+  updatedAt?: number;
+};
+
+export interface EventInfo extends TokenomicsEvent {
+  id: string;
 }
 
 export interface TaskIdListByEventId {
@@ -136,6 +180,54 @@ export interface AddEventActivityParams extends AddActivityParams {
   eventId: string,
 };
 
+<<<<<<< HEAD
+export interface GetActivityParams {
+  appId: string,
+  createdAt: number,
+  userId?: string,
+  eventId?: string,
+  activityId?: string,
+  options?: any,
+};
+
+export enum ActivityStatus {
+  CREATED = 'CREATED',
+  REWARDED = 'REWARDED',
+  FAILED = 'FAILED',
+}
+
+export interface Activity extends AddActivityParams {
+  status: ActivityStatus,
+  createdAt?: number,
+  updatedAt?: number,
+  id?: string,
+};
+
+export interface GetEventActivityParams extends GetActivityParams {
+  userId: string,
+  eventId: string,
+}
+
+export interface UpdateEventActivityStatusParams {
+  appId: string,
+  createdAt: number,
+  eventId: string,
+  activityId: string,
+  status: string,
+};
+
+export type History <Type> = {
+  [year: string]: {
+    [month: string]: {
+      [date: string]: {
+        [id: string]: Type
+      }
+    }
+  }
+}
+
+=======
+>>>>>>> d922748bb68f8f336683bb85d3bd6d2c63a7761e
 export interface User {
   id: string,
   address: string,
@@ -208,4 +300,48 @@ export interface PurchaseHistory {
   currency: string;
   createdAt: number;
   status: PurchaseStatus;
+};
+
+export type NftMetadata = {
+  name: string,
+  description: string,
+  image: string,
+  attributes: object[],
+};
+
+export type NftToken = {
+  owner: string,
+  tokenURI: string,
+  metadata: NftMetadata,
+  isBurnt: boolean,
+};
+
+export type NftTokens = {
+  [nftTokenId: string]: NftToken,
+};
+
+export type NftCollections = {
+  [nftCollectionsAddress: string]: NftTokens,
+};
+
+export type NftContract = {
+  chain: string,
+  name: string,
+  symbol: string,
+  contractAddress: string,
+};
+
+export type UserNfts = {
+  chain: string,
+  address: string,
+  collections: NftCollections,
+};
+
+export type AppCreditInfo = {
+  name: string,
+  symbol: string,
+  totalSupply: number,
+  burnedSupply: number,
+  maxSupply: number | null,
+  createdAt: number,
 };

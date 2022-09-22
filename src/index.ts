@@ -51,7 +51,7 @@ export default class AinftJs {
     this.ain.wallet.addAndSetDefaultAccount(accessAccountPrivateKey);
   }
 
-  async getStatus() {
+  async getStatus(): Promise<{ health: true }> {
     return (await axios.get(`${this.baseUrl}/status`)).data;
   }
 }

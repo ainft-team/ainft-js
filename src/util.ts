@@ -1,7 +1,7 @@
 import stringify = require("fast-json-stable-stringify");
 import { HttpMethod } from "./types";
 
-export const buildData = (method: string, path: string, timestamp: number, data: any) => {
+export const buildData = (method: HttpMethod, path: string, timestamp: number, data: any) => {
   const _data: any = {
     method,
     path,

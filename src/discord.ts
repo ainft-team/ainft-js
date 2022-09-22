@@ -1,73 +1,30 @@
-import axios from 'axios';
 import { TaskIdListByEventId, EventInfo, HttpMethod } from './types';
-import { buildData } from './util';
 import AinftBase from './ainftBase';
 
 export default class Discord extends AinftBase {
 
-  connectDiscordWithApp(appId: string, discordServerId: string) {
-    const timestamp = Date.now();
+  connectDiscordWithApp(appId: string, discordServerId: string): Promise<void> {
     const body = { appId, discordServerId };
-    const data = buildData(HttpMethod.POST, '/discord/register', timestamp, body);
-    const signature = this.signData(data);
-    return axios
-      .post(`${this.baseUrl}/register`, body, {
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = 'register';
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   getConnectedApp(
     discordServerId: string,
     appId: string = ''
-  ): Promise<string> {
-    const timestamp = Date.now();
+  ): Promise<string | null> {
     const query = { appId };
-    const data = buildData(HttpMethod.GET, `/discord/${discordServerId}/app`, timestamp, query);
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${discordServerId}/app`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${discordServerId}/app`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getConnectedEventsByServer(
     appId: string,
     discordServerId: string
-  ): Promise<EventInfo[]> {
-    const timestamp = Date.now();
+  ): Promise<(EventInfo | null)[]> {
     const query = { appId };
-    const data = buildData(
-      HttpMethod.GET,
-      `/discord/${discordServerId}/events`
-    , timestamp, query);
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${discordServerId}/events`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${discordServerId}/events`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getConnectedTasksByChannel(
@@ -75,26 +32,8 @@ export default class Discord extends AinftBase {
     discordServerId: string,
     discordChannelId: string
   ): Promise<TaskIdListByEventId> {
-    const timestamp = Date.now();
     const query = { appId };
-    const data = buildData(
-      HttpMethod.GET,
-      `/discord/${discordServerId}/${discordChannelId}/tasks`,
-      timestamp,
-      query
-    );
-    const signature = this.signData(data);
-    return axios
-      .get(`${this.baseUrl}/${discordServerId}/${discordChannelId}/tasks`, {
-        params: query,
-        headers: {
-          'X-AINFT-Date': timestamp,
-          Authorization: `AINFT ${signature}`,
-        },
-      })
-      .then((res) => res.data.data)
-      .catch((e) => {
-        throw e.response.data;
-      });
+    const trailingUrl = `${discordServerId}/${discordChannelId}/tasks`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 }
