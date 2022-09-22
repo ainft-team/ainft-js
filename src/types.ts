@@ -180,6 +180,7 @@ export interface AddEventActivityParams extends AddActivityParams {
   eventId: string,
 };
 
+<<<<<<< HEAD
 export interface GetActivityParams {
   appId: string,
   createdAt: number,
@@ -225,6 +226,8 @@ export type History <Type> = {
   }
 }
 
+=======
+>>>>>>> d922748bb68f8f336683bb85d3bd6d2c63a7761e
 export interface User {
   id: string,
   address: string,
