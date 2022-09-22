@@ -3,10 +3,10 @@ import AinftBase from './ainftBase';
 
 export default class Discord extends AinftBase {
 
-  async connectDiscordWithApp(appId: string, discordServerId: string) {
+  connectDiscordWithApp(appId: string, discordServerId: string): Promise<void> {
     const body = { appId, discordServerId };
     const trailingUrl = 'register';
-    await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   getConnectedApp(

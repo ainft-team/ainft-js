@@ -17,7 +17,7 @@ import {
 
 export default class Event extends AinftBase {
 
-  async create({
+  create({
     appId,
     eventId,
     description,
@@ -26,7 +26,7 @@ export default class Event extends AinftBase {
     startAt,
     endAt,
     platform,
-  }: CreateEventParams) {
+  }: CreateEventParams): Promise<void> {
     const body = {
       appId,
       eventId,
@@ -38,10 +38,10 @@ export default class Event extends AinftBase {
       platform,
     };
     const trailingUrl = '';
-    await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  async update({
+  update({
     appId,
     eventId,
     description,
@@ -49,7 +49,7 @@ export default class Event extends AinftBase {
     endAt,
     taskInstanceList,
     rewardInstanceList,
-  }: Partial<CreateEventParams>) {
+  }: Partial<CreateEventParams>): Promise<void> {
     const body = {
       appId,
       description,
@@ -59,13 +59,13 @@ export default class Event extends AinftBase {
       rewardInstanceList,
     };
     const trailingUrl = `${eventId}`;
-    await this.sendRequest(HttpMethod.PUT, trailingUrl, body);
+    return this.sendRequest(HttpMethod.PUT, trailingUrl, body);
   }
 
-  async delete(appId: string, eventId: string) {
+  delete(appId: string, eventId: string): Promise<void> {
     const query = { appId };
     const trailingUrl = `${eventId}`;
-    await this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
+    return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
   get(appId: string, eventId: string): Promise<TokenomicsEvent> {
@@ -112,20 +112,20 @@ export default class Event extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  async updateActivityStatus({
+  updateActivityStatus({
     eventId,
     activityId,
     appId,
     createdAt,
     status,
-  }: UpdateEventActivityStatusParams) {
+  }: UpdateEventActivityStatusParams): Promise<void> {
     const body = {
       appId,
       status,
       createdAt,
     };
     const trailingUrl = `${eventId}/activity/${activityId}`;
-    await this.sendRequest(HttpMethod.PUT, trailingUrl, body);
+    return this.sendRequest(HttpMethod.PUT, trailingUrl, body);
   }
 
   getTaskTypeList(appId: string): Promise<TaskType[]> {

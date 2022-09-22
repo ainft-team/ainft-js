@@ -63,54 +63,54 @@ export default class Asset extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  async deleteAppCredit(
+  deleteAppCredit(
     appId: string,
     symbol: string,
-  ) {
+  ): Promise<void> {
     const query = {
       appId,
     }
     const trailingUrl = `credit/${symbol}`;
-    await this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
+    return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
-  async mintAppCredit(
+  mintAppCredit(
     appId: string,
     symbol: string,
     to: string,
     amount: number,
-  ) {
+  ): Promise<void> {
     const body = {
       appId,
       to,
       amount
     };
     const trailingUrl = `credit/${symbol}/mint`;
-    await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  async burnAppCredit(
+  burnAppCredit(
     appId: string,
     symbol: string,
     from: string,
     amount: number,
-  ) {
+  ): Promise<void> {
     const body = {
       appId,
       from,
       amount
     };
     const trailingUrl = `credit/${symbol}/burn`;
-    await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  async transferAppCredit(
+  transferAppCredit(
     appId: string,
     symbol: string,
     from: string,
     to: string,
     amount: number,
-  ) {
+  ): Promise<void> {
     const body = {
       appId,
       from,
@@ -118,7 +118,7 @@ export default class Asset extends AinftBase {
       amount
     };
     const trailingUrl = `credit/${symbol}/transfer`;
-    await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   getUserCreditBalance(
