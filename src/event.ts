@@ -200,7 +200,7 @@ export default class Event extends AinftBase {
           Authorization: `AINFT ${signature}`,
         },
       })
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((error) => {
         throw error?.response.data;
       });
