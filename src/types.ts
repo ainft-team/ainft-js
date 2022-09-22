@@ -82,15 +82,14 @@ export interface TaskInstance {
   params: InstanceParams;
 }
 
-// FIXME: RewardType does not match with nft-server
 export interface RewardType {
   id: string;
   category: RewardTypeCategory;
   description: string;
   params: {
-    name: true;
-    description: true;
-    contractAddress?: true;
+    name: string,
+    description: string,
+    contractAddress?: string,
   } & InstanceParams;
 }
 
