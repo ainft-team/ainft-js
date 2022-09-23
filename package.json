@@ -1,14 +1,14 @@
 {
   "name": "@ainft-team/ainft-js",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
     "node": ">=16"
   },
   "scripts": {
-    "build": "rm -rf ./dist && NODE_ENV=prod tsc",
-    "dev": "rm -rf ./dist && NODE_ENV=dev tsc",
+    "build": "rm -rf ./dist && tsc",
+    "dev": "rm -rf ./dist && tsc",
     "test": "NODE_ENV=dev jest"
   },
   "files": [

@@ -20,9 +20,9 @@ export default class AinftJs {
   public store: Store;
   public ain: Ain;
 
-  constructor(accessAccountPrivateKey: string, baseUrl = AINFT_SERVER_ENDPOINT) {
-    this.baseUrl = baseUrl;
-    this.ain = new Ain(AIN_BLOCKCHAIN_ENDPOINT, AIN_BLOCKCHAIN_CHAINID);
+  constructor(accessAccountPrivateKey: string, nftServerUrl: string, ainBlockchainUrl: string, chainId: 0 | 1) {
+    this.baseUrl = nftServerUrl;
+    this.ain = new Ain(ainBlockchainUrl, chainId);
     this.setAccessAccount(accessAccountPrivateKey);
 
     this.asset = new Asset(this.ain, this.baseUrl, '/asset');
