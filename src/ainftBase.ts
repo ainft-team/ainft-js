@@ -6,21 +6,19 @@ import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types"
 import { buildData } from "./util";
 
 export default class AinftBase {
-  public baseUrl = AINFT_SERVER_ENDPOINT;
+  public baseUrl = '';
   public route: string;
   public ain: Ain;
 
   constructor(
     ain: Ain,
-    baseUrl?: string,
+    baseUrl: string,
     route?: string,
   ) {
     this.route = route || '';
     this.ain = ain;
 
-    if (baseUrl) {
-      this.setBaseUrl(baseUrl);
-    }
+    this.setBaseUrl(baseUrl);
   }
 
   setBaseUrl(baseUrl: string) {
