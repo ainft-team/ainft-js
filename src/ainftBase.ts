@@ -35,11 +35,11 @@ export default class AinftBase {
     return this.ain.wallet.sign(data);
   }
 
-  async sendRequest(method: HttpMethod, trailingUrl: string, data: any) {  
+  async sendRequest(method: HttpMethod, data: any, trailingUrl?: string) {  
     const timestamp = Date.now();
     const dataForSignature = buildData(
       method,
-      `${this.route}/${trailingUrl}`,
+      (trailingUrl ? `${this.route}/${trailingUrl}` : this.route),
       timestamp,
       data
     );
@@ -48,16 +48,20 @@ export default class AinftBase {
       'X-AINFT-Date': timestamp,
       Authorization: `AINFT ${signature}`,
     };
+    const url = trailingUrl ? `${this.baseUrl}/${trailingUrl}` : this.baseUrl;
     try {
       if (method === HttpMethod.GET || method === HttpMethod.DELETE) {
-        const { data: receivedData }: SerializedMessage = (await axios[HttpMethodToAxiosMethod[method]](
-          `${this.baseUrl}/${trailingUrl}`, { params: data, headers }
-        )).data;
+        const { data: receivedData }: SerializedMessage = (
+          await axios[HttpMethodToAxiosMethod[method]](url, {
+            params: data,
+            headers,
+          })
+        ).data;
         return receivedData;
       } else if (method === HttpMethod.POST || method === HttpMethod.PUT) {
-        const { data: receivedData }: SerializedMessage = (await axios[HttpMethodToAxiosMethod[method]](
-          `${this.baseUrl}/${trailingUrl}`, data, { headers }
-        )).data;
+        const { data: receivedData }: SerializedMessage = (
+          await axios[HttpMethodToAxiosMethod[method]](url, data, { headers })
+        ).data;
         return receivedData;
       } else {
         throw Error(`Invalid http method: ${method}`);

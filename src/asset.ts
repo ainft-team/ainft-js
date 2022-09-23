@@ -5,13 +5,13 @@ export default class Asset extends AinftBase {
   getAppNftSymbolList(appId: string): Promise<string[]> {
     const query = { appId };
     const trailingUrl = 'nft/symbol';
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   getNftContractBySymbol(appId: string, symbol: string): Promise<NftContract> {
     const query = { appId, symbol: encodeURIComponent(symbol) };
     const trailingUrl = 'nft';
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   getNft(
@@ -22,7 +22,7 @@ export default class Asset extends AinftBase {
   ): Promise<NftToken> {
     const query = { appId, contractAddress, tokenId };
     const trailingUrl = `nft/${chainId}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query)
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl)
   }
 
   getUserNftList(
@@ -38,7 +38,7 @@ export default class Asset extends AinftBase {
       ...tokenId && { tokenId },
     };
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   createAppCredit(
@@ -54,7 +54,7 @@ export default class Asset extends AinftBase {
       ...maxSupply && { maxSupply },
     }
     const trailingUrl = 'credit';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, body, trailingUrl);
   }
 
   getAppCredit(
@@ -65,7 +65,7 @@ export default class Asset extends AinftBase {
       appId,
     }
     const trailingUrl = `credit/${symbol}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   deleteAppCredit(
@@ -76,7 +76,7 @@ export default class Asset extends AinftBase {
       appId,
     }
     const trailingUrl = `credit/${symbol}`;
-    return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
+    return this.sendRequest(HttpMethod.DELETE, query, trailingUrl);
   }
 
   mintAppCredit(
@@ -91,7 +91,7 @@ export default class Asset extends AinftBase {
       amount
     };
     const trailingUrl = `credit/${symbol}/mint`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, body, trailingUrl);
   }
 
   burnAppCredit(
@@ -106,7 +106,7 @@ export default class Asset extends AinftBase {
       amount
     };
     const trailingUrl = `credit/${symbol}/burn`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, body, trailingUrl);
   }
 
   transferAppCredit(
@@ -123,7 +123,7 @@ export default class Asset extends AinftBase {
       amount
     };
     const trailingUrl = `credit/${symbol}/transfer`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, body, trailingUrl);
   }
 
   getUserCreditBalance(
@@ -133,6 +133,6 @@ export default class Asset extends AinftBase {
   ): Promise<{ balance: number }> {
     const query = { appId };
     const trailingUrl = `credit/${symbol}/${userId}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 }

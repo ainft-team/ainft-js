@@ -6,7 +6,7 @@ export default class Discord extends AinftBase {
   connectDiscordWithApp(appId: string, discordServerId: string): Promise<void> {
     const body = { appId, discordServerId };
     const trailingUrl = 'register';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, body, trailingUrl);
   }
 
   getConnectedApp(
@@ -15,7 +15,7 @@ export default class Discord extends AinftBase {
   ): Promise<string | null> {
     const query = { appId };
     const trailingUrl = `${discordServerId}/app`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   getConnectedEventsByServer(
@@ -24,7 +24,7 @@ export default class Discord extends AinftBase {
   ): Promise<(EventInfo | null)[]> {
     const query = { appId };
     const trailingUrl = `${discordServerId}/events`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   getConnectedTasksByChannel(
@@ -34,6 +34,6 @@ export default class Discord extends AinftBase {
   ): Promise<TaskIdListByEventId> {
     const query = { appId };
     const trailingUrl = `${discordServerId}/${discordChannelId}/tasks`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 }

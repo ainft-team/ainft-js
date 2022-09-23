@@ -37,8 +37,7 @@ export default class Event extends AinftBase {
       endAt,
       platform,
     };
-    const trailingUrl = '';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, body);
   }
 
   update({
@@ -59,19 +58,19 @@ export default class Event extends AinftBase {
       rewardInstanceList,
     };
     const trailingUrl = `${eventId}`;
-    return this.sendRequest(HttpMethod.PUT, trailingUrl, body);
+    return this.sendRequest(HttpMethod.PUT, body, trailingUrl);
   }
 
   delete(appId: string, eventId: string): Promise<void> {
     const query = { appId };
     const trailingUrl = `${eventId}`;
-    return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
+    return this.sendRequest(HttpMethod.DELETE, query, trailingUrl);
   }
 
   get(appId: string, eventId: string): Promise<TokenomicsEvent> {
     const query = { appId };
     const trailingUrl = `${eventId}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   addActivity({
@@ -90,7 +89,7 @@ export default class Event extends AinftBase {
       data: _data,
     };
     const trailingUrl = `${eventId}/activity`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, body, trailingUrl);
   }
 
   getActivity({
@@ -109,7 +108,7 @@ export default class Event extends AinftBase {
       ...options,
     };
     const trailingUrl = `${eventId}/activity`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   updateActivityStatus({
@@ -125,25 +124,25 @@ export default class Event extends AinftBase {
       createdAt,
     };
     const trailingUrl = `${eventId}/activity/${activityId}`;
-    return this.sendRequest(HttpMethod.PUT, trailingUrl, body);
+    return this.sendRequest(HttpMethod.PUT, body, trailingUrl);
   }
 
   getTaskTypeList(appId: string): Promise<TaskType[]> {
     const query = { appId };
     const trailingUrl = 'task-types';
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   getRewardTypeList(appId: string): Promise<RewardType[]> {
     const query = { appId };
     const trailingUrl = 'reward-types';
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   getPendingRewards(appId: string, userId: string, eventId: string): Promise<PendingRewards> {
     const query = { appId, userId };
     const trailingUrl = `${eventId}/pending-rewards`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 
   reward(
@@ -158,7 +157,7 @@ export default class Event extends AinftBase {
       ...options && { options }
     };
     const trailingUrl = `${eventId}/reward`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return this.sendRequest(HttpMethod.POST, body, trailingUrl);
   }
 
   getRewardHistory(appId: string, userId: string, eventId: string): Promise<History<RewardInfo>> {
@@ -167,6 +166,6 @@ export default class Event extends AinftBase {
       userId,
     };
     const trailingUrl = `${eventId}/reward-history`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
   }
 }
