@@ -37,7 +37,7 @@ export default class AinftBase {
     const timestamp = Date.now();
     const dataForSignature = buildData(
       method,
-      (trailingUrl ? `${this.route}/${trailingUrl}` : `${this.route}/`),
+      (trailingUrl ? `${this.route}/${trailingUrl}` : this.route),
       timestamp,
       data
     );
