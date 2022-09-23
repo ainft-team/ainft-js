@@ -6,7 +6,7 @@ export default class Auth extends AinftBase {
   getUser(appId: string, userId: string): Promise<User> {
     const query = { appId };
     const trailingUrl = `user/${userId}`;
-    return this.sendRequest(HttpMethod.GET, query, trailingUrl);
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   addUserEthAddress(
@@ -19,7 +19,7 @@ export default class Auth extends AinftBase {
       ethAddress,
     };
     const trailingUrl = `user/${userId}/ethAddress`;
-    return this.sendRequest(HttpMethod.POST, body, trailingUrl);
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   removeUserEthAddress(
@@ -32,6 +32,6 @@ export default class Auth extends AinftBase {
       ethAddress,
     };
     const trailingUrl = `user/${userId}/ethAddress`;
-    return this.sendRequest(HttpMethod.DELETE, query, trailingUrl);
+    return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 }
