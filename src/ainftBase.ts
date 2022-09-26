@@ -3,7 +3,7 @@ import { AINFT_SERVER_ENDPOINT } from "./constants";
 import stringify = require("fast-json-stable-stringify");
 import axios from "axios";
 import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types";
-import { buildData } from "./util";
+import { buildData, isJoiError } from "./util";
 
 export default class AinftBase {
   public baseUrl = '';
@@ -61,7 +61,9 @@ export default class AinftBase {
         throw Error(`Invalid http method: ${method}`);
       } 
     } catch (err: any) {
-      if (axios.isAxiosError(err)) {
+      if (isJoiError(err)) {
+        throw err.response?.data?.details[0];
+      } else if (axios.isAxiosError(err)) {
         throw err.response?.data;
       } else {
         throw err;
