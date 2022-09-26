@@ -20,3 +20,7 @@ export const buildData = (method: HttpMethod, path: string, timestamp: number, d
 
   return _data;
 }
+
+export const isJoiError = (error: any) => {
+  return error.response?.data?.isJoiError === true;
+}
