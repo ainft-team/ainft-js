@@ -62,7 +62,9 @@ export default class AinftBase {
       } 
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
-        throw err.response?.data;
+        throw Array.isArray(err.response?.data?.details)
+          ? err.response?.data.details[0]
+          : err.response?.data;
       } else {
         throw err;
       }
