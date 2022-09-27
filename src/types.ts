@@ -49,6 +49,7 @@ export enum HttpMethodToAxiosMethod {
 
 export enum StoreItemStatus {
   AVAILABLE = 'AVAILABLE',
+  PREVIEW = 'PREVIEW',
   SOLD_OUT = 'SOLD_OUT',
 };
 
