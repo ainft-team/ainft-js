@@ -4,7 +4,7 @@ A TypeScript SDK for the AINFT Server, a service by AI Network for NFT-related r
 NFT bots, NFT frontends, and/or NFT devices.
 
 ## Requirements
-- node >= 16
+- node >= 12
 
 ## Usage
 
