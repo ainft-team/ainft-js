@@ -84,11 +84,13 @@ export default class Asset extends AinftBase {
     symbol: string,
     to: string,
     amount: number,
+    payload?: object,
   ): Promise<void> {
     const body = {
       appId,
       to,
-      amount
+      amount,
+      ...payload && { payload },
     };
     const trailingUrl = `credit/${symbol}/mint`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
@@ -99,11 +101,13 @@ export default class Asset extends AinftBase {
     symbol: string,
     from: string,
     amount: number,
+    payload?: object,
   ): Promise<void> {
     const body = {
       appId,
       from,
-      amount
+      amount,
+      ...payload && { payload },
     };
     const trailingUrl = `credit/${symbol}/burn`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
@@ -115,12 +119,14 @@ export default class Asset extends AinftBase {
     from: string,
     to: string,
     amount: number,
+    payload?: object,
   ): Promise<void> {
     const body = {
       appId,
       from,
       to,
-      amount
+      amount,
+      ...payload && { payload },
     };
     const trailingUrl = `credit/${symbol}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
