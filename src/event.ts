@@ -74,6 +74,7 @@ export default class Event extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  // NOTE(liayoo): calling this function will create a user if the userId doesn't exist.
   addActivity({
     appId,
     userId,
