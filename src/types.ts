@@ -256,6 +256,13 @@ export interface ItemTryOnParams {
   nftTokenId: string,
 };
 
+export interface ItemUseParams {
+  appId: string,
+  userId: string,
+  itemName: string,
+  quantity: number,
+}
+
 export interface Item  {
   name: string;
   description: string;
