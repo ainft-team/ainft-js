@@ -15,9 +15,8 @@ jobs:
         node-version: 14 # typedoc require node version >= 14.14
     - name: Build Docs
       run: yarn && yarn docs
-    - name: Commit & Push changes
-      uses: actions-js/push@master
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages
-        force: true
+        publish_dir: ./docs
