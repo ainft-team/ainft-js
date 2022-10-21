@@ -113,6 +113,7 @@ export default class Asset extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  // NOTE(liayoo): calling this function will create a user if the recipient ('to') doesn't exist.
   transferAppCredit(
     appId: string,
     symbol: string,

@@ -74,6 +74,7 @@ export default class Event extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  // NOTE(liayoo): calling this function will create a user if the userId doesn't exist.
   addActivity({
     appId,
     userId,
@@ -161,12 +162,21 @@ export default class Event extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  getRewardHistory(appId: string, userId: string, eventId: string): Promise<History<RewardInfo>> {
+  getRewardHistory(appId: string, userId: string, eventId: string): Promise<RewardInfo[]> {
     const query = {
       appId,
       userId,
     };
     const trailingUrl = `${eventId}/reward-history`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  getActivityHistory(appId: string, userId: string, eventId: string): Promise<Activity[]> {
+    const query = {
+      appId,
+      userId,
+    };
+    const trailingUrl = `${eventId}/activity-history`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 }
