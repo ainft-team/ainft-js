@@ -124,6 +124,14 @@ export interface PendingRewards {
   validatedActivityList: Activity[];
 }
 
+export type RewardDetail = RewardAmount & {
+  activities?: Array<Activity>;
+};
+
+export type DailyRewardDetail = {
+  [timestamp: string]: RewardDetail;
+};
+
 export interface RewardInfo {
   id: string;
   appId: string;
@@ -132,6 +140,9 @@ export interface RewardInfo {
   rewardId: string;
   amount: number;
   createdAt: number;
+  boostInfo?: any;
+  details?: DailyRewardDetail | RewardDetail;
+  rewardedDates?: DailyRewardDetail | RewardDetail; // rewardedDates property is changed to details. This property is removed soon...
 }
 
 export interface CreateEventParams {
@@ -198,9 +209,9 @@ export enum ActivityStatus {
 
 export interface Activity extends AddActivityParams {
   status: ActivityStatus,
-  createdAt?: number,
-  updatedAt?: number,
-  id?: string,
+  createdAt: number,
+  updatedAt: number,
+  id: string,
 };
 
 export interface GetEventActivityParams extends GetActivityParams {
