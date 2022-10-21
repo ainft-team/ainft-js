@@ -2,7 +2,7 @@ name: Docs
 on:
   push:
     branches:
-    - api-doc
+    - main
 jobs:
   build:
     runs-on: ubuntu-latest
