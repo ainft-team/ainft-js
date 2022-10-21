@@ -1,5 +1,5 @@
 import AinftBase from './ainftBase';
-import { HttpMethod, ItemTryOnParams, PurchaseHistory, StoreItem, StorePurchaseParams, UserItem } from './types';
+import { HttpMethod, ItemTryOnParams, ItemUseParams, PurchaseHistory, StoreItem, StorePurchaseParams, UserItem } from './types';
 
 export default class Store extends AinftBase {
 
@@ -64,6 +64,21 @@ export default class Store extends AinftBase {
       nftTokenId,
     };
     const trailingUrl = `${storeId}/item/${encodedItemName}/try-on`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  useItem({
+    appId,
+    userId,
+    itemName,
+    quantity,
+  }: ItemUseParams): Promise<void> {
+    const encodedItemName = encodeURIComponent(itemName);
+    const body = {
+      appId,
+      quantity,
+    };
+    const trailingUrl = `inventory/${userId}/item/${encodedItemName}/use`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
