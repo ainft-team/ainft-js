@@ -5,11 +5,6 @@ import Auth from './auth';
 import Discord from './discord';
 import Event from './event';
 import Store from './store';
-import {
-  AINFT_SERVER_ENDPOINT,
-  AIN_BLOCKCHAIN_CHAINID,
-  AIN_BLOCKCHAIN_ENDPOINT,
-} from './constants';
 
 export default class AinftJs {
   private baseUrl: string;
