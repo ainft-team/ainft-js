@@ -31,11 +31,13 @@ export default class Asset extends AinftBase {
     ethAddress: string,
     contractAddress?: string,
     tokenId?: string,
+    includeContractInfo?: boolean,
   ): Promise<UserNfts> {
     const query: any = {
       appId,
       ...contractAddress && { contractAddress },
       ...tokenId && { tokenId },
+      ...includeContractInfo && { includeContractInfo },
     };
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
