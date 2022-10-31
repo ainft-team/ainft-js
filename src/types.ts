@@ -336,21 +336,30 @@ export type NftTokens = {
   [nftTokenId: string]: NftToken,
 };
 
-export type NftCollections = {
-  [nftCollectionsAddress: string]: NftTokens,
-};
-
-export type NftContract = {
+export type NftContractInfo = {
   chain: string,
   name: string,
   symbol: string,
   contractAddress: string,
+  deployAddress: string,
+  totalSupply: number,
+  lastBlockNumber: number,
 };
 
-export type UserNfts = {
+export type NftContract = {
+  info: NftContractInfo,
+  tokens: NftTokens,
+};
+
+export type NftCollections = {
+  [nftContractAddress: string]: NftContract,
+};
+
+export type NftContractBySymbol = {
   chain: string,
-  address: string,
-  collections: NftCollections,
+  name: string,
+  symbol: string,
+  contractAddress: string,
 };
 
 export type AppCreditInfo = {
