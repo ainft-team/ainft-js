@@ -1,5 +1,5 @@
 import AinftBase from './ainftBase';
-import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftCollections } from './types';
+import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftCollections, UserNftsOld } from './types';
 
 export default class Asset extends AinftBase {
   getAppNftSymbolList(appId: string): Promise<string[]> {
@@ -31,12 +31,13 @@ export default class Asset extends AinftBase {
     ethAddress: string,
     contractAddress?: string,
     tokenId?: string,
-  ): Promise<NftCollections> {
+    includeContractInfo: boolean = false,
+  ): Promise<NftCollections|UserNftsOld> {
     const query: any = {
       appId,
       ...contractAddress && { contractAddress },
       ...tokenId && { tokenId },
-      includeContractInfo: 'true',
+      includeContractInfo: includeContractInfo.toString(),
     };
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
