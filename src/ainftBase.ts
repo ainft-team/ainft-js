@@ -1,5 +1,4 @@
 import Ain from "@ainblockchain/ain-js";
-import { AINFT_SERVER_ENDPOINT } from "./constants";
 import stringify = require("fast-json-stable-stringify");
 import axios from "axios";
 import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types";
