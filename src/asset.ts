@@ -1,5 +1,5 @@
 import AinftBase from './ainftBase';
-import { AppCreditInfo, HttpMethod, NftContract, NftToken, UserNfts } from './types';
+import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftCollections, UserNftsOld } from './types';
 
 export default class Asset extends AinftBase {
   getAppNftSymbolList(appId: string): Promise<string[]> {
@@ -8,7 +8,7 @@ export default class Asset extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  getNftContractBySymbol(appId: string, symbol: string): Promise<NftContract> {
+  getNftContractBySymbol(appId: string, symbol: string): Promise<NftContractBySymbol> {
     const query = { appId, symbol: encodeURIComponent(symbol) };
     const trailingUrl = 'nft';
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -31,13 +31,13 @@ export default class Asset extends AinftBase {
     ethAddress: string,
     contractAddress?: string,
     tokenId?: string,
-    includeContractInfo?: boolean,
-  ): Promise<UserNfts> {
+    includeContractInfo: boolean = false,
+  ): Promise<NftCollections|UserNftsOld> {
     const query: any = {
       appId,
       ...contractAddress && { contractAddress },
       ...tokenId && { tokenId },
-      ...includeContractInfo && { includeContractInfo },
+      includeContractInfo: includeContractInfo.toString(),
     };
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
