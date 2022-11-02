@@ -1,11 +1,11 @@
 import AinftBase from './ainftBase';
 import { INITIALIZE_STAKE_AMOUNT } from './constants';
 import { HttpMethod, User } from './types';
-
 export default class Auth extends AinftBase {
 
-  async initializeApp(appId: string, userId: string, accessKey: string): Promise<void> {
-    const createAppRes = await this.createApp(appId, userId, accessKey);
+  async initializeApp(appId: string, userId: string): Promise<void> {
+    const accessAccount = this.ain.wallet.defaultAccount!;
+    const createAppRes = await this.createApp(appId, userId, accessAccount.address);
     console.log(`create app tx hash - ${createAppRes.txHash}`);
     const stakeRes = await this.stake(appId, userId, INITIALIZE_STAKE_AMOUNT);
     console.log(`stake tx hash - ${stakeRes.txHash}`);
