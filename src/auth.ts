@@ -1,5 +1,5 @@
 import AinftBase from './ainftBase';
-import { INITIALIZE_STAKE_AMOUNT } from './constants';
+import { INITIALIZE_GAS_FEE } from './constants';
 import { HttpMethod, User } from './types';
 export default class Auth extends AinftBase {
 
@@ -7,8 +7,11 @@ export default class Auth extends AinftBase {
     const accessAccount = this.ain.wallet.defaultAccount!;
     const createAppRes = await this.createApp(appId, userId, accessAccount.address);
     console.log(`create app tx hash - ${createAppRes.txHash}`);
-    const stakeRes = await this.stake(appId, userId, INITIALIZE_STAKE_AMOUNT);
+
+    const stakeAmount = await this.getInitialStakeAmount(appId, userId);
+    const stakeRes = await this.stake(appId, userId, stakeAmount);
     console.log(`stake tx hash - ${stakeRes.txHash}`);
+
     const setRuleRes = await this.setBlockchainActivityRule(appId);
     console.log(`set rule tx hash - ${setRuleRes.txHash}`);
   }
@@ -73,5 +76,11 @@ export default class Auth extends AinftBase {
     };
     const trailingUrl = `user/${userId}/ethAddress`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
+  }
+
+  private async getInitialStakeAmount(appId: string, userId: string) {
+    const user = await this.getUser(appId, userId);
+    const balance = await this.ain.wallet.getBalance(user.address);
+    return balance - INITIALIZE_GAS_FEE;
   }
 }

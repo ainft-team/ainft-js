@@ -9,4 +9,4 @@ export const AIN_BLOCKCHAIN_ENDPOINT = NODE_ENV === 'prod'
 
 export const AIN_BLOCKCHAIN_CHAINID = NODE_ENV === 'prod' ? 1 : 0;
 
-export const INITIALIZE_STAKE_AMOUNT = 500;
+export const INITIALIZE_GAS_FEE = 5;
