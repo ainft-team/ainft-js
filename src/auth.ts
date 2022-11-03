@@ -1,5 +1,4 @@
 import AinftBase from './ainftBase';
-import { INITIALIZE_GAS_FEE } from './constants';
 import { HttpMethod, User } from './types';
 export default class Auth extends AinftBase {
   async initializeApp(appId: string, userId: string): Promise<void> {
@@ -80,11 +79,5 @@ export default class Auth extends AinftBase {
     };
     const trailingUrl = `user/${userId}/ethAddress`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
-  }
-
-  private async getInitialStakeAmount(appId: string, userId: string) {
-    const user = await this.getUser(appId, userId);
-    const balance = await this.ain.wallet.getBalance(user.address);
-    return balance - INITIALIZE_GAS_FEE;
   }
 }

@@ -8,5 +8,3 @@ export const AIN_BLOCKCHAIN_ENDPOINT = NODE_ENV === 'prod'
   : 'https://testnet-api.aientwork.ai';
 
 export const AIN_BLOCKCHAIN_CHAINID = NODE_ENV === 'prod' ? 1 : 0;
-
-export const INITIALIZE_GAS_FEE = 5;
