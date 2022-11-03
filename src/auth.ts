@@ -10,6 +10,9 @@ export default class Auth extends AinftBase {
     );
     console.log(`create app tx hash - ${createAppRes.txHash}`);
 
+    const stakeRes = await this.initialStake(appId, userId);
+    console.log(`stake tx hash - ${stakeRes.txHash}`);
+
     const setRuleRes = await this.setBlockchainActivityRule(appId);
     console.log(`set rule tx hash - ${setRuleRes.txHash}`);
   }
