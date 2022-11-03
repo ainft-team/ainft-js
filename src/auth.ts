@@ -2,15 +2,14 @@ import AinftBase from './ainftBase';
 import { INITIALIZE_GAS_FEE } from './constants';
 import { HttpMethod, User } from './types';
 export default class Auth extends AinftBase {
-
   async initializeApp(appId: string, userId: string): Promise<void> {
     const accessAccount = this.ain.wallet.defaultAccount!;
-    const createAppRes = await this.createApp(appId, userId, accessAccount.address);
+    const createAppRes = await this.createApp(
+      appId,
+      userId,
+      accessAccount.address
+    );
     console.log(`create app tx hash - ${createAppRes.txHash}`);
-
-    const stakeAmount = await this.getInitialStakeAmount(appId, userId);
-    const stakeRes = await this.stake(appId, userId, stakeAmount);
-    console.log(`stake tx hash - ${stakeRes.txHash}`);
 
     const setRuleRes = await this.setBlockchainActivityRule(appId);
     console.log(`set rule tx hash - ${setRuleRes.txHash}`);
@@ -22,9 +21,13 @@ export default class Auth extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  stake(appId: string, userId: string, amount: number) {
-    const body = { appId, userId, amount };
-    const trailingUrl = 'stake';
+  /**
+   * A function that stakes all initial ains. Use it if staking is not done after intializeApp.
+   */
+  // TODO(hyeonwoong): Add stake API with the user's personal account
+  initialStake(appId: string, userId: string) {
+    const body = { appId, userId };
+    const trailingUrl = 'initial-stake';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
