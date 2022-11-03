@@ -44,7 +44,7 @@ export default class Auth extends AinftBase {
     const trailingUrl = 'create_admin_account';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
-  // TODO(hyeonwoong): add registerUserToAdmin and removeUserFromAdmin.
+  // TODO(hyeonwoong): add registerUserToAdmin and deregisterUserFromAdmin
 
   setBlockchainActivityRule(appId: string) {
     const body = { appId };
