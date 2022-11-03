@@ -27,7 +27,7 @@ export default class Auth extends AinftBase {
   // TODO(hyeonwoong): Add stake API with the user's personal account
   initialStake(appId: string, userId: string) {
     const body = { appId, userId };
-    const trailingUrl = 'initial-stake';
+    const trailingUrl = 'initial_stake';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
