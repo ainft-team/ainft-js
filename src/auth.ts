@@ -1,12 +1,11 @@
 import AinftBase from './ainftBase';
 import { HttpMethod, User } from './types';
 export default class Auth extends AinftBase {
-  async initializeApp(appId: string, userId: string): Promise<void> {
-    const accessAccount = this.ain.wallet.defaultAccount!;
+  async initializeApp(appId: string, userId: string, accessKey: string): Promise<void> {
     const createAppRes = await this.createApp(
       appId,
       userId,
-      accessAccount.address
+      accessKey,
     );
     console.log(`create app tx hash - ${createAppRes.txHash}`);
 
