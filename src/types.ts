@@ -274,7 +274,8 @@ export interface ItemUseParams {
   quantity: number,
 }
 
-export interface Item  {
+export interface Item {
+  appId: string;
   name: string;
   description: string;
   image?: string;
@@ -284,9 +285,56 @@ export interface Item  {
   quantityTotal: number;
   quantityRemaining: number;
   quantityOnSale: number;
+  registrableQuantityOnStore: number;
   createdAt: number;
   updatedAt: number;
+  storeOnSale: { [storeId: string]: number };
 };
+
+export interface CreateItemParams {
+  appId: string;
+  name: string;
+  type: string;
+  subtype: string;
+  value: string;
+  description: string;
+  image?: string;
+  quantity: number;
+}
+
+export interface UpdateItemParams {
+  appId: string;
+  itemName: string;
+  name?: string;
+  image?: string;
+  description?: string;
+  quantity?: number;
+}
+
+export interface RegisterItemParams {
+  appId: string;
+  storeId: string;
+  itemName: string;
+  seller: string;
+  quantity: number;
+  price: number;
+  currency: string;
+  saleStartAt?: number;
+  saleEndAt?: number;
+  maxPurchasePerUser?: number;
+}
+
+export interface UpdateStoreItemParams {
+  appId: string;
+  storeId: string;
+  itemName: string;
+  quantity?: string;
+  price?: string;
+  saleStartAt?: number;
+  saleEndAt?: number;
+  status?: StoreItemStatus;
+  maxPurchasePerUser?: number;
+}
 
 export interface StoreItem extends Omit<Item, 'quantityOnSale'> {
   price: number;
