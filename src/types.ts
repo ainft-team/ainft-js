@@ -261,6 +261,7 @@ export interface ItemUseParams {
   userId: string,
   itemName: string,
   quantity: number,
+  params?: any,
 }
 
 export interface Item  {
