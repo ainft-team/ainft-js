@@ -51,7 +51,7 @@ export default class Store extends AinftBase {
     return this.sendRequest(HttpMethod.PUT, trailingUrl, body);
   }
 
-  removeItem(appId: string, type: string, subtype: string, value: string) {
+  deregisterItemFromAllStore(appId: string, type: string, subtype: string, value: string) {
     const query = { appId, type, subtype, value };
     const trailingUrl = 'item';
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
