@@ -72,11 +72,13 @@ export default class Store extends AinftBase {
     userId,
     itemName,
     quantity,
+    params,
   }: ItemUseParams): Promise<void> {
     const encodedItemName = encodeURIComponent(itemName);
     const body = {
       appId,
       quantity,
+      ...params && { params },
     };
     const trailingUrl = `inventory/${userId}/item/${encodedItemName}/use`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
