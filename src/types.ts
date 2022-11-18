@@ -179,6 +179,14 @@ export interface TaskIdListByEventId {
   [eventId: string]: Array<string>;
 }
 
+export interface CreatePersonaModelInfo {
+  modelId: string,
+}
+
+export interface PersonaModelForDiscordChannelInfo {
+  modelId: string[] | null,
+}
+
 export interface AddActivityParams {
   appId: string,
   userId: string,

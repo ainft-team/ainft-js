@@ -5,7 +5,7 @@ import Auth from './auth';
 import Discord from './discord';
 import Event from './event';
 import Store from './store';
-import PersonaModels from "./personaModels";
+import PersonaModels from './personaModels';
 
 export default class AinftJs {
   private baseUrl: string;
@@ -27,11 +27,7 @@ export default class AinftJs {
     this.discord = new Discord(this.ain, this.baseUrl, '/discord');
     this.event = new Event(this.ain, this.baseUrl, '/event');
     this.store = new Store(this.ain, this.baseUrl, '/store');
-    this.personaModels = new PersonaModels(
-      this.ain,
-      this.baseUrl,
-      "/personaModels"
-    );
+    this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
   }
 
   setBaseUrl(baseUrl: string) {
