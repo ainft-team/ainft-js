@@ -1,16 +1,21 @@
-import { TaskIdListByEventId, EventInfo, PersonaModelForDiscordChannelInfo, HttpMethod} from './types';
-import AinftBase from './ainftBase';
+import {
+  TaskIdListByEventId,
+  EventInfo,
+  PersonaModelForDiscordChannelInfo,
+  HttpMethod,
+} from "./types";
+import AinftBase from "./ainftBase";
 
 export default class Discord extends AinftBase {
   connectDiscordWithApp(appId: string, discordServerId: string): Promise<void> {
     const body = { appId, discordServerId };
-    const trailingUrl = 'register';
+    const trailingUrl = "register";
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   getConnectedApp(
     discordServerId: string,
-    appId: string = ''
+    appId: string = ""
   ): Promise<string | null> {
     const query = { appId };
     const trailingUrl = `${discordServerId}/app`;
@@ -62,7 +67,7 @@ export default class Discord extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  deletePersonaModelToDiscordChannel(
+  deletePersonaModelFromDiscordChannel(
     appId: string,
     discordServerId: string,
     discordChannelId: string
