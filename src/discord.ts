@@ -53,7 +53,7 @@ export default class Discord extends AinftBase {
       discordServerId,
       discordChannelId,
     };
-    const trailingUrl = `/persona-models`;
+    const trailingUrl = `persona-models`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -63,7 +63,7 @@ export default class Discord extends AinftBase {
     discordChannelId: string
   ): Promise<PersonaModelForDiscordChannelInfo> {
     const query = { appId };
-    const trailingUrl = `/persona-models/${discordServerId}/${discordChannelId}`;
+    const trailingUrl = `persona-models/${discordServerId}/${discordChannelId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -73,7 +73,7 @@ export default class Discord extends AinftBase {
     discordChannelId: string
   ): Promise<void> {
     const query = { appId };
-    const trailingUrl = `/persona-models/${discordServerId}/${discordChannelId}`;
+    const trailingUrl = `persona-models/${discordServerId}/${discordChannelId}`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 }
