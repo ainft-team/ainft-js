@@ -184,7 +184,7 @@ export interface CreatePersonaModelInfo {
 }
 
 export interface PersonaModelForDiscordChannelInfo {
-  modelId: string[] | null,
+  modelId: string | null,
 }
 
 export interface AddActivityParams {
