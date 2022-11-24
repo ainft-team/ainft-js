@@ -4,8 +4,11 @@ import {
   ItemTryOnParams,
   ItemUseParams,
   PurchaseHistory,
+  WrappedPurchaseHistory,
   StoreItem,
   StorePurchaseParams,
+  GetItemPurchaseHistoryParams,
+  GetUserPurchaseHistoryParams,
   UserItem,
   CreateItemParams,
   UpdateItemParams,
@@ -162,6 +165,37 @@ export default class Store extends AinftBase {
     };
     const trailingUrl = `${storeId}/item/${encodedItemName}/purchase`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  getItemPurchaseHistory({
+    appId,
+    itemName,
+    year,
+    month,
+    day,
+  }: GetItemPurchaseHistoryParams): Promise<WrappedPurchaseHistory> {
+    const encodedItemName = encodeURIComponent(itemName);
+    const query = { appId };
+    let trailingUrl = `itemPurchaseHistory/${encodedItemName}/`;
+    if (year) trailingUrl += `${year}/`;
+    if (year && month) trailingUrl += `${month}/`;
+    if (year && month && day) trailingUrl += `${day}/`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  getUserPurchaseHistory({
+    appId,
+    userId,
+    year,
+    month,
+    day,
+  }: GetUserPurchaseHistoryParams): Promise<WrappedPurchaseHistory> {
+    const query = { appId };
+    let trailingUrl = `userPurchaseHistory/${userId}/`;
+    if (year) trailingUrl += `${year}/`;
+    if (year && month) trailingUrl += `${month}/`;
+    if (year && month && day) trailingUrl += `${day}/`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   tryOnItem({

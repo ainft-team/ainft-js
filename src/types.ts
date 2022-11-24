@@ -266,6 +266,22 @@ export interface StorePurchaseParams {
   quantity: number;
 };
 
+export interface GetItemPurchaseHistoryParams {
+  appId: string;
+  itemName: string;
+  year?: number;
+  month?: number;
+  day?: number;
+};
+
+export interface GetUserPurchaseHistoryParams {
+  appId: string;
+  userId: string;
+  year?: number;
+  month?: number;
+  day?: number;
+};
+
 export interface ItemTryOnParams {
   appId: string,
   userId: string,
@@ -374,6 +390,16 @@ export interface PurchaseHistory {
   currency: string;
   createdAt: number;
   status: PurchaseStatus;
+};
+
+export type WrappedPurchaseHistory = {
+  [year: string]: {
+    [month: string]: {
+      [day: string]: {
+        [key: string]: PurchaseHistory
+      }
+    }
+  }
 };
 
 export type NftMetadata = {
