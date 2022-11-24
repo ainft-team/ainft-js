@@ -20,6 +20,7 @@ export enum RewardDistributeType {
 export enum TaskTypeCategory {
   TWITTER_MINING = 'TWITTER_MINING',
   NFT_GAME = 'NFT_GAME',
+  DISCORD_INVITE = 'DISCORD_INVITE',
 }
 
 export enum Platforms {
