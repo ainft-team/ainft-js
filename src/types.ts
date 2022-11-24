@@ -420,16 +420,6 @@ export type NftTokens = {
   [nftTokenId: string]: NftToken,
 };
 
-export type NftCollectionsOld = {
-  [nftCollectionsAddress: string]: NftTokens,
-};
-
-export type UserNftsOld = {
-  chain: string,
-  address: string,
-  collections: NftCollectionsOld,
-};
-
 export type NftContractInfo = {
   chain: string,
   name: string,
