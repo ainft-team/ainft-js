@@ -20,6 +20,7 @@ export enum RewardDistributeType {
 export enum TaskTypeCategory {
   TWITTER_MINING = 'TWITTER_MINING',
   NFT_GAME = 'NFT_GAME',
+  DISCORD_INVITE = 'DISCORD_INVITE',
 }
 
 export enum Platforms {
@@ -179,6 +180,14 @@ export interface TaskIdListByEventId {
   [eventId: string]: Array<string>;
 }
 
+export interface CreatePersonaModelInfo {
+  modelId: string,
+}
+
+export interface PersonaModelForDiscordChannelInfo {
+  modelId: string | null,
+}
+
 export interface AddActivityParams {
   appId: string,
   userId: string,
@@ -257,6 +266,22 @@ export interface StorePurchaseParams {
   quantity: number;
 };
 
+export interface GetItemPurchaseHistoryParams {
+  appId: string;
+  itemName: string;
+  year?: number;
+  month?: number;
+  day?: number;
+};
+
+export interface GetUserPurchaseHistoryParams {
+  appId: string;
+  userId: string;
+  year?: number;
+  month?: number;
+  day?: number;
+};
+
 export interface ItemTryOnParams {
   appId: string,
   userId: string,
@@ -272,9 +297,11 @@ export interface ItemUseParams {
   userId: string,
   itemName: string,
   quantity: number,
+  params?: any,
 }
 
-export interface Item  {
+export interface Item {
+  appId: string;
   name: string;
   description: string;
   image?: string;
@@ -284,9 +311,56 @@ export interface Item  {
   quantityTotal: number;
   quantityRemaining: number;
   quantityOnSale: number;
+  registrableQuantityOnStore: number;
   createdAt: number;
   updatedAt: number;
+  storeOnSale: { [storeId: string]: number };
 };
+
+export interface CreateItemParams {
+  appId: string;
+  name: string;
+  type: string;
+  subtype: string;
+  value: string;
+  description: string;
+  image?: string;
+  quantity: number;
+}
+
+export interface UpdateItemParams {
+  appId: string;
+  itemName: string;
+  name?: string;
+  image?: string;
+  description?: string;
+  quantity?: number;
+}
+
+export interface RegisterItemParams {
+  appId: string;
+  storeId: string;
+  itemName: string;
+  seller: string;
+  quantity: number;
+  price: number;
+  currency: string;
+  saleStartAt?: number;
+  saleEndAt?: number;
+  maxPurchasePerUser?: number;
+}
+
+export interface UpdateStoreItemParams {
+  appId: string;
+  storeId: string;
+  itemName: string;
+  quantity?: string;
+  price?: string;
+  saleStartAt?: number;
+  saleEndAt?: number;
+  status?: StoreItemStatus;
+  maxPurchasePerUser?: number;
+}
 
 export interface StoreItem extends Omit<Item, 'quantityOnSale'> {
   price: number;
@@ -318,6 +392,16 @@ export interface PurchaseHistory {
   status: PurchaseStatus;
 };
 
+export type WrappedPurchaseHistory = {
+  [year: string]: {
+    [month: string]: {
+      [day: string]: {
+        [key: string]: PurchaseHistory
+      }
+    }
+  }
+};
+
 export type NftMetadata = {
   name: string,
   description: string,
@@ -334,16 +418,6 @@ export type NftToken = {
 
 export type NftTokens = {
   [nftTokenId: string]: NftToken,
-};
-
-export type NftCollectionsOld = {
-  [nftCollectionsAddress: string]: NftTokens,
-};
-
-export type UserNftsOld = {
-  chain: string,
-  address: string,
-  collections: NftCollectionsOld,
 };
 
 export type NftContractInfo = {
