@@ -14,6 +14,7 @@ import {
   UpdateItemParams,
   RegisterItemParams,
   UpdateStoreItemParams,
+  NftMetadata,
 } from './types';
 
 export default class Store extends AinftBase {
@@ -225,7 +226,7 @@ export default class Store extends AinftBase {
     itemName,
     quantity,
     params,
-  }: ItemUseParams): Promise<void> {
+  }: ItemUseParams): Promise<NftMetadata|undefined> {
     const encodedItemName = encodeURIComponent(itemName);
     const body = {
       appId,
