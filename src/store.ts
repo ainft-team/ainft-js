@@ -226,7 +226,7 @@ export default class Store extends AinftBase {
     itemName,
     quantity,
     params,
-  }: ItemUseParams): Promise<NftMetadata|undefined> {
+  }: ItemUseParams): Promise<NftMetadata|null> {
     const encodedItemName = encodeURIComponent(itemName);
     const body = {
       appId,
