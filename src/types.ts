@@ -236,16 +236,6 @@ export interface UpdateEventActivityStatusParams {
   status: string,
 };
 
-export type History <Type> = {
-  [year: string]: {
-    [month: string]: {
-      [date: string]: {
-        [id: string]: Type
-      }
-    }
-  }
-}
-
 export interface User {
   id: string,
   address: string,
@@ -275,6 +265,29 @@ export interface GetItemPurchaseHistoryParams {
 };
 
 export interface GetUserPurchaseHistoryParams {
+  appId: string;
+  userId: string;
+  year?: number;
+  month?: number;
+  day?: number;
+};
+
+export interface GetItemHistoryParams {
+  appId: string;
+  year: number;
+  month?: number;
+  day?: number;
+};
+
+export interface GetSingleItemHistoryParams {
+  appId: string;
+  itemName: string;
+  year?: number;
+  month?: number;
+  day?: number;
+};
+
+export interface GetUserItemHistoryParams {
   appId: string;
   userId: string;
   year?: number;
@@ -392,15 +405,28 @@ export interface PurchaseHistory {
   status: PurchaseStatus;
 };
 
-export type WrappedPurchaseHistory = {
+export interface ItemHistory {
+  id: string,
+  appId: string,
+  userId: string,
+  type: string,
+  subtype: string,
+  value: string,
+  quantity: number,
+  quantityRemaining: number,
+  createdAt: number,
+  params?: any,
+};
+
+export type History <Type> = {
   [year: string]: {
     [month: string]: {
-      [day: string]: {
-        [key: string]: PurchaseHistory
+      [date: string]: {
+        [id: string]: Type
       }
     }
   }
-};
+}
 
 export type NftMetadata = {
   name: string,
