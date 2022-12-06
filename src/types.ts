@@ -256,6 +256,13 @@ export interface StorePurchaseParams {
   quantity: number;
 };
 
+export interface GetPurchaseHistoryParams {
+  appId: string;
+  year: number;
+  month?: number;
+  day?: number;
+};
+
 export interface GetItemPurchaseHistoryParams {
   appId: string;
   itemName: string;

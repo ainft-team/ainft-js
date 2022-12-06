@@ -8,6 +8,7 @@ import {
   History,
   StoreItem,
   StorePurchaseParams,
+  GetPurchaseHistoryParams,
   GetItemPurchaseHistoryParams,
   GetUserPurchaseHistoryParams,
   GetItemHistoryParams,
@@ -170,6 +171,20 @@ export default class Store extends AinftBase {
     };
     const trailingUrl = `${storeId}/item/${encodedItemName}/purchase`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  getPurchaseHistory({
+    appId,
+    year,
+    month,
+    day,
+  }: GetPurchaseHistoryParams): Promise<History<PurchaseHistory>> {
+    const query = { appId };
+    let trailingUrl = `purchaseHistory/`;
+    if (year) trailingUrl += `${year}/`;
+    if (year && month) trailingUrl += `${month}/`;
+    if (year && month && day) trailingUrl += `${day}/`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getItemPurchaseHistory({
