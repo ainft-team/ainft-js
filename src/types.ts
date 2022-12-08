@@ -188,6 +188,11 @@ export interface PersonaModelForDiscordChannelInfo {
   modelId: string | null,
 }
 
+export interface GetInviteInfo {
+  inviterId: string,
+  isRewarded: boolean,
+}
+
 export interface AddActivityParams {
   appId: string,
   userId: string,
