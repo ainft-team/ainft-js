@@ -54,8 +54,7 @@ const usage = () => {
     'Combinations of lowercase letters, underscores and number are allowed.');
   console.log('<USER ID>: This is the user id used in the ainft server. Become the owner of the app.' +
     'It is recommended to use the userId of the place where ainft-js is used.');
-  console.log('<PRIVATE_KEY> (optional): It means ain blockchain private key. If not entered, it will be created automatically.\n')
-  console.log('Example: node create-ainft-server-app.js DEV new_app myUserId');
+  console.log('<PRIVATE_KEY>: It means ain blockchain private key. You must have the access key to use the APIs of the AINFT server.\n')
   console.log('Example: node create-ainft-server-app.js DEV new_app myUserId ' +
     '50f561d8a2083d325973bac01b313b05d0466f9e786cb3cb7350b8d2eed7b383');
   process.exit(0);
