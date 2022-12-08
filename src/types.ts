@@ -188,7 +188,7 @@ export interface PersonaModelForDiscordChannelInfo {
   modelId: string | null,
 }
 
-export interface GetInviteInfo {
+export interface InviteInfo {
   inviterId: string,
   isRewarded: boolean,
 }

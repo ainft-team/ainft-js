@@ -3,7 +3,7 @@ import {
   EventInfo,
   PersonaModelForDiscordChannelInfo,
   HttpMethod,
-  GetInviteInfo,
+  InviteInfo,
 } from "./types";
 import AinftBase from "./ainftBase";
 
@@ -102,7 +102,7 @@ export default class Discord extends AinftBase {
     appId: string,
     discordServerId: string,
     inviteeId: string,
-  ): Promise<GetInviteInfo> {
+  ): Promise<InviteInfo> {
     const query = { appId };
     const trailingUrl = `invite-info/${discordServerId}/${inviteeId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
