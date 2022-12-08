@@ -1,5 +1,4 @@
 const AinftJs = require('@ainft-team/ainft-js').default;
-const ainUtil = require('@ainblockchain/ain-util');
 
 const ainftServerEndpoint = {
   DEV: 'https://ainft-api-dev.ainetwork.ai',
@@ -17,41 +16,22 @@ const ainBlockchainChainId = {
 }
 
 const main = async () => {
-  if (process.argv.length < 5) {
+  if (process.argv.length < 6) {
     usage();
   }
 
   const stage = process.argv[2];
   const appId = process.argv[3];
   const userId = process.argv[4];
-  let privateKey = process.argv[5];
+  const accessKey = process.argv[5];
 
   if (stage !== 'DEV' && stage !== 'PROD') {
     console.log('stage must be in DEV or PROD.');
     return;
   }
 
-  if (!privateKey) {
-    const account = ainUtil.createAccount();
-    privateKey = account.private_key;
-
-    console.log('\nNew ain account created!');
-    console.log(account);
-    console.log();
-  } else {
-    let isValid = false;
-    try {
-      isValid = ainUtil.isValidPrivate(privateKey);
-    } catch (error) {
-    }
-    if (!isValid) {
-      console.log('Private key is invalid. Please check private key.');
-      return;
-    }
-  }
-
   const ainftJs = new AinftJs(
-    privateKey,
+    accessKey,
     ainftServerEndpoint[stage],
     ainBlockchainEndpoint[stage],
     ainBlockchainChainId[stage],
@@ -59,12 +39,12 @@ const main = async () => {
   
   try {
     await ainftJs.auth.initializeApp(appId, userId);
+    console.log('\nThe app has been created successfully.\n');
   } catch (error) {
     console.error('Ainft server app creation failed.');
     console.error(error);
   }
 
-  console.log('\nThe app has been created successfully.\n');
 }
 
 const usage = () => {
