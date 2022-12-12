@@ -17,10 +17,10 @@ export default class AinftJs {
   public ain: Ain;
   public personaModels: PersonaModels;
 
-  constructor(accessAccountPrivateKey: string, nftServerUrl: string, ainBlockchainUrl: string, chainId: 0 | 1) {
-    this.baseUrl = nftServerUrl;
-    this.ain = new Ain(ainBlockchainUrl, chainId);
-    this.setAccessAccount(accessAccountPrivateKey);
+  constructor(accessKey: string, nftServerEndpoint: string, ainBlockchainEndpoint: string, chainId: 0 | 1) {
+    this.baseUrl = nftServerEndpoint;
+    this.ain = new Ain(ainBlockchainEndpoint, chainId);
+    this.setAccessKey(accessKey);
 
     this.asset = new Asset(this.ain, this.baseUrl, '/asset');
     this.auth = new Auth(this.ain, this.baseUrl, '/auth');
@@ -44,10 +44,10 @@ export default class AinftJs {
     return this.ain.wallet.defaultAccount;
   }
 
-  setAccessAccount(accessAccountPrivateKey: string) {
+  setAccessKey(accessKey: string) {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
-    this.ain.wallet.addAndSetDefaultAccount(accessAccountPrivateKey);
+    this.ain.wallet.addAndSetDefaultAccount(accessKey);
   }
 
   async getStatus(): Promise<{ health: true }> {
