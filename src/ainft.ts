@@ -17,10 +17,10 @@ export default class AinftJs {
   public ain: Ain;
   public personaModels: PersonaModels;
 
-  constructor(accessAccountPrivateKey: string, nftServerUrl: string, ainBlockchainUrl: string, chainId: 0 | 1) {
-    this.baseUrl = nftServerUrl;
-    this.ain = new Ain(ainBlockchainUrl, chainId);
-    this.setAccessAccount(accessAccountPrivateKey);
+  constructor(accessKey: string, nftServerEndpoint: string, ainBlockchainEndpoint: string, chainId: 0 | 1) {
+    this.baseUrl = nftServerEndpoint;
+    this.ain = new Ain(ainBlockchainEndpoint, chainId);
+    this.setAccessKey(accessKey);
 
     this.asset = new Asset(this.ain, this.baseUrl, '/asset');
     this.auth = new Auth(this.ain, this.baseUrl, '/auth');
@@ -30,6 +30,10 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
   }
 
+  /**
+   * Set a new baseUrl. Enter the AINFT server endpoint.
+   * @param baseUrl
+   */
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
     this.asset.setBaseUrl(baseUrl);
@@ -40,17 +44,29 @@ export default class AinftJs {
     this.personaModels.setBaseUrl(baseUrl);
   }
 
+  /**
+   * Return the currently registered Access Account.
+   * @returns
+   */
   getAccessAccount() {
     return this.ain.wallet.defaultAccount;
   }
 
-  setAccessAccount(accessAccountPrivateKey: string) {
+  /**
+   * Set a new accessKey. From now on, you can access the apps that match your new accessKey.
+   * @param accessKey
+   */
+  setAccessKey(accessKey: string) {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
-    this.ain.wallet.addAndSetDefaultAccount(accessAccountPrivateKey);
+    this.ain.wallet.addAndSetDefaultAccount(accessKey);
   }
 
-  async getStatus(): Promise<{ health: true }> {
+  /**
+   * Return the status of the AINFT server.
+   * @returns 
+   */
+  async getStatus(): Promise<{ health: boolean }> {
     return (await axios.get(`${this.baseUrl}/status`)).data;
   }
 }

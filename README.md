@@ -15,21 +15,21 @@ yarn build
 
 ```javascript
 const AinftJs = require('@ainft-team/ainft-js');
-const ainftJs = new AinftJs(<YOUR_ACCESS_KEY>, <NFT_SERVER_URL>, <AIN_BLOCKCHAIN_URL>, <CHAIN_ID>);
+const ainftJs = new AinftJs(<YOUR_ACCESS_KEY>, <NFT_SERVER_ENDPOINT>, <AIN_BLOCKCHAIN_ENDPOINT>, <CHAIN_ID>);
 ```
 
-NFT_SERVER_URLs
+NFT_SERVER_ENDPOINT
 - dev(testnet): https://ainft-api-dev.ainetwork.ai
 - prod(mainnet): https://ainft-api.ainetwork.ai
 
 ### AIN_BLOCKCHAIN
 Testnet
-  - url: https://testnet-api.ainetwork.ai
-  - chainId: 0
+  - Endpoint: https://testnet-api.ainetwork.ai
+  - ChainId: 0
 
 Mainnet
-  - url: https://mainnet-api.ainetwork.ai
-  - chainId: 1
+  - Endpoint: https://mainnet-api.ainetwork.ai
+  - ChainId: 1
 
 
 ## Tests
