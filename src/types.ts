@@ -184,6 +184,13 @@ export interface CreatePersonaModelInfo {
   modelId: string,
 }
 
+export interface ChatResponse {
+  response: {
+    messageId: string;
+    message: string;
+  };
+}
+
 export interface PersonaModelForDiscordChannelInfo {
   modelId: string | null,
 }
