@@ -30,6 +30,10 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
   }
 
+  /**
+   * Set a new baseUrl. Enter the AINFT server endpoint.
+   * @param baseUrl
+   */
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
     this.asset.setBaseUrl(baseUrl);
@@ -40,17 +44,29 @@ export default class AinftJs {
     this.personaModels.setBaseUrl(baseUrl);
   }
 
+  /**
+   * Returns the currently registered Access Account.
+   * @returns
+   */
   getAccessAccount() {
     return this.ain.wallet.defaultAccount;
   }
 
+  /**
+   * Set a new accessKey. From now on, you can access the apps that match your new accessKey.
+   * @param accessKey
+   */
   setAccessKey(accessKey: string) {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
     this.ain.wallet.addAndSetDefaultAccount(accessKey);
   }
 
-  async getStatus(): Promise<{ health: true }> {
+  /**
+   * Returns the status of the AINFT server.
+   * @returns 
+   */
+  async getStatus(): Promise<{ health: boolean }> {
     return (await axios.get(`${this.baseUrl}/status`)).data;
   }
 }
