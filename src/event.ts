@@ -45,7 +45,7 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * Updates an existing event.
+   * Update an existing event.
    * @param {Partial<CreateEventParams>} UpdateEventParams
    */
   update({
@@ -180,7 +180,7 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * Returns user's pending reward from event.
+   * Return user's pending reward from event.
    * @param {string} appId
    * @param {string} userId
    * @param {string} eventId
@@ -218,7 +218,7 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * Return list of user's reward history.
+   * Returns list of user's reward history.
    * @param {string} appId
    * @param {string} userId
    * @param {string} eventId
@@ -237,7 +237,7 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * Return list of user's activity.
+   * Returns list of user's activity.
    * @param {string} appId
    * @param {string} userId
    * @param {string} eventId

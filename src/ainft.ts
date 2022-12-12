@@ -45,7 +45,7 @@ export default class AinftJs {
   }
 
   /**
-   * Returns the currently registered Access Account.
+   * Return the currently registered Access Account.
    * @returns
    */
   getAccessAccount() {
@@ -63,7 +63,7 @@ export default class AinftJs {
   }
 
   /**
-   * Returns the status of the AINFT server.
+   * Return the status of the AINFT server.
    * @returns 
    */
   async getStatus(): Promise<{ health: boolean }> {
