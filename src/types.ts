@@ -21,6 +21,7 @@ export enum TaskTypeCategory {
   TWITTER_MINING = 'TWITTER_MINING',
   NFT_GAME = 'NFT_GAME',
   DISCORD_INVITE = 'DISCORD_INVITE',
+  DISCORD_INVITE_FIRST_CHAT = 'DISCORD_INVITE_FIRST_CHAT',
 }
 
 export enum Platforms {
@@ -184,8 +185,20 @@ export interface CreatePersonaModelInfo {
   modelId: string,
 }
 
+export interface ChatResponse {
+  response: {
+    messageId: string;
+    message: string;
+  };
+}
+
 export interface PersonaModelForDiscordChannelInfo {
   modelId: string | null,
+}
+
+export interface InviteInfo {
+  inviterId: string,
+  isRewarded: boolean,
 }
 
 export interface AddActivityParams {
