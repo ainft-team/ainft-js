@@ -21,6 +21,7 @@ export enum TaskTypeCategory {
   TWITTER_MINING = 'TWITTER_MINING',
   NFT_GAME = 'NFT_GAME',
   DISCORD_INVITE = 'DISCORD_INVITE',
+  DISCORD_INVITE_FIRST_CHAT = 'DISCORD_INVITE_FIRST_CHAT',
 }
 
 export enum Platforms {
