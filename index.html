@@ -31,9 +31,9 @@ NFT bots, NFT frontends, and/or NFT devices.</p>
 </a>
 <pre><code class="language-bash"><span class="hl-0">yarn install</span><br/><span class="hl-0">yarn build</span>
 </code></pre>
-<pre><code class="language-javascript"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">AinftJs</span><span class="hl-0"> = </span><span class="hl-3">require</span><span class="hl-0">(</span><span class="hl-4">&#39;@ainft-team/ainft-js&#39;</span><span class="hl-0">);</span><br/><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">ainftJs</span><span class="hl-0"> = </span><span class="hl-1">new</span><span class="hl-0"> </span><span class="hl-3">AinftJs</span><span class="hl-0">(</span><span class="hl-5">&lt;</span><span class="hl-6">YOUR_ACCESS_KEY</span><span class="hl-5">&gt;</span><span class="hl-0">, </span><span class="hl-5">&lt;</span><span class="hl-6">NFT_SERVER_URL</span><span class="hl-5">&gt;</span><span class="hl-0">, </span><span class="hl-5">&lt;</span><span class="hl-6">AIN_BLOCKCHAIN_URL</span><span class="hl-5">&gt;</span><span class="hl-0">, </span><span class="hl-5">&lt;</span><span class="hl-6">CHAIN_ID</span><span class="hl-5">&gt;</span><span class="hl-0">);</span>
+<pre><code class="language-javascript"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">AinftJs</span><span class="hl-0"> = </span><span class="hl-3">require</span><span class="hl-0">(</span><span class="hl-4">&#39;@ainft-team/ainft-js&#39;</span><span class="hl-0">);</span><br/><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">ainftJs</span><span class="hl-0"> = </span><span class="hl-1">new</span><span class="hl-0"> </span><span class="hl-3">AinftJs</span><span class="hl-0">(</span><span class="hl-5">&lt;</span><span class="hl-6">YOUR_ACCESS_KEY</span><span class="hl-5">&gt;</span><span class="hl-0">, </span><span class="hl-5">&lt;</span><span class="hl-6">NFT_SERVER_ENDPOINT</span><span class="hl-5">&gt;</span><span class="hl-0">, </span><span class="hl-5">&lt;</span><span class="hl-6">AIN_BLOCKCHAIN_ENDPOINT</span><span class="hl-5">&gt;</span><span class="hl-0">, </span><span class="hl-5">&lt;</span><span class="hl-6">CHAIN_ID</span><span class="hl-5">&gt;</span><span class="hl-0">);</span>
 </code></pre>
-<p>NFT_SERVER_URLs</p>
+<p>NFT_SERVER_ENDPOINT</p>
 <ul>
 <li>dev(testnet): <a href="https://ainft-api-dev.ainetwork.ai">https://ainft-api-dev.ainetwork.ai</a></li>
 <li>prod(mainnet): <a href="https://ainft-api.ainetwork.ai">https://ainft-api.ainetwork.ai</a></li>
@@ -44,13 +44,13 @@ NFT bots, NFT frontends, and/or NFT devices.</p>
 </a>
 <p>Testnet</p>
 <ul>
-<li>url: <a href="https://testnet-api.ainetwork.ai">https://testnet-api.ainetwork.ai</a></li>
-<li>chainId: 0</li>
+<li>Endpoint: <a href="https://testnet-api.ainetwork.ai">https://testnet-api.ainetwork.ai</a></li>
+<li>ChainId: 0</li>
 </ul>
 <p>Mainnet</p>
 <ul>
-<li>url: <a href="https://mainnet-api.ainetwork.ai">https://mainnet-api.ainetwork.ai</a></li>
-<li>chainId: 1</li>
+<li>Endpoint: <a href="https://mainnet-api.ainetwork.ai">https://mainnet-api.ainetwork.ai</a></li>
+<li>ChainId: 1</li>
 </ul>
 
 <a href="#tests" id="tests" style="color: inherit; text-decoration: none;">
@@ -124,6 +124,7 @@ NFT bots, NFT frontends, and/or NFT devices.</p>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.Activity.html" data-id="/interfaces/types.Activity.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Activity</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.AddActivityParams.html" data-id="/interfaces/types.AddActivityParams.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>AddActivityParams</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.AddEventActivityParams.html" data-id="/interfaces/types.AddEventActivityParams.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>AddEventActivityParams</a></li>
+<li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.ChatResponse.html" data-id="/interfaces/types.ChatResponse.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>ChatResponse</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.CreateEventParams.html" data-id="/interfaces/types.CreateEventParams.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>CreateEventParams</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.CreateItemParams.html" data-id="/interfaces/types.CreateItemParams.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>CreateItemParams</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.CreatePersonaModelInfo.html" data-id="/interfaces/types.CreatePersonaModelInfo.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>CreatePersonaModelInfo</a></li>
@@ -138,6 +139,7 @@ NFT bots, NFT frontends, and/or NFT devices.</p>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.GetUserItemHistoryParams.html" data-id="/interfaces/types.GetUserItemHistoryParams.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>GetUserItemHistoryParams</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.GetUserPurchaseHistoryParams.html" data-id="/interfaces/types.GetUserPurchaseHistoryParams.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>GetUserPurchaseHistoryParams</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.InstanceParams.html" data-id="/interfaces/types.InstanceParams.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>InstanceParams</a></li>
+<li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.InviteInfo.html" data-id="/interfaces/types.InviteInfo.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>InviteInfo</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.Item.html" data-id="/interfaces/types.Item.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>Item</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.ItemHistory.html" data-id="/interfaces/types.ItemHistory.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>ItemHistory</a></li>
 <li class="tsd-kind-interface tsd-parent-kind-module"><a class="category__link js-category-link" href="interfaces/types.ItemTryOnParams.html" data-id="/interfaces/types.ItemTryOnParams.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-256-path"></use><use href="#icon-256-text"></use></svg>ItemTryOnParams</a></li>
