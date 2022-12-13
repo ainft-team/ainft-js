@@ -82,7 +82,6 @@ export default class Discord extends AinftBase {
     appId: string,
     eventId: string,
     taskInstanceId: string,
-    inviteCode: string,
     inviteeId: string,
     inviterId?: string,
   ): Promise<void> {
@@ -90,9 +89,10 @@ export default class Discord extends AinftBase {
       appId,
       eventId,
       taskInstanceId,
-      inviteCode,
-      inviteeId,
-      inviterId,
+      data: {
+        inviteeId,
+        inviterId,
+      },
     };
     const trailingUrl = `invite-info`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
