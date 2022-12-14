@@ -196,6 +196,12 @@ export interface PersonaModelForDiscordChannelInfo {
   modelId: string | null,
 }
 
+export interface PersonaModelForDiscordServerInfo {
+  modelIds: {
+    [channelId: string]: string
+  }
+}
+
 export interface InviteInfo {
   inviterId: string,
   isRewarded: boolean,
