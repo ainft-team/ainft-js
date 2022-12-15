@@ -2,6 +2,7 @@ import {
   TaskIdListByEventId,
   EventInfo,
   PersonaModelForDiscordChannelInfo,
+  PersonaModelForDiscordServerInfo,
   HttpMethod,
   InviteInfo,
 } from "./types";
@@ -68,6 +69,15 @@ export default class Discord extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  getPersonaModelForDiscordServer(
+    appId: string,
+    discordServerId: string,
+  ): Promise<PersonaModelForDiscordServerInfo> {
+    const query = { appId };
+    const trailingUrl = `persona-models/${discordServerId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
   deletePersonaModelFromDiscordChannel(
     appId: string,
     discordServerId: string,
@@ -82,7 +92,6 @@ export default class Discord extends AinftBase {
     appId: string,
     eventId: string,
     taskInstanceId: string,
-    inviteCode: string,
     inviteeId: string,
     inviterId?: string,
   ): Promise<void> {
@@ -90,9 +99,10 @@ export default class Discord extends AinftBase {
       appId,
       eventId,
       taskInstanceId,
-      inviteCode,
-      inviteeId,
-      inviterId,
+      data: {
+        inviteeId,
+        inviterId,
+      },
     };
     const trailingUrl = `invite-info`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
