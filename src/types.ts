@@ -192,14 +192,13 @@ export interface ChatResponse {
   };
 }
 
-export interface PersonaModelForDiscordChannelInfo {
-  modelId: string | null,
+export interface ChannelPersonaModelInfo {
+  modelId: string;
+  modelName: string;
 }
 
-export interface PersonaModelForDiscordServerInfo {
-  modelIds: {
-    [channelId: string]: string
-  }
+export interface ServerPersonaModelInfo {
+  [channelId: string]: ChannelPersonaModelInfo;
 }
 
 export interface InviteInfo {
