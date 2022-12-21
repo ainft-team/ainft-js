@@ -1,8 +1,8 @@
 import {
   TaskIdListByEventId,
   EventInfo,
-  PersonaModelForDiscordChannelInfo,
-  PersonaModelForDiscordServerInfo,
+  ChannelPersonaModelInfo,
+  ServerPersonaModelInfo,
   HttpMethod,
   InviteInfo,
 } from "./types";
@@ -46,12 +46,14 @@ export default class Discord extends AinftBase {
   addPersonaModelToDiscordChannel(
     appId: string,
     modelId: string,
+    modelName: string,
     discordServerId: string,
     discordChannelId: string
   ): Promise<void> {
     const body = {
       appId,
       modelId,
+      modelName,
       discordServerId,
       discordChannelId,
     };
@@ -63,7 +65,7 @@ export default class Discord extends AinftBase {
     appId: string,
     discordServerId: string,
     discordChannelId: string
-  ): Promise<PersonaModelForDiscordChannelInfo> {
+  ): Promise<ChannelPersonaModelInfo | null> {
     const query = { appId };
     const trailingUrl = `persona-models/${discordServerId}/${discordChannelId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -72,7 +74,7 @@ export default class Discord extends AinftBase {
   getPersonaModelForDiscordServer(
     appId: string,
     discordServerId: string,
-  ): Promise<PersonaModelForDiscordServerInfo> {
+  ): Promise<ServerPersonaModelInfo | null> {
     const query = { appId };
     const trailingUrl = `persona-models/${discordServerId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
