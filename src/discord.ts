@@ -96,6 +96,7 @@ export default class Discord extends AinftBase {
     taskInstanceId: string,
     inviteeId: string,
     inviterId?: string,
+    ambiguousInviters?: Array<string>,
   ): Promise<void> {
     const body = {
       appId,
@@ -104,6 +105,7 @@ export default class Discord extends AinftBase {
       data: {
         inviteeId,
         inviterId,
+        ambiguousInviters,
       },
     };
     const trailingUrl = `invite-info`;

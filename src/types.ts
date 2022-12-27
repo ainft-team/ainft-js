@@ -204,6 +204,9 @@ export interface ServerPersonaModelInfo {
 export interface InviteInfo {
   inviterId: string,
   isRewarded: boolean,
+  ambiguousInviters?: {
+    [key: number]: string
+  },
 }
 
 export interface AddActivityParams {
