@@ -24,6 +24,11 @@ export enum TaskTypeCategory {
   DISCORD_INVITE_FIRST_CHAT = 'DISCORD_INVITE_FIRST_CHAT',
 }
 
+export enum NftActivityType {
+  VISIT = 'VISIT',
+  GAME = 'GAME',
+}
+
 export enum Platforms {
   DISCORD = 'DISCORD'
 }
