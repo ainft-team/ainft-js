@@ -27,6 +27,7 @@ export default class Activity extends AinftBase {
 
   addNftRecord(
     appId: string,
+    userId: string,
     nftInfo: {
       contractAddress: string;
       tokenId: string;
@@ -37,6 +38,7 @@ export default class Activity extends AinftBase {
   ) {
     const body = {
       appId,
+      userId,
       nftInfo,
       label,
       data,
