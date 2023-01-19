@@ -1,5 +1,5 @@
 import AinftBase from "./ainftBase";
-import { HttpMethod, NftActivityType, TaskTypeCategory } from "./types";
+import { ActivityNftInfo, HttpMethod, NftActivityType, TaskTypeCategory } from "./types";
 
 export default class Activity extends AinftBase {
   add(
@@ -7,12 +7,7 @@ export default class Activity extends AinftBase {
     userId: string,
     data: any,
     activityType: TaskTypeCategory | NftActivityType,
-    nftInfo: {
-      contractAddress: string;
-      tokenId: string;
-      userAddress: string;
-      chain: string;
-    }
+    nftInfo?: ActivityNftInfo,
   ) {
     const body = {
       appId,
@@ -28,11 +23,7 @@ export default class Activity extends AinftBase {
   addNftRecord(
     appId: string,
     userId: string,
-    nftInfo: {
-      contractAddress: string;
-      tokenId: string;
-      chain: string;
-    },
+    nftInfo: ActivityNftInfo,
     label: string,
     data: any
   ) {

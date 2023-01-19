@@ -513,3 +513,11 @@ export type AppCreditInfo = {
   maxSupply: number | null,
   createdAt: number,
 };
+
+export type ActivityNftInfo = {
+  chain: string;
+  network: string;
+  contractAddress: string;
+  tokenId: string;
+  userAddress: string;
+}
