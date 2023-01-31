@@ -400,7 +400,7 @@ export interface UpdateStoreItemParams {
   appId: string;
   storeId: string;
   itemName: string;
-  quantity?: string;
+  quantity?: number;
   price?: string;
   saleStartAt?: number;
   saleEndAt?: number;
