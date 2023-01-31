@@ -32,6 +32,7 @@ export default class Store extends AinftBase {
     name,
     image,
     quantity,
+    additionalInfo,
   }: CreateItemParams) {
     const body = {
       appId,
@@ -42,6 +43,7 @@ export default class Store extends AinftBase {
       name,
       image,
       quantity,
+      additionalInfo,
     };
     const trailingUrl = 'item';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
@@ -54,13 +56,19 @@ export default class Store extends AinftBase {
     image,
     description,
     quantity,
+    additionalInfo,
   }: UpdateItemParams) {
-    const body = { appId, name, image, description, quantity };
+    const body = { appId, name, image, description, quantity, additionalInfo };
     const trailingUrl = `item/${encodeURIComponent(itemName)}`;
     return this.sendRequest(HttpMethod.PUT, trailingUrl, body);
   }
 
-  deregisterItemFromAllStore(appId: string, type: string, subtype: string, value: string) {
+  deregisterItemFromAllStore(
+    appId: string,
+    type: string,
+    subtype: string,
+    value: string
+  ) {
     const query = { appId, type, subtype, value };
     const trailingUrl = 'item';
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
@@ -290,12 +298,12 @@ export default class Store extends AinftBase {
     itemName,
     quantity,
     params,
-  }: ItemUseParams): Promise<NftMetadata|null> {
+  }: ItemUseParams): Promise<NftMetadata | null> {
     const encodedItemName = encodeURIComponent(itemName);
     const body = {
       appId,
       quantity,
-      ...params && { params },
+      ...(params && { params }),
     };
     const trailingUrl = `inventory/${userId}/item/${encodedItemName}/use`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
