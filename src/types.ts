@@ -360,7 +360,8 @@ export interface Item {
   registrableQuantityOnStore: number;
   createdAt: number;
   updatedAt: number;
-  storeOnSale: { [storeId: string]: number };
+  storeOnSale?: { [storeId: string]: number };
+  owners?: { [userId: string]: boolean };
 };
 
 export interface CreateItemParams {
@@ -372,6 +373,7 @@ export interface CreateItemParams {
   description: string;
   image?: string;
   quantity: number;
+  additionalInfo?: { [key: string]: any };
 }
 
 export interface UpdateItemParams {
@@ -381,6 +383,7 @@ export interface UpdateItemParams {
   image?: string;
   description?: string;
   quantity?: number;
+  additionalInfo?: { [key: string]: any };
 }
 
 export interface RegisterItemParams {
@@ -400,7 +403,7 @@ export interface UpdateStoreItemParams {
   appId: string;
   storeId: string;
   itemName: string;
-  quantity?: string;
+  quantity?: number;
   price?: string;
   saleStartAt?: number;
   saleEndAt?: number;
