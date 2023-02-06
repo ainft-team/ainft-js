@@ -161,8 +161,8 @@ export default class Asset extends AinftBase {
       userId,
       amount,
       userAddress,
-    }
-    const trailingUrl = `credit/${symbol}/withdraw`
+    };
+    const trailingUrl = `credit/${symbol}/withdraw`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
