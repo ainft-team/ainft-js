@@ -166,6 +166,15 @@ export default class Asset extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  getWithdrawList(
+    appId: string,
+    symbol: string,
+  ): Promise<Object> {
+    const query = { appId };
+    const trailingUrl = `credit/${symbol}/withdraw`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
   getUserCreditBalance(
     appId: string,
     symbol: string,
