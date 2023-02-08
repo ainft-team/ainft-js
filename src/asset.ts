@@ -1,13 +1,14 @@
 import AinftBase from './ainftBase';
-import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftCollections, WithdrawList } from './types';
+import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftCollections, NftMetadata, WithdrawList } from './types';
 
 export default class Asset extends AinftBase {
   addNftSymbol(
     appId: string,
     chain: string,
-    contractAddress: string
+    contractAddress: string,
+    options?: Record<string, any>
   ): Promise<NftContractBySymbol> {
-    const body = { appId, chain, contractAddress }
+    const body = { appId, chain, contractAddress, options }
     const trailingUrl = 'nft/symbol';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
@@ -55,6 +56,19 @@ export default class Asset extends AinftBase {
     };
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  setNftMetadata(
+    appId: string,
+    chain: string,
+    network: string,
+    contractAddress: string,
+    tokenId: string,
+    metadata: NftMetadata,
+  ): Promise<NftMetadata> {
+    const body = { appId, metadata };
+    const trailingUrl = `nft/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   createAppCredit(
