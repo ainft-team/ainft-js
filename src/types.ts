@@ -524,3 +524,23 @@ export type ActivityNftInfo = {
   tokenId: string;
   userAddress: string;
 }
+
+export enum AppCreditWithdrawStatus {
+  REQUESTED = 'requested',
+  COMPLETED = 'completed',
+}
+
+export interface WithdrawInfo {
+  status: AppCreditWithdrawStatus;
+  amount: number;
+  timestamp: number;
+  txHash?: string;
+}
+
+export interface WithdrawList {
+  [userId: string]: {
+    [ethAddress: string]: {
+      [requestKey: string]: WithdrawInfo,
+    },
+  };
+}
