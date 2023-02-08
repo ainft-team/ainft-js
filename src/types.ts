@@ -537,10 +537,12 @@ export interface WithdrawInfo {
   txHash?: string;
 }
 
-export interface WithdrawList {
-  [userId: string]: {
-    [ethAddress: string]: {
-      [requestKey: string]: WithdrawInfo,
-    },
+export interface UserWithdrawList {
+  [ethAddress: string]: {
+    [requestKey: string]: WithdrawInfo;
   };
+}
+
+export interface AppWithdrawList {
+  [userId: string]: UserWithdrawList;
 }
