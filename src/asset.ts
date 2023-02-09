@@ -1,13 +1,14 @@
 import AinftBase from './ainftBase';
-import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftCollections } from './types';
+import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftCollections, NftMetadata, AppWithdrawList, UserWithdrawList } from './types';
 
 export default class Asset extends AinftBase {
   addNftSymbol(
     appId: string,
     chain: string,
-    contractAddress: string
+    contractAddress: string,
+    options?: Record<string, any>
   ): Promise<NftContractBySymbol> {
-    const body = { appId, chain, contractAddress }
+    const body = { appId, chain, contractAddress, options }
     const trailingUrl = 'nft/symbol';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
@@ -55,6 +56,19 @@ export default class Asset extends AinftBase {
     };
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  setNftMetadata(
+    appId: string,
+    chain: string,
+    network: string,
+    contractAddress: string,
+    tokenId: string,
+    metadata: NftMetadata,
+  ): Promise<NftMetadata> {
+    const body = { appId, metadata };
+    const trailingUrl = `nft/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   createAppCredit(
@@ -147,6 +161,42 @@ export default class Asset extends AinftBase {
     };
     const trailingUrl = `credit/${symbol}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+  
+  withdrawAppCredit(
+    appId: string,
+    symbol: string,
+    userId: string,
+    amount: number,
+    userAddress: string,
+  ): Promise<void> {
+    const body = {
+      appId,
+      userId,
+      amount,
+      userAddress,
+    };
+    const trailingUrl = `credit/${symbol}/withdraw`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  getWithdrawList(
+    appId: string,
+    symbol: string,
+  ): Promise<AppWithdrawList> {
+    const query = { appId };
+    const trailingUrl = `credit/${symbol}/withdraw`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  getWithdrawListByUserId(
+    appId: string,
+    symbol: string,
+    userId: string,
+  ): Promise<UserWithdrawList> {
+    const query = { appId };
+    const trailingUrl = `credit/${symbol}/withdraw/${userId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getUserCreditBalance(
