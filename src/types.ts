@@ -27,6 +27,8 @@ export enum TaskTypeCategory {
 export enum NftActivityType {
   VISIT = 'VISIT',
   GAME = 'GAME',
+  USE = 'USE',
+  ACHIEVE = 'ACHIEVE',
 }
 
 export enum Platforms {
