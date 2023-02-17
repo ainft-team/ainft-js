@@ -1,5 +1,5 @@
 import AinftBase from './ainftBase';
-import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftCollections, NftMetadata, AppWithdrawList, UserWithdrawList, WithdrawRequestList } from './types';
+import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftContractInfo, NftCollections, NftMetadata, AppWithdrawList, UserWithdrawList, WithdrawRequestList } from './types';
 
 export default class Asset extends AinftBase {
   addNftSymbol(
@@ -39,7 +39,17 @@ export default class Asset extends AinftBase {
   ): Promise<NftToken> {
     const query = { appId, contractAddress, tokenId };
     const trailingUrl = `nft/${chainId}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query)
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  getNftContractInfo(
+    appId: string,
+    chainId: string,
+    contractAddress: string,
+  ): Promise<NftContractInfo> {
+    const query = { appId, contractAddress };
+    const trailingUrl = `nft/${chainId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   getUserNftList(
