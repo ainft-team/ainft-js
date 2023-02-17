@@ -548,3 +548,11 @@ export interface UserWithdrawList {
 export interface AppWithdrawList {
   [userId: string]: UserWithdrawList;
 }
+
+export interface WithdrawRequestList {
+  [userId: string]: {
+    [ethAddress: string]: {
+      [requestId: string]: number;
+    };
+  };
+}
