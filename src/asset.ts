@@ -215,7 +215,7 @@ export default class Asset extends AinftBase {
     requestList: WithdrawRequestList,
     txHash: string,
   ): Promise<void> {
-    const body = { appId, requestList, txHash};
+    const body = { appId, requestList, txHash };
     const trailingUrl = `credit/${symbol}/withdraw/complete`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
