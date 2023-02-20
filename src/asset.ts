@@ -1,6 +1,7 @@
 import AinftBase from './ainftBase';
 import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftContractInfo, NftCollections, NftMetadata, AppWithdrawList, UserWithdrawList, WithdrawRequestList } from './types';
 
+  // TODO(kriii): Add network argument
 export default class Asset extends AinftBase {
   addNftSymbol(
     appId: string,
