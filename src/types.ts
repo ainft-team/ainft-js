@@ -27,6 +27,8 @@ export enum TaskTypeCategory {
 export enum NftActivityType {
   VISIT = 'VISIT',
   GAME = 'GAME',
+  USE = 'USE',
+  ACHIEVE = 'ACHIEVE',
 }
 
 export enum Platforms {
@@ -545,4 +547,12 @@ export interface UserWithdrawList {
 
 export interface AppWithdrawList {
   [userId: string]: UserWithdrawList;
+}
+
+export interface WithdrawRequestList {
+  [userId: string]: {
+    [ethAddress: string]: {
+      [requestId: string]: number;
+    };
+  };
 }
