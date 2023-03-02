@@ -5,11 +5,7 @@ export default class Auth extends AinftBase {
   async initializeApp(appId: string, userId: string): Promise<void> {
     console.log('Starting app initialization... This may take up to a minute.');
     const accessKey = this.ain.wallet.defaultAccount?.address!;
-    const createAppRes = await this.createApp(
-      appId,
-      userId,
-      accessKey,
-    );
+    const createAppRes = await this.createApp(appId, userId, accessKey);
     console.log(`create app tx hash - ${createAppRes.txHash}`);
 
     const stakeRes = await this.initialStake(appId, userId);
@@ -86,7 +82,43 @@ export default class Auth extends AinftBase {
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
-  async registerBlockchainApp(appId: string, userId: string, accessAinAddress?: string) {
+  addManagedContract(
+    appId: string,
+    chain: string,
+    network: string,
+    contractAddress: string
+  ): Promise<void> {
+    const body = {
+      appId,
+      chain,
+      network,
+      contractAddress,
+    };
+    const trailingUrl = `managedContracts`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  removeManagedContract(
+    appId: string,
+    chain: string,
+    network: string,
+    contractAddress: string
+  ): Promise<void> {
+    const query = {
+      appId,
+      chain,
+      network,
+      contractAddress,
+    };
+    const trailingUrl = `managedContracts`;
+    return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
+  }
+
+  async registerBlockchainApp(
+    appId: string,
+    userId: string,
+    accessAinAddress?: string
+  ) {
     const ownerAddress = this.ain.wallet.defaultAccount?.address;
     const body = {
       appId,
@@ -95,11 +127,17 @@ export default class Auth extends AinftBase {
       accessAinAddress,
     };
     const trailingUrl = `register_blockchain_app`;
-    const { address: adminAddress } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
-    
+    const { address: adminAddress } = await this.sendRequest(
+      HttpMethod.POST,
+      trailingUrl,
+      body
+    );
+
     const setOwnerRes = await this.setOwner(appId, adminAddress);
     if (setOwnerRes.result.code !== 0) {
-      console.log('Failed to set nft server admin address as owner. Please check fail response.');
+      console.log(
+        'Failed to set nft server admin address as owner. Please check fail response.'
+      );
       console.log(setOwnerRes);
     } else {
       const msg =
