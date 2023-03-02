@@ -84,4 +84,36 @@ export default class Auth extends AinftBase {
     const trailingUrl = `user/${userId}/ethAddress`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
+
+  addManagedContract(
+    appId: string,
+    chain: string,
+    network: string,
+    contractAddress: string,
+  ): Promise<void> {
+    const body = {
+      appId,
+      chain,
+      network,
+      contractAddress
+    };
+    const trailingUrl = `managedContracts`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  removeManagedContract(
+    appId: string,
+    chain: string,
+    network: string,
+    contractAddress: string,
+  ): Promise<void> {
+    const query = {
+      appId,
+      chain,
+      network,
+      contractAddress
+    };
+    const trailingUrl = `managedContracts`;
+    return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
+  }
 }
