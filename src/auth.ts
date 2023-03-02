@@ -87,9 +87,11 @@ export default class Auth extends AinftBase {
   }
 
   async registerBlockchainApp(appId: string, userId: string, accessAinAddress?: string) {
+    const ownerAddress = this.ain.wallet.defaultAccount?.address;
     const body = {
       appId,
       userId,
+      ownerAddress,
       accessAinAddress,
     };
     const trailingUrl = `register_blockchain_app`;
