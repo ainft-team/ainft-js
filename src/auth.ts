@@ -1,4 +1,5 @@
 import AinftBase from './ainftBase';
+import { MIN_GAS_PRICE } from './constants';
 import { HttpMethod, User } from './types';
 export default class Auth extends AinftBase {
   async initializeApp(appId: string, userId: string): Promise<void> {
@@ -83,5 +84,48 @@ export default class Auth extends AinftBase {
     };
     const trailingUrl = `user/${userId}/ethAddress`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
+  }
+
+  async registerBlockchainApp(appId: string, userId: string, accessAinAddress?: string) {
+    const body = {
+      appId,
+      userId,
+      accessAinAddress,
+    };
+    const trailingUrl = `register_blockchain_app`;
+    const { address: adminAddress } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    
+    const setOwnerRes = await this.setOwner(appId, adminAddress);
+    if (setOwnerRes.result.code !== 0) {
+      console.log('Failed to set nft server admin address as owner. Please check fail response.');
+      console.log(setOwnerRes);
+    } else {
+      const msg =
+        'You have successfully registered your blockchain app to the nft server.\n' +
+        `txHash: ${setOwnerRes.tx_hash}\n\n` +
+        'Apps created outside the nft server do not support initial staking. If you would like an initial staking, please contact the ainftJs team.\n\n' +
+        'For smooth use of ainftJs, it is recommended to use the following function.\n' +
+        '- ainftJs.auth.setBlockchainActivityRule';
+      console.log(msg);
+    }
+  }
+
+  private setOwner(appId: string, address: string) {
+    return this.ain.db.ref(`/apps/${appId}`).setOwner({
+      value: {
+        '.owner': {
+          owners: {
+            [address]: {
+              branch_owner: true,
+              write_function: true,
+              write_owner: true,
+              write_rule: true,
+            },
+          },
+        },
+      },
+      nonce: -1,
+      gas_price: MIN_GAS_PRICE,
+    });
   }
 }
