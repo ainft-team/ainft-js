@@ -24,3 +24,9 @@ export const buildData = (method: HttpMethod, path: string, timestamp: number, d
 export const isJoiError = (error: any) => {
   return error.response?.data?.isJoiError === true;
 }
+
+export function sleep(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}

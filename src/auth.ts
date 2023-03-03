@@ -127,11 +127,16 @@ export default class Auth extends AinftBase {
       accessAinAddress,
     };
     const trailingUrl = `register_blockchain_app`;
-    const { address: adminAddress } = await this.sendRequest(
+    const { adminAddress, txHash } = await this.sendRequest(
       HttpMethod.POST,
       trailingUrl,
       body
     );
+
+    console.log(
+      `The gas fee for setting the admin account of app(${appId}) set in the nft server as the owner has been sent.`
+    );
+    await this.waitTransaction(txHash, 3);
 
     const setOwnerRes = await this.setOwner(appId, adminAddress);
     if (setOwnerRes.result.code !== 0) {

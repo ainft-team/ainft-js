@@ -2,7 +2,7 @@ import Ain from "@ainblockchain/ain-js";
 import stringify = require("fast-json-stable-stringify");
 import axios from "axios";
 import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types";
-import { buildData, isJoiError } from "./util";
+import { buildData, isJoiError, sleep } from "./util";
 
 export default class AinftBase {
   public baseUrl = '';
@@ -67,6 +67,19 @@ export default class AinftBase {
       } else {
         throw err;
       }
+    }
+  }
+
+  async waitTransaction(hash: string, maxCount: number) {
+    let count = 0;
+    while (maxCount > count) {
+      const transaction = await this.ain.getTransaction(hash);
+      if (transaction.is_finalized) {
+        break;
+      }
+      await sleep(10000);
+      count += 1;
+      console.log(`Waiting transaction - hash(${hash}), ${count}0 seconds...`);
     }
   }
 }
