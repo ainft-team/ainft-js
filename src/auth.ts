@@ -134,7 +134,7 @@ export default class Auth extends AinftBase {
     );
 
     console.log(
-      `The gas fee for setting the admin account of app(${appId}) set in the nft server as the owner has been sent.`
+      `The gas fee for setting the admin account as the owner of blockchain app has been sent.`
     );
     await this.waitTransaction(txHash, 3);
 
