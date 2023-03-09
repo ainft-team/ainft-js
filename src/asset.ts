@@ -230,4 +230,23 @@ export default class Asset extends AinftBase {
     const trailingUrl = `credit/${symbol}/withdraw/complete`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
+  
+  lockupUserBalance(
+    appId: string,
+    symbol: string,
+    userId: string,
+    amount: number,
+    endAt: number,
+    reason?: string,
+  ): Promise<void> {
+    const body = {
+      appId,
+      userId,
+      amount,
+      endAt,
+      reason,
+    };
+    const trailingUrl = `credit/${symbol}/lockup`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
 }
