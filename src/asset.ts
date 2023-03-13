@@ -175,7 +175,7 @@ export default class Asset extends AinftBase {
   }
   
   /**
-   * You can request withdraw credit to your eth wallet.
+   * You can request withdraw app credit to crypto wallet.
    * @param {string} appId 
    * @param {string} symbol 
    * @param {string} userId 
