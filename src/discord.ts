@@ -90,6 +90,16 @@ export default class Discord extends AinftBase {
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
+  /**
+   * You can add new user's invitation information.
+   * @param {string} appId 
+   * @param {string} eventId 
+   * @param {string} taskInstanceId
+   * @param {string} inviteeId 
+   * @param {string} inviterId If you can't identify the inviter, leave blank this.
+   * @param {Array<string>} ambiguousInviters Array of userIds invited in a short time.
+   * @returns {Promise<InviteInfo>} Return InviteInfo object.
+   */
   addInviteInfo(
     appId: string,
     eventId: string,
@@ -112,6 +122,13 @@ export default class Discord extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * You can get user's invitation information.
+   * @param {string} appId 
+   * @param {string} discordServerId 
+   * @param {string} inviteeId 
+   * @returns {Promise<InviteInfo>} Return InviteInfo object.
+   */
   getInviteInfo(
     appId: string,
     discordServerId: string,
