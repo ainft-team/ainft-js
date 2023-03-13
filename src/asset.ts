@@ -230,4 +230,32 @@ export default class Asset extends AinftBase {
     const trailingUrl = `credit/${symbol}/withdraw/complete`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
+
+  /**
+   * You can restrict the user to leave a certain amount of credit
+   * @param {string} appId 
+   * @param {string} symbol 
+   * @param {string} userId 
+   * @param {number} amount 
+   * @param {number} endAt
+   * @param {string} reason 
+   */
+  lockupUserBalance(
+    appId: string,
+    symbol: string,
+    userId: string,
+    amount: number,
+    endAt: number,
+    reason?: string,
+  ): Promise<void> {
+    const body = {
+      appId,
+      userId,
+      amount,
+      endAt,
+      reason,
+    };
+    const trailingUrl = `credit/${symbol}/lockup`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
 }
