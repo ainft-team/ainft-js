@@ -20,6 +20,7 @@ import {
   RegisterItemParams,
   UpdateStoreItemParams,
   NftMetadata,
+  Item,
 } from './types';
 
 export default class Store extends AinftBase {
@@ -139,6 +140,12 @@ export default class Store extends AinftBase {
   getUserInventory(appId: string, userId: string): Promise<UserItem[]> {
     const query = { appId };
     const trailingUrl = `inventory/${userId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  getAllItems(appId: string, type?: string, subtype?: string): Promise<Item[]> {
+    const query = { appId, type, subtype };
+    const trailingUrl = `items`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
