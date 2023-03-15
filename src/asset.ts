@@ -174,6 +174,14 @@ export default class Asset extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
   
+  /**
+   * You can request withdraw app credit to crypto wallet.
+   * @param {string} appId 
+   * @param {string} symbol 
+   * @param {string} userId 
+   * @param {number} amount 
+   * @param {string} userAddress 
+   */
   withdrawAppCredit(
     appId: string,
     symbol: string,
@@ -191,6 +199,12 @@ export default class Asset extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * You can get withdrawal list applied by all users
+   * @param {string} appId 
+   * @param {string} symbol 
+   * @return {Promise<AppWithdrawList>} Return AppWithdrawList Object
+   */
   getWithdrawList(
     appId: string,
     symbol: string,
@@ -200,6 +214,13 @@ export default class Asset extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * You can get withdrawal list apllied by one user
+   * @param {string} appId 
+   * @param {string} symbol 
+   * @param {string} userId 
+   * @returns {Promise<UserWithdrawList>} Return UserWithdrawList Object
+   */
   getWithdrawListByUserId(
     appId: string,
     symbol: string,
@@ -220,6 +241,13 @@ export default class Asset extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Reflect withdraws complete status to server after transfer tokens
+   * @param {string} appId 
+   * @param {string} symbol 
+   * @param {WithdrawRequestList} requestList 
+   * @param {string} txHash Hash of transfer transaction
+   */
   withdrawComplete(
     appId: string,
     symbol: string,
@@ -228,6 +256,34 @@ export default class Asset extends AinftBase {
   ): Promise<void> {
     const body = { appId, requestList, txHash };
     const trailingUrl = `credit/${symbol}/withdraw/complete`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * You can restrict the user to leave a certain amount of credit
+   * @param {string} appId 
+   * @param {string} symbol 
+   * @param {string} userId 
+   * @param {number} amount 
+   * @param {number} endAt
+   * @param {string} reason 
+   */
+  lockupUserBalance(
+    appId: string,
+    symbol: string,
+    userId: string,
+    amount: number,
+    endAt: number,
+    reason?: string,
+  ): Promise<void> {
+    const body = {
+      appId,
+      userId,
+      amount,
+      endAt,
+      reason,
+    };
+    const trailingUrl = `credit/${symbol}/lockup`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
