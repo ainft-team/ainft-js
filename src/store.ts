@@ -329,4 +329,24 @@ export default class Store extends AinftBase {
     const trailingUrl = `inventory/${userId}/item/${encodedItemName}/unequip`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
+
+  resetNftTraitItem(
+    appId: string,
+    userId: string,
+    chain: string,
+    network: string,
+    contractAddress: string,
+    tokenId: string,
+  ): Promise<void> {
+    const body = {
+      appId,
+      userId,
+      chain,
+      network,
+      contractAddress,
+      tokenId,
+    };
+    const trailingUrl = '/item/unequip/all';
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
 }
