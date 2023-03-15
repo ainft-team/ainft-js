@@ -467,10 +467,12 @@ export type History <Type> = {
 }
 
 export type NftMetadata = {
-  name: string,
-  description: string,
-  image: string,
-  attributes: object[],
+  name: string;
+  description: string;
+  image: string;
+  attributes: object[];
+  equipped_traits?: { [subtype: string]: string };
+  original_traits?: { [subtype: string]: string };
 };
 
 export type NftToken = {

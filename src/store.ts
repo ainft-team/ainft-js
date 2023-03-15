@@ -322,4 +322,66 @@ export default class Store extends AinftBase {
     const trailingUrl = `inventory/${userId}/item/${encodedItemName}/use`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
+
+  /**
+   * Unequips an NFT trait item that is being worn on the NFT. When unworn, it will be restored to its original NFT attribute.
+   * @param appId
+   * @param userId
+   * @param itemName The name of the item to unequip.
+   * @param chain ChainId. Currently, we only support ETH.
+   * @param network Network name. e.g) homestead, goerli.
+   * @param contractAddress NFT contract address.
+   * @param tokenId Your NFT token Id.
+   * @returns
+   */
+  unequipNftTraitItem(
+    appId: string,
+    userId: string,
+    itemName: string,
+    chain: string,
+    network: string,
+    contractAddress: string,
+    tokenId: string,
+  ): Promise<void> {
+    const encodedItemName = encodeURIComponent(itemName);
+    const body = {
+      appId,
+      chain,
+      network,
+      contractAddress,
+      tokenId,
+    };
+    const trailingUrl = `inventory/${userId}/item/${encodedItemName}/unequip`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Unequips all NFT traits currently worn on the NFT.
+   * @param appId
+   * @param userId
+   * @param chain ChainId. Currently, we only support ETH.
+   * @param network Network name. e.g) homestead, goerli.
+   * @param contractAddress NFT contract address.
+   * @param tokenId Your NFT token Id.
+   * @returns
+   */
+  resetNftTraitItem(
+    appId: string,
+    userId: string,
+    chain: string,
+    network: string,
+    contractAddress: string,
+    tokenId: string,
+  ): Promise<void> {
+    const body = {
+      appId,
+      userId,
+      chain,
+      network,
+      contractAddress,
+      tokenId,
+    };
+    const trailingUrl = '/item/unequip/all';
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
 }
