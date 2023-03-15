@@ -20,6 +20,7 @@ import {
   RegisterItemParams,
   UpdateStoreItemParams,
   NftMetadata,
+  Item,
 } from './types';
 
 export default class Store extends AinftBase {
@@ -139,6 +140,19 @@ export default class Store extends AinftBase {
   getUserInventory(appId: string, userId: string): Promise<UserItem[]> {
     const query = { appId };
     const trailingUrl = `inventory/${userId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  /**
+   * Returns a list of all items created in the app. If type/subtype is given, returns only items of the given type/subtype.
+   * @param {string} appId
+   * @param {string=} type The type of the items to fetch.
+   * @param {string=} subtype The subtype of the items to fetch.
+   * @returns {Item[]} List of items
+   */
+  getAllItems(appId: string, type?: string, subtype?: string): Promise<Item[]> {
+    const query = { appId, type, subtype };
+    const trailingUrl = `items`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
