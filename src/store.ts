@@ -342,7 +342,7 @@ export default class Store extends AinftBase {
     network: string,
     contractAddress: string,
     tokenId: string,
-  ): Promise<void> {
+  ): Promise<NftMetadata> {
     const encodedItemName = encodeURIComponent(itemName);
     const body = {
       appId,
@@ -372,7 +372,7 @@ export default class Store extends AinftBase {
     network: string,
     contractAddress: string,
     tokenId: string,
-  ): Promise<void> {
+  ): Promise<NftMetadata> {
     const body = {
       appId,
       userId,
@@ -381,7 +381,7 @@ export default class Store extends AinftBase {
       contractAddress,
       tokenId,
     };
-    const trailingUrl = '/item/unequip/all';
+    const trailingUrl = 'item/unequip/all';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
