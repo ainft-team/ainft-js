@@ -293,7 +293,7 @@ export default class Store extends AinftBase {
     chain,
     nftContractAddress,
     nftTokenId,
-  }: ItemTryOnParams): Promise<string> {
+  }: ItemTryOnParams): Promise<{ image: string, isOccupied: boolean }> {
     const encodedItemName = encodeURIComponent(itemName);
     const body = {
       appId,
