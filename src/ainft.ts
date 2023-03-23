@@ -6,6 +6,7 @@ import Discord from './discord';
 import Event from './event';
 import Store from './store';
 import PersonaModels from './personaModels';
+import TextToArt from './textToArt';
 import Activity from './activity';
 
 export default class AinftJs {
@@ -17,6 +18,7 @@ export default class AinftJs {
   public store: Store;
   public ain: Ain;
   public personaModels: PersonaModels;
+  public textToArt: TextToArt;
   public activity: Activity;
 
   constructor(accessKey: string, nftServerEndpoint: string, ainBlockchainEndpoint: string, chainId: 0 | 1) {
@@ -30,6 +32,7 @@ export default class AinftJs {
     this.event = new Event(this.ain, this.baseUrl, '/event');
     this.store = new Store(this.ain, this.baseUrl, '/store');
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
+    this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
     this.activity = new Activity(this.ain, this.baseUrl, '/activity');
   }
 
@@ -45,6 +48,7 @@ export default class AinftJs {
     this.event.setBaseUrl(baseUrl);
     this.store.setBaseUrl(baseUrl);
     this.personaModels.setBaseUrl(baseUrl);
+    this.textToArt.setBaseUrl(baseUrl);
     this.activity.setBaseUrl(baseUrl);
   }
 
@@ -68,7 +72,7 @@ export default class AinftJs {
 
   /**
    * Return the status of the AINFT server.
-   * @returns 
+   * @returns
    */
   async getStatus(): Promise<{ health: boolean }> {
     return (await axios.get(`${this.baseUrl}/status`)).data;
