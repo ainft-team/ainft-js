@@ -61,12 +61,12 @@ export default class TextToArt extends AinftBase {
     channel_id: string;
     message_id: string;
   }, params: TextToArtParams) {
-    const data = {
+    const body = {
       appId,
       discord,
       params
     }
     const trailingUrl = 'generate';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, data);
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
