@@ -55,7 +55,7 @@ export default class TextToArt extends AinftBase {
  * @param {discord} discord
  * @param {TextToArtParams} params
  */
-  generateTextToArtImage(appId: string, discord: {
+  generateImage(appId: string, discord: {
     user_id: string;
     guild_id: string;
     channel_id: string;
@@ -66,7 +66,7 @@ export default class TextToArt extends AinftBase {
       discord,
       params
     }
-    const trailingUrl = `generate`;
+    const trailingUrl = 'generate';
     return this.sendRequest(HttpMethod.POST, trailingUrl, data);
   }
 }
