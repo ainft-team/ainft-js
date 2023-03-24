@@ -1,17 +1,19 @@
 import AinftBase from './ainftBase';
 import {
   HttpMethod,
+  Task,
   TextToArtResponse,
   TextToArtParams,
   TextToArtTxHash,
+  DiscordMessageInfo,
 } from './types';
 
 export default class TextToArt extends AinftBase {
   /**
-   * Get result of a text to art task.
-   * @param {appId} appId where uses text to art
-   * @param {taskId} taskId
-   * @returns {Promise<TextToArtResponse | null>} Return text to art results or null.
+   * Get the result of a text-to-art task.
+   * @param {string} appId - The ID of the app where the text-to-art task will be used.
+   * @param {string} taskId - The ID of the text-to-art task.
+   * @returns {Promise<TextToArtResponse | null>} - A promise that resolves with the text-to-art results or null.
    */
   getTextToArtResults(appId: string, taskId: string): Promise<TextToArtResponse | null> {
     const query = {
@@ -22,10 +24,10 @@ export default class TextToArt extends AinftBase {
   }
 
   /**
-   * Get request parameters used for a text to art task.
-   * @param {appId} appId
-   * @param {taskId} taskId
-   * @returns {Promise<TextToArtParams | null>} Return request parameters used for a text to art task or null.
+   * Get the request parameters used for a text-to-art task.
+   * @param {string} appId - The ID of the app where the text-to-art task will be used.
+   * @param {string} taskId - The ID of the text-to-art task.
+   * @returns {Promise<TextToArtParams | null>} - A promise that resolves with the request parameters used for the text-to-art task or null.
    */
   getTextToArtParams(appId: string, taskId: string): Promise<TextToArtParams | null> {
     const query = {
@@ -36,10 +38,10 @@ export default class TextToArt extends AinftBase {
   }
 
   /**
-   * Get transation hash for tasks of a text to art task.
-   * @param {appId} appId
-   * @param {taskId} taskId of 
-   * @returns {Promise<TextToArtTxHash | null>} Return transation hash for tasks of a text to art task or null.
+   * Get the transaction hash for a text-to-art task.
+   * @param {string} appId - The ID of the app where the text-to-art task will be used.
+   * @param {string} taskId - The ID of the text-to-art task.
+   * @returns {Promise<TextToArtTxHash | null>} - A promise that resolves with the transaction hash for the task or null.
    */
   getTextToArtTxHash(appId: string, taskId: string): Promise<TextToArtTxHash | null> {
     const query = {
@@ -50,17 +52,13 @@ export default class TextToArt extends AinftBase {
   }
 
   /**
- * Post request to generate image.
- * @param {appId} appId
- * @param {discord} discord
- * @param {TextToArtParams} params
- */
-  generateImage(appId: string, discord: {
-    user_id: string;
-    guild_id: string;
-    channel_id: string;
-    message_id: string;
-  }, params: TextToArtParams) {
+   * Post a request to generate an image.
+   * @param {string} appId - The ID of the app where the text-to-art task will be used.
+   * @param {DiscordMessageInfo} discord - The Discord object that contains the IDs of the user, guild, channel, and message.
+   * @param {TextToArtParams} params - The request parameters used for the text-to-art task.
+   * @returns {Promise<Task | null>} - A promise that resolves with the task id for the task or null.
+   */
+  generateImage(appId: string, discord: DiscordMessageInfo, params: TextToArtParams) {
     const body = {
       appId,
       discord,

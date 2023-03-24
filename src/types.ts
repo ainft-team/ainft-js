@@ -101,6 +101,13 @@ export interface Account {
   publicKey?: string;
 }
 
+export interface DiscordMessageInfo {
+  user_id: string;
+  guild_id: string;
+  channel_id: string;
+  message_id: string;
+}
+
 export interface InstanceParams {
   [key: string]: any;
 }
@@ -247,6 +254,11 @@ export interface TextToArtParams {
   guidance_scale: number,
   model_id: ModelID,
   scheduler_type: SchedulerID,
+}
+
+export interface Task {
+  task_id: string;
+  updated_at: number;
 }
 
 export interface TextToArtResult {
