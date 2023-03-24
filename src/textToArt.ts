@@ -48,4 +48,25 @@ export default class TextToArt extends AinftBase {
     const trailingUrl = `tasks/${taskId}/tx-hash`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
+
+  /**
+ * Post request to generate image.
+ * @param {appId} appId
+ * @param {discord} discord
+ * @param {TextToArtParams} params
+ */
+  generateImage(appId: string, discord: {
+    user_id: string;
+    guild_id: string;
+    channel_id: string;
+    message_id: string;
+  }, params: TextToArtParams) {
+    const body = {
+      appId,
+      discord,
+      params
+    }
+    const trailingUrl = 'generate';
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
 }
