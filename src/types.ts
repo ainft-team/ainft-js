@@ -63,14 +63,49 @@ export enum StoreItemStatus {
 };
 
 export enum PurchaseStatus {
-  SUCCESS = "SUCCESS",
-  FAILED = "FAILED"
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
 };
+
+// Text to Art
+export enum ResponseStatus {
+  PENDING = 'pending',
+  ASSIGNED = 'assigned',
+  COMPLETED = 'completed',
+  ERROR = 'error',
+}
+
+export enum ModelID {
+  STABLE_DIFFUSION_V1_4 = 'stable-diffusion-v1-4',
+  STABLE_DIFFUSION_V1_5 = 'stable-diffusion-v1-5',
+  STABLE_DIFFUSION_V2 = 'stable-diffusion-v2',
+  STABLE_DIFFUSION_V2_1 = 'stable-diffusion-v2-1',
+  STABLE_DIFFUSION_V2_768 = 'stable-diffusion-v2-768',
+  STABLE_DIFFUSION_V2_1_768 = 'stable-diffusion-v2-1-768',
+  OPENJOURNEY_V2 = 'openjourney-v2',
+}
+export enum SchedulerID {
+  DDIM = 'ddim',
+  PNDM = 'pndm',
+  EULER_DISCRETE = 'euler_discrete',
+  EULER_ANCESTRAL_DISCRETE = 'euler_ancestral_discrete',
+  HEUN_DISCRETE = 'heun_discrete',
+  K_DPM_2_DISCRETE = 'k_dpm_2_discrete',
+  K_DPM_2_ANCESTRAL_DISCRETE = 'k_dpm_2_ancestral_discrete',
+  LMS_DISCRETE = 'lms_discrete',
+}
 
 export interface Account {
   address: string;
   privateKey: string;
   publicKey?: string;
+}
+
+export interface DiscordMessageInfo {
+  user_id: string;
+  guild_id: string;
+  channel_id: string;
+  message_id: string;
 }
 
 export interface InstanceParams {
@@ -206,6 +241,42 @@ export interface ChannelPersonaModelInfo {
 
 export interface ServerPersonaModelInfo {
   [channelId: string]: ChannelPersonaModelInfo;
+}
+
+export interface TextToArtParams {
+  prompt: string,
+  negative_prompt: string,
+  steps: number,
+  seed: number,
+  width: number,
+  height: number,
+  images: number,
+  guidance_scale: number,
+  model_id: ModelID,
+  scheduler_type: SchedulerID,
+}
+
+export interface Task {
+  task_id: string;
+  updated_at: number;
+}
+
+export interface TextToArtResult {
+  url: string,
+  origin_url?: string,
+  is_filtered: boolean,
+}
+
+export interface TextToArtResponse {
+  status: ResponseStatus,
+  updated_at: number,
+  result: { [imageIndex: string]: TextToArtResult },
+}
+
+export interface TextToArtTxHash {
+  status: ResponseStatus,
+  updated_at: number,
+  result: { [status: string]: string },
 }
 
 export interface InviteInfo {
@@ -456,7 +527,7 @@ export interface ItemHistory {
   params?: any,
 };
 
-export type History <Type> = {
+export type History<Type> = {
   [year: string]: {
     [month: string]: {
       [date: string]: {
