@@ -107,6 +107,16 @@ export default class Store extends AinftBase {
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
+  giveItemToUser(appId: string, userId: string, itemName: string, quantity: number) {
+    const body = {
+      appId,
+      name: itemName,
+      quantity,
+    }
+    const trailingUrl = `inventory/${userId}/item`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
   updateStoreItem({
     appId,
     storeId,
