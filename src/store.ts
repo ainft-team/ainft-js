@@ -21,6 +21,7 @@ import {
   UpdateStoreItemParams,
   NftMetadata,
   Item,
+  ItemGiveHistory,
 } from './types';
 
 export default class Store extends AinftBase {
@@ -105,6 +106,32 @@ export default class Store extends AinftBase {
     const query = { appId };
     const trailingUrl = `${storeId}/item/${encodeURIComponent(itemName)}`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
+  }
+
+  /**
+   * Returns a list of all items created in the app. If type/subtype is given, returns only items of the given type/subtype.
+   * @param {string} appId
+   * @param {string} userId The ID of the user who will receive the item.
+   * @param {string} itemName The name of the item to give.
+   * @param {string} quantity The quantity of the item to give.
+   * @param {string=} reason The reason for giving an item. ex) Event for NFT holder
+   * @returns {Promise<ItemGiveHistory>} 
+   */
+  giveItemToUser(
+    appId: string,
+    userId: string,
+    itemName: string,
+    quantity: number,
+    reason?: string
+  ): Promise<ItemGiveHistory> {
+    const body = {
+      appId,
+      name: itemName,
+      quantity,
+      reason,
+    }
+    const trailingUrl = `inventory/${userId}/item`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   updateStoreItem({
