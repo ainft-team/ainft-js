@@ -456,6 +456,7 @@ export interface UpdateItemParams {
   image?: string;
   description?: string;
   quantity?: number;
+  quantityRemaining?: number;
   additionalInfo?: { [key: string]: any };
 }
 
