@@ -179,7 +179,7 @@ export default class Store extends AinftBase {
    * @param {string} UpdateStoreItemParams.itemName - The name of the item.
    * @param {number=} UpdateStoreItemParams.price - The price of store item to be changed.
    * @param {number=} UpdateStoreItemParams.quantity - The quantity total of store item to be increase or decrease.
-   * @param {number=} UpdateStoreItemParams.quantity - The quantity remaining of store item to be increase or decrease.
+   * @param {number=} UpdateStoreItemParams.quantityRemaining - The quantity remaining of store item to be increase or decrease.
    * @param {StoreItemStatus=} UpdateStoreItemParams.status - The status of the store item to be changed.
    * @param {number=} UpdateStoreItemParams.saleStartAt - The sale start date time of the store item to be changed.
    * @param {number=} UpdateStoreItemParams.saleEndAt - The sale end date time of the store item to be changed.
