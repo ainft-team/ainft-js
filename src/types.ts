@@ -477,7 +477,6 @@ export interface UpdateStoreItemParams {
   storeId: string;
   itemName: string;
   quantity?: number;
-  quantityRemaining?: number;
   price?: string;
   saleStartAt?: number;
   saleEndAt?: number;

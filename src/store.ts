@@ -74,6 +74,7 @@ export default class Store extends AinftBase {
    * @param {string=} UpdateItemParams.image - Image of the item to be changed.
    * @param {string=} UpdateItemParams.description - Description of the item to be changed.
    * @param {string} UpdateItemParams.quantity - Quantity of the item to increase or decrease.
+   * @param {string} UpdateItemParams.quantityRemaining - QuantityRemaining of the item to increase or decrease.
    * @param {string=} UpdateItemParams.additionalInfo - AdditionalInfo of the item to be changed.
    * @returns {Promise} void.
    */
@@ -84,6 +85,7 @@ export default class Store extends AinftBase {
     image,
     description,
     quantity,
+    quantityRemaining,
     additionalInfo,
   }: UpdateItemParams): Promise<void> {
     const body = {
@@ -93,6 +95,7 @@ export default class Store extends AinftBase {
       description,
       quantity,
       additionalInfo,
+      quantityRemaining,
     };
     const trailingUrl = `item/${encodeURIComponent(itemName)}`;
     return this.sendRequest(HttpMethod.PUT, trailingUrl, body);
@@ -178,8 +181,7 @@ export default class Store extends AinftBase {
    * @param {string} UpdateStoreItemParams.storeId - The ID of the store.
    * @param {string} UpdateStoreItemParams.itemName - The name of the item.
    * @param {number=} UpdateStoreItemParams.price - The price of store item to be changed.
-   * @param {number=} UpdateStoreItemParams.quantity - The quantity total of store item to be increase or decrease.
-   * @param {number=} UpdateStoreItemParams.quantity - The quantity remaining of store item to be increase or decrease.
+   * @param {number=} UpdateStoreItemParams.quantity - The quantity of store item to be increase or decrease.
    * @param {StoreItemStatus=} UpdateStoreItemParams.status - The status of the store item to be changed.
    * @param {number=} UpdateStoreItemParams.saleStartAt - The sale start date time of the store item to be changed.
    * @param {number=} UpdateStoreItemParams.saleEndAt - The sale end date time of the store item to be changed.
@@ -192,7 +194,6 @@ export default class Store extends AinftBase {
     itemName,
     price,
     quantity,
-    quantityRemaining,
     status,
     saleStartAt,
     saleEndAt,
@@ -202,7 +203,6 @@ export default class Store extends AinftBase {
       appId,
       price,
       quantity,
-      quantityRemaining,
       status,
       saleEndAt,
       saleStartAt,
