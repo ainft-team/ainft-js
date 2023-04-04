@@ -67,6 +67,11 @@ export enum PurchaseStatus {
   FAILED = 'FAILED',
 };
 
+export enum ItemGiveStatus {
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+};
+
 // Text to Art
 export enum ResponseStatus {
   PENDING = 'pending',
@@ -512,6 +517,18 @@ export interface PurchaseHistory {
   currency: string;
   createdAt: number;
   status: PurchaseStatus;
+};
+
+export type ItemGiveHistory = {
+  id: string;
+  appId: string;
+  type: string;
+  subtype: string;
+  value: string;
+  quantity: number;
+  reason?: string;
+  createdAt: number;
+  status: ItemGiveStatus;
 };
 
 export interface ItemHistory {
