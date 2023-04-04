@@ -21,7 +21,6 @@ import {
   UpdateStoreItemParams,
   NftMetadata,
   Item,
-  StoreItemStatus,
 } from './types';
 
 export default class Store extends AinftBase {
@@ -74,7 +73,6 @@ export default class Store extends AinftBase {
    * @param {string=} UpdateItemParams.image - Image of the item to be changed.
    * @param {string=} UpdateItemParams.description - Description of the item to be changed.
    * @param {string} UpdateItemParams.quantity - Quantity of the item to increase or decrease.
-   * @param {string} UpdateItemParams.quantityRemaining - QuantityRemaining of the item to increase or decrease.
    * @param {string=} UpdateItemParams.additionalInfo - AdditionalInfo of the item to be changed.
    * @returns {Promise} void.
    */
@@ -85,7 +83,6 @@ export default class Store extends AinftBase {
     image,
     description,
     quantity,
-    quantityRemaining,
     additionalInfo,
   }: UpdateItemParams): Promise<void> {
     const body = {
@@ -95,7 +92,6 @@ export default class Store extends AinftBase {
       description,
       quantity,
       additionalInfo,
-      quantityRemaining,
     };
     const trailingUrl = `item/${encodeURIComponent(itemName)}`;
     return this.sendRequest(HttpMethod.PUT, trailingUrl, body);
