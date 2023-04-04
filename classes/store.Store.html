@@ -23,7 +23,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">Store</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L26">store.ts:26</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L27">store.ts:27</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -55,6 +55,7 @@
 <a href="store.Store.html#getUserItemHistory" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>get<wbr/>User<wbr/>Item<wbr/>History</span></a>
 <a href="store.Store.html#getUserItemInfo" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>get<wbr/>User<wbr/>Item<wbr/>Info</span></a>
 <a href="store.Store.html#getUserPurchaseHistory" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>get<wbr/>User<wbr/>Purchase<wbr/>History</span></a>
+<a href="store.Store.html#giveItemToUser" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>give<wbr/>Item<wbr/>To<wbr/>User</span></a>
 <a href="store.Store.html#purchaseStoreItem" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>purchase<wbr/>Store<wbr/>Item</span></a>
 <a href="store.Store.html#registerItem" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>register<wbr/>Item</span></a>
 <a href="store.Store.html#resetNftTraitItem" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>reset<wbr/>Nft<wbr/>Trait<wbr/>Item</span></a>
@@ -87,7 +88,7 @@
 <h4 class="tsd-returns-title">Returns <a href="store.Store.html" class="tsd-signature-type" data-tsd-kind="Class">Store</a></h4><aside class="tsd-sources">
 <p>Inherited from <a href="ainftBase.AinftBase.html">AinftBase</a>.<a href="ainftBase.AinftBase.html#constructor">constructor</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/ainftBase.ts#L12">ainftBase.ts:12</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/ainftBase.ts#L12">ainftBase.ts:12</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="ain" class="tsd-anchor"></a>
@@ -95,70 +96,98 @@
 <div class="tsd-signature">ain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">default</span></div><aside class="tsd-sources">
 <p>Inherited from <a href="ainftBase.AinftBase.html">AinftBase</a>.<a href="ainftBase.AinftBase.html#ain">ain</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/ainftBase.ts#L10">ainftBase.ts:10</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/ainftBase.ts#L10">ainftBase.ts:10</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="baseUrl" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>base<wbr/>Url</span><a href="#baseUrl" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">base<wbr/>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &#39;&#39;</span></div><aside class="tsd-sources">
 <p>Inherited from <a href="ainftBase.AinftBase.html">AinftBase</a>.<a href="ainftBase.AinftBase.html#baseUrl">baseUrl</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/ainftBase.ts#L8">ainftBase.ts:8</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/ainftBase.ts#L8">ainftBase.ts:8</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="route" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>route</span><a href="#route" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">route<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div><aside class="tsd-sources">
 <p>Inherited from <a href="ainftBase.AinftBase.html">AinftBase</a>.<a href="ainftBase.AinftBase.html#route">route</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/ainftBase.ts#L9">ainftBase.ts:9</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/ainftBase.ts#L9">ainftBase.ts:9</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="createItem" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>create<wbr/>Item</span><a href="#createItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="createItem.createItem-1">create<wbr/>Item<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.CreateItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">CreateItemParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#createItem.createItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="createItem.createItem-1">create<wbr/>Item<span class="tsd-signature-symbol">(</span>CreateItemParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.CreateItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">CreateItemParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.Item.html" class="tsd-signature-type" data-tsd-kind="Interface">Item</a><span class="tsd-signature-symbol">&gt;</span><a href="#createItem.createItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new item.</p>
+
+<h3>Returns</h3><p>Created item.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.CreateItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">CreateItemParams</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h5>CreateItemParams: <a href="../interfaces/types.CreateItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">CreateItemParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters to create a new item.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.Item.html" class="tsd-signature-type" data-tsd-kind="Interface">Item</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L27">store.ts:27</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L42">store.ts:42</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="deregisterItem" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>deregister<wbr/>Item</span><a href="#deregisterItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="deregisterItem.deregisterItem-1">deregister<wbr/>Item<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, storeId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, itemName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#deregisterItem.deregisterItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Deregisters an item from the store.</p>
+
+<h3>Returns</h3><p>void.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>appId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>appId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the app.</p>
+</div></li>
 <li>
-<h5>storeId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>storeId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the store.</p>
+</div></li>
 <li>
-<h5>itemName: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5>itemName: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The name of the item.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L104">store.ts:104</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L168">store.ts:168</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="deregisterItemFromAllStore" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>deregister<wbr/>Item<wbr/>From<wbr/>All<wbr/>Store</span><a href="#deregisterItemFromAllStore" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="deregisterItemFromAllStore.deregisterItemFromAllStore-1">deregister<wbr/>Item<wbr/>From<wbr/>All<wbr/>Store<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, subtype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#deregisterItemFromAllStore.deregisterItemFromAllStore-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="deregisterItemFromAllStore.deregisterItemFromAllStore-1">deregister<wbr/>Item<wbr/>From<wbr/>All<wbr/>Store<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, subtype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#deregisterItemFromAllStore.deregisterItemFromAllStore-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Deregisters an item from all stores.</p>
+
+<h3>Returns</h3><p>void.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>appId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>appId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the app.</p>
+</div></li>
 <li>
-<h5>type: <span class="tsd-signature-type">string</span></h5></li>
+<h5>type: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The type of the item.</p>
+</div></li>
 <li>
-<h5>subtype: <span class="tsd-signature-type">string</span></h5></li>
+<h5>subtype: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The subtype of the item.</p>
+</div></li>
 <li>
-<h5>value: <span class="tsd-signature-type">string</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h5>value: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The value of the item.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L67">store.ts:67</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L109">store.ts:109</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getAllItems" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>All<wbr/>Items</span><a href="#getAllItems" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -166,13 +195,15 @@
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Returns a list of all items created in the app. If type/subtype is given, returns only items of the given type/subtype.</p>
 
-<h3>Returns</h3><p>List of items</p>
+<h3>Returns</h3><p>List of items.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>appId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>appId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the app.</p>
+</div></li>
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> type: <span class="tsd-signature-type">string</span></h5>
 <div class="tsd-comment tsd-typography"><p>The type of the items to fetch.</p>
@@ -183,181 +214,239 @@
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.Item.html" class="tsd-signature-type" data-tsd-kind="Interface">Item</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L153">store.ts:153</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L269">store.ts:269</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getItemHistory" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Item<wbr/>History</span><a href="#getItemHistory" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="getItemHistory.getItemHistory-1">get<wbr/>Item<wbr/>History<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetItemHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.ItemHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getItemHistory.getItemHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getItemHistory.getItemHistory-1">get<wbr/>Item<wbr/>History<span class="tsd-signature-symbol">(</span>GetItemHistoryParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetItemHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.ItemHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getItemHistory.getItemHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Retrieves the usage history of all items of an app.</p>
+
+<h3>Returns</h3><ul>
+<li>A Promise that resolves to an object containing the usage history.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.GetItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetItemHistoryParams</a></h5></li></ul></div>
+<h5>GetItemHistoryParams: <a href="../interfaces/types.GetItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetItemHistoryParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters for the request.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.ItemHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L243">store.ts:243</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L421">store.ts:421</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getItemPurchaseHistory" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Item<wbr/>Purchase<wbr/>History</span><a href="#getItemPurchaseHistory" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="getItemPurchaseHistory.getItemPurchaseHistory-1">get<wbr/>Item<wbr/>Purchase<wbr/>History<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetItemPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetItemPurchaseHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getItemPurchaseHistory.getItemPurchaseHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getItemPurchaseHistory.getItemPurchaseHistory-1">get<wbr/>Item<wbr/>Purchase<wbr/>History<span class="tsd-signature-symbol">(</span>GetItemPurchaseHistoryParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetItemPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetItemPurchaseHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getItemPurchaseHistory.getItemPurchaseHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Retrieves the purchase history of a specific item of an app.</p>
+
+<h3>Returns</h3><ul>
+<li>A Promise that resolves to an object containing the purchase history of the item.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.GetItemPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetItemPurchaseHistoryParams</a></h5></li></ul></div>
+<h5>GetItemPurchaseHistoryParams: <a href="../interfaces/types.GetItemPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetItemPurchaseHistoryParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters for the request.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L212">store.ts:212</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L371">store.ts:371</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getPurchaseHistory" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Purchase<wbr/>History</span><a href="#getPurchaseHistory" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="getPurchaseHistory.getPurchaseHistory-1">get<wbr/>Purchase<wbr/>History<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetPurchaseHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getPurchaseHistory.getPurchaseHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getPurchaseHistory.getPurchaseHistory-1">get<wbr/>Purchase<wbr/>History<span class="tsd-signature-symbol">(</span>GetPurchaseHistoryParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetPurchaseHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getPurchaseHistory.getPurchaseHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Retrieves the purchase history of all items of an app.</p>
+
+<h3>Returns</h3><ul>
+<li>A Promise that resolves to an object containing the purchase history.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.GetPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetPurchaseHistoryParams</a></h5></li></ul></div>
+<h5>GetPurchaseHistoryParams: <a href="../interfaces/types.GetPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetPurchaseHistoryParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters for the request.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L198">store.ts:198</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L347">store.ts:347</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getSingleItemHistory" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Single<wbr/>Item<wbr/>History</span><a href="#getSingleItemHistory" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="getSingleItemHistory.getSingleItemHistory-1">get<wbr/>Single<wbr/>Item<wbr/>History<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetSingleItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetSingleItemHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.ItemHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getSingleItemHistory.getSingleItemHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getSingleItemHistory.getSingleItemHistory-1">get<wbr/>Single<wbr/>Item<wbr/>History<span class="tsd-signature-symbol">(</span>GetSingleItemHistoryParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetSingleItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetSingleItemHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.ItemHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getSingleItemHistory.getSingleItemHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Retrieves the usage history of a specific item of an app.</p>
+
+<h3>Returns</h3><ul>
+<li>A Promise that resolves to an object containing the usage history of the item.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.GetSingleItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetSingleItemHistoryParams</a></h5></li></ul></div>
+<h5>GetSingleItemHistoryParams: <a href="../interfaces/types.GetSingleItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetSingleItemHistoryParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters for the request.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.ItemHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L257">store.ts:257</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L445">store.ts:445</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getStoreItemInfo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Store<wbr/>Item<wbr/>Info</span><a href="#getStoreItemInfo" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getStoreItemInfo.getStoreItemInfo-1">get<wbr/>Store<wbr/>Item<wbr/>Info<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, storeId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, itemName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.StoreItem.html" class="tsd-signature-type" data-tsd-kind="Interface">StoreItem</a><span class="tsd-signature-symbol">&gt;</span><a href="#getStoreItemInfo.getStoreItemInfo-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns information about a specific store item for a given app and store.</p>
+
+<h3>Returns</h3><p>Information about the store item.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>appId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>appId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the app.</p>
+</div></li>
 <li>
-<h5>storeId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>storeId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the store.</p>
+</div></li>
 <li>
-<h5>itemName: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5>itemName: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The name of the item to fetch.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.StoreItem.html" class="tsd-signature-type" data-tsd-kind="Interface">StoreItem</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L159">store.ts:159</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L282">store.ts:282</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getStoreItemList" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Store<wbr/>Item<wbr/>List</span><a href="#getStoreItemList" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getStoreItemList.getStoreItemList-1">get<wbr/>Store<wbr/>Item<wbr/>List<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, storeId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.StoreItem.html" class="tsd-signature-type" data-tsd-kind="Interface">StoreItem</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><a href="#getStoreItemList.getStoreItemList-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns a list of store items for a given app and store.</p>
+
+<h3>Returns</h3><p>List of store items.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>appId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>appId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the app.</p>
+</div></li>
 <li>
-<h5>storeId: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5>storeId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the store.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.StoreItem.html" class="tsd-signature-type" data-tsd-kind="Interface">StoreItem</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L134">store.ts:134</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L244">store.ts:244</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getUserInventory" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>User<wbr/>Inventory</span><a href="#getUserInventory" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getUserInventory.getUserInventory-1">get<wbr/>User<wbr/>Inventory<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.UserItem.html" class="tsd-signature-type" data-tsd-kind="Interface">UserItem</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><a href="#getUserInventory.getUserInventory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns a list of user items for a given app and user.</p>
+
+<h3>Returns</h3><p>List of user items.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>appId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>appId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the app.</p>
+</div></li>
 <li>
-<h5>userId: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5>userId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the user.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.UserItem.html" class="tsd-signature-type" data-tsd-kind="Interface">UserItem</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L140">store.ts:140</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L256">store.ts:256</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getUserItemHistory" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>User<wbr/>Item<wbr/>History</span><a href="#getUserItemHistory" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="getUserItemHistory.getUserItemHistory-1">get<wbr/>User<wbr/>Item<wbr/>History<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetUserItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetUserItemHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.ItemHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getUserItemHistory.getUserItemHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getUserItemHistory.getUserItemHistory-1">get<wbr/>User<wbr/>Item<wbr/>History<span class="tsd-signature-symbol">(</span>GetUserItemHistoryParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetUserItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetUserItemHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.ItemHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getUserItemHistory.getUserItemHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Retrieves the usage history of a specific user of an app.</p>
+
+<h3>Returns</h3><ul>
+<li>A Promise that resolves to an object containing the item usage history of the user.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.GetUserItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetUserItemHistoryParams</a></h5></li></ul></div>
+<h5>GetUserItemHistoryParams: <a href="../interfaces/types.GetUserItemHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetUserItemHistoryParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters for the request.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.ItemHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L273">store.ts:273</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L471">store.ts:471</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getUserItemInfo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>User<wbr/>Item<wbr/>Info</span><a href="#getUserItemInfo" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getUserItemInfo.getUserItemInfo-1">get<wbr/>User<wbr/>Item<wbr/>Info<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, itemName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.UserItem.html" class="tsd-signature-type" data-tsd-kind="Interface">UserItem</a><span class="tsd-signature-symbol">&gt;</span><a href="#getUserItemInfo.getUserItemInfo-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns information about a specific user item for a given app and user.</p>
+
+<h3>Returns</h3><p>Information about the user item.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>appId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>appId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the app.</p>
+</div></li>
 <li>
-<h5>userId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>userId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the user.</p>
+</div></li>
 <li>
-<h5>itemName: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5>itemName: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The name of the item to fetch.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.UserItem.html" class="tsd-signature-type" data-tsd-kind="Interface">UserItem</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L170">store.ts:170</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L300">store.ts:300</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getUserPurchaseHistory" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>User<wbr/>Purchase<wbr/>History</span><a href="#getUserPurchaseHistory" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="getUserPurchaseHistory.getUserPurchaseHistory-1">get<wbr/>User<wbr/>Purchase<wbr/>History<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetUserPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetUserPurchaseHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getUserPurchaseHistory.getUserPurchaseHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getUserPurchaseHistory.getUserPurchaseHistory-1">get<wbr/>User<wbr/>Purchase<wbr/>History<span class="tsd-signature-symbol">(</span>GetUserPurchaseHistoryParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.GetUserPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetUserPurchaseHistoryParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><a href="#getUserPurchaseHistory.getUserPurchaseHistory-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Retrieves the purchase history of a specific user of an app.</p>
+
+<h3>Returns</h3><ul>
+<li>A Promise that resolves to an object containing the purchase history of the user.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.GetUserPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetUserPurchaseHistoryParams</a></h5></li></ul></div>
+<h5>GetUserPurchaseHistoryParams: <a href="../interfaces/types.GetUserPurchaseHistoryParams.html" class="tsd-signature-type" data-tsd-kind="Interface">GetUserPurchaseHistoryParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters for the request.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.History.html" class="tsd-signature-type" data-tsd-kind="Type alias">History</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L228">store.ts:228</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="purchaseStoreItem" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>purchase<wbr/>Store<wbr/>Item</span><a href="#purchaseStoreItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L397">store.ts:397</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="giveItemToUser" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>give<wbr/>Item<wbr/>To<wbr/>User</span><a href="#giveItemToUser" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="purchaseStoreItem.purchaseStoreItem-1">purchase<wbr/>Store<wbr/>Item<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.StorePurchaseParams.html" class="tsd-signature-type" data-tsd-kind="Interface">StorePurchaseParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><a href="#purchaseStoreItem.purchaseStoreItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="giveItemToUser.giveItemToUser-1">give<wbr/>Item<wbr/>To<wbr/>User<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, itemName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, quantity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, reason<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.ItemGiveHistory.html" class="tsd-signature-type" data-tsd-kind="Type alias">ItemGiveHistory</a><span class="tsd-signature-symbol">&gt;</span><a href="#giveItemToUser.giveItemToUser-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
-<li>
-<h5>__namedParameters: <a href="../interfaces/types.StorePurchaseParams.html" class="tsd-signature-type" data-tsd-kind="Interface">StorePurchaseParams</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L181">store.ts:181</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="registerItem" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>register<wbr/>Item</span><a href="#registerItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="registerItem.registerItem-1">register<wbr/>Item<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.RegisterItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">RegisterItemParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#registerItem.registerItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
-<li class="tsd-description">
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
-<li>
-<h5>__namedParameters: <a href="../interfaces/types.RegisterItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">RegisterItemParams</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L78">store.ts:78</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="resetNftTraitItem" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>reset<wbr/>Nft<wbr/>Trait<wbr/>Item</span><a href="#resetNftTraitItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="resetNftTraitItem.resetNftTraitItem-1">reset<wbr/>Nft<wbr/>Trait<wbr/>Item<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, chain<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, network<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, contractAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tokenId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.NftMetadata.html" class="tsd-signature-type" data-tsd-kind="Type alias">NftMetadata</a><span class="tsd-signature-symbol">&gt;</span><a href="#resetNftTraitItem.resetNftTraitItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
-<li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Unequips all NFT traits currently worn on the NFT.</p>
+<div class="tsd-comment tsd-typography"><p>Returns a list of all items created in the app. If type/subtype is given, returns only items of the given type/subtype.</p>
 
 <h3>Returns</h3></div>
 <div class="tsd-parameters">
@@ -366,26 +455,103 @@
 <li>
 <h5>appId: <span class="tsd-signature-type">string</span></h5></li>
 <li>
-<h5>userId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>userId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the user who will receive the item.</p>
+</div></li>
+<li>
+<h5>itemName: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The name of the item to give.</p>
+</div></li>
+<li>
+<h5>quantity: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>The quantity of the item to give.</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> reason: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The reason for giving an item. ex) Event for NFT holder</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.ItemGiveHistory.html" class="tsd-signature-type" data-tsd-kind="Type alias">ItemGiveHistory</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L183">store.ts:183</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="purchaseStoreItem" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>purchase<wbr/>Store<wbr/>Item</span><a href="#purchaseStoreItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="purchaseStoreItem.purchaseStoreItem-1">purchase<wbr/>Store<wbr/>Item<span class="tsd-signature-symbol">(</span>StorePurchaseParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.StorePurchaseParams.html" class="tsd-signature-type" data-tsd-kind="Interface">StorePurchaseParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span><a href="#purchaseStoreItem.purchaseStoreItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Purchases a store item.</p>
+
+<h3>Returns</h3><p>The purchase history.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>StorePurchaseParams: <a href="../interfaces/types.StorePurchaseParams.html" class="tsd-signature-type" data-tsd-kind="Interface">StorePurchaseParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The purchase parameters.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.PurchaseHistory.html" class="tsd-signature-type" data-tsd-kind="Interface">PurchaseHistory</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L321">store.ts:321</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="registerItem" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>register<wbr/>Item</span><a href="#registerItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="registerItem.registerItem-1">register<wbr/>Item<span class="tsd-signature-symbol">(</span>RegisterItemParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.RegisterItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">RegisterItemParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.StoreItem.html" class="tsd-signature-type" data-tsd-kind="Interface">StoreItem</a><span class="tsd-signature-symbol">&gt;</span><a href="#registerItem.registerItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Registers an item in the store for selling.</p>
+
+<h3>Returns</h3><p>The store item is registered.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>RegisterItemParams: <a href="../interfaces/types.RegisterItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">RegisterItemParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters to register an item.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.StoreItem.html" class="tsd-signature-type" data-tsd-kind="Interface">StoreItem</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L135">store.ts:135</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="resetNftTraitItem" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>reset<wbr/>Nft<wbr/>Trait<wbr/>Item</span><a href="#resetNftTraitItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="resetNftTraitItem.resetNftTraitItem-1">reset<wbr/>Nft<wbr/>Trait<wbr/>Item<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, chain<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, network<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, contractAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tokenId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.NftMetadata.html" class="tsd-signature-type" data-tsd-kind="Type alias">NftMetadata</a><span class="tsd-signature-symbol">&gt;</span><a href="#resetNftTraitItem.resetNftTraitItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Unequips all NFT traits currently worn on the NFT.</p>
+
+<h3>Returns</h3><ul>
+<li>A promise that returns the metadata of the NFT after unequip nft trait item.</li>
+</ul>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>appId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the app.</p>
+</div></li>
+<li>
+<h5>userId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the user.</p>
+</div></li>
 <li>
 <h5>chain: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>ChainId. Currently, we only support ETH.</p>
+<div class="tsd-comment tsd-typography"><p>The chain ID of the nft contract. Currently, we only support ETH.</p>
 </div></li>
 <li>
 <h5>network: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>Network name. e.g) homestead, goerli.</p>
+<div class="tsd-comment tsd-typography"><p>The network name of the nft contract. e.g) homestead, goerli.</p>
 </div></li>
 <li>
 <h5>contractAddress: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>NFT contract address.</p>
+<div class="tsd-comment tsd-typography"><p>The nft contract address.</p>
 </div></li>
 <li>
 <h5>tokenId: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>Your NFT token Id.</p>
+<div class="tsd-comment tsd-typography"><p>The id of the your nft token.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.NftMetadata.html" class="tsd-signature-type" data-tsd-kind="Type alias">NftMetadata</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L368">store.ts:368</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L588">store.ts:588</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="sendRequest" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>send<wbr/>Request</span><a href="#sendRequest" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -403,7 +569,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Inherited from <a href="ainftBase.AinftBase.html">AinftBase</a>.<a href="ainftBase.AinftBase.html#sendRequest">sendRequest</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/ainftBase.ts#L35">ainftBase.ts:35</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/ainftBase.ts#L35">ainftBase.ts:35</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="setBaseUrl" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Base<wbr/>Url</span><a href="#setBaseUrl" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -417,7 +583,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <p>Inherited from <a href="ainftBase.AinftBase.html">AinftBase</a>.<a href="ainftBase.AinftBase.html#setBaseUrl">setBaseUrl</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/ainftBase.ts#L23">ainftBase.ts:23</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/ainftBase.ts#L23">ainftBase.ts:23</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="signData" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>sign<wbr/>Data</span><a href="#signData" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -431,20 +597,28 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><aside class="tsd-sources">
 <p>Inherited from <a href="ainftBase.AinftBase.html">AinftBase</a>.<a href="ainftBase.AinftBase.html#signData">signData</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/ainftBase.ts#L27">ainftBase.ts:27</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/ainftBase.ts#L27">ainftBase.ts:27</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="tryOnItem" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>try<wbr/>On<wbr/>Item</span><a href="#tryOnItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="tryOnItem.tryOnItem-1">try<wbr/>On<wbr/>Item<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.ItemTryOnParams.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemTryOnParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>image<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>isOccupied<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span><a href="#tryOnItem.tryOnItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="tryOnItem.tryOnItem-1">try<wbr/>On<wbr/>Item<span class="tsd-signature-symbol">(</span>ItemTryOnParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.ItemTryOnParams.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemTryOnParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>image<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>isOccupied<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span><a href="#tryOnItem.tryOnItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Tries on store item to own NFT</p>
+
+<h3>Returns</h3><ul>
+<li>A promise that returns an object containing the image and whether the item is occupied or not.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.ItemTryOnParams.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemTryOnParams</a></h5></li></ul></div>
+<h5>ItemTryOnParams: <a href="../interfaces/types.ItemTryOnParams.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemTryOnParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>Parameters for trying on an item.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>image<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>isOccupied<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L288">store.ts:288</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L498">store.ts:498</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="unequipNftTraitItem" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>unequip<wbr/>Nft<wbr/>Trait<wbr/>Item</span><a href="#unequipNftTraitItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -452,76 +626,102 @@
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Unequips an NFT trait item that is being worn on the NFT. When unworn, it will be restored to its original NFT attribute.</p>
 
-<h3>Returns</h3></div>
+<h3>Returns</h3><ul>
+<li>A promise that returns the metadata of the NFT after unequip nft trait item.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>appId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>appId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the app.</p>
+</div></li>
 <li>
-<h5>userId: <span class="tsd-signature-type">string</span></h5></li>
+<h5>userId: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The ID of the user.</p>
+</div></li>
 <li>
 <h5>itemName: <span class="tsd-signature-type">string</span></h5>
 <div class="tsd-comment tsd-typography"><p>The name of the item to unequip.</p>
 </div></li>
 <li>
 <h5>chain: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>ChainId. Currently, we only support ETH.</p>
+<div class="tsd-comment tsd-typography"><p>The chain ID of the nft contract. Currently, we only support ETH.</p>
 </div></li>
 <li>
 <h5>network: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>Network name. e.g) homestead, goerli.</p>
+<div class="tsd-comment tsd-typography"><p>The network name of the nft contract. e.g) homestead, goerli.</p>
 </div></li>
 <li>
 <h5>contractAddress: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>NFT contract address.</p>
+<div class="tsd-comment tsd-typography"><p>The nft contract address.</p>
 </div></li>
 <li>
 <h5>tokenId: <span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>Your NFT token Id.</p>
+<div class="tsd-comment tsd-typography"><p>The id of the your nft token.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/types.NftMetadata.html" class="tsd-signature-type" data-tsd-kind="Type alias">NftMetadata</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L337">store.ts:337</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L557">store.ts:557</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="updateItem" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>update<wbr/>Item</span><a href="#updateItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="updateItem.updateItem-1">update<wbr/>Item<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.UpdateItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateItemParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#updateItem.updateItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="updateItem.updateItem-1">update<wbr/>Item<span class="tsd-signature-symbol">(</span>UpdateItemParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.UpdateItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateItemParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#updateItem.updateItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Updates an item.</p>
+
+<h3>Returns</h3><p>void.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.UpdateItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateItemParams</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h5>UpdateItemParams: <a href="../interfaces/types.UpdateItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateItemParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters to update an item.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L53">store.ts:53</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L80">store.ts:80</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="updateStoreItem" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>update<wbr/>Store<wbr/>Item</span><a href="#updateStoreItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="updateStoreItem.updateStoreItem-1">update<wbr/>Store<wbr/>Item<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.UpdateStoreItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateStoreItemParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#updateStoreItem.updateStoreItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="updateStoreItem.updateStoreItem-1">update<wbr/>Store<wbr/>Item<span class="tsd-signature-symbol">(</span>UpdateStoreItemParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.UpdateStoreItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateStoreItemParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#updateStoreItem.updateStoreItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Update item in store.</p>
+
+<h3>Returns</h3></div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.UpdateStoreItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateStoreItemParams</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
+<h5>UpdateStoreItemParams: <a href="../interfaces/types.UpdateStoreItemParams.html" class="tsd-signature-type" data-tsd-kind="Interface">UpdateStoreItemParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>The parameters to update store item.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L110">store.ts:110</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L214">store.ts:214</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="useItem" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>use<wbr/>Item</span><a href="#useItem" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="useItem.useItem-1">use<wbr/>Item<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.ItemUseParams.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemUseParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../types/types.NftMetadata.html" class="tsd-signature-type" data-tsd-kind="Type alias">NftMetadata</a><span class="tsd-signature-symbol">&gt;</span><a href="#useItem.useItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="useItem.useItem-1">use<wbr/>Item<span class="tsd-signature-symbol">(</span>ItemUseParams<span class="tsd-signature-symbol">: </span><a href="../interfaces/types.ItemUseParams.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemUseParams</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../types/types.NftMetadata.html" class="tsd-signature-type" data-tsd-kind="Type alias">NftMetadata</a><span class="tsd-signature-symbol">&gt;</span><a href="#useItem.useItem-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Uses an item</p>
+
+<h3>Returns</h3><ul>
+<li>A promise that returns the metadata of the used NFT or null if the item is not an NFT trait.</li>
+</ul>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <a href="../interfaces/types.ItemUseParams.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemUseParams</a></h5></li></ul></div>
+<h5>ItemUseParams: <a href="../interfaces/types.ItemUseParams.html" class="tsd-signature-type" data-tsd-kind="Interface">ItemUseParams</a></h5>
+<div class="tsd-comment tsd-typography"><p>Parameters for using an item.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../types/types.NftMetadata.html" class="tsd-signature-type" data-tsd-kind="Type alias">NftMetadata</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/store.ts#L309">store.ts:309</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/store.ts#L529">store.ts:529</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="waitTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>wait<wbr/>Transaction</span><a href="#waitTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -537,7 +737,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Inherited from <a href="ainftBase.AinftBase.html">AinftBase</a>.<a href="ainftBase.AinftBase.html#waitTransaction">waitTransaction</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/e335255/src/ainftBase.ts#L73">ainftBase.ts:73</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/ainft-team/ainft-js/blob/7cbe12b/src/ainftBase.ts#L73">ainftBase.ts:73</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tree">
 <div class="tree-settings">
@@ -601,6 +801,7 @@
 <li class="tsd-kind-enum tsd-parent-kind-module"><a class="category__link js-category-link" href="../enums/types.EventStatus.html" data-id="/enums/types.EventStatus.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-8-path"></use><use href="#icon-8-text"></use></svg>EventStatus</a></li>
 <li class="tsd-kind-enum tsd-parent-kind-module"><a class="category__link js-category-link" href="../enums/types.HttpMethod.html" data-id="/enums/types.HttpMethod.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-8-path"></use><use href="#icon-8-text"></use></svg>HttpMethod</a></li>
 <li class="tsd-kind-enum tsd-parent-kind-module"><a class="category__link js-category-link" href="../enums/types.HttpMethodToAxiosMethod.html" data-id="/enums/types.HttpMethodToAxiosMethod.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-8-path"></use><use href="#icon-8-text"></use></svg>HttpMethodToAxiosMethod</a></li>
+<li class="tsd-kind-enum tsd-parent-kind-module"><a class="category__link js-category-link" href="../enums/types.ItemGiveStatus.html" data-id="/enums/types.ItemGiveStatus.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-8-path"></use><use href="#icon-8-text"></use></svg>ItemGiveStatus</a></li>
 <li class="tsd-kind-enum tsd-parent-kind-module"><a class="category__link js-category-link" href="../enums/types.ModelID.html" data-id="/enums/types.ModelID.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-8-path"></use><use href="#icon-8-text"></use></svg>ModelID</a></li>
 <li class="tsd-kind-enum tsd-parent-kind-module"><a class="category__link js-category-link" href="../enums/types.NftActivityType.html" data-id="/enums/types.NftActivityType.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-8-path"></use><use href="#icon-8-text"></use></svg>NftActivityType</a></li>
 <li class="tsd-kind-enum tsd-parent-kind-module"><a class="category__link js-category-link" href="../enums/types.Platforms.html" data-id="/enums/types.Platforms.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-8-path"></use><use href="#icon-8-text"></use></svg>Platforms</a></li>
@@ -671,6 +872,7 @@
 <li class="tsd-kind-type-alias tsd-parent-kind-module"><a class="category__link js-category-link" href="../types/types.AppCreditInfo.html" data-id="/types/types.AppCreditInfo.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg>AppCreditInfo</a></li>
 <li class="tsd-kind-type-alias tsd-parent-kind-module"><a class="category__link js-category-link" href="../types/types.DailyRewardDetail.html" data-id="/types/types.DailyRewardDetail.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg>DailyRewardDetail</a></li>
 <li class="tsd-kind-type-alias tsd-parent-kind-module"><a class="category__link js-category-link" href="../types/types.History.html" data-id="/types/types.History.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg>History</a></li>
+<li class="tsd-kind-type-alias tsd-parent-kind-module"><a class="category__link js-category-link" href="../types/types.ItemGiveHistory.html" data-id="/types/types.ItemGiveHistory.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg>ItemGiveHistory</a></li>
 <li class="tsd-kind-type-alias tsd-parent-kind-module"><a class="category__link js-category-link" href="../types/types.NftCollections.html" data-id="/types/types.NftCollections.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg>NftCollections</a></li>
 <li class="tsd-kind-type-alias tsd-parent-kind-module"><a class="category__link js-category-link" href="../types/types.NftContract.html" data-id="/types/types.NftContract.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg>NftContract</a></li>
 <li class="tsd-kind-type-alias tsd-parent-kind-module"><a class="category__link js-category-link" href="../types/types.NftContractBySymbol.html" data-id="/types/types.NftContractBySymbol.html"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-4194304-path"></use><use href="#icon-4194304-text"></use></svg>NftContractBySymbol</a></li>
