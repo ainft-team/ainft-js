@@ -29,6 +29,7 @@ export enum NftActivityType {
   GAME = 'GAME',
   USE = 'USE',
   ACHIEVE = 'ACHIEVE',
+  NFT_CUSTOMIZATION = 'NFT_CUSTOMIZATION'
 }
 
 export enum Platforms {
