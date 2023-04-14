@@ -231,13 +231,35 @@ export default class Asset extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  getUserCreditBalance(
+  /**
+   * Get the user's credit balance
+   * @param {string} appId 
+   * @param {string} symbol 
+   * @param {string} userId 
+   * @returns {Promise<number>} A Promise that resolves to the credit balance of the user
+   */
+  getCreditBalanceOfUser(
     appId: string,
     symbol: string,
     userId: string
-  ): Promise<{ balance: number }> {
+  ): Promise<number> {
     const query = { appId };
-    const trailingUrl = `credit/${symbol}/${userId}`;
+    const trailingUrl = `credit/${symbol}/balance/${userId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  /**
+   * Get the credit balance of all users
+   * @param {string} appId 
+   * @param {string} symbol 
+   * @returns {Promise<{[userId: string]: number}>} A Promise that resolves to the credit balance of all users.
+   */
+  getCreditBalances(
+    appId: string,
+    symbol: string,
+  ): Promise<{[userId: string]: number}> {
+    const query = { appId };
+    const trailingUrl = `credit/${symbol}/balance`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
