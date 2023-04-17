@@ -308,4 +308,24 @@ export default class Asset extends AinftBase {
     const trailingUrl = `credit/${symbol}/lockup`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
+
+  /**
+   * You can get or create User's deposit account
+   * @param {string} appId
+   * @param {string} userId
+   * @param {string} chain
+   */
+  getUserDepositAddress(
+    appId: string,
+    userId: string,
+    chain: string,
+  ): Promise<string> {
+    const body = {
+      appId,
+      userId,
+      chain,
+    };
+    const trailingUrl = `depositAddress`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
 }
