@@ -310,7 +310,8 @@ export default class Asset extends AinftBase {
   }
 
   /**
-   * You can get or create User's deposit account
+   * You can get user deposit crypto address.
+   * If user doesn't have address, create new deposit account.
    * @param {string} appId
    * @param {string} userId
    * @param {string} chain
