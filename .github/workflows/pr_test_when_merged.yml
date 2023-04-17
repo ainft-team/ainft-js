@@ -39,6 +39,7 @@ jobs:
       - name: Publish package
         run: |
           yarn
+          yarn build
           yarn publish --access public
           echo "NEW_VERSION=$(npm pkg get version | tr -d '"')" >> $GITHUB_ENV
         env:
