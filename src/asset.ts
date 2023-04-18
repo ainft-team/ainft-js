@@ -1,5 +1,5 @@
 import AinftBase from './ainftBase';
-import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftContractInfo, NftCollections, NftMetadata, AppWithdrawList, UserWithdrawList, WithdrawRequestList } from './types';
+import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftContractInfo, NftCollections, NftMetadata, AppWithdrawList, UserWithdrawList, WithdrawRequestList, DepositTransaction } from './types';
 
   // TODO(kriii): Add network argument
 export default class Asset extends AinftBase {
@@ -306,6 +306,16 @@ export default class Asset extends AinftBase {
       reason,
     };
     const trailingUrl = `credit/${symbol}/lockup`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+  /**
+ * Reflect withdraws complete status to server after transfer tokens
+ * @param {string} appId
+ * @param {DepositTransaction} transaction
+ */
+  depositToken(appId: string, transaction: DepositTransaction): Promise<void> {
+    const body = { appId, transaction };
+    const trailingUrl = `deposit/trnasaction`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
