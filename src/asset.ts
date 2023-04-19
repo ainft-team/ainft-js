@@ -308,6 +308,7 @@ export default class Asset extends AinftBase {
     const trailingUrl = `credit/${symbol}/lockup`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
+  
   /**
  * Reflect withdraws complete status to server after transfer tokens
  * @param {string} appId

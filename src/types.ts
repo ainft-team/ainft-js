@@ -647,6 +647,7 @@ export interface WithdrawRequestList {
     };
   };
 }
+
 export interface DepositTransaction {
   chain: string;
   network: string;
