@@ -1,7 +1,19 @@
-import AinftBase from './ainftBase';
-import { AppCreditInfo, HttpMethod, NftContractBySymbol, NftToken, NftContractInfo, NftCollections, NftMetadata, AppWithdrawList, UserWithdrawList, WithdrawRequestList, DepositTransaction } from './types';
+import AinftBase from "./ainftBase";
+import {
+  AppCreditInfo,
+  HttpMethod,
+  NftContractBySymbol,
+  NftToken,
+  NftContractInfo,
+  NftCollections,
+  NftMetadata,
+  AppWithdrawList,
+  UserWithdrawList,
+  WithdrawRequestList,
+  DepositTransaction,
+} from "./types";
 
-  // TODO(kriii): Add network argument
+// TODO(kriii): Add network argument
 export default class Asset extends AinftBase {
   addNftSymbol(
     appId: string,
@@ -9,20 +21,23 @@ export default class Asset extends AinftBase {
     contractAddress: string,
     options?: Record<string, any>
   ): Promise<NftContractBySymbol> {
-    const body = { appId, chain, contractAddress, options }
-    const trailingUrl = 'nft/symbol';
+    const body = { appId, chain, contractAddress, options };
+    const trailingUrl = "nft/symbol";
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   getAppNftSymbolList(appId: string): Promise<string[]> {
     const query = { appId };
-    const trailingUrl = 'nft/symbol';
+    const trailingUrl = "nft/symbol";
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  getNftContractBySymbol(appId: string, symbol: string): Promise<NftContractBySymbol> {
+  getNftContractBySymbol(
+    appId: string,
+    symbol: string
+  ): Promise<NftContractBySymbol> {
     const query = { appId, symbol: encodeURIComponent(symbol) };
-    const trailingUrl = 'nft';
+    const trailingUrl = "nft";
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -36,7 +51,7 @@ export default class Asset extends AinftBase {
     appId: string,
     chainId: string,
     contractAddress: string,
-    tokenId: string,
+    tokenId: string
   ): Promise<NftToken> {
     const query = { appId, contractAddress, tokenId };
     const trailingUrl = `nft/${chainId}`;
@@ -46,7 +61,7 @@ export default class Asset extends AinftBase {
   getNftContractInfo(
     appId: string,
     chainId: string,
-    contractAddress: string,
+    contractAddress: string
   ): Promise<NftContractInfo> {
     const query = { appId, contractAddress };
     const trailingUrl = `nft/${chainId}`;
@@ -58,12 +73,12 @@ export default class Asset extends AinftBase {
     chainId: string,
     ethAddress: string,
     contractAddress?: string,
-    tokenId?: string,
+    tokenId?: string
   ): Promise<NftCollections> {
     const query: any = {
       appId,
-      ...contractAddress && { contractAddress },
-      ...tokenId && { tokenId },
+      ...(contractAddress && { contractAddress }),
+      ...(tokenId && { tokenId }),
     };
     const trailingUrl = `nft/${chainId}/${ethAddress}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -75,7 +90,7 @@ export default class Asset extends AinftBase {
     network: string,
     contractAddress: string,
     tokenId: string,
-    metadata: NftMetadata,
+    metadata: NftMetadata
   ): Promise<NftMetadata> {
     const body = { appId, metadata };
     const trailingUrl = `nft/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
@@ -92,30 +107,24 @@ export default class Asset extends AinftBase {
       appId,
       symbol,
       name,
-      ...maxSupply && { maxSupply },
-    }
-    const trailingUrl = 'credit';
+      ...(maxSupply && { maxSupply }),
+    };
+    const trailingUrl = "credit";
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  getAppCredit(
-    appId: string,
-    symbol: string,
-  ): Promise<AppCreditInfo> {
+  getAppCredit(appId: string, symbol: string): Promise<AppCreditInfo> {
     const query = {
       appId,
-    }
+    };
     const trailingUrl = `credit/${symbol}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  deleteAppCredit(
-    appId: string,
-    symbol: string,
-  ): Promise<void> {
+  deleteAppCredit(appId: string, symbol: string): Promise<void> {
     const query = {
       appId,
-    }
+    };
     const trailingUrl = `credit/${symbol}`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
@@ -125,13 +134,13 @@ export default class Asset extends AinftBase {
     symbol: string,
     to: string,
     amount: number,
-    payload?: object,
+    payload?: object
   ): Promise<void> {
     const body = {
       appId,
       to,
       amount,
-      ...payload && { payload },
+      ...(payload && { payload }),
     };
     const trailingUrl = `credit/${symbol}/mint`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
@@ -142,13 +151,13 @@ export default class Asset extends AinftBase {
     symbol: string,
     from: string,
     amount: number,
-    payload?: object,
+    payload?: object
   ): Promise<void> {
     const body = {
       appId,
       from,
       amount,
-      ...payload && { payload },
+      ...(payload && { payload }),
     };
     const trailingUrl = `credit/${symbol}/burn`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
@@ -161,33 +170,33 @@ export default class Asset extends AinftBase {
     from: string,
     to: string,
     amount: number,
-    payload?: object,
+    payload?: object
   ): Promise<void> {
     const body = {
       appId,
       from,
       to,
       amount,
-      ...payload && { payload },
+      ...(payload && { payload }),
     };
     const trailingUrl = `credit/${symbol}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
-  
+
   /**
    * You can request withdraw app credit to crypto wallet.
-   * @param {string} appId 
-   * @param {string} symbol 
-   * @param {string} userId 
-   * @param {number} amount 
-   * @param {string} userAddress 
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} userId
+   * @param {number} amount
+   * @param {string} userAddress
    */
   withdrawAppCredit(
     appId: string,
     symbol: string,
     userId: string,
     amount: number,
-    userAddress: string,
+    userAddress: string
   ): Promise<void> {
     const body = {
       appId,
@@ -201,14 +210,11 @@ export default class Asset extends AinftBase {
 
   /**
    * You can get withdrawal list applied by all users
-   * @param {string} appId 
-   * @param {string} symbol 
+   * @param {string} appId
+   * @param {string} symbol
    * @return {Promise<AppWithdrawList>} Return AppWithdrawList Object
    */
-  getWithdrawList(
-    appId: string,
-    symbol: string,
-  ): Promise<AppWithdrawList> {
+  getWithdrawList(appId: string, symbol: string): Promise<AppWithdrawList> {
     const query = { appId };
     const trailingUrl = `credit/${symbol}/withdraw`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -216,15 +222,15 @@ export default class Asset extends AinftBase {
 
   /**
    * You can get withdrawal list apllied by one user
-   * @param {string} appId 
-   * @param {string} symbol 
-   * @param {string} userId 
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} userId
    * @returns {Promise<UserWithdrawList>} Return UserWithdrawList Object
    */
   getWithdrawListByUserId(
     appId: string,
     symbol: string,
-    userId: string,
+    userId: string
   ): Promise<UserWithdrawList> {
     const query = { appId };
     const trailingUrl = `credit/${symbol}/withdraw/${userId}`;
@@ -233,9 +239,9 @@ export default class Asset extends AinftBase {
 
   /**
    * Get the user's credit balance
-   * @param {string} appId 
-   * @param {string} symbol 
-   * @param {string} userId 
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} userId
    * @returns {Promise<number>} A Promise that resolves to the credit balance of the user
    */
   getCreditBalanceOfUser(
@@ -250,14 +256,14 @@ export default class Asset extends AinftBase {
 
   /**
    * Get the credit balance of all users
-   * @param {string} appId 
-   * @param {string} symbol 
+   * @param {string} appId
+   * @param {string} symbol
    * @returns {Promise<{[userId: string]: number}>} A Promise that resolves to the credit balance of all users.
    */
   getCreditBalances(
     appId: string,
-    symbol: string,
-  ): Promise<{[userId: string]: number}> {
+    symbol: string
+  ): Promise<{ [userId: string]: number }> {
     const query = { appId };
     const trailingUrl = `credit/${symbol}/balance`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -265,16 +271,16 @@ export default class Asset extends AinftBase {
 
   /**
    * Reflect withdraws complete status to server after transfer tokens
-   * @param {string} appId 
-   * @param {string} symbol 
-   * @param {WithdrawRequestList} requestList 
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {WithdrawRequestList} requestList
    * @param {string} txHash Hash of transfer transaction
    */
   withdrawComplete(
     appId: string,
     symbol: string,
     requestList: WithdrawRequestList,
-    txHash: string,
+    txHash: string
   ): Promise<void> {
     const body = { appId, requestList, txHash };
     const trailingUrl = `credit/${symbol}/withdraw/complete`;
@@ -283,12 +289,12 @@ export default class Asset extends AinftBase {
 
   /**
    * You can restrict the user to leave a certain amount of credit
-   * @param {string} appId 
-   * @param {string} symbol 
-   * @param {string} userId 
-   * @param {number} amount 
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} userId
+   * @param {number} amount
    * @param {number} endAt
-   * @param {string} reason 
+   * @param {string} reason
    */
   lockupUserBalance(
     appId: string,
@@ -296,7 +302,7 @@ export default class Asset extends AinftBase {
     userId: string,
     amount: number,
     endAt: number,
-    reason?: string,
+    reason?: string
   ): Promise<void> {
     const body = {
       appId,
@@ -308,15 +314,15 @@ export default class Asset extends AinftBase {
     const trailingUrl = `credit/${symbol}/lockup`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
-  
+
   /**
- * Reflect withdraws complete status to server after transfer tokens
- * @param {string} appId
- * @param {DepositTransaction} transaction
- */
+   * Reflect withdraws complete status to server after transfer tokens
+   * @param {string} appId
+   * @param {DepositTransaction} transaction
+   */
   depositToken(appId: string, transaction: DepositTransaction): Promise<void> {
     const body = { appId, transaction };
-    const trailingUrl = `deposit/trnasaction`;
+    const trailingUrl = `deposit/transaction`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
