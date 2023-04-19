@@ -654,6 +654,6 @@ export interface DepositTransaction {
   contractAddress: string;
   from: string;
   to: string;
-  value: string;
+  value: number;
   txHash: string;
 }
