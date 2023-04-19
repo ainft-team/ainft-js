@@ -647,3 +647,13 @@ export interface WithdrawRequestList {
     };
   };
 }
+
+export interface DepositTransaction {
+  chain: string;
+  network: string;
+  contractAddress: string;
+  from: string;
+  to: string;
+  value: string;
+  txHash: string;
+}
