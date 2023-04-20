@@ -1,5 +1,6 @@
 import stringify = require("fast-json-stable-stringify");
 import { HttpMethod } from "./types";
+import { DEFAULT_NETWORK } from "./constants";
 
 export const buildData = (method: HttpMethod, path: string, timestamp: number, data: any) => {
   const _data: any = {
@@ -30,3 +31,7 @@ export function sleep(ms: number) {
     setTimeout(resolve, ms);
   });
 }
+
+export const getDefaultNetwork = (chain: string) => {
+  return DEFAULT_NETWORK[chain] || '';
+};
