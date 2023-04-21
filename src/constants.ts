@@ -10,17 +10,3 @@ export const AIN_BLOCKCHAIN_ENDPOINT = NODE_ENV === 'prod'
 export const AIN_BLOCKCHAIN_CHAINID = NODE_ENV === 'prod' ? 1 : 0;
 
 export const MIN_GAS_PRICE = 500;
-
-export const ETH_NETWORKS: { [chain: string]: string } = {
-  HOMESTEAD: 'homestead',
-  GOERLI: 'goerli',
-};
-export const SUPPORTED_CHAINS: { [chain: string]: string } = {
-  ETH: 'ETH',
-};
-export const SUPPORTED_NETWORKS: { [chain: string]: Array<string> } = {
-  ETH: [ETH_NETWORKS.HOMESTEAD, ETH_NETWORKS.GOERLI],
-};
-export const DEFAULT_NETWORK: { [chain: string]: string } = {
-  ETH: ETH_NETWORKS.HOMESTEAD,
-};
