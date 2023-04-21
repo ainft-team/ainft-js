@@ -190,7 +190,7 @@ export default class Auth extends AinftBase {
       appId,
       chain,
     };
-    const trailingUrl = `/user/${userId}/depositAddress`;
+    const trailingUrl = `user/${userId}/depositAddress`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
