@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
-import Asset from './asset';
+import Nft from './nft';
+import Credit from './credit';
 import Auth from './auth';
 import Discord from './discord';
 import Event from './event';
@@ -11,7 +12,8 @@ import Activity from './activity';
 
 export default class AinftJs {
   private baseUrl: string;
-  public asset: Asset;
+  public nft: Nft;
+  public credit: Credit;
   public auth: Auth;
   public discord: Discord;
   public event: Event;
@@ -26,7 +28,8 @@ export default class AinftJs {
     this.ain = new Ain(ainBlockchainEndpoint, chainId);
     this.setAccessKey(accessKey);
 
-    this.asset = new Asset(this.ain, this.baseUrl, '/asset');
+    this.nft = new Nft(this.ain, this.baseUrl, '/nft');
+    this.credit = new Credit(this.ain, this.baseUrl, '/credit');
     this.auth = new Auth(this.ain, this.baseUrl, '/auth');
     this.discord = new Discord(this.ain, this.baseUrl, '/discord');
     this.event = new Event(this.ain, this.baseUrl, '/event');
@@ -42,7 +45,8 @@ export default class AinftJs {
    */
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
-    this.asset.setBaseUrl(baseUrl);
+    this.nft.setBaseUrl(baseUrl);
+    this.credit.setBaseUrl(baseUrl);
     this.auth.setBaseUrl(baseUrl);
     this.discord.setBaseUrl(baseUrl);
     this.event.setBaseUrl(baseUrl);
