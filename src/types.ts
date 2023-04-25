@@ -715,3 +715,13 @@ export interface DepositTransaction {
   value: number;
   txHash: string;
 }
+
+export interface LockupInfo {
+  endAt: number;
+  amount: number;
+  reason: string;
+}
+
+export interface LockupList {
+  [lockupId: string]: LockupInfo;
+}
