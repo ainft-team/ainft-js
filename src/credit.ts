@@ -239,7 +239,7 @@ export default class Credit extends AinftBase {
   }
 
   /**
-   * You can get lockup list of user 
+   * Get's a user's lockup list.
    * @param {string} appId
    * @param {string} symbol
    * @param {string} userId
