@@ -6,6 +6,7 @@ import {
   UserWithdrawList,
   WithdrawRequestList,
   DepositTransaction,
+  LockupList,
 } from './types';
 
 // TODO(kriii): Objectify params?
@@ -235,6 +236,25 @@ export default class Credit extends AinftBase {
     };
     const trailingUrl = `symbol/${symbol}/lockup`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Get's a user's lockup list.
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} userId
+   * @returns
+   */
+  getUserLockupList(
+    appId: string,
+    symbol: string,
+    userId: string,
+  ): Promise<LockupList> {
+    const query = {
+      appId
+    };
+    const trailingUrl = `symbol/${symbol}/lockup/${userId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   /**
