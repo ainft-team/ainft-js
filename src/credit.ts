@@ -276,13 +276,13 @@ export default class Credit extends AinftBase {
    * @param {string} chain
    * @returns {Promise<DepositHistory[]>} Return depositHistory list of user
    */
-    getDepositHistory(
-      appId: string,
-      userId: string,
-      chain: string
-    ): Promise<DepositHistory[]> {
-      const body = { appId };
-      const trailingUrl = `deposit/transaction/${chain}/${userId}`;
-      return this.sendRequest(HttpMethod.GET, trailingUrl, body);
-    }
+  getDepositHistory(
+    appId: string,
+    userId: string,
+    chain: string
+  ): Promise<DepositHistory[]> {
+    const body = { appId };
+    const trailingUrl = `deposit/transaction/${chain}/${userId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, body);
+  }
 }
