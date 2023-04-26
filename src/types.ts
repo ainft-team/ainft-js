@@ -725,3 +725,15 @@ export interface LockupInfo {
 export interface LockupList {
   [lockupId: string]: LockupInfo;
 }
+
+export interface DepositHistory {
+  [txHash: string]: {
+    amount: number;
+    fromAddress: string;
+    status: string;
+    registeredAt: number;
+    symbol: string;
+    chain: string;
+    network: string;
+  };
+}[];
