@@ -269,12 +269,12 @@ export default class Credit extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-    /**
-   * send deposit transaction to nft server
+  /**
+   * Send deposit transaction to AINFT Server.
    * @param {string} appId
    * @param {string} userId
    * @param {string} chain
-   * @returns {Promise<DepositHistory[]>} Return depositHistory list of user
+   * @returns {Promise<DepositHistory[]>} Return depositHistory list of user.
    */
   getDepositHistory(
     appId: string,
