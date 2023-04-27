@@ -7,6 +7,7 @@ import {
   WithdrawRequestList,
   DepositTransaction,
   LockupList,
+  DepositHistory,
 } from './types';
 
 // TODO(kriii): Objectify params?
@@ -266,5 +267,22 @@ export default class Credit extends AinftBase {
     const body = { appId, transaction };
     const trailingUrl = `deposit/transaction`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Send deposit transaction to AINFT Server.
+   * @param {string} appId
+   * @param {string} userId
+   * @param {string} chain
+   * @returns {Promise<DepositHistory[]>} Return depositHistory list of user.
+   */
+  getDepositHistory(
+    appId: string,
+    userId: string,
+    chain: string
+  ): Promise<DepositHistory[]> {
+    const body = { appId };
+    const trailingUrl = `deposit/transaction/${chain}/${userId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, body);
   }
 }
