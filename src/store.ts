@@ -501,6 +501,7 @@ export default class Store extends AinftBase {
     storeId,
     itemName,
     chain,
+    network,
     nftContractAddress,
     nftTokenId,
   }: ItemTryOnParams): Promise<{ image: string; isOccupied: boolean }> {
@@ -509,6 +510,7 @@ export default class Store extends AinftBase {
       appId,
       userId,
       chain,
+      network,
       nftContractAddress,
       nftTokenId,
     };

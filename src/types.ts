@@ -101,6 +101,61 @@ export enum SchedulerID {
   LMS_DISCRETE = 'lms_discrete',
 }
 
+export interface AddNftSymbolParams {
+  appId: string;
+  chain: string;
+  network: string;
+  contractAddress: string;
+  options?: Record<string, any>;
+}
+
+export interface GetAppNftSymbolListParams {
+  appId: string;
+}
+
+export interface GetNftSymbolParams {
+  appId: string;
+  symbol: string;
+}
+
+export interface RemoveNftSymbolParams {
+  appId: string;
+  symbol: string;
+}
+
+export interface GetNftParams {
+  appId: string;
+  chain: string;
+  network: string;
+  contractAddress: string;
+  tokenId: string;
+}
+
+export interface GetNftContractInfoParams {
+  appId: string;
+  chain: string;
+  network: string;
+  contractAddress: string;
+}
+
+export interface GetUserNftListParams {
+  appId: string;
+  chain: string;
+  network: string;
+  userAddress: string;
+  contractAddress?: string;
+  tokenId?: string;
+}
+
+export interface SetNftMetadataParams {
+  appId: string;
+  chain: string;
+  network: string;
+  contractAddress: string;
+  tokenId: string;
+  metadata: NftMetadata;
+}
+
 export interface Account {
   address: string;
   privateKey: string;
@@ -413,6 +468,7 @@ export interface ItemTryOnParams {
   storeId: string,
   itemName: string,
   chain: string,
+  network: string,
   nftContractAddress: string,
   nftTokenId: string,
 };
@@ -577,6 +633,7 @@ export type NftTokens = {
 
 export type NftContractInfo = {
   chain: string,
+  network: string,
   name: string,
   symbol: string,
   contractAddress: string,
@@ -596,6 +653,7 @@ export type NftCollections = {
 
 export type NftContractBySymbol = {
   chain: string,
+  network: string,
   name: string,
   symbol: string,
   contractAddress: string,
@@ -657,3 +715,25 @@ export interface DepositTransaction {
   value: number;
   txHash: string;
 }
+
+export interface LockupInfo {
+  endAt: number;
+  amount: number;
+  reason: string;
+}
+
+export interface LockupList {
+  [lockupId: string]: LockupInfo;
+}
+
+export interface DepositHistory {
+  [txHash: string]: {
+    amount: number;
+    fromAddress: string;
+    status: string;
+    registeredAt: number;
+    symbol: string;
+    chain: string;
+    network: string;
+  };
+}[];

@@ -1,102 +1,17 @@
-import AinftBase from "./ainftBase";
+import AinftBase from './ainftBase';
 import {
   AppCreditInfo,
   HttpMethod,
-  NftContractBySymbol,
-  NftToken,
-  NftContractInfo,
-  NftCollections,
-  NftMetadata,
   AppWithdrawList,
   UserWithdrawList,
   WithdrawRequestList,
   DepositTransaction,
-} from "./types";
+  LockupList,
+  DepositHistory,
+} from './types';
 
-// TODO(kriii): Add network argument
-export default class Asset extends AinftBase {
-  addNftSymbol(
-    appId: string,
-    chain: string,
-    contractAddress: string,
-    options?: Record<string, any>
-  ): Promise<NftContractBySymbol> {
-    const body = { appId, chain, contractAddress, options };
-    const trailingUrl = "nft/symbol";
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
-  getAppNftSymbolList(appId: string): Promise<string[]> {
-    const query = { appId };
-    const trailingUrl = "nft/symbol";
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
-  }
-
-  getNftContractBySymbol(
-    appId: string,
-    symbol: string
-  ): Promise<NftContractBySymbol> {
-    const query = { appId, symbol: encodeURIComponent(symbol) };
-    const trailingUrl = "nft";
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
-  }
-
-  removeNftSymbol(appId: string, symbol: string): Promise<NftContractBySymbol> {
-    const query = { appId };
-    const trailingUrl = `nft/symbol/${symbol}`;
-    return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
-  }
-
-  getNft(
-    appId: string,
-    chainId: string,
-    contractAddress: string,
-    tokenId: string
-  ): Promise<NftToken> {
-    const query = { appId, contractAddress, tokenId };
-    const trailingUrl = `nft/${chainId}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
-  }
-
-  getNftContractInfo(
-    appId: string,
-    chainId: string,
-    contractAddress: string
-  ): Promise<NftContractInfo> {
-    const query = { appId, contractAddress };
-    const trailingUrl = `nft/${chainId}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
-  }
-
-  getUserNftList(
-    appId: string,
-    chainId: string,
-    ethAddress: string,
-    contractAddress?: string,
-    tokenId?: string
-  ): Promise<NftCollections> {
-    const query: any = {
-      appId,
-      ...(contractAddress && { contractAddress }),
-      ...(tokenId && { tokenId }),
-    };
-    const trailingUrl = `nft/${chainId}/${ethAddress}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
-  }
-
-  setNftMetadata(
-    appId: string,
-    chain: string,
-    network: string,
-    contractAddress: string,
-    tokenId: string,
-    metadata: NftMetadata
-  ): Promise<NftMetadata> {
-    const body = { appId, metadata };
-    const trailingUrl = `nft/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
+// TODO(kriii): Objectify params?
+export default class Credit extends AinftBase {
   createAppCredit(
     appId: string,
     symbol: string,
@@ -109,23 +24,29 @@ export default class Asset extends AinftBase {
       name,
       ...(maxSupply && { maxSupply }),
     };
-    const trailingUrl = "credit";
+    const trailingUrl = 'symbol';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  getAppCredit(appId: string, symbol: string): Promise<AppCreditInfo> {
+  getAppCredit(
+    appId: string,
+    symbol: string,
+  ): Promise<AppCreditInfo> {
     const query = {
       appId,
     };
-    const trailingUrl = `credit/${symbol}`;
+    const trailingUrl = `symbol/${symbol}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  deleteAppCredit(appId: string, symbol: string): Promise<void> {
+  deleteAppCredit(
+    appId: string,
+    symbol: string,
+  ): Promise<void> {
     const query = {
       appId,
     };
-    const trailingUrl = `credit/${symbol}`;
+    const trailingUrl = `symbol/${symbol}`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
@@ -134,7 +55,7 @@ export default class Asset extends AinftBase {
     symbol: string,
     to: string,
     amount: number,
-    payload?: object
+    payload?: object,
   ): Promise<void> {
     const body = {
       appId,
@@ -142,7 +63,7 @@ export default class Asset extends AinftBase {
       amount,
       ...(payload && { payload }),
     };
-    const trailingUrl = `credit/${symbol}/mint`;
+    const trailingUrl = `symbol/${symbol}/mint`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -151,7 +72,7 @@ export default class Asset extends AinftBase {
     symbol: string,
     from: string,
     amount: number,
-    payload?: object
+    payload?: object,
   ): Promise<void> {
     const body = {
       appId,
@@ -159,7 +80,7 @@ export default class Asset extends AinftBase {
       amount,
       ...(payload && { payload }),
     };
-    const trailingUrl = `credit/${symbol}/burn`;
+    const trailingUrl = `symbol/${symbol}/burn`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -170,7 +91,7 @@ export default class Asset extends AinftBase {
     from: string,
     to: string,
     amount: number,
-    payload?: object
+    payload?: object,
   ): Promise<void> {
     const body = {
       appId,
@@ -179,10 +100,10 @@ export default class Asset extends AinftBase {
       amount,
       ...(payload && { payload }),
     };
-    const trailingUrl = `credit/${symbol}/transfer`;
+    const trailingUrl = `symbol/${symbol}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
-
+  
   /**
    * You can request withdraw app credit to crypto wallet.
    * @param {string} appId
@@ -196,7 +117,7 @@ export default class Asset extends AinftBase {
     symbol: string,
     userId: string,
     amount: number,
-    userAddress: string
+    userAddress: string,
   ): Promise<void> {
     const body = {
       appId,
@@ -204,7 +125,7 @@ export default class Asset extends AinftBase {
       amount,
       userAddress,
     };
-    const trailingUrl = `credit/${symbol}/withdraw`;
+    const trailingUrl = `symbol/${symbol}/withdraw`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -214,9 +135,12 @@ export default class Asset extends AinftBase {
    * @param {string} symbol
    * @return {Promise<AppWithdrawList>} Return AppWithdrawList Object
    */
-  getWithdrawList(appId: string, symbol: string): Promise<AppWithdrawList> {
+  getWithdrawList(
+    appId: string,
+    symbol: string,
+  ): Promise<AppWithdrawList> {
     const query = { appId };
-    const trailingUrl = `credit/${symbol}/withdraw`;
+    const trailingUrl = `symbol/${symbol}/withdraw`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -230,10 +154,10 @@ export default class Asset extends AinftBase {
   getWithdrawListByUserId(
     appId: string,
     symbol: string,
-    userId: string
+    userId: string,
   ): Promise<UserWithdrawList> {
     const query = { appId };
-    const trailingUrl = `credit/${symbol}/withdraw/${userId}`;
+    const trailingUrl = `symbol/${symbol}/withdraw/${userId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -247,10 +171,10 @@ export default class Asset extends AinftBase {
   getCreditBalanceOfUser(
     appId: string,
     symbol: string,
-    userId: string
+    userId: string,
   ): Promise<number> {
     const query = { appId };
-    const trailingUrl = `credit/${symbol}/balance/${userId}`;
+    const trailingUrl = `symbol/${symbol}/balance/${userId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -262,10 +186,10 @@ export default class Asset extends AinftBase {
    */
   getCreditBalances(
     appId: string,
-    symbol: string
+    symbol: string,
   ): Promise<{ [userId: string]: number }> {
     const query = { appId };
-    const trailingUrl = `credit/${symbol}/balance`;
+    const trailingUrl = `symbol/${symbol}/balance`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -280,10 +204,10 @@ export default class Asset extends AinftBase {
     appId: string,
     symbol: string,
     requestList: WithdrawRequestList,
-    txHash: string
+    txHash: string,
   ): Promise<void> {
     const body = { appId, requestList, txHash };
-    const trailingUrl = `credit/${symbol}/withdraw/complete`;
+    const trailingUrl = `symbol/${symbol}/withdraw/complete`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -302,7 +226,7 @@ export default class Asset extends AinftBase {
     userId: string,
     amount: number,
     endAt: number,
-    reason?: string
+    reason?: string,
   ): Promise<void> {
     const body = {
       appId,
@@ -311,8 +235,27 @@ export default class Asset extends AinftBase {
       endAt,
       reason,
     };
-    const trailingUrl = `credit/${symbol}/lockup`;
+    const trailingUrl = `symbol/${symbol}/lockup`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Get's a user's lockup list.
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} userId
+   * @returns
+   */
+  getUserLockupList(
+    appId: string,
+    symbol: string,
+    userId: string,
+  ): Promise<LockupList> {
+    const query = {
+      appId
+    };
+    const trailingUrl = `symbol/${symbol}/lockup/${userId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   /**
@@ -324,5 +267,22 @@ export default class Asset extends AinftBase {
     const body = { appId, transaction };
     const trailingUrl = `deposit/transaction`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Send deposit transaction to AINFT Server.
+   * @param {string} appId
+   * @param {string} userId
+   * @param {string} chain
+   * @returns {Promise<DepositHistory[]>} Return depositHistory list of user.
+   */
+  getDepositHistory(
+    appId: string,
+    userId: string,
+    chain: string
+  ): Promise<DepositHistory[]> {
+    const body = { appId };
+    const trailingUrl = `deposit/transaction/${chain}/${userId}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, body);
   }
 }
