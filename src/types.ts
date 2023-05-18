@@ -714,6 +714,7 @@ export interface DepositTransaction {
   to: string;
   value: number;
   txHash: string;
+  blockNumber: number;
 }
 
 export interface LockupInfo {
