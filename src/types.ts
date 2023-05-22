@@ -73,6 +73,18 @@ export enum ItemGiveStatus {
   FAILED = 'FAILED',
 };
 
+export enum itemType {
+  TICKET = 'TICKET',
+  NFT_TRAIT = 'NFT_TRAIT',
+  NFT = 'NFT',
+};
+
+export type UseItemReturnType = {
+  [itemType.TICKET]: Promise<void>,
+  [itemType.NFT_TRAIT]: Promise<NftMetadata>,
+  [itemType.NFT]: Promise<string>,
+};
+
 // Text to Art
 export enum ResponseStatus {
   PENDING = 'pending',

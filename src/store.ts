@@ -22,6 +22,8 @@ import {
   NftMetadata,
   Item,
   ItemGiveHistory,
+  itemType,
+  UseItemReturnType,
 } from './types';
 
 export default class Store extends AinftBase {
@@ -520,21 +522,22 @@ export default class Store extends AinftBase {
 
   /**
    * Uses an item
+   * @template T - The itemType.
    * @param {ItemUseParams} ItemUseParams - Parameters for using an item.
    * @param {string} ItemUseParams.appId - The ID of the app.
    * @param {string} ItemUseParams.userId - The ID of the user.
    * @param {string} ItemUseParams.itemName - The name of the item.
    * @param {number} ItemUseParams.quantity - The quantity of item to use.
    * @param {object=} ItemUseParams.params - The parameters to send when using the item. It mainly contains NFT information.
-   * @returns {Promise<NftMetadata | null>} - A promise that returns the metadata of the used NFT or null if the item is not an NFT trait.
+   * @returns {UseItemReturnType[T]} - A Promise representing the retrieved item. The return type is determined based on the itemType.
    */
-  useItem({
+  useItem<T extends itemType>({
     appId,
     userId,
     itemName,
     quantity,
     params,
-  }: ItemUseParams): Promise<NftMetadata | null> {
+  }: ItemUseParams): UseItemReturnType[T] {
     const encodedItemName = encodeURIComponent(itemName);
     const body = {
       appId,
