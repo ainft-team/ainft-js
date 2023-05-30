@@ -1,3 +1,4 @@
+import { TransactionInput } from '@ainblockchain/ain-js/lib/types';
 import AinftBase from './ainftBase';
 import {
     HttpMethod,
@@ -13,7 +14,11 @@ import {
     GetUserNftListParams,
     NftCollections,
     SetNftMetadataParams,
-    NftMetadata
+    NftMetadata,
+    CreateNftCollectionParams,
+    MintNftParams,
+    NftSearchOption,
+    TransferNftParams
 } from './types';
 
 export default class Nft extends AinftBase {
@@ -29,9 +34,7 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  getAppNftSymbolList({
-    appId,
-  }: GetAppNftSymbolListParams): Promise<string[]> {
+  getAppNftSymbolList({ appId }: GetAppNftSymbolListParams): Promise<string[]> {
     const query = { appId };
     const trailingUrl = 'symbol';
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -88,8 +91,8 @@ export default class Nft extends AinftBase {
   }: GetUserNftListParams): Promise<NftCollections> {
     const query: any = {
       appId,
-      ...contractAddress && { contractAddress },
-      ...tokenId && { tokenId },
+      ...(contractAddress && { contractAddress }),
+      ...(tokenId && { tokenId }),
     };
     const trailingUrl = `info/${chain}/${network}/${userAddress}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -107,4 +110,84 @@ export default class Nft extends AinftBase {
     const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
+
+  createNftCollection({
+    address,
+    chain,
+    network,
+    appId,
+    collectionId,
+    symbol,
+    name,
+    connectWhitelist,
+  }: CreateNftCollectionParams): Promise<TransactionInput> {
+    const body = {
+      address,
+      chain,
+      network,
+      appId,
+      collectionId,
+      symbol,
+      name,
+      connectWhitelist,
+    };
+    const trailingUrl = `create`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  mintNft({
+    address,
+    chain,
+    network,
+    appId,
+    collectionId,
+    metadata,
+    toAddress,
+    tokenId,
+  }: MintNftParams): Promise<TransactionInput> {
+    const body = {
+      address,
+      chain,
+      network,
+      appId,
+      collectionId,
+      metadata,
+      toAddress,
+      tokenId,
+    };
+    const trailingUrl = `mint`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  searchNft({
+    address,
+    appId,
+    collectionId,
+  }: NftSearchOption): Promise<NftToken[]> {
+    const query = { address, appId, collectionId };
+    const trailingUrl = `search`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  transferNft({
+    address,
+    chain,
+    network,
+    appId,
+    collectionId,
+    tokenId,
+    toAddress,
+  }: TransferNftParams): Promise<TransactionInput> {
+    const body = {
+      address,
+      chain,
+      network,
+      appId,
+      collectionId,
+      tokenId,
+      toAddress,
+    };
+    const trailingUrl = `transfer`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  };
 }

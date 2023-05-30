@@ -749,3 +749,41 @@ export interface DepositHistory {
     network: string;
   };
 }[];
+
+export interface CreateNftCollectionParams {
+  address: string;
+  chain: string;
+  network: string;
+  appId: string;
+  collectionId: string;
+  symbol: string;
+  name: string;
+  connectWhitelist?: string[]; //TODO(hyeonwoong): Need more design.
+}
+
+export interface MintNftParams {
+  address: string;
+  chain: string;
+  network: string;
+  appId: string;
+  collectionId: string;
+  metadata: object;
+  toAddress: string;
+  tokenId?: number;
+}
+
+export interface NftSearchOption {
+  address?: string;
+  appId?: string;
+  collectionId?: string;
+}
+
+export interface TransferNftParams {
+  address: string;
+  chain: string;
+  network: string;
+  appId: string;
+  collectionId: string;
+  tokenId: number;
+  toAddress: string;
+}
