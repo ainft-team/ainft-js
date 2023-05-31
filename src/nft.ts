@@ -17,7 +17,7 @@ import {
     NftMetadata,
     CreateNftCollectionParams,
     MintNftParams,
-    NftSearchOption,
+    SearchNftOption,
     TransferNftParams
 } from './types';
 
@@ -156,7 +156,7 @@ export default class Nft extends AinftBase {
     address,
     appId,
     collectionId,
-  }: NftSearchOption): Promise<NftToken[]> {
+  }: SearchNftOption): Promise<NftToken[]> {
     const query = { address, appId, collectionId };
     const trailingUrl = `native/search`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -177,5 +177,5 @@ export default class Nft extends AinftBase {
     };
     const trailingUrl = `native/${appId}/${chain}/${network}/${collectionId}/${tokenId}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  };
+  }
 }

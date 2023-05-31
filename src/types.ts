@@ -772,7 +772,7 @@ export interface MintNftParams {
   tokenId?: number;
 }
 
-export interface NftSearchOption {
+export interface SearchNftOption {
   address?: string;
   appId?: string;
   collectionId?: string;
