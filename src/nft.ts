@@ -123,15 +123,12 @@ export default class Nft extends AinftBase {
   }: CreateNftCollectionParams): Promise<TransactionInput> {
     const body = {
       address,
-      chain,
-      network,
-      appId,
       collectionId,
       symbol,
       name,
       connectWhitelist,
     };
-    const trailingUrl = `create`;
+    const trailingUrl = `native/${appId}/${chain}/${network}/collection`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -147,15 +144,11 @@ export default class Nft extends AinftBase {
   }: MintNftParams): Promise<TransactionInput> {
     const body = {
       address,
-      chain,
-      network,
-      appId,
-      collectionId,
       metadata,
       toAddress,
       tokenId,
     };
-    const trailingUrl = `mint`;
+    const trailingUrl = `native/${appId}/${chain}/${network}/${collectionId}/mint`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -165,7 +158,7 @@ export default class Nft extends AinftBase {
     collectionId,
   }: NftSearchOption): Promise<NftToken[]> {
     const query = { address, appId, collectionId };
-    const trailingUrl = `search`;
+    const trailingUrl = `native/search`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -180,14 +173,9 @@ export default class Nft extends AinftBase {
   }: TransferNftParams): Promise<TransactionInput> {
     const body = {
       address,
-      chain,
-      network,
-      appId,
-      collectionId,
-      tokenId,
       toAddress,
     };
-    const trailingUrl = `transfer`;
+    const trailingUrl = `native/${appId}/${chain}/${network}/${collectionId}/${tokenId}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   };
 }
