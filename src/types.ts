@@ -583,6 +583,7 @@ export interface PurchaseHistory {
   buyer: string;
   quantity: number;
   payment: number;
+  name: string;
   currency: string;
   createdAt: number;
   status: PurchaseStatus;
@@ -605,6 +606,7 @@ export interface ItemHistory {
   appId: string,
   userId: string,
   type: string,
+  name: string,
   subtype: string,
   value: string,
   quantity: number,
