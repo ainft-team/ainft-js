@@ -73,6 +73,18 @@ export enum ItemGiveStatus {
   FAILED = 'FAILED',
 };
 
+export enum itemType {
+  TICKET = 'TICKET',
+  NFT_TRAIT = 'NFT_TRAIT',
+  NFT = 'NFT',
+};
+
+export type UseItemReturnType = {
+  [itemType.TICKET]: Promise<void>,
+  [itemType.NFT_TRAIT]: Promise<NftMetadata>,
+  [itemType.NFT]: Promise<string>,
+};
+
 // Text to Art
 export enum ResponseStatus {
   PENDING = 'pending',
@@ -571,6 +583,7 @@ export interface PurchaseHistory {
   buyer: string;
   quantity: number;
   payment: number;
+  name: string;
   currency: string;
   createdAt: number;
   status: PurchaseStatus;
@@ -593,6 +606,7 @@ export interface ItemHistory {
   appId: string,
   userId: string,
   type: string,
+  name: string,
   subtype: string,
   value: string,
   quantity: number,
@@ -612,12 +626,11 @@ export type History<Type> = {
 }
 
 export type NftMetadata = {
-  name: string;
-  description: string;
-  image: string;
-  attributes: object[];
-  equipped_traits?: { [subtype: string]: string };
-  original_traits?: { [subtype: string]: string };
+  name?: string;
+  description?: string;
+  image?: string;
+  attributes?: object[];
+  [additionalFields: string]: any;
 };
 
 export type NftToken = {
@@ -714,6 +727,7 @@ export interface DepositTransaction {
   to: string;
   value: number;
   txHash: string;
+  blockNumber: number;
 }
 
 export interface LockupInfo {
@@ -737,3 +751,41 @@ export interface DepositHistory {
     network: string;
   };
 }[];
+
+export interface CreateNftCollectionParams {
+  address: string;
+  chain: string;
+  network: string;
+  appId: string;
+  collectionId: string;
+  symbol: string;
+  name: string;
+  connectWhitelist?: string[]; //TODO(hyeonwoong): Need more design.
+}
+
+export interface MintNftParams {
+  address: string;
+  chain: string;
+  network: string;
+  appId: string;
+  collectionId: string;
+  metadata: object;
+  toAddress: string;
+  tokenId?: number;
+}
+
+export interface SearchNftOption {
+  address?: string;
+  appId?: string;
+  collectionId?: string;
+}
+
+export interface TransferNftParams {
+  address: string;
+  chain: string;
+  network: string;
+  appId: string;
+  collectionId: string;
+  tokenId: number;
+  toAddress: string;
+}
