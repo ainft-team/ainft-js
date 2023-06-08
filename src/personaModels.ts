@@ -1,5 +1,5 @@
 import AinftBase from './ainftBase';
-import { HttpMethod, CreatePersonaModelInfo, ChatResponse } from './types';
+import { HttpMethod, CreatePersonaModelInfo, ChatResponse, PersonaModelCreditInfo } from './types';
 
 export default class PersonaModels extends AinftBase {
   create(
@@ -34,5 +34,14 @@ export default class PersonaModels extends AinftBase {
     };
     const trailingUrl = 'chat';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  getCreditInfo(
+    appId: string,
+    modelId: string,
+  ): Promise<PersonaModelCreditInfo | null> {
+    const query = { appId };
+    const trailingUrl = `${modelId}/credit`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 }
