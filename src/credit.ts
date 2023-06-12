@@ -109,6 +109,7 @@ export default class Credit extends AinftBase {
    * @param {string} appId
    * @param {string} symbol
    * @param {string} userId
+   * @param {string} chain
    * @param {number} amount
    * @param {string} userAddress
    */
@@ -116,12 +117,14 @@ export default class Credit extends AinftBase {
     appId: string,
     symbol: string,
     userId: string,
+    chain: string,
     amount: number,
     userAddress: string,
   ): Promise<void> {
     const body = {
       appId,
       userId,
+      chain,
       amount,
       userAddress,
     };
