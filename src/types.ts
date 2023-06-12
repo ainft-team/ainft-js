@@ -702,8 +702,10 @@ export interface WithdrawInfo {
 }
 
 export interface UserWithdrawList {
-  [ethAddress: string]: {
-    [requestKey: string]: WithdrawInfo;
+  [chain: string]: {
+    [userAddress: string]: {
+      [requestId: string]: WithdrawInfo;
+    };
   };
 }
 
@@ -713,8 +715,10 @@ export interface AppWithdrawList {
 
 export interface WithdrawRequestList {
   [userId: string]: {
-    [ethAddress: string]: {
-      [requestId: string]: number;
+    [chain: string]: {
+      [userAddress: string]: {
+        [requestId: string]: number;
+      };
     };
   };
 }
