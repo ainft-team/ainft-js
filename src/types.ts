@@ -316,6 +316,11 @@ export interface ServerPersonaModelInfo {
   [channelId: string]: ChannelPersonaModelInfo;
 }
 
+export interface PersonaModelCreditInfo {
+  symbol: string;
+  burnAmount: number;
+};
+
 export interface TextToArtParams {
   prompt: string,
   negative_prompt: string,
