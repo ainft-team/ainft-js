@@ -32,6 +32,10 @@ export enum NftActivityType {
   NFT_CUSTOMIZATION = 'NFT_CUSTOMIZATION'
 }
 
+export enum ActivityType {
+  PROMPT = 'PROMPT',
+}
+
 export enum Platforms {
   DISCORD = 'DISCORD'
 }

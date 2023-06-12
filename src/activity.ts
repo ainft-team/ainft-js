@@ -1,5 +1,5 @@
 import AinftBase from "./ainftBase";
-import { ActivityNftInfo, HttpMethod, NftActivityType, TaskTypeCategory } from "./types";
+import { ActivityNftInfo, ActivityType, HttpMethod, NftActivityType, TaskTypeCategory } from "./types";
 
 export default class Activity extends AinftBase {
   /**
@@ -14,7 +14,7 @@ export default class Activity extends AinftBase {
     appId: string,
     userId: string,
     data: any,
-    activityType: TaskTypeCategory | NftActivityType,
+    activityType: TaskTypeCategory | NftActivityType | ActivityType,
     nftInfo?: ActivityNftInfo
   ) {
     const body = {
