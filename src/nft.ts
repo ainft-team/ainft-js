@@ -156,8 +156,10 @@ export default class Nft extends AinftBase {
     address,
     appId,
     collectionId,
+    chain,
+    network,
   }: SearchNftOption): Promise<NftToken[]> {
-    const query = { address, appId, collectionId };
+    const query = { address, appId, collectionId, chain, network };
     const trailingUrl = `native/search`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
