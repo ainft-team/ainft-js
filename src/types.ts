@@ -787,6 +787,8 @@ export interface SearchNftOption {
   address?: string;
   appId?: string;
   collectionId?: string;
+  chain: string;
+  network: string;
 }
 
 export interface TransferNftParams {
