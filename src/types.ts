@@ -761,6 +761,10 @@ export interface DepositHistory {
   };
 }[];
 
+export interface TokenUpdatePermission {
+  collectionOwner: boolean;
+  tokenOwner: boolean;
+}
 export interface CreateNftCollectionParams {
   address: string;
   chain: string;
@@ -770,6 +774,7 @@ export interface CreateNftCollectionParams {
   symbol: string;
   name: string;
   connectWhitelist?: string[]; //TODO(hyeonwoong): Need more design.
+  tokenUpdatePermission?: TokenUpdatePermission;
 }
 
 export interface MintNftParams {
