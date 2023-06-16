@@ -2,10 +2,10 @@ import AinftBase from './ainftBase';
 import { MIN_GAS_PRICE } from './constants';
 import { HttpMethod, User } from './types';
 export default class Auth extends AinftBase {
-  async initializeApp(appId: string, userId: string): Promise<void> {
+  async initializeApp(appId: string, userId: string, owners?: string[]): Promise<void> {
     console.log('Starting app initialization... This may take up to a minute.');
     const accessKey = this.ain.wallet.defaultAccount?.address!;
-    const createAppRes = await this.createApp(appId, userId, accessKey);
+    const createAppRes = await this.createApp(appId, userId, accessKey, owners);
     console.log(`create app tx hash - ${createAppRes.txHash}`);
 
     const stakeRes = await this.initialStake(appId, userId);
@@ -15,8 +15,8 @@ export default class Auth extends AinftBase {
     console.log(`set rule tx hash - ${setRuleRes.txHash}`);
   }
 
-  createApp(appId: string, userId: string, accessKey: string) {
-    const body = { appId, userId, accessKey };
+  createApp(appId: string, userId: string, accessKey: string, owners?: string[]) {
+    const body = { appId, userId, accessKey, owners };
     const trailingUrl = 'create_app';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
