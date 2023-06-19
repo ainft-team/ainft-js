@@ -193,4 +193,22 @@ export default class Auth extends AinftBase {
     const trailingUrl = `user/${userId}/depositAddress`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
+
+  /**
+   * You can add blockchain app owners.
+   * @param {string} appId 
+   * @param {string[]} owners 
+   * @returns {string} transaction hash
+   */
+  addOwners(
+    appId: string,
+    owners: string[],
+  ): Promise<string> {
+    const body = {
+      appId,
+      owners,
+    };
+    const trailingUrl = `app/${appId}/owner`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
 }
