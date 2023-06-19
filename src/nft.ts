@@ -120,6 +120,7 @@ export default class Nft extends AinftBase {
     symbol,
     name,
     connectWhitelist,
+    tokenUpdatePermission
   }: CreateNftCollectionParams): Promise<TransactionInput> {
     const body = {
       address,
@@ -127,6 +128,7 @@ export default class Nft extends AinftBase {
       symbol,
       name,
       connectWhitelist,
+      tokenUpdatePermission,
     };
     const trailingUrl = `native/${appId}/${chain}/${network}/collection`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
