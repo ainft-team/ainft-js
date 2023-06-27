@@ -273,7 +273,7 @@ export default class Credit extends AinftBase {
   }
 
   /**
-   * Send deposit transaction to AINFT Server.
+   * Get user's deposit history.
    * @param {string} appId
    * @param {string} userId
    * @param {string} chain
