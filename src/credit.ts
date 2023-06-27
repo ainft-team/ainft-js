@@ -273,18 +273,19 @@ export default class Credit extends AinftBase {
   }
 
   /**
-   * Send deposit transaction to AINFT Server.
+   * Get user's deposit history.
    * @param {string} appId
    * @param {string} userId
    * @param {string} chain
-   * @returns {Promise<DepositHistory[]>} Return depositHistory list of user.
+   * @returns {Promise<DepositHistory>} Return depositHistory list of user.
    */
   getDepositHistory(
     appId: string,
     userId: string,
-  ): Promise<DepositHistory[]> {
-    const body = { appId };
+    chain?: string,
+  ): Promise<DepositHistory> {
+    const query = { appId, chain };
     const trailingUrl = `deposit/history/${userId}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, body);
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 }

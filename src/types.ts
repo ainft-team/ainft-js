@@ -749,17 +749,19 @@ export interface LockupList {
   [lockupId: string]: LockupInfo;
 }
 
+export interface DepositHistoryInfo {
+  amount: number;
+  fromAddress: string;
+  status: string;
+  registeredAt: number;
+  symbol: string;
+  chain: string;
+  network: string;
+};
+
 export interface DepositHistory {
-  [txHash: string]: {
-    amount: number;
-    fromAddress: string;
-    status: string;
-    registeredAt: number;
-    symbol: string;
-    chain: string;
-    network: string;
-  };
-}[];
+  [txHash: string]: DepositHistoryInfo;
+};
 
 export interface TokenUpdatePermission {
   collectionOwner: boolean;
