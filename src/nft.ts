@@ -105,8 +105,10 @@ export default class Nft extends AinftBase {
     contractAddress,
     tokenId,
     metadata,
+    ownerAddress,
+    imageData
   }: SetNftMetadataParams): Promise<NftMetadata> {
-    const body = { appId, metadata };
+    const body = { appId, metadata, ownerAddress, imageData };
     const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }

@@ -166,6 +166,8 @@ export interface SetNftMetadataParams {
   contractAddress: string;
   tokenId: string;
   metadata: NftMetadata;
+  ownerAddress?: string;
+  imageData?: any;
 }
 
 export interface Account {
