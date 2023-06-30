@@ -105,8 +105,10 @@ export default class Nft extends AinftBase {
     contractAddress,
     tokenId,
     metadata,
+    ownerAddress,
+    imageData
   }: SetNftMetadataParams): Promise<NftMetadata> {
-    const body = { appId, metadata };
+    const body = { appId, metadata, ownerAddress, imageData };
     const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
@@ -120,6 +122,7 @@ export default class Nft extends AinftBase {
     symbol,
     name,
     connectWhitelist,
+    tokenUpdatePermission
   }: CreateNftCollectionParams): Promise<TransactionInput> {
     const body = {
       address,
@@ -127,6 +130,7 @@ export default class Nft extends AinftBase {
       symbol,
       name,
       connectWhitelist,
+      tokenUpdatePermission,
     };
     const trailingUrl = `native/${appId}/${chain}/${network}/collection`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
@@ -156,8 +160,10 @@ export default class Nft extends AinftBase {
     address,
     appId,
     collectionId,
+    chain,
+    network,
   }: SearchNftOption): Promise<NftToken[]> {
-    const query = { address, appId, collectionId };
+    const query = { address, appId, collectionId, chain, network };
     const trailingUrl = `native/search`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }

@@ -166,6 +166,8 @@ export interface SetNftMetadataParams {
   contractAddress: string;
   tokenId: string;
   metadata: NftMetadata;
+  ownerAddress?: string;
+  imageData?: any;
 }
 
 export interface Account {
@@ -315,6 +317,11 @@ export interface ChannelPersonaModelInfo {
 export interface ServerPersonaModelInfo {
   [channelId: string]: ChannelPersonaModelInfo;
 }
+
+export interface PersonaModelCreditInfo {
+  symbol: string;
+  burnAmount: number;
+};
 
 export interface TextToArtParams {
   prompt: string,
@@ -702,8 +709,10 @@ export interface WithdrawInfo {
 }
 
 export interface UserWithdrawList {
-  [ethAddress: string]: {
-    [requestKey: string]: WithdrawInfo;
+  [chain: string]: {
+    [userAddress: string]: {
+      [requestId: string]: WithdrawInfo;
+    };
   };
 }
 
@@ -713,8 +722,10 @@ export interface AppWithdrawList {
 
 export interface WithdrawRequestList {
   [userId: string]: {
-    [ethAddress: string]: {
-      [requestId: string]: number;
+    [chain: string]: {
+      [userAddress: string]: {
+        [requestId: string]: number;
+      };
     };
   };
 }
@@ -740,18 +751,24 @@ export interface LockupList {
   [lockupId: string]: LockupInfo;
 }
 
-export interface DepositHistory {
-  [txHash: string]: {
-    amount: number;
-    fromAddress: string;
-    status: string;
-    registeredAt: number;
-    symbol: string;
-    chain: string;
-    network: string;
-  };
-}[];
+export interface DepositHistoryInfo {
+  amount: number;
+  fromAddress: string;
+  status: string;
+  registeredAt: number;
+  symbol: string;
+  chain: string;
+  network: string;
+};
 
+export interface DepositHistory {
+  [txHash: string]: DepositHistoryInfo;
+};
+
+export interface TokenUpdatePermission {
+  collectionOwner: boolean;
+  tokenOwner: boolean;
+}
 export interface CreateNftCollectionParams {
   address: string;
   chain: string;
@@ -761,6 +778,7 @@ export interface CreateNftCollectionParams {
   symbol: string;
   name: string;
   connectWhitelist?: string[]; //TODO(hyeonwoong): Need more design.
+  tokenUpdatePermission?: TokenUpdatePermission;
 }
 
 export interface MintNftParams {
@@ -778,6 +796,8 @@ export interface SearchNftOption {
   address?: string;
   appId?: string;
   collectionId?: string;
+  chain: string;
+  network: string;
 }
 
 export interface TransferNftParams {
