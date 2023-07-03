@@ -118,62 +118,28 @@ export default class Auth extends AinftBase {
 
   async registerBlockchainApp(
     appId: string,
-    userId: string,
     accessAinAddress?: string
   ) {
     const ownerAddress = this.ain.wallet.defaultAccount?.address;
     const body = {
       appId,
-      userId,
       ownerAddress,
       accessAinAddress,
     };
     const trailingUrl = `register_blockchain_app`;
-    const { adminAddress, txHash } = await this.sendRequest(
-      HttpMethod.POST,
-      trailingUrl,
-      body
-    );
-
-    console.log(
-      `The gas fee for setting the admin account as the owner of blockchain app has been sent.`
-    );
-    await this.waitTransaction(txHash, 3);
-
-    const setOwnerRes = await this.setOwner(appId, adminAddress);
-    if (setOwnerRes.result.code !== 0) {
-      console.log(
-        'Failed to set nft server admin address as owner. Please check fail response.'
-      );
-      console.log(setOwnerRes);
-    } else {
-      const msg =
-        'You have successfully registered your blockchain app to the nft server.\n' +
-        `txHash: ${setOwnerRes.tx_hash}\n\n` +
-        'Apps created outside the nft server do not support initial staking. If you would like an initial staking, please contact the ainftJs team.\n\n' +
-        'For smooth use of ainftJs, it is recommended to use the following function.\n' +
-        '- ainftJs.auth.setBlockchainActivityRule';
-      console.log(msg);
-    }
+    return await this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  private setOwner(appId: string, address: string) {
-    return this.ain.db.ref(`/apps/${appId}`).setOwner({
-      value: {
-        '.owner': {
-          owners: {
-            [address]: {
-              branch_owner: true,
-              write_function: true,
-              write_owner: true,
-              write_rule: true,
-            },
-          },
-        },
-      },
-      nonce: -1,
-      gas_price: MIN_GAS_PRICE,
-    });
+  async getDelegateAppTxBody(appId: string) {
+    const address = this.ain.wallet.defaultAccount?.address;
+    const body = { appId, address };
+    const trailingUrl = `delegate`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  async delegateApp(appId: string) {
+    const txBody = await this.getDelegateAppTxBody(appId);
+    return this.ain.sendTransaction(txBody);
   }
 
   /**
