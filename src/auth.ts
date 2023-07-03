@@ -1,24 +1,26 @@
 import AinftBase from './ainftBase';
-import { MIN_GAS_PRICE } from './constants';
+import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from './constants';
 import { HttpMethod, User } from './types';
 export default class Auth extends AinftBase {
-  async initializeApp(appId: string, userId: string, owners?: string[]): Promise<void> {
-    console.log('Starting app initialization... This may take up to a minute.');
-    const accessKey = this.ain.wallet.defaultAccount?.address!;
-    const createAppRes = await this.createApp(appId, userId, accessKey, owners);
-    console.log(`create app tx hash - ${createAppRes.txHash}`);
+  async createApp(appId: string) {
+    const address = this.ain.wallet.defaultAccount?.address!;
+    const res = await this.ain.db.ref(`/manage_app/${appId}/create/${Date.now()}`).setValue({
+      value: {
+        admin: {
+          [address]: true,
+        },
+        service: {
+          staking: {
+            lockup_duration: APP_STAKING_LOCKUP_DURATION_MS,
+          },
+        },
+      },
+      nonce: -1,
+      address,
+      gas_price: MIN_GAS_PRICE,
+    });
 
-    const stakeRes = await this.initialStake(appId, userId);
-    console.log(`stake tx hash - ${stakeRes.txHash}`);
-
-    const setRuleRes = await this.setBlockchainActivityRule(appId);
-    console.log(`set rule tx hash - ${setRuleRes.txHash}`);
-  }
-
-  createApp(appId: string, userId: string, accessKey: string, owners?: string[]) {
-    const body = { appId, userId, accessKey, owners };
-    const trailingUrl = 'create_app';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    return res;
   }
 
   /**
