@@ -769,7 +769,8 @@ export interface TokenUpdatePermission {
   collectionOwner: boolean;
   tokenOwner: boolean;
 }
-export interface CreateNftCollectionParams {
+
+export interface getTxBodyCreateNftCollectionParams {
   address: string;
   chain: string;
   network: string;
@@ -781,7 +782,9 @@ export interface CreateNftCollectionParams {
   tokenUpdatePermission?: TokenUpdatePermission;
 }
 
-export interface MintNftParams {
+export interface CreateNftCollectionParams extends Omit<getTxBodyCreateNftCollectionParams, 'address'> {}
+  
+export interface getTxBodyMintNftParams {
   address: string;
   chain: string;
   network: string;
@@ -792,6 +795,8 @@ export interface MintNftParams {
   tokenId?: number;
 }
 
+export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {}
+
 export interface SearchNftOption {
   address?: string;
   appId?: string;
@@ -800,8 +805,8 @@ export interface SearchNftOption {
   network: string;
 }
 
-export interface TransferNftParams {
-  address: string;
+export interface getTxBodyTransferNftParams {
+  address?: string;
   chain: string;
   network: string;
   appId: string;
@@ -809,3 +814,5 @@ export interface TransferNftParams {
   tokenId: number;
   toAddress: string;
 }
+
+export interface TransferNftParams extends Omit<getTxBodyTransferNftParams, 'address'> {}
