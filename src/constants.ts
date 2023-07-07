@@ -10,4 +10,4 @@ export const AIN_BLOCKCHAIN_ENDPOINT = NODE_ENV === 'prod'
 export const AIN_BLOCKCHAIN_CHAINID = NODE_ENV === 'prod' ? 1 : 0;
 
 export const MIN_GAS_PRICE = 500;
-export const APP_STAKING_LOCKUP_DURATION_MS = 3600 * 24 * 7 * 1000 // 1 week
+export const APP_STAKING_LOCKUP_DURATION_MS = 30 * 1000 // 30 seconds
