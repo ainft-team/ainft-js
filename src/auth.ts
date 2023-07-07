@@ -133,7 +133,7 @@ export default class Auth extends AinftBase {
   async getDelegateAppTxBody(appId: string) {
     const address = this.ain.wallet.defaultAccount?.address;
     const body = { appId, address };
-    const trailingUrl = `delegate`;
+    const trailingUrl = `delegate_app`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
