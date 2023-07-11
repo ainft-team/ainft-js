@@ -18,7 +18,9 @@ import {
     CreateNftCollectionParams,
     MintNftParams,
     SearchNftOption,
-    TransferNftParams
+    TransferNftParams,
+    UploadAssetFromDataUrlParams,
+    UploadAssetFromBufferParams
 } from './types';
 
 export default class Nft extends AinftBase {
@@ -182,6 +184,39 @@ export default class Nft extends AinftBase {
       toAddress,
     };
     const trailingUrl = `native/${appId}/${chain}/${network}/${collectionId}/${tokenId}/transfer`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  uploadAsset({
+    appId,
+    filename,
+    buffer,
+    filePath
+  }: UploadAssetFromBufferParams): Promise<TransactionInput> {
+    const trailingUrl = `asset/${appId}`;
+    return this.sendFormRequest(HttpMethod.POST, trailingUrl, {
+      appId, ...(filePath && {filePath})
+    }, {
+      asset: {
+        filename,
+        buffer
+      }
+    });
+  }
+
+  uploadAssetWithDataUrl({
+    appId,
+    filename,
+    dataUrl,
+    filePath
+  }: UploadAssetFromDataUrlParams): Promise<TransactionInput> {
+    const body = {
+      appId,
+      filename,
+      dataUrl,
+      filePath
+    };
+    const trailingUrl = `asset/${appId}`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }

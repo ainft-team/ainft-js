@@ -809,3 +809,18 @@ export interface TransferNftParams {
   tokenId: number;
   toAddress: string;
 }
+
+export interface UploadAssetParams {
+  appId: string;
+  filePath?: string;
+}
+
+export interface UploadAssetFromBufferParams extends UploadAssetParams {
+  filename: string;
+  buffer: Buffer;
+}
+
+export interface UploadAssetFromDataUrlParams extends UploadAssetParams {
+  filename: string;
+  dataUrl: string;
+}

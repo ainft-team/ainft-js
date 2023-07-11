@@ -3,6 +3,7 @@ import stringify = require("fast-json-stable-stringify");
 import axios from "axios";
 import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types";
 import { buildData, isJoiError, sleep } from "./util";
+import FormData from "form-data";
 
 export default class AinftBase {
   public baseUrl = '';
@@ -59,6 +60,50 @@ export default class AinftBase {
       } else {
         throw Error(`Invalid http method: ${method}`);
       } 
+    } catch (err: any) {
+      if (isJoiError(err)) {
+        throw err.response?.data?.details[0];
+      } else if (axios.isAxiosError(err)) {
+        throw err.response?.data;
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  async sendFormRequest(method: HttpMethod.POST | HttpMethod.PUT, trailingUrl: string, stringFields: {
+    [key: string]: string
+  }, fileFields: {
+    [key: string]: {
+      filename: string;
+      buffer: Buffer
+    }
+  }) {  
+    const timestamp = Date.now();
+    const form = new FormData();
+    Object.entries(stringFields).forEach(([key, value]) => {
+      form.append(key, value);
+    })
+    Object.entries(fileFields).forEach(([key, { filename, buffer }]) => {
+      form.append(key, buffer, filename);
+    })
+    const dataForSignature = buildData(
+      method,
+      `${this.route}/${trailingUrl}`,
+      timestamp,
+      stringFields
+    );
+    const signature = this.signData(dataForSignature);
+    const headers = {
+      'X-AINFT-Date': timestamp,
+      Authorization: `AINFT ${signature}`,
+      ...form.getHeaders()
+    };
+    try {
+      const { data: receivedData }: SerializedMessage = (await axios[HttpMethodToAxiosMethod[method]](
+        `${this.baseUrl}/${trailingUrl}`, form, { headers }
+      )).data;
+      return receivedData;
     } catch (err: any) {
       if (isJoiError(err)) {
         throw err.response?.data?.details[0];
