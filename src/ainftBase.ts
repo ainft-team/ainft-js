@@ -33,7 +33,7 @@ export default class AinftBase {
     return this.ain.wallet.sign(data);
   }
 
-  async sendRequest(method: HttpMethod, trailingUrl: string, data: any) {  
+  async sendRequest(method: HttpMethod, trailingUrl: string, data?: Record<string, any>) {  
     const timestamp = Date.now();
     const dataForSignature = buildData(
       method,

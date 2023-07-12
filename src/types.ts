@@ -812,15 +812,18 @@ export interface TransferNftParams {
 
 export interface UploadAssetParams {
   appId: string;
-  filePath?: string;
+  filePath: string;
 }
 
 export interface UploadAssetFromBufferParams extends UploadAssetParams {
-  filename: string;
   buffer: Buffer;
 }
 
 export interface UploadAssetFromDataUrlParams extends UploadAssetParams {
-  filename: string;
   dataUrl: string;
+}
+
+export interface DeleteAssetParams {
+  appId: string;
+  filePath: string;
 }
