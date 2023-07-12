@@ -21,7 +21,8 @@ import {
     TransferNftParams,
     getTxBodyCreateNftCollectionParams,
     getTxBodyMintNftParams,
-    getTxBodyTransferNftParams
+    getTxBodyTransferNftParams,
+    getTxBodySetNftMetadataParams
 } from './types';
 
 export default class Nft extends AinftBase {
@@ -101,7 +102,33 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  setNftMetadata({
+  async setNftMetadata({
+    appId,
+    chain,
+    network,
+    contractAddress,
+    tokenId,
+    metadata,
+  }: SetNftMetadataParams): Promise<NftMetadata> {
+    if (chain === 'AIN') {
+      const txBody = await this.getTxBodyForSetNftMetadata({
+        appId,
+        chain,
+        network,
+        contractAddress,
+        tokenId,
+        metadata,
+        ownerAddress: this.ain.wallet.defaultAccount?.address!,
+      });
+      return this.ain.sendTransaction(txBody);
+    } else {
+      const body = { appId, metadata };
+      const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+      return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    }
+  }
+
+  getTxBodyForSetNftMetadata({
     appId,
     chain,
     network,
@@ -109,12 +136,11 @@ export default class Nft extends AinftBase {
     tokenId,
     metadata,
     ownerAddress,
-    imageData,
-  }: SetNftMetadataParams): Promise<NftMetadata> {
-    const body = { appId, metadata, ownerAddress, imageData };
+  }: getTxBodySetNftMetadataParams) {
+    const body = { appId, metadata, ownerAddress };
     const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
+  };
 
   async createNftCollection({
     chain,
