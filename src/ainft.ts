@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
+import * as AinUtil from '@ainblockchain/ain-util';
 import Nft from './nft';
 import Credit from './credit';
 import Auth from './auth';
@@ -90,6 +91,10 @@ export default class AinftJs {
    */
   async getStatus(): Promise<{ health: boolean }> {
     return (await axios.get(`${this.baseUrl}/status`)).data;
+  }
+
+  static createAccount() {
+    return AinUtil.createAccount();
   }
 
   private getStage(endpoint: string) {
