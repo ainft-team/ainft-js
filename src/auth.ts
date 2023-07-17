@@ -31,16 +31,6 @@ export default class Auth extends AinftBase {
   }
 
   /**
-   * A function that stakes all initial ains. Use it if staking is not done after intializeApp.
-   */
-  // TODO(hyeonwoong): Add stake API with the user's personal account
-  initialStake(appId: string, userId: string) {
-    const body = { appId, userId };
-    const trailingUrl = 'initial_stake';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
-  /**
    * Create AINFT Factory user in app.
    * @param {string} appId
    * @param {string} userId
@@ -64,12 +54,6 @@ export default class Auth extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
   // TODO(hyeonwoong): add registerUserToAdmin and deregisterUserFromAdmin
-
-  setBlockchainActivityRule(appId: string) {
-    const body = { appId };
-    const trailingUrl = 'ain_rule/activity';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
 
   /**
    * Get user in app.
