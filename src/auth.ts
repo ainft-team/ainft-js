@@ -4,7 +4,7 @@ import { HttpMethod, User } from './types';
 export default class Auth extends AinftBase {
   /**
    * Create AIN Blockchain app using private key.
-   * @param appId - AppId you want.
+   * @param {string} appId - AppId you want.
    * @returns
    */
   async createApp(appId: string) {
@@ -42,8 +42,8 @@ export default class Auth extends AinftBase {
 
   /**
    * Create AINFT Factory user in app.
-   * @param appId
-   * @param userId
+   * @param {string} appId
+   * @param {string} userId
    * @returns
    */
   createUser(appId: string, userId: string): Promise<User> {
@@ -54,8 +54,8 @@ export default class Auth extends AinftBase {
 
   /**
    * Create AINFT Factory admin user in app.
-   * @param appId
-   * @param userId
+   * @param {string} appId
+   * @param {string} userId
    * @returns
    */
   createAdmin(appId: string, userId: string): Promise<User> {
@@ -73,8 +73,8 @@ export default class Auth extends AinftBase {
 
   /**
    * Get user in app.
-   * @param appId
-   * @param userId
+   * @param {string} appId
+   * @param {string} userId
    * @returns
    */
   getUser(appId: string, userId: string): Promise<User> {
@@ -85,9 +85,9 @@ export default class Auth extends AinftBase {
 
   /**
    * Add ETH address info to user.
-   * @param appId
-   * @param userId
-   * @param ethAddress
+   * @param {string} appId
+   * @param {string} userId
+   * @param {string} ethAddress
    * @returns
    */
   addUserEthAddress(
@@ -105,9 +105,9 @@ export default class Auth extends AinftBase {
 
   /**
    * Remove ETH address info from user.
-   * @param appId
-   * @param userId
-   * @param ethAddress
+   * @param {string} appId
+   * @param {string} userId
+   * @param {string} ethAddress
    * @returns
    */
   removeUserEthAddress(
@@ -125,10 +125,10 @@ export default class Auth extends AinftBase {
 
   /**
    * Register contract to managed contract. By registering as a managed contract, metadata can be managed in AINFT Factory.
-   * @param appId
-   * @param chain
-   * @param network
-   * @param contractAddress
+   * @param {string} appId
+   * @param {string} chain
+   * @param {string} network
+   * @param {string} contractAddress
    * @returns
    */
   addManagedContract(
@@ -149,10 +149,10 @@ export default class Auth extends AinftBase {
 
   /**
    * Remove managed contract.
-   * @param appId
-   * @param chain
-   * @param network
-   * @param contractAddress
+   * @param {string} appId
+   * @param {string} chain
+   * @param {string} network
+   * @param {string} contractAddress
    * @returns
    */
   removeManagedContract(
@@ -173,8 +173,8 @@ export default class Auth extends AinftBase {
 
   /**
    * Register exsiting AIN blockchain app to AINFT Factory.
-   * @param appId
-   * @param accessAinAddress - This is the address of the account that can access the AINFT Factory app. If not set, it is set to the address of the account set as the privateKey.
+   * @param {string} appId
+   * @param {string} accessAinAddress - This is the address of the account that can access the AINFT Factory app. If not set, it is set to the address of the account set as the privateKey.
    * @returns
    */
   async registerBlockchainApp(appId: string, accessAinAddress?: string) {
@@ -191,7 +191,7 @@ export default class Auth extends AinftBase {
   /**
    * Get transaction body to delegate app.
    * App permission is obtained from ainft factory, and trigger function for ainft is registered.
-   * @param appId
+   * @param {string} appId
    * @returns
    */
   async getTxBodyForDelegateApp(appId: string) {
@@ -204,7 +204,7 @@ export default class Auth extends AinftBase {
   /**
    * Send transaction to delegate app using private key.
    * App permission is obtained from ainft factory, and trigger function for ainft is registered.
-   * @param appId
+   * @param {string} appId
    * @returns
    */
   async delegateApp(appId: string) {
