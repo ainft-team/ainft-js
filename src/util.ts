@@ -30,3 +30,7 @@ export function sleep(ms: number) {
     setTimeout(resolve, ms);
   });
 }
+
+export function serializeEndpoint(endpoint: string) {
+  return endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint;
+}

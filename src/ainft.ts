@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
+import * as AinUtil from '@ainblockchain/ain-util';
 import Nft from './nft';
 import Credit from './credit';
 import Auth from './auth';
@@ -9,6 +10,8 @@ import Store from './store';
 import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
+import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT } from './constants';
+import { serializeEndpoint } from './util';
 
 export default class AinftJs {
   private baseUrl: string;
@@ -23,10 +26,18 @@ export default class AinftJs {
   public textToArt: TextToArt;
   public activity: Activity;
 
-  constructor(accessKey: string, nftServerEndpoint: string, ainBlockchainEndpoint: string, chainId: 0 | 1) {
-    this.baseUrl = nftServerEndpoint;
-    this.ain = new Ain(ainBlockchainEndpoint, chainId);
-    this.setAccessKey(accessKey);
+  constructor(
+    privateKey: string,
+    ainftServerEndpoint: string,
+    ainBlockchainEndpoint?: string,
+    chainId?: number,
+  ) {
+    const _ainftServerEndpoint = serializeEndpoint(ainftServerEndpoint);
+    const stage = this.getStage(_ainftServerEndpoint);
+
+    this.baseUrl = _ainftServerEndpoint;
+    this.ain = new Ain(ainBlockchainEndpoint || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId || AIN_BLOCKCHAIN_CHAINID[stage]);
+    this.setPrivateKey(privateKey);
 
     this.nft = new Nft(this.ain, this.baseUrl, '/nft');
     this.credit = new Credit(this.ain, this.baseUrl, '/credit');
@@ -57,6 +68,19 @@ export default class AinftJs {
   }
 
   /**
+   * Set AIN blockchain network info
+   * @param providerUrl
+   * @param chainId
+   */
+  setAiNetworkInfo(
+    providerUrl: string,
+    chainId: number,
+    axiosConfig?: any
+  ) {
+    this.ain.setProvider(providerUrl, chainId, axiosConfig);
+  }
+
+  /**
    * Return the currently registered Access Account.
    * @returns
    */
@@ -65,13 +89,13 @@ export default class AinftJs {
   }
 
   /**
-   * Set a new accessKey. From now on, you can access the apps that match your new accessKey.
-   * @param accessKey
+   * Set a new privateKey. From now on, you can access the apps that match your new privateKey.
+   * @param privateKey
    */
-  setAccessKey(accessKey: string) {
+  setPrivateKey(privateKey: string) {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
-    this.ain.wallet.addAndSetDefaultAccount(accessKey);
+    this.ain.wallet.addAndSetDefaultAccount(privateKey);
   }
 
   /**
@@ -80,6 +104,17 @@ export default class AinftJs {
    */
   async getStatus(): Promise<{ health: boolean }> {
     return (await axios.get(`${this.baseUrl}/status`)).data;
+  }
+
+  static createAccount() {
+    return AinUtil.createAccount();
+  }
+
+  private getStage(endpoint: string) {
+    if (AINFT_SERVER_ENDPOINT.prod === endpoint) {
+      return 'prod';
+    }
+    return 'dev';
   }
 }
 
