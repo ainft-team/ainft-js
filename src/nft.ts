@@ -28,7 +28,7 @@ import {
 export default class Nft extends AinftBase {
   /**
    * Add nfy symbol. You can add nft to reference in your factory activity.
-   * @param param0
+   * @param {AddNftSymbolParams} AddNftSymbolParams
    * @returns
    */
   addNftSymbol({
@@ -45,7 +45,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Get nft symbol list in app.
-   * @param param0
+   * @param {GetAppNftSymbolListParams} GetAppNftSymbolListParams
    * @returns
    */
   getAppNftSymbolList({ appId }: GetAppNftSymbolListParams): Promise<string[]> {
@@ -56,7 +56,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Remove nft symbol in app.
-   * @param param0
+   * @param {RemoveNftSymbolParams} RemoveNftSymbolParams
    * @returns
    */
   removeNftSymbol({
@@ -70,7 +70,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Get nft contract info by symbol.
-   * @param param0
+   * @param {GetNftSymbolParams} GetNftSymbolParams
    * @returns
    */
   getNftSymbol({
@@ -85,7 +85,7 @@ export default class Nft extends AinftBase {
   /**
    * Get nft info by chain, network, contractAddress and tokenId.
    * Symbol must be added.
-   * @param param0
+   * @param {GetNftParams} GetNftParams
    * @returns
    */
   getNft({
@@ -103,7 +103,7 @@ export default class Nft extends AinftBase {
   /**
    * Get nft contract info by chain, network and contractAddress.
    * Symbol must be added
-   * @param param0
+   * @param {GetNftContractInfoParams} GetNftContractInfoParams
    * @returns
    */
   getNftContractInfo({
@@ -119,7 +119,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Get nft list by user address.
-   * @param param0
+   * @param {GetUserNftListParams} GetUserNftListParams
    * @returns
    */
   getUserNftList({
@@ -141,7 +141,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Set managed nft metadata. If the chain is AIN, the transaction must be sent to the ain blockchain. Please set an appropriate privateKey.
-   * @param param0
+   * @param {SetNftMetadataParams} SetNftMetadataParams
    * @returns
    */
   async setNftMetadata({
@@ -173,7 +173,7 @@ export default class Nft extends AinftBase {
   /**
    * Get transaction body to set nft metadata in ain blockchain.
    * Currently, only support AIN chain.
-   * @param param0
+   * @param {getTxBodySetNftMetadataParams} getTxBodySetNftMetadataParams
    * @returns
    */
   getTxBodyForSetNftMetadata({
@@ -192,7 +192,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Create nft collection in ain blockchain. You can modify metadata setting permission through tokenUpdatePermission.
-   * @param param0
+   * @param {CreateNftCollectionParams} CreateNftCollectionParams
    * @returns
    */
   async createNftCollection({
@@ -221,7 +221,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Mint the nft of the created collection.
-   * @param param0
+   * @param {MintNftParams} MintNftParams
    * @returns
    */
   async mintNft({
@@ -248,7 +248,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Search nfts created on the ain blockchain. You can use user address, collectionId, and appId as search filters.
-   * @param param0
+   * @param {SearchNftOption} SearchNftOption
    * @returns
    */
   searchNft({
@@ -265,7 +265,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Transfer nft created on the ain blockchain to others.
-   * @param param0
+   * @param {TransferNftParams} TransferNftParams
    * @returns
    */
   async transferNft({
@@ -290,7 +290,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Get transaction body to create nft collection. Sending the transaction must be done manually.
-   * @param param0
+   * @param {getTxBodyCreateNftCollectionParams} getTxBodyCreateNftCollectionParams
    * @returns
    */
   getTxBodyForCreateNftCollection({
@@ -318,7 +318,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Get transaction body to mint nft. Sending the transaction must be done manually.
-   * @param param0
+   * @param {getTxBodyMintNftParams} getTxBodyMintNftParams
    * @returns
    */
   getTxBodyForMintNft({
@@ -343,7 +343,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Get transaction body to transfer nft. Sending the transaction must be done manually.
-   * @param param0
+   * @param {getTxBodyTransferNftParams} getTxBodyTransferNftParams
    * @returns
    */
   getTxBodyForTransferNft({
