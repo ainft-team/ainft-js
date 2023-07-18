@@ -815,4 +815,22 @@ export interface getTxBodyTransferNftParams {
   toAddress: string;
 }
 
+export interface UploadAssetParams {
+  appId: string;
+  filePath: string;
+}
+
+export interface UploadAssetFromBufferParams extends UploadAssetParams {
+  buffer: Buffer;
+}
+
+export interface UploadAssetFromDataUrlParams extends UploadAssetParams {
+  dataUrl: string;
+}
+
+export interface DeleteAssetParams {
+  appId: string;
+  filePath: string;
+}
+
 export interface TransferNftParams extends Omit<getTxBodyTransferNftParams, 'address'> {}

@@ -19,6 +19,9 @@ import {
     MintNftParams,
     SearchNftOption,
     TransferNftParams,
+    UploadAssetFromDataUrlParams,
+    UploadAssetFromBufferParams,
+    DeleteAssetParams,
     getTxBodyCreateNftCollectionParams,
     getTxBodyMintNftParams,
     getTxBodyTransferNftParams,
@@ -278,5 +281,59 @@ export default class Nft extends AinftBase {
     };
     const trailingUrl = `native/${appId}/${chain}/${network}/${collectionId}/${tokenId}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Upload the asset file using the buffer.
+   * @param {UploadAssetFromBufferParams} UploadAssetFromBufferParams 
+   * @returns {Promise<string>} Return the asset url.
+   */
+  uploadAsset({
+    appId,
+    buffer,
+    filePath
+  }: UploadAssetFromBufferParams): Promise<string> {
+    const trailingUrl = `asset/${appId}`;
+    return this.sendFormRequest(HttpMethod.POST, trailingUrl, {
+      appId,
+      filePath
+    }, {
+      asset: {
+        filename: filePath,
+        buffer
+      }
+    });
+  }
+
+  /**
+   * Upload the asset file using the data url.
+   * @param {UploadAssetFromDataUrlParams} UploadAssetFromDataUrlParams 
+   * @returns {Promise<string>} Return the asset url.
+   */
+  uploadAssetWithDataUrl({
+    appId,
+    dataUrl,
+    filePath
+  }: UploadAssetFromDataUrlParams): Promise<string> {
+    const body = {
+      appId,
+      dataUrl,
+      filePath
+    };
+    const trailingUrl = `asset/${appId}`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Delete the asset you uploaded.
+   * @param {DeleteAssetParams} DeleteAssetParams 
+   */
+  deleteAsset({
+    appId,
+    filePath
+  }: DeleteAssetParams): Promise<void> {
+    const encodeFilePath = encodeURIComponent(filePath)
+    const trailingUrl = `asset/${appId}/${encodeFilePath}`;
+    return this.sendRequest(HttpMethod.DELETE, trailingUrl);
   }
 }

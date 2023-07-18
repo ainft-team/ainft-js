@@ -28,6 +28,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^27.4.1",
+    "@types/form-data": "^2.5.0",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "typedoc": "^0.23.17",
@@ -40,6 +41,7 @@
     "@ainblockchain/ain-js": "^1.4.0",
     "@ainblockchain/ain-util": "^1.1.9",
     "axios": "^0.26.1",
-    "fast-json-stable-stringify": "^2.1.0"
+    "fast-json-stable-stringify": "^2.1.0",
+    "form-data": "^4.0.0"
   }
 }
