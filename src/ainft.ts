@@ -30,7 +30,7 @@ export default class AinftJs {
     privateKey: string,
     ainftServerEndpoint: string,
     ainBlockchainEndpoint?: string,
-    chainId?: 0 | 1
+    chainId?: number,
   ) {
     const _ainftServerEndpoint = serializeEndpoint(ainftServerEndpoint);
     const stage = this.getStage(_ainftServerEndpoint);
@@ -65,6 +65,19 @@ export default class AinftJs {
     this.personaModels.setBaseUrl(baseUrl);
     this.textToArt.setBaseUrl(baseUrl);
     this.activity.setBaseUrl(baseUrl);
+  }
+
+  /**
+   * Set AIN blockchain network info
+   * @param providerUrl
+   * @param chainId
+   */
+  setAiNetworkInfo(
+    providerUrl: string,
+    chainId: number,
+    axiosConfig?: any
+  ) {
+    this.ain.setProvider(providerUrl, chainId, axiosConfig);
   }
 
   /**
