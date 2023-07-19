@@ -12,6 +12,14 @@ import {
 
 // TODO(kriii): Objectify params?
 export default class Credit extends AinftBase {
+  /**
+   * Create app credit. 
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} name
+   * @param {number} maxSupply
+   * @returns
+   */
   createAppCredit(
     appId: string,
     symbol: string,
@@ -28,10 +36,13 @@ export default class Credit extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  getAppCredit(
-    appId: string,
-    symbol: string,
-  ): Promise<AppCreditInfo> {
+  /**
+   * Get app credit info.
+   * @param {string} appId
+   * @param {string} symbol
+   * @returns
+   */
+  getAppCredit(appId: string, symbol: string): Promise<AppCreditInfo> {
     const query = {
       appId,
     };
@@ -39,10 +50,13 @@ export default class Credit extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  deleteAppCredit(
-    appId: string,
-    symbol: string,
-  ): Promise<void> {
+  /**
+   * Delete app credit.
+   * @param {string} appId
+   * @param {string} symbol
+   * @returns
+   */
+  deleteAppCredit(appId: string, symbol: string): Promise<void> {
     const query = {
       appId,
     };
@@ -50,12 +64,21 @@ export default class Credit extends AinftBase {
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
+  /**
+   * Mint app credit to user.
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} to
+   * @param {number} amount
+   * @param {object} payload
+   * @returns
+   */
   mintAppCredit(
     appId: string,
     symbol: string,
     to: string,
     amount: number,
-    payload?: object,
+    payload?: object
   ): Promise<void> {
     const body = {
       appId,
@@ -67,12 +90,21 @@ export default class Credit extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * Burn credit app from user.
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} from
+   * @param {number} amount
+   * @param {object} payload
+   * @returns
+   */
   burnAppCredit(
     appId: string,
     symbol: string,
     from: string,
     amount: number,
-    payload?: object,
+    payload?: object
   ): Promise<void> {
     const body = {
       appId,
@@ -85,13 +117,23 @@ export default class Credit extends AinftBase {
   }
 
   // NOTE(liayoo): calling this function will create a user if the recipient ('to') doesn't exist.
+  /**
+   * Transfer app credit to user.
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {string} from
+   * @param {string} to
+   * @param {number} amount
+   * @param {object} payload
+   * @returns
+   */
   transferAppCredit(
     appId: string,
     symbol: string,
     from: string,
     to: string,
     amount: number,
-    payload?: object,
+    payload?: object
   ): Promise<void> {
     const body = {
       appId,
@@ -103,7 +145,7 @@ export default class Credit extends AinftBase {
     const trailingUrl = `symbol/${symbol}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
-  
+
   /**
    * You can request withdraw app credit to crypto wallet.
    * @param {string} appId
@@ -138,10 +180,7 @@ export default class Credit extends AinftBase {
    * @param {string} symbol
    * @return {Promise<AppWithdrawList>} Return AppWithdrawList Object
    */
-  getWithdrawList(
-    appId: string,
-    symbol: string,
-  ): Promise<AppWithdrawList> {
+  getWithdrawList(appId: string, symbol: string): Promise<AppWithdrawList> {
     const query = { appId };
     const trailingUrl = `symbol/${symbol}/withdraw`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -255,7 +294,7 @@ export default class Credit extends AinftBase {
     userId: string,
   ): Promise<LockupList> {
     const query = {
-      appId
+      appId,
     };
     const trailingUrl = `symbol/${symbol}/lockup/${userId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
