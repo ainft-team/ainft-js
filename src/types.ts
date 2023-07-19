@@ -163,12 +163,16 @@ export interface getTxBodySetNftMetadataParams {
   appId: string;
   chain: string;
   network: string;
-  contractAddress: string;
+  collectionId: string;
   tokenId: string;
   metadata: NftMetadata;
   ownerAddress: string;
 }
-export interface SetNftMetadataParams extends Omit<getTxBodySetNftMetadataParams, 'ownerAddress'> {};
+export interface SetNftMetadataParams
+  extends Omit<getTxBodySetNftMetadataParams, 'ownerAddress' | 'collectionId'> {
+  contractAddress?: string;
+  collectionId?: string;
+};
 
 export interface Account {
   address: string;
