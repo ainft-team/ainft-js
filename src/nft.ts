@@ -124,6 +124,11 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Get nft list in the collection.
+   * @param {GetNftsInCollectionParams} GetNftsInCollectionParams
+   * @returns
+   */
   getNftsInCollection({
     chain,
     network,
@@ -135,11 +140,6 @@ export default class Nft extends AinftBase {
     collectionId,
     appId,
   }: GetNftsInAinCollectionParams): Promise<NftTokens> // FIXME(ehgmsdk20): Define type for AINFTs
-  /**
-   * Get nft list in the collection.
-   * @param {GetNftsInCollectionParams} GetNftsInCollectionParams
-   * @returns
-   */
   getNftsInCollection({
     chain,
     network,
