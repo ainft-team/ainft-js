@@ -150,6 +150,22 @@ export interface GetNftContractInfoParams {
   contractAddress: string;
 }
 
+export interface GetNftsInCollectionParams {
+  chain: string;
+  network: string;
+  collectionId: string;
+  appId?: string;
+}
+
+export interface GetNftsInEthContractParams extends Omit<GetNftsInCollectionParams, 'appId'> {
+  chain: "ETH",
+}
+
+export interface GetNftsInAinCollectionParams extends GetNftsInCollectionParams {
+  chain: "AIN",
+  appId: string,
+}
+
 export interface GetUserNftListParams {
   appId: string;
   chain: string;
