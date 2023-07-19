@@ -163,8 +163,7 @@ export interface getTxBodySetNftMetadataParams {
   appId: string;
   chain: string;
   network: string;
-  collectionId?: string;
-  contractAddress?: string;
+  contractAddress: string;
   tokenId: string;
   metadata: NftMetadata;
   ownerAddress: string;
