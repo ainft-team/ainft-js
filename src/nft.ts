@@ -25,7 +25,9 @@ import {
     getTxBodyCreateNftCollectionParams,
     getTxBodyMintNftParams,
     getTxBodyTransferNftParams,
-    getTxBodySetNftMetadataParams
+    getTxBodySetNftMetadataParams,
+    SetAinNftMetadataParams,
+    SetETHNftMetadataParams
 } from './types';
 
 export default class Nft extends AinftBase {
@@ -151,13 +153,30 @@ export default class Nft extends AinftBase {
     appId,
     chain,
     network,
+    collectionId,
+    tokenId,
+    metadata,
+  }: SetAinNftMetadataParams): Promise<any>;
+  async setNftMetadata({
+    appId,
+    chain,
+    network,
+    contractAddress,
+    tokenId,
+    metadata,
+  }: SetETHNftMetadataParams): Promise<NftMetadata>;
+  async setNftMetadata({
+    appId,
+    chain,
+    network,
     contractAddress,
     collectionId,
     tokenId,
     metadata,
-  }: SetNftMetadataParams): Promise<NftMetadata> {
+  }: SetNftMetadataParams): Promise<NftMetadata | any> {
     let _collectionId = collectionId || contractAddress;
-    if (!_collectionId) throw Error("collectionId or contractAdress is required");
+    if (!_collectionId)
+      throw Error('collectionId or contractAdress is required');
     if (chain === 'AIN') {
       const txBody = await this.getTxBodyForSetNftMetadata({
         appId,
