@@ -144,6 +144,7 @@ export default class Nft extends AinftBase {
 
   /**
    * Set managed nft metadata. If the chain is AIN, the transaction must be sent to the ain blockchain. Please set an appropriate privateKey.
+   * You must enter collectionId or contractAddress. If both are entered, the collectionId is used.
    * @param {SetNftMetadataParams} SetNftMetadataParams
    * @returns
    */
@@ -151,16 +152,18 @@ export default class Nft extends AinftBase {
     appId,
     chain,
     network,
+    collectionId,
     contractAddress,
     tokenId,
     metadata,
   }: SetNftMetadataParams): Promise<NftMetadata> {
+    const _collectionId = collectionId || contractAddress;
     if (chain === 'AIN') {
       const txBody = await this.getTxBodyForSetNftMetadata({
         appId,
         chain,
         network,
-        contractAddress,
+        collectionId: _collectionId,
         tokenId,
         metadata,
         ownerAddress: this.ain.wallet.defaultAccount?.address!,
@@ -168,7 +171,7 @@ export default class Nft extends AinftBase {
       return this.ain.sendTransaction(txBody);
     } else {
       const body = { appId, metadata };
-      const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+      const trailingUrl = `info/${chain}/${network}/${_collectionId}/${tokenId}/metadata`;
       return this.sendRequest(HttpMethod.POST, trailingUrl, body);
     }
   }
@@ -183,13 +186,13 @@ export default class Nft extends AinftBase {
     appId,
     chain,
     network,
-    contractAddress,
+    collectionId,
     tokenId,
     metadata,
     ownerAddress,
   }: getTxBodySetNftMetadataParams) {
     const body = { appId, metadata, ownerAddress };
-    const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+    const trailingUrl = `info/${chain}/${network}/${collectionId}/${tokenId}/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -368,40 +371,45 @@ export default class Nft extends AinftBase {
 
   /**
    * Upload the asset file using the buffer.
-   * @param {UploadAssetFromBufferParams} UploadAssetFromBufferParams 
+   * @param {UploadAssetFromBufferParams} UploadAssetFromBufferParams
    * @returns {Promise<string>} Return the asset url.
    */
   uploadAsset({
     appId,
     buffer,
-    filePath
+    filePath,
   }: UploadAssetFromBufferParams): Promise<string> {
     const trailingUrl = `asset/${appId}`;
-    return this.sendFormRequest(HttpMethod.POST, trailingUrl, {
-      appId,
-      filePath
-    }, {
-      asset: {
-        filename: filePath,
-        buffer
+    return this.sendFormRequest(
+      HttpMethod.POST,
+      trailingUrl,
+      {
+        appId,
+        filePath,
+      },
+      {
+        asset: {
+          filename: filePath,
+          buffer,
+        },
       }
-    });
+    );
   }
 
   /**
    * Upload the asset file using the data url.
-   * @param {UploadAssetFromDataUrlParams} UploadAssetFromDataUrlParams 
+   * @param {UploadAssetFromDataUrlParams} UploadAssetFromDataUrlParams
    * @returns {Promise<string>} Return the asset url.
    */
   uploadAssetWithDataUrl({
     appId,
     dataUrl,
-    filePath
+    filePath,
   }: UploadAssetFromDataUrlParams): Promise<string> {
     const body = {
       appId,
       dataUrl,
-      filePath
+      filePath,
     };
     const trailingUrl = `asset/${appId}`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
@@ -409,13 +417,10 @@ export default class Nft extends AinftBase {
 
   /**
    * Delete the asset you uploaded.
-   * @param {DeleteAssetParams} DeleteAssetParams 
+   * @param {DeleteAssetParams} DeleteAssetParams
    */
-  deleteAsset({
-    appId,
-    filePath
-  }: DeleteAssetParams): Promise<void> {
-    const encodeFilePath = encodeURIComponent(filePath)
+  deleteAsset({ appId, filePath }: DeleteAssetParams): Promise<void> {
+    const encodeFilePath = encodeURIComponent(filePath);
     const trailingUrl = `asset/${appId}/${encodeFilePath}`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl);
   }
