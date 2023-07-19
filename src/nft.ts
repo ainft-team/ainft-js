@@ -29,6 +29,11 @@ import {
 } from './types';
 
 export default class Nft extends AinftBase {
+  /**
+   * Add nfy symbol. You can add nft to reference in your factory activity.
+   * @param {AddNftSymbolParams} AddNftSymbolParams
+   * @returns
+   */
   addNftSymbol({
     appId,
     chain,
@@ -41,12 +46,22 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * Get nft symbol list in app.
+   * @param {GetAppNftSymbolListParams} GetAppNftSymbolListParams
+   * @returns
+   */
   getAppNftSymbolList({ appId }: GetAppNftSymbolListParams): Promise<string[]> {
     const query = { appId };
     const trailingUrl = 'symbol';
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Remove nft symbol in app.
+   * @param {RemoveNftSymbolParams} RemoveNftSymbolParams
+   * @returns
+   */
   removeNftSymbol({
     appId,
     symbol,
@@ -56,6 +71,11 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
+  /**
+   * Get nft contract info by symbol.
+   * @param {GetNftSymbolParams} GetNftSymbolParams
+   * @returns
+   */
   getNftSymbol({
     appId,
     symbol,
@@ -65,6 +85,12 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Get nft info by chain, network, contractAddress and tokenId.
+   * Symbol must be added.
+   * @param {GetNftParams} GetNftParams
+   * @returns
+   */
   getNft({
     appId,
     chain,
@@ -77,6 +103,12 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Get nft contract info by chain, network and contractAddress.
+   * Symbol must be added
+   * @param {GetNftContractInfoParams} GetNftContractInfoParams
+   * @returns
+   */
   getNftContractInfo({
     appId,
     chain,
@@ -88,6 +120,11 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Get nft list by user address.
+   * @param {GetUserNftListParams} GetUserNftListParams
+   * @returns
+   */
   getUserNftList({
     appId,
     chain,
@@ -105,6 +142,11 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Set managed nft metadata. If the chain is AIN, the transaction must be sent to the ain blockchain. Please set an appropriate privateKey.
+   * @param {SetNftMetadataParams} SetNftMetadataParams
+   * @returns
+   */
   async setNftMetadata({
     appId,
     chain,
@@ -131,6 +173,12 @@ export default class Nft extends AinftBase {
     }
   }
 
+  /**
+   * Get transaction body to set nft metadata in ain blockchain.
+   * Currently, only support AIN chain.
+   * @param {getTxBodySetNftMetadataParams} getTxBodySetNftMetadataParams
+   * @returns
+   */
   getTxBodyForSetNftMetadata({
     appId,
     chain,
@@ -143,8 +191,13 @@ export default class Nft extends AinftBase {
     const body = { appId, metadata, ownerAddress };
     const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  };
+  }
 
+  /**
+   * Create nft collection in ain blockchain. You can modify metadata setting permission through tokenUpdatePermission.
+   * @param {CreateNftCollectionParams} CreateNftCollectionParams
+   * @returns
+   */
   async createNftCollection({
     chain,
     network,
@@ -169,6 +222,11 @@ export default class Nft extends AinftBase {
     return this.ain.sendTransaction(txBody);
   }
 
+  /**
+   * Mint the nft of the created collection.
+   * @param {MintNftParams} MintNftParams
+   * @returns
+   */
   async mintNft({
     chain,
     network,
@@ -191,6 +249,11 @@ export default class Nft extends AinftBase {
     return this.ain.sendTransaction(txBody);
   }
 
+  /**
+   * Search nfts created on the ain blockchain. You can use user address, collectionId, and appId as search filters.
+   * @param {SearchNftOption} SearchNftOption
+   * @returns
+   */
   searchNft({
     address,
     appId,
@@ -203,6 +266,11 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Transfer nft created on the ain blockchain to others.
+   * @param {TransferNftParams} TransferNftParams
+   * @returns
+   */
   async transferNft({
     chain,
     network,
@@ -223,6 +291,11 @@ export default class Nft extends AinftBase {
     return this.ain.sendTransaction(txBody);
   }
 
+  /**
+   * Get transaction body to create nft collection. Sending the transaction must be done manually.
+   * @param {getTxBodyCreateNftCollectionParams} getTxBodyCreateNftCollectionParams
+   * @returns
+   */
   getTxBodyForCreateNftCollection({
     address,
     chain,
@@ -246,6 +319,11 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * Get transaction body to mint nft. Sending the transaction must be done manually.
+   * @param {getTxBodyMintNftParams} getTxBodyMintNftParams
+   * @returns
+   */
   getTxBodyForMintNft({
     address,
     chain,
@@ -266,6 +344,11 @@ export default class Nft extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * Get transaction body to transfer nft. Sending the transaction must be done manually.
+   * @param {getTxBodyTransferNftParams} getTxBodyTransferNftParams
+   * @returns
+   */
   getTxBodyForTransferNft({
     address,
     chain,

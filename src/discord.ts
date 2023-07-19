@@ -9,21 +9,39 @@ import {
 import AinftBase from "./ainftBase";
 
 export default class Discord extends AinftBase {
+  /**
+   * Connect discord server and AINFT Factory app. A Discord server can only connect to one app.
+   * @param {string} appId
+   * @param {string} discordServerId
+   * @returns
+   */
   connectDiscordWithApp(appId: string, discordServerId: string): Promise<void> {
     const body = { appId, discordServerId };
-    const trailingUrl = "register";
+    const trailingUrl = 'register';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * Get the appId connected with the Discord server.
+   * @param {string} discordServerId
+   * @param {string} appId
+   * @returns
+   */
   getConnectedApp(
     discordServerId: string,
-    appId: string = ""
+    appId: string = ''
   ): Promise<string | null> {
     const query = { appId };
     const trailingUrl = `${discordServerId}/app`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Get event list connected with the Discord server
+   * @param {string} appId 
+   * @param {string} discordServerId 
+   * @returns 
+   */
   getConnectedEventsByServer(
     appId: string,
     discordServerId: string
@@ -33,6 +51,13 @@ export default class Discord extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Get tasks connected with discord channel
+   * @param {string} appId 
+   * @param {string} discordServerId 
+   * @param {string} discordChannelId 
+   * @returns 
+   */
   getConnectedTasksByChannel(
     appId: string,
     discordServerId: string,
@@ -43,6 +68,15 @@ export default class Discord extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Add persona model to discord channel.
+   * @param {string} appId 
+   * @param {string} modelId 
+   * @param {string} modelName 
+   * @param {string} discordServerId 
+   * @param {string} discordChannelId 
+   * @returns 
+   */
   addPersonaModelToDiscordChannel(
     appId: string,
     modelId: string,
@@ -61,6 +95,13 @@ export default class Discord extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * Get persona model connected with discord channel.
+   * @param {string} appId 
+   * @param {string} discordServerId 
+   * @param {string} discordChannelId 
+   * @returns 
+   */
   getPersonaModelForDiscordChannel(
     appId: string,
     discordServerId: string,
@@ -71,15 +112,28 @@ export default class Discord extends AinftBase {
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Get persona models connected with discord server.
+   * @param {string} appId 
+   * @param {string} discordServerId 
+   * @returns 
+   */
   getPersonaModelForDiscordServer(
     appId: string,
-    discordServerId: string,
+    discordServerId: string
   ): Promise<ServerPersonaModelInfo | null> {
     const query = { appId };
     const trailingUrl = `persona-models/${discordServerId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Disconnect persona model with discord channel.
+   * @param {string} appId 
+   * @param {string} discordServerId 
+   * @param {string} discordChannelId 
+   * @returns 
+   */
   deletePersonaModelFromDiscordChannel(
     appId: string,
     discordServerId: string,
@@ -92,10 +146,10 @@ export default class Discord extends AinftBase {
 
   /**
    * You can add new user's invitation information.
-   * @param {string} appId 
-   * @param {string} eventId 
+   * @param {string} appId
+   * @param {string} eventId
    * @param {string} taskInstanceId
-   * @param {string} inviteeId 
+   * @param {string} inviteeId
    * @param {string} inviterId If you can't identify the inviter, leave blank this.
    * @param {Array<string>} ambiguousInviters Array of userIds invited in a short time.
    * @returns {Promise<InviteInfo>} Return InviteInfo object.
@@ -106,7 +160,7 @@ export default class Discord extends AinftBase {
     taskInstanceId: string,
     inviteeId: string,
     inviterId?: string,
-    ambiguousInviters?: Array<string>,
+    ambiguousInviters?: Array<string>
   ): Promise<void> {
     const body = {
       appId,
@@ -124,15 +178,15 @@ export default class Discord extends AinftBase {
 
   /**
    * You can get user's invitation information.
-   * @param {string} appId 
-   * @param {string} discordServerId 
-   * @param {string} inviteeId 
+   * @param {string} appId
+   * @param {string} discordServerId
+   * @param {string} inviteeId
    * @returns {Promise<InviteInfo>} Return InviteInfo object.
    */
   getInviteInfo(
     appId: string,
     discordServerId: string,
-    inviteeId: string,
+    inviteeId: string
   ): Promise<InviteInfo> {
     const query = { appId };
     const trailingUrl = `invite-info/${discordServerId}/${inviteeId}`;
