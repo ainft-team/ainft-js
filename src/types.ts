@@ -174,7 +174,7 @@ export interface SetNftMetadataParams extends Omit<getTxBodySetNftMetadataParams
   collectionId?: string;
 };
 
-export interface SetETHNftMetadataParams extends Omit<SetNftMetadataParams, 'collectionId'> {
+export interface SetEthNftMetadataParams extends Omit<SetNftMetadataParams, 'collectionId'> {
   chain: "ETH";
   contractAddress: string;
 };

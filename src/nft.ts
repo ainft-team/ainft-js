@@ -27,7 +27,7 @@ import {
     getTxBodyTransferNftParams,
     getTxBodySetNftMetadataParams,
     SetAinNftMetadataParams,
-    SetETHNftMetadataParams
+    SetEthNftMetadataParams
 } from './types';
 
 export default class Nft extends AinftBase {
@@ -164,7 +164,7 @@ export default class Nft extends AinftBase {
     contractAddress,
     tokenId,
     metadata,
-  }: SetETHNftMetadataParams): Promise<NftMetadata>;
+  }: SetEthNftMetadataParams): Promise<NftMetadata>;
   async setNftMetadata({
     appId,
     chain,
