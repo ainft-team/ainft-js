@@ -1,5 +1,5 @@
 import AinftBase from "./ainftBase";
-import { ActivityNftInfo, HttpMethod, NftActivityType, TaskTypeCategory } from "./types";
+import { ActivityNftInfo, AddAiHistoryParams, HttpMethod, NftActivityType, TaskTypeCategory, getTxbodyAddAiHistoryParams } from "./types";
 
 export default class Activity extends AinftBase {
   /**
@@ -51,6 +51,53 @@ export default class Activity extends AinftBase {
       data,
     };
     const trailingUrl = 'nft/record';
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  async addAiHistory({
+    chain,
+    network,
+    appId,
+    collectionId,
+    tokenId,
+    data,
+    label,
+  }: AddAiHistoryParams) {
+    const address = this.ain.wallet.defaultAccount?.address!;
+    const txInput = await this.getTxBodyForAddAiHistory({
+      chain,
+      network,
+      appId,
+      collectionId,
+      tokenId,
+      data,
+      label,
+      address,
+    });
+    return this.ain.sendTransaction(txInput);
+  }
+
+  getTxBodyForAddAiHistory({
+    chain,
+    network,
+    appId,
+    collectionId,
+    tokenId,
+    data,
+    address,
+    label,
+  }: getTxbodyAddAiHistoryParams) {
+    const body = {
+      chain,
+      network,
+      appId,
+      collectionId,
+      tokenId,
+      historyData: data,
+      label,
+      address,
+    };
+    const trailingUrl = 'nft/ai_history';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
