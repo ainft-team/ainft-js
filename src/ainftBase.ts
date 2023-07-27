@@ -48,15 +48,15 @@ export default class AinftBase {
     };
     try {
       if (method === HttpMethod.GET || method === HttpMethod.DELETE) {
-        const response: SerializedMessage = (await axios[HttpMethodToAxiosMethod[method]](
+        const { data: receivedData }: SerializedMessage = (await axios[HttpMethodToAxiosMethod[method]](
           `${this.baseUrl}/${trailingUrl}`, { params: data, headers }
         )).data;
-        return response.data || response;
+        return receivedData;
       } else if (method === HttpMethod.POST || method === HttpMethod.PUT) {
-        const response: SerializedMessage = (await axios[HttpMethodToAxiosMethod[method]](
+        const { data: receivedData }: SerializedMessage = (await axios[HttpMethodToAxiosMethod[method]](
           `${this.baseUrl}/${trailingUrl}`, data, { headers }
         )).data;
-        return response.data || response;
+        return receivedData;
       } else {
         throw Error(`Invalid http method: ${method}`);
       } 
