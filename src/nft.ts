@@ -27,7 +27,11 @@ import {
     getTxBodyTransferNftParams,
     getTxBodySetNftMetadataParams,
     SetAinNftMetadataParams,
-    SetEthNftMetadataParams
+    SetEthNftMetadataParams,
+    GetNftsInEthContractParams,
+    NftTokens,
+    GetNftsInCollectionParams,
+    GetNftsInAinCollectionParams
 } from './types';
 
 export default class Nft extends AinftBase {
@@ -119,6 +123,35 @@ export default class Nft extends AinftBase {
   }: GetNftContractInfoParams): Promise<NftContractInfo> {
     const query = { appId, contractAddress };
     const trailingUrl = `info/${chain}/${network}`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  /**
+   * Get nft list in the collection.
+   * @param {GetNftsInCollectionParams} GetNftsInCollectionParams
+   * @returns
+   */
+  getNftsInCollection({
+    chain,
+    network,
+    collectionId,
+  }: GetNftsInEthContractParams): Promise<NftTokens>
+  getNftsInCollection({
+    chain,
+    network,
+    collectionId,
+    appId,
+  }: GetNftsInAinCollectionParams): Promise<NftTokens> // FIXME(ehgmsdk20): Define type for AINFTs
+  getNftsInCollection({
+    chain,
+    network,
+    collectionId,
+    appId
+  }: GetNftsInCollectionParams): Promise<NftTokens> {
+    const query: any = {
+      appId,
+    };
+    const trailingUrl = `info/${chain}/${network}/collections/${collectionId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
