@@ -26,6 +26,8 @@ import {
     getTxBodyMintNftParams,
     getTxBodyTransferNftParams,
     getTxBodySetNftMetadataParams,
+    SetAinNftMetadataParams,
+    SetEthNftMetadataParams,
     GetNftsInEthContractParams,
     NftTokens,
     GetNftsInCollectionParams,
@@ -184,16 +186,36 @@ export default class Nft extends AinftBase {
     appId,
     chain,
     network,
+    collectionId,
+    tokenId,
+    metadata,
+  }: SetAinNftMetadataParams): Promise<any>;
+  async setNftMetadata({
+    appId,
+    chain,
+    network,
     contractAddress,
     tokenId,
     metadata,
-  }: SetNftMetadataParams): Promise<NftMetadata> {
+  }: SetEthNftMetadataParams): Promise<NftMetadata>;
+  async setNftMetadata({
+    appId,
+    chain,
+    network,
+    contractAddress,
+    collectionId,
+    tokenId,
+    metadata,
+  }: SetNftMetadataParams): Promise<NftMetadata | any> {
+    let _collectionId = collectionId || contractAddress;
+    if (!_collectionId)
+      throw Error('collectionId or contractAdress is required');
     if (chain === 'AIN') {
       const txBody = await this.getTxBodyForSetNftMetadata({
         appId,
         chain,
         network,
-        contractAddress,
+        collectionId: _collectionId,
         tokenId,
         metadata,
         ownerAddress: this.ain.wallet.defaultAccount?.address!,
@@ -201,7 +223,7 @@ export default class Nft extends AinftBase {
       return this.ain.sendTransaction(txBody);
     } else {
       const body = { appId, metadata };
-      const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+      const trailingUrl = `info/${chain}/${network}/${_collectionId}/${tokenId}/metadata`;
       return this.sendRequest(HttpMethod.POST, trailingUrl, body);
     }
   }
@@ -216,13 +238,13 @@ export default class Nft extends AinftBase {
     appId,
     chain,
     network,
-    contractAddress,
+    collectionId,
     tokenId,
     metadata,
     ownerAddress,
   }: getTxBodySetNftMetadataParams) {
     const body = { appId, metadata, ownerAddress };
-    const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+    const trailingUrl = `info/${chain}/${network}/${collectionId}/${tokenId}/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
