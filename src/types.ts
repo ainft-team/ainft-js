@@ -863,3 +863,16 @@ export interface DeleteAssetParams {
 }
 
 export interface TransferNftParams extends Omit<getTxBodyTransferNftParams, 'address'> {}
+
+export interface getTxbodyAddAiHistoryParams {
+  chain: string;
+  network: string;
+  appId: string;
+  collectionId: string;
+  tokenId: string;
+  data: object;
+  label: string;
+  address: string;
+}
+
+export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'address'> {};
