@@ -54,7 +54,12 @@ export default class Activity extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  async addAiHistory({
+  /**
+   * Add ai interaction history with nft.
+   * @param {AddAiHistoryParams} AddAiHistoryParams
+   * @returns 
+   */
+  async addNftAiHistory({
     chain,
     network,
     appId,
@@ -64,7 +69,7 @@ export default class Activity extends AinftBase {
     label,
   }: AddAiHistoryParams) {
     const address = this.ain.wallet.defaultAccount?.address!;
-    const txInput = await this.getTxBodyForAddAiHistory({
+    const txInput = await this.getTxBodyForAddNftAiHistory({
       chain,
       network,
       appId,
@@ -77,7 +82,12 @@ export default class Activity extends AinftBase {
     return this.ain.sendTransaction(txInput);
   }
 
-  getTxBodyForAddAiHistory({
+  /**
+   * Get transaction body to add ai interaction history with nft. Sending the transaction must be done manually.
+   * @param {getTxbodyAddAiHistoryParams} getTxbodyAddAiHistoryParams
+   * @returns 
+   */
+  getTxBodyForAddNftAiHistory({
     chain,
     network,
     appId,
