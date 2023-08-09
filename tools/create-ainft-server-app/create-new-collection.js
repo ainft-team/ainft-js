@@ -15,14 +15,22 @@ const ainBlockchainChainId = {
   PROD: 1
 }
 
+const ainBlockchainNetwork = {
+  DEV: 'testnet',
+  PROD: 'mainnet',
+}
+
 const main = async () => {
-  if (process.argv.length !== 5) {
+  if (process.argv.length !== 8) {
     usage();
   }
 
   const stage = process.argv[2];
   const appId = process.argv[3];
-  const privateKey = process.argv[4];
+  const collectionId = process.argv[4];
+  const symbol = process.argv[5];
+  const name = process.argv[6];
+  const privateKey = process.argv[7];
 
   if (stage !== 'DEV' && stage !== 'PROD') {
     console.log('stage must be in DEV or PROD.');
@@ -37,27 +45,33 @@ const main = async () => {
   );
   
   try {
-    const res = await ainftJs.auth.createApp(appId);
-    if (res.result.code !== 0) {
-      throw res.result.message;
-    }
-    console.log('\nThe app has been created successfully.\n');
-    const res1 = await ainftJs.auth.registerBlockchainApp(appId);
-		console.log('registerBlockchainApp response', res1);
-		const res2 = await ainftJs.auth.delegateApp(appId);
-		console.log('delegateApp response', JSON.stringify(res2, null, 2));
+    const res = await ainftJs.nft.createNftCollection({
+      chain: 'AIN',
+      network: ainBlockchainNetwork[stage],
+      appId,
+      collectionId,
+      symbol,
+      name,
+      tokenUpdatePermission: {
+        collectionOwner: true,
+        tokenOwner: true
+      },
+    });
+    console.log(JSON.stringify(res, null, 2));
   } catch (error) {
-    console.error('Ainft server app creation failed.');
     console.error(error);
   }
 
 }
 
 const usage = () => {
-  console.log('\nUsage: node create-ainft-server-app.js <DEV | PROD> <APP ID> <USER ID> <ACCESS KEY>\n');
+  console.log('\nUsage: node create-new-collection.js <DEV | PROD> <APP ID> <COLLECTION_ID> <SYMBOL> <NAME> <PRIVATE KEY>\n');
   console.log('<DEV | PROD>: It means stage. dev connects to testnet, prod connects to mainnet.');
   console.log('<APP ID>: This is the app id to create on the ainft server.' +
     'Combinations of lowercase letters, underscores and number are allowed.');
+  console.log('<COLLECTION ID>');
+  console.log('<SYMBOL>');
+  console.log('<NAME>');
   console.log('<PRIVATE KEY>: It means ain blockchain private key. You must have the access key to use the APIs of the AINFT server.\n')
   console.log('Example: node create-ainft-server-app.js DEV new_app myUserId ' +
     '50f561d8a2083d325973bac01b313b05d0466f9e786cb3cb7350b8d2eed7b383');
