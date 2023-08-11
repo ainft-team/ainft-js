@@ -15,14 +15,12 @@ import {
     NftCollections,
     SetNftMetadataParams,
     NftMetadata,
-    CreateNftCollectionParams,
     MintNftParams,
     SearchNftOption,
     TransferNftParams,
     UploadAssetFromDataUrlParams,
     UploadAssetFromBufferParams,
     DeleteAssetParams,
-    getTxBodyCreateNftCollectionParams,
     getTxBodyMintNftParams,
     getTxBodyTransferNftParams,
     getTxBodySetNftMetadataParams,
@@ -306,35 +304,6 @@ export default class Nft extends AinftBase {
   }
 
   /**
-   * Create nft collection in ain blockchain. You can modify metadata setting permission through tokenUpdatePermission.
-   * @param {CreateNftCollectionParams} CreateNftCollectionParams
-   * @returns
-   */
-  async createNftCollection({
-    chain,
-    network,
-    appId,
-    collectionId,
-    symbol,
-    name,
-    connectWhitelist,
-    tokenUpdatePermission,
-  }: CreateNftCollectionParams) {
-    const txBody = await this.getTxBodyForCreateNftCollection({
-      address: this.ain.wallet.defaultAccount?.address!,
-      chain,
-      network,
-      appId,
-      collectionId,
-      symbol,
-      name,
-      connectWhitelist,
-      tokenUpdatePermission,
-    });
-    return this.ain.sendTransaction(txBody);
-  }
-
-  /**
    * Mint the nft of the created collection.
    * @param {MintNftParams} MintNftParams
    * @returns
@@ -401,34 +370,6 @@ export default class Nft extends AinftBase {
       toAddress,
     });
     return this.ain.sendTransaction(txBody);
-  }
-
-  /**
-   * Get transaction body to create nft collection. Sending the transaction must be done manually.
-   * @param {getTxBodyCreateNftCollectionParams} getTxBodyCreateNftCollectionParams
-   * @returns
-   */
-  private getTxBodyForCreateNftCollection({
-    address,
-    chain,
-    network,
-    appId,
-    collectionId,
-    symbol,
-    name,
-    connectWhitelist,
-    tokenUpdatePermission,
-  }: getTxBodyCreateNftCollectionParams): Promise<TransactionInput> {
-    const body = {
-      address,
-      collectionId,
-      symbol,
-      name,
-      connectWhitelist,
-      tokenUpdatePermission,
-    };
-    const trailingUrl = `native/${appId}/${chain}/${network}/collection`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   /**

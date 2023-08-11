@@ -799,20 +799,6 @@ export interface TokenUpdatePermission {
   tokenOwner: boolean;
 }
 
-export interface getTxBodyCreateNftCollectionParams {
-  address: string;
-  chain: string;
-  network: string;
-  appId: string;
-  collectionId: string;
-  symbol: string;
-  name: string;
-  connectWhitelist?: string[]; //TODO(hyeonwoong): Need more design.
-  tokenUpdatePermission?: TokenUpdatePermission;
-}
-
-export interface CreateNftCollectionParams extends Omit<getTxBodyCreateNftCollectionParams, 'address'> {}
-  
 export interface getTxBodyMintNftParams {
   address: string;
   chain: string;
