@@ -1,7 +1,7 @@
 import Ain from "@ainblockchain/ain-js";
 import AinftBase from "./ainftBase";
 import { HttpMethod } from "./types";
-import { Account } from "@ainblockchain/ain-util";
+import { Signer } from "./signer";
 
 interface IAinft721 {
   transfer(from: string, to: string, tokenId: string): Promise<any>;
@@ -15,8 +15,8 @@ export default class Ainft721 extends AinftBase implements IAinft721 {
   private chain = 'AIN';
   private network: string;
 
-  constructor(id: string, name: string, symbol: string, ain: Ain, baseUrl: string,) {
-    super(ain, baseUrl);
+  constructor(id: string, name: string, symbol: string, ain: Ain, signer: Signer, baseUrl: string,) {
+    super(ain, signer, baseUrl);
     this.id = id;
     this.name = name;
     this.symbol = symbol;
@@ -30,25 +30,18 @@ export default class Ainft721 extends AinftBase implements IAinft721 {
     }
   }
 
-  private getDefaultAccount(): Account | null {
-    return this.ain.wallet.defaultAccount;
-  }
-
-  async transfer(from: string, to: string, tokenId: string): Promise<any> {
+  async transfer(from: string, to: string, tokenId: string): Promise<string> {
     const txbody  = await this.getTxBodyForTransfer(from, to, tokenId);
-    return this.ain.sendTransaction(txbody);
+    return this.signer.sendTransaction(txbody);
   }
 
-  async mint(to: string, tokenId: string): Promise<any> {
-    const owner = this.getDefaultAccount();
-    if (!owner) {
-      throw Error('Ainft721 mint: Not found owner account');
-    }
-    const txbody = await this.getTxBodyForMint(owner.address, to, tokenId);
-    return this.ain.sendTransaction(txbody);
+  async mint(to: string, tokenId: string): Promise<string> {
+    const address = await this.signer.getAddress();
+    const txbody = await this.getTxBodyForMint(address, to, tokenId);
+    return this.signer.sendTransaction(txbody);
   }
 
-  getTxBodyForTransfer(from: string, to: string, tokenId: string) {
+  private getTxBodyForTransfer(from: string, to: string, tokenId: string) {
     const body = {
       address: from,
       toAddress: to,
@@ -57,7 +50,7 @@ export default class Ainft721 extends AinftBase implements IAinft721 {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  getTxBodyForMint(ownerAddress: string, to: string, tokenId: string) {
+  private getTxBodyForMint(ownerAddress: string, to: string, tokenId: string) {
     const body = {
       address: ownerAddress,
       toAddress: to,

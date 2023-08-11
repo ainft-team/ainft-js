@@ -69,18 +69,23 @@ export default class Nft extends AinftBase {
     console.log('nft ID: ', nftId);
     console.log('app ID: ', appId);
 
-    // registerNftToFactory();
+    this.register(nftId);
 
-    return new Ainft721(nftId, name, symbol, this.ain, this.baseUrl);
+    return new Ainft721(nftId, name, symbol, this.ain, this.signer, this.baseUrl);
   }
 
+  /**
+   * Register nft to factory server.
+   * @param nftId 
+   * @returns 
+   */
   async register(nftId: string) {
-    const address = this.ain.wallet.defaultAccount?.address!;
-    const message =stringify({
+    const address = this.signer.getAddress();
+    const message = stringify({
       address,
       timestamp: Date.now(),
     });
-    const signature = this.signData(message);
+    const signature = this.signer.signMessage(message);
 
     const body = { signature, message, nftId };
     const trailingUrl = 'native/register';
@@ -286,7 +291,7 @@ export default class Nft extends AinftBase {
    * @param {getTxBodySetNftMetadataParams} getTxBodySetNftMetadataParams
    * @returns
    */
-  getTxBodyForSetNftMetadata({
+  private getTxBodyForSetNftMetadata({
     appId,
     chain,
     network,
@@ -403,7 +408,7 @@ export default class Nft extends AinftBase {
    * @param {getTxBodyCreateNftCollectionParams} getTxBodyCreateNftCollectionParams
    * @returns
    */
-  getTxBodyForCreateNftCollection({
+  private getTxBodyForCreateNftCollection({
     address,
     chain,
     network,
@@ -431,7 +436,7 @@ export default class Nft extends AinftBase {
    * @param {getTxBodyMintNftParams} getTxBodyMintNftParams
    * @returns
    */
-  getTxBodyForMintNft({
+  private getTxBodyForMintNft({
     address,
     chain,
     network,
@@ -456,7 +461,7 @@ export default class Nft extends AinftBase {
    * @param {getTxBodyTransferNftParams} getTxBodyTransferNftParams
    * @returns
    */
-  getTxBodyForTransferNft({
+  private getTxBodyForTransferNft({
     address,
     chain,
     network,

@@ -4,19 +4,23 @@ import axios from "axios";
 import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types";
 import { buildData, isJoiError, sleep } from "./util";
 import FormData from "form-data";
+import { Signer } from "./signer";
 
 export default class AinftBase {
   public baseUrl = '';
   public route: string;
   public ain: Ain;
+  public signer: Signer;
 
   constructor(
     ain: Ain,
+    signer: Signer,
     baseUrl: string,
     route?: string,
   ) {
     this.route = route || '';
     this.ain = ain;
+    this.signer = signer;
 
     this.setBaseUrl(baseUrl);
   }
@@ -25,12 +29,16 @@ export default class AinftBase {
     this.baseUrl = baseUrl + this.route;
   }
 
+  setSigner(signer: Signer) {
+    this.signer = signer;
+  }
+
   signData(data: any) {
     if (typeof data !== 'string') {
-      return this.ain.wallet.sign(stringify(data));
+      return this.signer.signMessage(stringify(data));
     }
 
-    return this.ain.wallet.sign(data);
+    return this.signer.signMessage(data);
   }
 
   async sendRequest(method: HttpMethod, trailingUrl: string, data?: Record<string, any>) {  
