@@ -9,17 +9,14 @@ import { Signer } from "./signer";
 export default class AinftBase {
   public baseUrl = '';
   public route: string;
-  public ain: Ain;
   public signer: Signer;
 
   constructor(
-    ain: Ain,
     signer: Signer,
     baseUrl: string,
     route?: string,
   ) {
     this.route = route || '';
-    this.ain = ain;
     this.signer = signer;
 
     this.setBaseUrl(baseUrl);

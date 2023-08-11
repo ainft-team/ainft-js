@@ -42,15 +42,15 @@ export default class AinftJs {
     this.setPrivateKey(privateKey);
     this.signer = new DefaultSigner(this.ain);
 
-    this.nft = new Nft(this.ain, this.signer, this.baseUrl, '/nft'); 
-    this.credit = new Credit(this.ain, this.signer, this.baseUrl, '/credit');
-    this.auth = new Auth(this.ain, this.signer, this.baseUrl, '/auth');
-    this.discord = new Discord(this.ain, this.signer, this.baseUrl, '/discord');
-    this.event = new Event(this.ain, this.signer, this.baseUrl, '/event');
-    this.store = new Store(this.ain, this.signer, this.baseUrl, '/store');
-    this.personaModels = new PersonaModels(this.ain, this.signer, this.baseUrl, '/persona-models');
-    this.textToArt = new TextToArt(this.ain, this.signer, this.baseUrl, '/text-to-art');
-    this.activity = new Activity(this.ain, this.signer, this.baseUrl, '/activity');
+    this.nft = new Nft(this.signer, this.baseUrl, '/nft'); 
+    this.credit = new Credit(this.signer, this.baseUrl, '/credit');
+    this.auth = new Auth(this.signer, this.baseUrl, '/auth');
+    this.discord = new Discord(this.signer, this.baseUrl, '/discord');
+    this.event = new Event(this.signer, this.baseUrl, '/event');
+    this.store = new Store(this.signer, this.baseUrl, '/store');
+    this.personaModels = new PersonaModels(this.signer, this.baseUrl, '/persona-models');
+    this.textToArt = new TextToArt(this.signer, this.baseUrl, '/text-to-art');
+    this.activity = new Activity(this.signer, this.baseUrl, '/activity');
   }
 
   /**
