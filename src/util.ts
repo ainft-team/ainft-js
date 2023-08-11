@@ -34,3 +34,31 @@ export function sleep(ms: number) {
 export function serializeEndpoint(endpoint: string) {
   return endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint;
 }
+
+type TransactionResult = {
+  code?: number;
+  result_list?: {
+    [index: string]: { code: number };
+  }
+}
+
+type TransactionResponse = {
+  result: TransactionResult
+  tx_hash: string;
+}
+
+export function isSuccessTransaction(transactionResponse: TransactionResponse) {
+  const result = transactionResponse.result;
+  if (result.code !== undefined) {
+    return isSuccessOperation(result);
+  } else if (result.result_list) {
+    const resultList = Object.values(result.result_list);
+    return resultList.every((_operationResult) => isSuccessOperation(_operationResult));
+  }
+
+  return false;
+}
+
+function isSuccessOperation(result: TransactionResult) {
+  return result.code === 0;
+}

@@ -33,8 +33,60 @@ import {
     GetNftsInCollectionParams,
     GetNftsInAinCollectionParams
 } from './types';
+import Ainft721 from './ainft721';
+import { isSuccessTransaction } from './util';
+import stringify from 'fast-json-stable-stringify';
 
 export default class Nft extends AinftBase {
+
+  private isSupportedStandard(standard: string) {
+    return standard === '721';
+  }
+
+  /**
+   * Create NFT. Default standard is 721.
+   * @param name NFT name
+   * @param symbol NFT symbol
+   */
+  async create(name: string, symbol: string, standard = '721') { 
+    if (!this.isSupportedStandard(standard)) {
+      throw Error('Nft create: Not supported standard.');
+    }
+    const account = this.ain.wallet.defaultAccount;
+    if (!account) {
+      throw Error('Nft create: Set account using ainftJs.setPrivateKey.');
+    }
+
+    const body = { address: account.address, name, symbol, standard };
+    const trailingUrl = 'native';
+    const { nftId, txBody, appId } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    const txRes = await this.ain.sendTransaction(txBody);
+    const txSuccess = isSuccessTransaction(txRes);
+    if (!txSuccess) {
+      throw Error(`Nft create: create nft transaction is failed. ${JSON.stringify(txRes, null, 2)}`);
+    }
+
+    console.log('nft ID: ', nftId);
+    console.log('app ID: ', appId);
+
+    // registerNftToFactory();
+
+    return new Ainft721(nftId, name, symbol, this.ain, this.baseUrl);
+  }
+
+  async register(nftId: string) {
+    const address = this.ain.wallet.defaultAccount?.address!;
+    const message =stringify({
+      address,
+      timestamp: Date.now(),
+    });
+    const signature = this.signData(message);
+
+    const body = { signature, message, nftId };
+    const trailingUrl = 'native/register';
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
   /**
    * Add nfy symbol. You can add nft to reference in your factory activity.
    * @param {AddNftSymbolParams} AddNftSymbolParams
