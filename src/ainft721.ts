@@ -9,16 +9,12 @@ interface IAinft721 {
 }
 
 export default class Ainft721 extends AinftBase implements IAinft721 {
-  readonly name: string;
-  readonly symbol: string;
   readonly id: string;
 
-  constructor(id: string, name: string, symbol: string, signer: Signer, baseUrl?: string,) {
+  constructor(id: string, signer: Signer, baseUrl?: string,) {
     if (!baseUrl) baseUrl = AINFT_SERVER_ENDPOINT.prod;
     super(signer, baseUrl);
     this.id = id;
-    this.name = name;
-    this.symbol = symbol;
   }
 
   async transfer(from: string, to: string, tokenId: string): Promise<string> {
@@ -37,7 +33,7 @@ export default class Ainft721 extends AinftBase implements IAinft721 {
       address: from,
       toAddress: to,
     }
-    const trailingUrl = `native/${this.id}/${tokenId}/transfer`;
+    const trailingUrl = `nft/native/${this.id}/${tokenId}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -47,7 +43,7 @@ export default class Ainft721 extends AinftBase implements IAinft721 {
       toAddress: to,
       tokenId,
     }
-    const trailingUrl = `native/${this.id}/mint`;
+    const trailingUrl = `nft/native/${this.id}/mint`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
