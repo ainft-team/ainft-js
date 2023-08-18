@@ -225,10 +225,7 @@ export default class Nft extends AinftBase {
    * @returns
    */
   async setNftMetadata({
-    appId,
-    chain,
-    network,
-    collectionId,
+    nftId,
     tokenId,
     metadata,
   }: SetAinNftMetadataParams): Promise<any>;
@@ -245,29 +242,23 @@ export default class Nft extends AinftBase {
     chain,
     network,
     contractAddress,
-    collectionId,
     tokenId,
     metadata,
+    nftId,
   }: SetNftMetadataParams): Promise<NftMetadata | any> {
-    let _collectionId = collectionId || contractAddress;
-    if (!_collectionId)
-      throw Error('collectionId or contractAdress is required');
-    if (chain === 'AIN') {
+    if (chain === 'ETH') {
+      const body = { appId, metadata };
+      const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+      return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    } else {
       const address = await this.signer.getAddress();
       const txBody = await this.getTxBodyForSetNftMetadata({
-        appId,
-        chain,
-        network,
-        collectionId: _collectionId,
+        nftId,
         tokenId,
         metadata,
-        ownerAddress: address
+        userAddress: address
       });
       return this.signer.sendTransaction(txBody);
-    } else {
-      const body = { appId, metadata };
-      const trailingUrl = `info/${chain}/${network}/${_collectionId}/${tokenId}/metadata`;
-      return this.sendRequest(HttpMethod.POST, trailingUrl, body);
     }
   }
 
@@ -278,16 +269,13 @@ export default class Nft extends AinftBase {
    * @returns
    */
   private getTxBodyForSetNftMetadata({
-    appId,
-    chain,
-    network,
-    collectionId,
+    nftId,
     tokenId,
     metadata,
-    ownerAddress,
+    userAddress,
   }: getTxBodySetNftMetadataParams) {
-    const body = { appId, metadata, ownerAddress };
-    const trailingUrl = `info/${chain}/${network}/${collectionId}/${tokenId}/metadata`;
+    const body = { nftId, tokenId, metadata, userAddress };
+    const trailingUrl = `native/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -313,8 +301,8 @@ export default class Nft extends AinftBase {
   searchAssets(searchParams: NftSearchParams & SearchOption) {
     let query: Record<string, any> = {};
     if (searchParams) {
-      const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
-      query = { userAddress, nftId, name, symbol, offset, limit };
+      const { userAddress, nftId, name, symbol, limit, offset, tokenId } = searchParams;
+      query = { userAddress, nftId, name, symbol, offset, limit, tokenId };
     }
     const trailingUrl = `native/search/assets`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);

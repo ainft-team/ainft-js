@@ -176,28 +176,24 @@ export interface GetUserNftListParams {
 }
 
 export interface getTxBodySetNftMetadataParams {
-  appId: string;
-  chain: string;
-  network: string;
-  collectionId: string;
+  nftId: string;
   tokenId: string;
   metadata: NftMetadata;
-  ownerAddress: string;
+  userAddress: string;
 }
 
-export interface SetNftMetadataParams extends Omit<getTxBodySetNftMetadataParams, 'ownerAddress' | 'collectionId'> {
-  contractAddress?: string;
-  collectionId?: string;
-};
+export interface SetNftMetadataParams extends SetEthNftMetadataParams, SetAinNftMetadataParams {}
 
-export interface SetEthNftMetadataParams extends Omit<SetNftMetadataParams, 'collectionId'> {
+export interface SetEthNftMetadataParams {
+  appId: string;
   chain: "ETH";
+  network: string;
   contractAddress: string;
+  tokenId: string;
+  metadata: NftMetadata;
 };
 
-export interface SetAinNftMetadataParams extends Omit<SetNftMetadataParams, 'contractAddress'> {
-  chain: "AIN";
-}
+export interface SetAinNftMetadataParams extends Omit<getTxBodySetNftMetadataParams, 'userAddress'> {}
 
 export interface Account {
   address: string;
