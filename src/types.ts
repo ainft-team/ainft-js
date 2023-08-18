@@ -812,12 +812,17 @@ export interface getTxBodyMintNftParams {
 
 export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {}
 
-export interface SearchNftOption {
-  address?: string;
-  appId?: string;
-  collectionId?: string;
-  chain: string;
-  network: string;
+export interface NftSearchParams {
+  userAddress?: string;
+  nftId?: string;
+  tokenId?: string;
+  name?: string;
+  symbol?: string;
+}
+
+export interface SearchOption {
+  limit?: number,
+  offset?: string,
 }
 
 export interface getTxBodyTransferNftParams {

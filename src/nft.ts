@@ -1,35 +1,30 @@
-import { TransactionInput } from '@ainblockchain/ain-js/lib/types';
 import AinftBase from './ainftBase';
 import {
-    HttpMethod,
-    AddNftSymbolParams,
-    GetAppNftSymbolListParams,
-    GetNftSymbolParams,
-    RemoveNftSymbolParams,
-    NftContractBySymbol,
-    GetNftParams,
-    NftToken,
-    GetNftContractInfoParams,
-    NftContractInfo,
-    GetUserNftListParams,
-    NftCollections,
-    SetNftMetadataParams,
-    NftMetadata,
-    MintNftParams,
-    SearchNftOption,
-    TransferNftParams,
-    UploadAssetFromDataUrlParams,
-    UploadAssetFromBufferParams,
-    DeleteAssetParams,
-    getTxBodyMintNftParams,
-    getTxBodyTransferNftParams,
-    getTxBodySetNftMetadataParams,
-    SetAinNftMetadataParams,
-    SetEthNftMetadataParams,
-    GetNftsInEthContractParams,
-    NftTokens,
-    GetNftsInCollectionParams,
-    GetNftsInAinCollectionParams
+  AddNftSymbolParams,
+  DeleteAssetParams,
+  GetAppNftSymbolListParams,
+  GetNftContractInfoParams,
+  GetNftParams,
+  GetNftsInAinCollectionParams,
+  GetNftsInCollectionParams,
+  GetNftsInEthContractParams,
+  GetNftSymbolParams,
+  getTxBodySetNftMetadataParams,
+  GetUserNftListParams,
+  HttpMethod,
+  NftCollections,
+  NftContractBySymbol,
+  NftContractInfo,
+  NftMetadata,
+  NftToken,
+  NftTokens,
+  RemoveNftSymbolParams,
+  NftSearchParams,
+  SetAinNftMetadataParams,
+  SetEthNftMetadataParams,
+  SetNftMetadataParams,
+  UploadAssetFromBufferParams,
+  UploadAssetFromDataUrlParams, SearchOption
 } from './types';
 import Ainft721 from './ainft721';
 import stringify from 'fast-json-stable-stringify';
@@ -59,9 +54,9 @@ export default class Nft extends AinftBase {
     console.log('nft ID: ', nftId);
     console.log('app ID: ', appId);
 
-    this.register(nftId);
+    await this.register(nftId);
 
-    return new Ainft721(nftId, name, symbol, this.signer, this.baseUrl);
+    return new Ainft721(nftId, this.signer, this.baseUrl);
   }
 
   /**
@@ -297,19 +292,31 @@ export default class Nft extends AinftBase {
   }
 
   /**
-   * Search nfts created on the ain blockchain. You can use user address, collectionId, and appId as search filters.
-   * @param {SearchNftOption} SearchNftOption
+   * Search nfts created on the ain blockchain.
    * @returns
+   * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchNft({
-    address,
-    appId,
-    collectionId,
-    chain,
-    network,
-  }: SearchNftOption): Promise<NftToken[]> {
-    const query = { address, appId, collectionId, chain, network };
-    const trailingUrl = `native/search`;
+  searchCollection(searchParams: NftSearchParams & SearchOption): Promise<NftToken[]> {
+    let query: Record<string, any> = {};
+    if (searchParams) {
+      const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
+      query = { userAddress, nftId, name, symbol, offset, limit };
+    }
+    const trailingUrl = `native/search/collections`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+  }
+
+  /**
+   * Search nft assets on the ain blockchain.
+   * @param {NftSearchParams & SearchOption} searchParams
+   */
+  searchAssets(searchParams: NftSearchParams & SearchOption) {
+    let query: Record<string, any> = {};
+    if (searchParams) {
+      const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
+      query = { userAddress, nftId, name, symbol, offset, limit };
+    }
+    const trailingUrl = `native/search/assets`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
