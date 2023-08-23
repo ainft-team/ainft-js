@@ -2,6 +2,7 @@ import AinftBase from "./ainftBase";
 import { HttpMethod } from "./types";
 import { Signer } from "./signer";
 import { AINFT_SERVER_ENDPOINT } from "./constants";
+import Ain from "@ainblockchain/ain-js";
 
 interface IAinft721 {
   transfer(from: string, to: string, tokenId: string): Promise<any>;
@@ -11,21 +12,21 @@ interface IAinft721 {
 export default class Ainft721 extends AinftBase implements IAinft721 {
   readonly id: string;
 
-  constructor(id: string, signer: Signer, baseUrl?: string,) {
-    if (!baseUrl) baseUrl = AINFT_SERVER_ENDPOINT.prod;
-    super(signer, baseUrl);
+  constructor(id: string, ain: Ain, baseUrl: string) {
+    super(ain, baseUrl);
     this.id = id;
   }
 
   async transfer(from: string, to: string, tokenId: string): Promise<string> {
     const txbody  = await this.getTxBodyForTransfer(from, to, tokenId);
-    return this.signer.sendTransaction(txbody);
+    return this.ain.sendTransaction(txbody);
   }
 
   async mint(to: string, tokenId: string): Promise<string> {
-    const address = await this.signer.getAddress();
+    // TODO: this.ain.signer.getAddress();
+    const address = this.ain.wallet.defaultAccount?.address!;
     const txbody = await this.getTxBodyForMint(address, to, tokenId);
-    return this.signer.sendTransaction(txbody);
+    return this.ain.sendTransaction(txbody);
   }
 
   private getTxBodyForTransfer(from: string, to: string, tokenId: string) {

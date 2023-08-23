@@ -12,7 +12,6 @@ import TextToArt from './textToArt';
 import Activity from './activity';
 import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT } from './constants';
 import { serializeEndpoint } from './util';
-import { DefaultSigner, Signer } from './signer';
 
 export default class AinftJs {
   private baseUrl: string;
@@ -26,7 +25,6 @@ export default class AinftJs {
   public personaModels: PersonaModels;
   public textToArt: TextToArt;
   public activity: Activity;
-  public signer: Signer;
 
   constructor(
     privateKey: string,
@@ -40,17 +38,16 @@ export default class AinftJs {
     this.baseUrl = _ainftServerEndpoint;
     this.ain = new Ain(ainBlockchainEndpoint || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId || AIN_BLOCKCHAIN_CHAINID[stage]);
     this.setPrivateKey(privateKey);
-    this.signer = new DefaultSigner(this.ain);
 
-    this.nft = new Nft(this.signer, this.baseUrl, '/nft'); 
-    this.credit = new Credit(this.signer, this.baseUrl, '/credit');
-    this.auth = new Auth(this.signer, this.baseUrl, '/auth');
-    this.discord = new Discord(this.signer, this.baseUrl, '/discord');
-    this.event = new Event(this.signer, this.baseUrl, '/event');
-    this.store = new Store(this.signer, this.baseUrl, '/store');
-    this.personaModels = new PersonaModels(this.signer, this.baseUrl, '/persona-models');
-    this.textToArt = new TextToArt(this.signer, this.baseUrl, '/text-to-art');
-    this.activity = new Activity(this.signer, this.baseUrl, '/activity');
+    this.nft = new Nft(this.ain, this.baseUrl, '/nft');
+    this.credit = new Credit(this.ain, this.baseUrl, '/credit');
+    this.auth = new Auth(this.ain, this.baseUrl, '/auth');
+    this.discord = new Discord(this.ain, this.baseUrl, '/discord');
+    this.event = new Event(this.ain, this.baseUrl, '/event');
+    this.store = new Store(this.ain, this.baseUrl, '/store');
+    this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
+    this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
+    this.activity = new Activity(this.ain, this.baseUrl, '/activity');
   }
 
   /**
@@ -99,19 +96,6 @@ export default class AinftJs {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
     this.ain.wallet.addAndSetDefaultAccount(privateKey);
-  }
-
-  setSigner(signer: Signer) {
-    this.signer = signer;
-    this.nft.setSigner(signer);
-    this.credit.setSigner(signer);
-    this.auth.setSigner(signer);
-    this.discord.setSigner(signer);
-    this.event.setSigner(signer);
-    this.store.setSigner(signer);
-    this.personaModels.setSigner(signer);
-    this.textToArt.setSigner(signer);
-    this.activity.setSigner(signer);
   }
 
   /**

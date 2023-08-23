@@ -68,7 +68,8 @@ export default class Activity extends AinftBase {
     data,
     label,
   }: AddAiHistoryParams) {
-    const address = await this.signer.getAddress();
+    // TODO: this.ain.signer.getAddress();
+    const address = await this.ain.wallet.defaultAccount?.address!;
     const txInput = await this.getTxBodyForAddNftAiHistory({
       chain,
       network,
@@ -79,7 +80,7 @@ export default class Activity extends AinftBase {
       label,
       address,
     });
-    return this.signer.sendTransaction(txInput);
+    return this.ain.sendTransaction(txInput);
   }
 
   /**

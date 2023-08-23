@@ -44,19 +44,20 @@ export default class Nft extends AinftBase {
     if (!this.isSupportedStandard(standard)) {
       throw Error('Nft create: Not supported standard.');
     }
-    const address = await this.signer.getAddress();
+    // TODO: this.ain.signer.getAddress();
+    const address = this.ain.wallet.defaultAccount?.address!;
 
     const body = { address, name, symbol, standard };
     const trailingUrl = 'native';
     const { nftId, txBody, appId } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
-    const txHash = await this.signer.sendTransaction(txBody);
+    const txHash = await this.ain.sendTransaction(txBody);
 
     console.log('nft ID: ', nftId);
     console.log('app ID: ', appId);
 
     await this.register(nftId);
 
-    return new Ainft721(nftId, this.signer, this.baseUrl);
+    return new Ainft721(nftId, this.ain, this.baseUrl);
   }
 
   /**
@@ -65,12 +66,14 @@ export default class Nft extends AinftBase {
    * @returns 
    */
   async register(nftId: string) {
-    const address = this.signer.getAddress();
+    // TODO: this.ain.signer.getAddress();
+    const address = this.ain.wallet.defaultAccount?.address!;
     const message = stringify({
       address,
       timestamp: Date.now(),
     });
-    const signature = this.signer.signMessage(message);
+    // TODO this.ain.signer.signMessage(message);
+    const signature = this.ain.wallet.sign(message, address);
 
     const body = { signature, message, nftId };
     const trailingUrl = 'native/register';
@@ -251,14 +254,15 @@ export default class Nft extends AinftBase {
       const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
       return this.sendRequest(HttpMethod.POST, trailingUrl, body);
     } else {
-      const address = await this.signer.getAddress();
+      // TODO: this.ain.signer.getAddress();
+      const address = this.ain.wallet.defaultAccount?.address!;
       const txBody = await this.getTxBodyForSetNftMetadata({
         nftId,
         tokenId,
         metadata,
         userAddress: address
       });
-      return this.signer.sendTransaction(txBody);
+      return this.ain.sendTransaction(txBody);
     }
   }
 
