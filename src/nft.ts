@@ -24,23 +24,27 @@ import {
   SetEthNftMetadataParams,
   SetNftMetadataParams,
   UploadAssetFromBufferParams,
-  UploadAssetFromDataUrlParams, SearchOption
+  UploadAssetFromDataUrlParams,
+  SearchOption,
 } from './types';
 import Ainft721 from './ainft721';
 import stringify from 'fast-json-stable-stringify';
+import {SUPPORTED_AINFT_STANDARDS} from "./constants";
 
 export default class Nft extends AinftBase {
 
   private isSupportedStandard(standard: string) {
-    return standard === '721';
+    return Object.values(SUPPORTED_AINFT_STANDARDS).includes(standard);
   }
 
   /**
    * Create NFT. Default standard is 721.
    * @param name NFT name
    * @param symbol NFT symbol
+   * @param standard
    */
-  async create(name: string, symbol: string, standard = '721') {
+  async create(name: string, symbol: string, standard?: string) {
+    if (!standard) standard = SUPPORTED_AINFT_STANDARDS["721"];
     if (!this.isSupportedStandard(standard)) {
       throw Error('Nft create: Not supported standard.');
     }
