@@ -31,7 +31,7 @@ export default class Ainft721 extends AinftBase implements IAinft721 {
       address: from,
       toAddress: to,
     }
-    const trailingUrl = `nft/native/${this.id}/${tokenId}/transfer`;
+    const trailingUrl = `native/${this.id}/${tokenId}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
@@ -41,7 +41,7 @@ export default class Ainft721 extends AinftBase implements IAinft721 {
       toAddress: to,
       tokenId,
     }
-    const trailingUrl = `nft/native/${this.id}/mint`;
+    const trailingUrl = `native/${this.id}/mint`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
