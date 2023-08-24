@@ -9,8 +9,7 @@ export default class Auth extends AinftBase {
    * @returns
    */
   async createApp(appId: string) {
-    // TODO: this.ain.signer.getAddress();
-    const address = this.ain.wallet.defaultAccount?.address!;
+    const address = this.ain.signer.getAddress();
     const createAppOperation = {
       value: {
         admin: {
@@ -169,8 +168,7 @@ export default class Auth extends AinftBase {
    * @returns
    */
   async registerBlockchainApp(appId: string, accessAinAddress?: string) {
-    // TODO: this.ain.signer.getAddress();
-    const ownerAddress = this.ain.wallet.defaultAccount?.address!;
+    const ownerAddress = this.ain.signer.getAddress();
     const body = {
       appId,
       ownerAddress,
@@ -187,8 +185,7 @@ export default class Auth extends AinftBase {
    * @returns
    */
   async getTxBodyForDelegateApp(appId: string) {
-    // TODO: this.ain.signer.getAddress();
-    const address = this.ain.wallet.defaultAccount?.address!;
+    const address = this.ain.signer.getAddress();
     const body = { appId, address };
     const trailingUrl = `delegate_app`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);

@@ -1,7 +1,5 @@
 import AinftBase from "./ainftBase";
 import { HttpMethod } from "./types";
-import { Signer } from "./signer";
-import { AINFT_SERVER_ENDPOINT } from "./constants";
 import Ain from "@ainblockchain/ain-js";
 
 interface IAinft721 {
@@ -23,8 +21,7 @@ export default class Ainft721 extends AinftBase implements IAinft721 {
   }
 
   async mint(to: string, tokenId: string): Promise<string> {
-    // TODO: this.ain.signer.getAddress();
-    const address = this.ain.wallet.defaultAccount?.address!;
+    const address = this.ain.signer.getAddress();
     const txbody = await this.getTxBodyForMint(address, to, tokenId);
     return this.ain.sendTransaction(txbody);
   }

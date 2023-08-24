@@ -44,8 +44,7 @@ export default class Nft extends AinftBase {
     if (!this.isSupportedStandard(standard)) {
       throw Error('Nft create: Not supported standard.');
     }
-    // TODO: this.ain.signer.getAddress();
-    const address = this.ain.wallet.defaultAccount?.address!;
+    const address = this.ain.signer.getAddress();
 
     const body = { address, name, symbol, standard };
     const trailingUrl = 'native';
@@ -66,14 +65,12 @@ export default class Nft extends AinftBase {
    * @returns 
    */
   async register(nftId: string) {
-    // TODO: this.ain.signer.getAddress();
-    const address = this.ain.wallet.defaultAccount?.address!;
+    const address = this.ain.signer.getAddress();
     const message = stringify({
       address,
       timestamp: Date.now(),
     });
-    // TODO this.ain.signer.signMessage(message);
-    const signature = this.ain.wallet.sign(message, address);
+    const signature = await this.ain.signer.signMessage(message, address);
 
     const body = { signature, message, nftId };
     const trailingUrl = 'native/register';
@@ -254,8 +251,7 @@ export default class Nft extends AinftBase {
       const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
       return this.sendRequest(HttpMethod.POST, trailingUrl, body);
     } else {
-      // TODO: this.ain.signer.getAddress();
-      const address = this.ain.wallet.defaultAccount?.address!;
+      const address = this.ain.signer.getAddress();
       const txBody = await this.getTxBodyForSetNftMetadata({
         nftId,
         tokenId,
