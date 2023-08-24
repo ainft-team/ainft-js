@@ -51,8 +51,10 @@ export default class Nft extends AinftBase {
     const { nftId, txBody, appId } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
     const txHash = await this.ain.sendTransaction(txBody);
 
+    console.log(`Ainft is created!`);
     console.log('nft ID: ', nftId);
     console.log('app ID: ', appId);
+    console.log(`txHash: `, txHash);
 
     await this.register(nftId);
 
