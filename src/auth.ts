@@ -10,7 +10,7 @@ export default class Auth extends AinftBase {
    */
   async createApp(appId: string) {
     const address = this.ain.signer.getAddress();
-    const createAppOperation = {
+    return this.ain.db.ref(`/manage_app/${appId}/create/${Date.now()}`).setValue({
       value: {
         admin: {
           [address]: true,
@@ -24,16 +24,7 @@ export default class Auth extends AinftBase {
       address,
       nonce: -1,
       gas_price: MIN_GAS_PRICE,
-    };
-
-    const txBody = Reference.extendSetTransactionInput(
-      createAppOperation,
-      `/manage_app/${appId}/create/${Date.now()}`,
-      'SET_VALUE',
-      false,
-    )
-
-    return this.ain.sendTransaction(txBody);
+    });
   }
 
   /**
