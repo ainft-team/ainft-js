@@ -40,7 +40,7 @@ export default class Nft extends AinftBase {
    * @param name NFT name
    * @param symbol NFT symbol
    */
-  async create(name: string, symbol: string, standard = '721') { 
+  async create(name: string, symbol: string, standard = '721') {
     if (!this.isSupportedStandard(standard)) {
       throw Error('Nft create: Not supported standard.');
     }
@@ -75,6 +75,14 @@ export default class Nft extends AinftBase {
     const body = { signature, message, nftId };
     const trailingUrl = 'native/register';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Return Ainft721 instance by nftId.
+   * @param nftId
+   */
+  getAinft721(nftId: string) {
+    return new Ainft721(nftId, this.ain, this.baseUrl);
   }
 
   /**
