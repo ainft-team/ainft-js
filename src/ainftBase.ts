@@ -27,12 +27,10 @@ export default class AinftBase {
 
   signData(data: any) {
     if (typeof data !== 'string') {
-      // TODO: this.ain.signer.signMessage(stringify(data));
-      return this.ain.wallet.sign(stringify(data));
+      return this.ain.signer.signMessage(stringify(data));
     }
 
-    // TODO: this.ain.signer.signMessage(stringify(data));
-    return this.ain.wallet.sign(data);
+    return this.ain.signer.signMessage(stringify(data));
   }
 
   async sendRequest(method: HttpMethod, trailingUrl: string, data?: Record<string, any>) {  
@@ -43,7 +41,7 @@ export default class AinftBase {
       timestamp,
       data
     );
-    const signature = this.signData(dataForSignature);
+    const signature = await this.signData(dataForSignature);
     const headers = {
       'X-AINFT-Date': timestamp,
       Authorization: `AINFT ${signature}`,
@@ -95,7 +93,7 @@ export default class AinftBase {
       timestamp,
       stringFields
     );
-    const signature = this.signData(dataForSignature);
+    const signature = await this.signData(dataForSignature);
     const headers = {
       'X-AINFT-Date': timestamp,
       Authorization: `AINFT ${signature}`,
