@@ -294,7 +294,7 @@ export default class Nft extends AinftBase {
    * @returns
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchCollection(searchParams: NftSearchParams & SearchOption): Promise<NftToken[]> {
+  searchCollections(searchParams: NftSearchParams & SearchOption): Promise<NftToken[]> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
