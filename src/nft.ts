@@ -62,7 +62,7 @@ export default class Nft extends AinftBase {
 
     await this.register(nftId);
 
-    return new Ainft721(nftId, this.ain, this.baseUrl);
+    return this.getAinft721(nftId);
   }
 
   /**
