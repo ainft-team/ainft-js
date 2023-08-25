@@ -1,4 +1,4 @@
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import {
   HttpMethod,
   ItemTryOnParams,
@@ -26,7 +26,7 @@ import {
   UseItemReturnType,
 } from './types';
 
-export default class Store extends AinftBase {
+export default class Store extends FactoryBase {
   /**
    * Creates a new item.
    * @param {CreateItemParams} CreateItemParams - The parameters to create a new item.

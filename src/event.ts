@@ -1,4 +1,4 @@
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import {
   AddEventActivityParams,
   CreateEventParams,
@@ -15,7 +15,7 @@ import {
   RewardInfo,
 } from './types';
 
-export default class Event extends AinftBase {
+export default class Event extends FactoryBase {
   /**
    * Create a new event. Set the tasks to be performed and the rewards to receive.
    * @param {CreateEventParams} CreateEventParams

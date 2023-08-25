@@ -176,28 +176,24 @@ export interface GetUserNftListParams {
 }
 
 export interface getTxBodySetNftMetadataParams {
-  appId: string;
-  chain: string;
-  network: string;
-  collectionId: string;
+  nftId: string;
   tokenId: string;
   metadata: NftMetadata;
-  ownerAddress: string;
+  userAddress: string;
 }
 
-export interface SetNftMetadataParams extends Omit<getTxBodySetNftMetadataParams, 'ownerAddress' | 'collectionId'> {
-  contractAddress?: string;
-  collectionId?: string;
-};
+export interface SetNftMetadataParams extends SetEthNftMetadataParams, SetAinNftMetadataParams {}
 
-export interface SetEthNftMetadataParams extends Omit<SetNftMetadataParams, 'collectionId'> {
+export interface SetEthNftMetadataParams {
+  appId: string;
   chain: "ETH";
+  network: string;
   contractAddress: string;
+  tokenId: string;
+  metadata: NftMetadata;
 };
 
-export interface SetAinNftMetadataParams extends Omit<SetNftMetadataParams, 'contractAddress'> {
-  chain: "AIN";
-}
+export interface SetAinNftMetadataParams extends Omit<getTxBodySetNftMetadataParams, 'userAddress'> {}
 
 export interface Account {
   address: string;
@@ -799,20 +795,6 @@ export interface TokenUpdatePermission {
   tokenOwner: boolean;
 }
 
-export interface getTxBodyCreateNftCollectionParams {
-  address: string;
-  chain: string;
-  network: string;
-  appId: string;
-  collectionId: string;
-  symbol: string;
-  name: string;
-  connectWhitelist?: string[]; //TODO(hyeonwoong): Need more design.
-  tokenUpdatePermission?: TokenUpdatePermission;
-}
-
-export interface CreateNftCollectionParams extends Omit<getTxBodyCreateNftCollectionParams, 'address'> {}
-  
 export interface getTxBodyMintNftParams {
   address: string;
   chain: string;
@@ -826,12 +808,17 @@ export interface getTxBodyMintNftParams {
 
 export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {}
 
-export interface SearchNftOption {
-  address?: string;
-  appId?: string;
-  collectionId?: string;
-  chain: string;
-  network: string;
+export interface NftSearchParams {
+  userAddress?: string;
+  nftId?: string;
+  tokenId?: string;
+  name?: string;
+  symbol?: string;
+}
+
+export interface SearchOption {
+  limit?: number,
+  offset?: string,
 }
 
 export interface getTxBodyTransferNftParams {

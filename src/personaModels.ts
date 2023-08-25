@@ -1,7 +1,7 @@
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import { HttpMethod, CreatePersonaModelInfo, ChatResponse, PersonaModelCreditInfo } from './types';
 
-export default class PersonaModels extends AinftBase {
+export default class PersonaModels extends FactoryBase {
   /**
    * Create persona model.
    * @param appId

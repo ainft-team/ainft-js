@@ -1,33 +1,30 @@
-import AinftBase from './ainftBase';
+import Reference from '@ainblockchain/ain-js/lib/ain-db/ref';
+import FactoryBase from './factoryBase';
 import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from './constants';
 import { HttpMethod, User } from './types';
-export default class Auth extends AinftBase {
+export default class Auth extends FactoryBase {
   /**
    * Create AIN Blockchain app using private key.
    * @param {string} appId - AppId you want.
    * @returns
    */
   async createApp(appId: string) {
-    const address = this.ain.wallet.defaultAccount?.address!;
-    const res = await this.ain.db
-      .ref(`/manage_app/${appId}/create/${Date.now()}`)
-      .setValue({
-        value: {
-          admin: {
-            [address]: true,
-          },
-          service: {
-            staking: {
-              lockup_duration: APP_STAKING_LOCKUP_DURATION_MS,
-            },
+    const address = this.ain.signer.getAddress();
+    return this.ain.db.ref(`/manage_app/${appId}/create/${Date.now()}`).setValue({
+      value: {
+        admin: {
+          [address]: true,
+        },
+        service: {
+          staking: {
+            lockup_duration: APP_STAKING_LOCKUP_DURATION_MS,
           },
         },
-        nonce: -1,
-        address,
-        gas_price: MIN_GAS_PRICE,
-      });
-
-    return res;
+      },
+      address,
+      nonce: -1,
+      gas_price: MIN_GAS_PRICE,
+    });
   }
 
   /**
@@ -162,7 +159,7 @@ export default class Auth extends AinftBase {
    * @returns
    */
   async registerBlockchainApp(appId: string, accessAinAddress?: string) {
-    const ownerAddress = this.ain.wallet.defaultAccount?.address;
+    const ownerAddress = this.ain.signer.getAddress();
     const body = {
       appId,
       ownerAddress,
@@ -179,7 +176,7 @@ export default class Auth extends AinftBase {
    * @returns
    */
   async getTxBodyForDelegateApp(appId: string) {
-    const address = this.ain.wallet.defaultAccount?.address;
+    const address = this.ain.signer.getAddress();
     const body = { appId, address };
     const trailingUrl = `delegate_app`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);

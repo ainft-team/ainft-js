@@ -1,40 +1,96 @@
-import { TransactionInput } from '@ainblockchain/ain-js/lib/types';
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import {
-    HttpMethod,
-    AddNftSymbolParams,
-    GetAppNftSymbolListParams,
-    GetNftSymbolParams,
-    RemoveNftSymbolParams,
-    NftContractBySymbol,
-    GetNftParams,
-    NftToken,
-    GetNftContractInfoParams,
-    NftContractInfo,
-    GetUserNftListParams,
-    NftCollections,
-    SetNftMetadataParams,
-    NftMetadata,
-    CreateNftCollectionParams,
-    MintNftParams,
-    SearchNftOption,
-    TransferNftParams,
-    UploadAssetFromDataUrlParams,
-    UploadAssetFromBufferParams,
-    DeleteAssetParams,
-    getTxBodyCreateNftCollectionParams,
-    getTxBodyMintNftParams,
-    getTxBodyTransferNftParams,
-    getTxBodySetNftMetadataParams,
-    SetAinNftMetadataParams,
-    SetEthNftMetadataParams,
-    GetNftsInEthContractParams,
-    NftTokens,
-    GetNftsInCollectionParams,
-    GetNftsInAinCollectionParams
+  AddNftSymbolParams,
+  DeleteAssetParams,
+  GetAppNftSymbolListParams,
+  GetNftContractInfoParams,
+  GetNftParams,
+  GetNftsInAinCollectionParams,
+  GetNftsInCollectionParams,
+  GetNftsInEthContractParams,
+  GetNftSymbolParams,
+  getTxBodySetNftMetadataParams,
+  GetUserNftListParams,
+  HttpMethod,
+  NftCollections,
+  NftContractBySymbol,
+  NftContractInfo,
+  NftMetadata,
+  NftToken,
+  NftTokens,
+  RemoveNftSymbolParams,
+  NftSearchParams,
+  SetAinNftMetadataParams,
+  SetEthNftMetadataParams,
+  SetNftMetadataParams,
+  UploadAssetFromBufferParams,
+  UploadAssetFromDataUrlParams,
+  SearchOption,
 } from './types';
+import Ainft721 from './ainft721';
+import stringify from 'fast-json-stable-stringify';
+import {SUPPORTED_AINFT_STANDARDS} from "./constants";
 
-export default class Nft extends AinftBase {
+export default class Nft extends FactoryBase {
+
+  private isSupportedStandard(standard: string) {
+    return Object.values(SUPPORTED_AINFT_STANDARDS).includes(standard);
+  }
+
+  /**
+   * Create NFT. Default standard is 721.
+   * @param name NFT name
+   * @param symbol NFT symbol
+   * @param standard
+   */
+  async create(name: string, symbol: string, standard?: string) {
+    if (!standard) standard = SUPPORTED_AINFT_STANDARDS["721"];
+    if (!this.isSupportedStandard(standard)) {
+      throw Error('Nft create: Not supported standard.');
+    }
+    const address = this.ain.signer.getAddress();
+
+    const body = { address, name, symbol, standard };
+    const trailingUrl = 'native';
+    const { nftId, txBody, appId } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    const txHash = await this.ain.sendTransaction(txBody);
+
+    console.log(`Ainft is created!`);
+    console.log('nft ID: ', nftId);
+    console.log('app ID: ', appId);
+    console.log(`txHash: `, txHash);
+
+    await this.register(nftId);
+
+    return this.getAinft721(nftId);
+  }
+
+  /**
+   * Register nft to factory server.
+   * @param nftId 
+   * @returns 
+   */
+  async register(nftId: string) {
+    const address = this.ain.signer.getAddress();
+    const message = stringify({
+      address,
+      timestamp: Date.now(),
+    });
+    const signature = await this.ain.signer.signMessage(message, address);
+
+    const body = { signature, message, nftId };
+    const trailingUrl = 'native/register';
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Return Ainft721 instance by nftId.
+   * @param nftId
+   */
+  getAinft721(nftId: string) {
+    return new Ainft721(nftId, this.ain, this.baseUrl);
+  }
+
   /**
    * Add nfy symbol. You can add nft to reference in your factory activity.
    * @param {AddNftSymbolParams} AddNftSymbolParams
@@ -183,10 +239,7 @@ export default class Nft extends AinftBase {
    * @returns
    */
   async setNftMetadata({
-    appId,
-    chain,
-    network,
-    collectionId,
+    nftId,
     tokenId,
     metadata,
   }: SetAinNftMetadataParams): Promise<any>;
@@ -203,28 +256,23 @@ export default class Nft extends AinftBase {
     chain,
     network,
     contractAddress,
-    collectionId,
     tokenId,
     metadata,
+    nftId,
   }: SetNftMetadataParams): Promise<NftMetadata | any> {
-    let _collectionId = collectionId || contractAddress;
-    if (!_collectionId)
-      throw Error('collectionId or contractAdress is required');
-    if (chain === 'AIN') {
+    if (chain === 'ETH') {
+      const body = { appId, metadata };
+      const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+      return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    } else {
+      const address = this.ain.signer.getAddress();
       const txBody = await this.getTxBodyForSetNftMetadata({
-        appId,
-        chain,
-        network,
-        collectionId: _collectionId,
+        nftId,
         tokenId,
         metadata,
-        ownerAddress: this.ain.wallet.defaultAccount?.address!,
+        userAddress: address
       });
       return this.ain.sendTransaction(txBody);
-    } else {
-      const body = { appId, metadata };
-      const trailingUrl = `info/${chain}/${network}/${_collectionId}/${tokenId}/metadata`;
-      return this.sendRequest(HttpMethod.POST, trailingUrl, body);
     }
   }
 
@@ -234,191 +282,44 @@ export default class Nft extends AinftBase {
    * @param {getTxBodySetNftMetadataParams} getTxBodySetNftMetadataParams
    * @returns
    */
-  getTxBodyForSetNftMetadata({
-    appId,
-    chain,
-    network,
-    collectionId,
+  private getTxBodyForSetNftMetadata({
+    nftId,
     tokenId,
     metadata,
-    ownerAddress,
+    userAddress,
   }: getTxBodySetNftMetadataParams) {
-    const body = { appId, metadata, ownerAddress };
-    const trailingUrl = `info/${chain}/${network}/${collectionId}/${tokenId}/metadata`;
+    const body = { nftId, tokenId, metadata, userAddress };
+    const trailingUrl = `native/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   /**
-   * Create nft collection in ain blockchain. You can modify metadata setting permission through tokenUpdatePermission.
-   * @param {CreateNftCollectionParams} CreateNftCollectionParams
+   * Search nfts created on the ain blockchain.
    * @returns
+   * @param {NftSearchParams & SearchOption} searchParams
    */
-  async createNftCollection({
-    chain,
-    network,
-    appId,
-    collectionId,
-    symbol,
-    name,
-    connectWhitelist,
-    tokenUpdatePermission,
-  }: CreateNftCollectionParams) {
-    const txBody = await this.getTxBodyForCreateNftCollection({
-      address: this.ain.wallet.defaultAccount?.address!,
-      chain,
-      network,
-      appId,
-      collectionId,
-      symbol,
-      name,
-      connectWhitelist,
-      tokenUpdatePermission,
-    });
-    return this.ain.sendTransaction(txBody);
-  }
-
-  /**
-   * Mint the nft of the created collection.
-   * @param {MintNftParams} MintNftParams
-   * @returns
-   */
-  async mintNft({
-    chain,
-    network,
-    appId,
-    collectionId,
-    metadata,
-    toAddress,
-    tokenId,
-  }: MintNftParams) {
-    const txBody = await this.getTxBodyForMintNft({
-      address: this.ain.wallet.defaultAccount?.address!,
-      chain,
-      network,
-      appId,
-      collectionId,
-      metadata,
-      toAddress,
-      tokenId,
-    });
-    return this.ain.sendTransaction(txBody);
-  }
-
-  /**
-   * Search nfts created on the ain blockchain. You can use user address, collectionId, and appId as search filters.
-   * @param {SearchNftOption} SearchNftOption
-   * @returns
-   */
-  searchNft({
-    address,
-    appId,
-    collectionId,
-    chain,
-    network,
-  }: SearchNftOption): Promise<NftToken[]> {
-    const query = { address, appId, collectionId, chain, network };
-    const trailingUrl = `native/search`;
+  searchCollections(searchParams: NftSearchParams & SearchOption): Promise<NftToken[]> {
+    let query: Record<string, any> = {};
+    if (searchParams) {
+      const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
+      query = { userAddress, nftId, name, symbol, offset, limit };
+    }
+    const trailingUrl = `native/search/collections`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   /**
-   * Transfer nft created on the ain blockchain to others.
-   * @param {TransferNftParams} TransferNftParams
-   * @returns
+   * Search nft assets on the ain blockchain.
+   * @param {NftSearchParams & SearchOption} searchParams
    */
-  async transferNft({
-    chain,
-    network,
-    appId,
-    collectionId,
-    tokenId,
-    toAddress,
-  }: TransferNftParams) {
-    const txBody = await this.getTxBodyForTransferNft({
-      address: this.ain.wallet.defaultAccount?.address!,
-      chain,
-      network,
-      appId,
-      collectionId,
-      tokenId,
-      toAddress,
-    });
-    return this.ain.sendTransaction(txBody);
-  }
-
-  /**
-   * Get transaction body to create nft collection. Sending the transaction must be done manually.
-   * @param {getTxBodyCreateNftCollectionParams} getTxBodyCreateNftCollectionParams
-   * @returns
-   */
-  getTxBodyForCreateNftCollection({
-    address,
-    chain,
-    network,
-    appId,
-    collectionId,
-    symbol,
-    name,
-    connectWhitelist,
-    tokenUpdatePermission,
-  }: getTxBodyCreateNftCollectionParams): Promise<TransactionInput> {
-    const body = {
-      address,
-      collectionId,
-      symbol,
-      name,
-      connectWhitelist,
-      tokenUpdatePermission,
-    };
-    const trailingUrl = `native/${appId}/${chain}/${network}/collection`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
-  /**
-   * Get transaction body to mint nft. Sending the transaction must be done manually.
-   * @param {getTxBodyMintNftParams} getTxBodyMintNftParams
-   * @returns
-   */
-  getTxBodyForMintNft({
-    address,
-    chain,
-    network,
-    appId,
-    collectionId,
-    metadata,
-    toAddress,
-    tokenId,
-  }: getTxBodyMintNftParams): Promise<TransactionInput> {
-    const body = {
-      address,
-      metadata,
-      toAddress,
-      tokenId,
-    };
-    const trailingUrl = `native/${appId}/${chain}/${network}/${collectionId}/mint`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
-  /**
-   * Get transaction body to transfer nft. Sending the transaction must be done manually.
-   * @param {getTxBodyTransferNftParams} getTxBodyTransferNftParams
-   * @returns
-   */
-  getTxBodyForTransferNft({
-    address,
-    chain,
-    network,
-    appId,
-    collectionId,
-    tokenId,
-    toAddress,
-  }: getTxBodyTransferNftParams): Promise<TransactionInput> {
-    const body = {
-      address,
-      toAddress,
-    };
-    const trailingUrl = `native/${appId}/${chain}/${network}/${collectionId}/${tokenId}/transfer`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  searchAssets(searchParams: NftSearchParams & SearchOption) {
+    let query: Record<string, any> = {};
+    if (searchParams) {
+      const { userAddress, nftId, name, symbol, limit, offset, tokenId } = searchParams;
+      query = { userAddress, nftId, name, symbol, offset, limit, tokenId };
+    }
+    const trailingUrl = `native/search/assets`;
+    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   /**
