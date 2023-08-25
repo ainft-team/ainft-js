@@ -1,7 +1,7 @@
-import AinftBase from "./ainftBase";
+import FactoryBase from "./factoryBase";
 import { ActivityNftInfo, AddAiHistoryParams, HttpMethod, NftActivityType, TaskTypeCategory, getTxbodyAddAiHistoryParams } from "./types";
 
-export default class Activity extends AinftBase {
+export default class Activity extends FactoryBase {
   /**
    * You can add activity without event. Just add activity.
    * @param appId 

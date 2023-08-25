@@ -6,9 +6,9 @@ import {
   HttpMethod,
   InviteInfo,
 } from "./types";
-import AinftBase from "./ainftBase";
+import FactoryBase from "./factoryBase";
 
-export default class Discord extends AinftBase {
+export default class Discord extends FactoryBase {
   /**
    * Connect discord server and AINFT Factory app. A Discord server can only connect to one app.
    * @param {string} appId

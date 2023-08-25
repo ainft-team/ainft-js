@@ -1,8 +1,8 @@
 import Reference from '@ainblockchain/ain-js/lib/ain-db/ref';
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from './constants';
 import { HttpMethod, User } from './types';
-export default class Auth extends AinftBase {
+export default class Auth extends FactoryBase {
   /**
    * Create AIN Blockchain app using private key.
    * @param {string} appId - AppId you want.

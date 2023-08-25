@@ -1,4 +1,4 @@
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import {
   AddNftSymbolParams,
   DeleteAssetParams,
@@ -31,7 +31,7 @@ import Ainft721 from './ainft721';
 import stringify from 'fast-json-stable-stringify';
 import {SUPPORTED_AINFT_STANDARDS} from "./constants";
 
-export default class Nft extends AinftBase {
+export default class Nft extends FactoryBase {
 
   private isSupportedStandard(standard: string) {
     return Object.values(SUPPORTED_AINFT_STANDARDS).includes(standard);

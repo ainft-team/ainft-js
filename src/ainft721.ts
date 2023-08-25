@@ -1,4 +1,4 @@
-import AinftBase from "./ainftBase";
+import FactoryBase from "./factoryBase";
 import { HttpMethod } from "./types";
 import Ain from "@ainblockchain/ain-js";
 
@@ -7,7 +7,7 @@ interface IAinft721 {
   mint(to: string, tokenId: string): Promise<any>;
 }
 
-export default class Ainft721 extends AinftBase implements IAinft721 {
+export default class Ainft721 extends FactoryBase implements IAinft721 {
   readonly id: string;
 
   constructor(id: string, ain: Ain, baseUrl: string) {

@@ -5,7 +5,7 @@ import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types"
 import { buildData, isJoiError, sleep } from "./util";
 import FormData from "form-data";
 
-export default class AinftBase {
+export default class FactoryBase {
   public baseUrl = '';
   public route: string;
   public ain: Ain;
