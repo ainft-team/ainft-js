@@ -5,35 +5,19 @@ const ainftServerEndpoint = {
   PROD: 'https://ainft-api.ainetwork.ai',
 }
 
-const ainBlockchainEndpoint = {
-  DEV: 'https://testnet-api.ainetwork.ai',
-  PROD: 'https://mainnet-api.ainetwork.ai',
-}
-
-const ainBlockchainChainId = {
-  DEV: 0,
-  PROD: 1
-}
-
-const ainBlockchainNetwork = {
-  DEV: 'testnet',
-  PROD: 'mainnet',
-}
-
 const main = async () => {
-  if (process.argv.length !== 11) {
+  if (process.argv.length !== 10) {
     usage();
   }
 
   const stage = process.argv[2];
-  const appId = process.argv[3];
-  const collectionId = process.argv[4];
-  const name = process.argv[5];
-  const description = process.argv[6];
-  const image = process.argv[7];
-  const toAddress = process.argv[8];
-  const tokenId = process.argv[9];
-  const privateKey = process.argv[10];
+  const nftId = process.argv[3];
+  const name = process.argv[4];
+  const description = process.argv[5];
+  const image = process.argv[6];
+  const toAddress = process.argv[7];
+  const tokenId = process.argv[8];
+  const privateKey = process.argv[9];
 
   if (stage !== 'DEV' && stage !== 'PROD') {
     console.log('stage must be in DEV or PROD.');
@@ -43,25 +27,26 @@ const main = async () => {
   const ainftJs = new AinftJs(
     privateKey,
     ainftServerEndpoint[stage],
-    ainBlockchainEndpoint[stage],
-    ainBlockchainChainId[stage],
   );
   
   try {
-    const res = await ainftJs.nft.mintNft({
-      chain: 'AIN',
-      network: ainBlockchainNetwork[stage],
-      appId,
-      collectionId,
+    const myNft = ainftJs.nft.getAinft721(nftId);
+    const res = await myNft.mint(toAddress, tokenId);
+    console.log('------ NFT mint');
+    console.log(JSON.stringify(res, null, 2));
+
+    await new Promise(resolve => setTimeout(resolve, 20000));
+
+    const res2 = await ainftJs.nft.setNftMetadata({
+      nftId, tokenId,
       metadata: {
         name,
         description,
         image
-      },
-      toAddress,
-      tokenId
+      }
     });
-    console.log(JSON.stringify(res, null, 2));
+    console.log('------ NFT set metadata');
+    console.log(JSON.stringify(res2, null, 2));
   } catch (error) {
     console.error(error);
   }
@@ -71,9 +56,6 @@ const main = async () => {
 const usage = () => {
   console.log('\nUsage: node mint-new-nft.js\n');
   console.log('<DEV | PROD>: It means stage. dev connects to testnet, prod connects to mainnet.');
-  console.log('<APP ID>: This is the app id to create on the ainft server.' +
-    'Combinations of lowercase letters, underscores and number are allowed.');
-  console.log('<COLLECTION ID>');
   console.log('<NAME>');
   console.log('<DESCRIPTION>');
   console.log('<IMAGE URL>');

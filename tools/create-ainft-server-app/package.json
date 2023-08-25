@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@ainblockchain/ain-js": "^1.6.0",
     "@ainblockchain/ain-util": "^1.1.9",
-    "@ainft-team/ainft-js": "1.0.0-beta.4"
+    "@ainft-team/ainft-js": "1.0.0-beta.5"
   }
 }
