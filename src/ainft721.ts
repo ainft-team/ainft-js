@@ -26,7 +26,7 @@ export default class Ainft721 extends FactoryBase implements IAinft721 {
     return this.ain.sendTransaction(txbody);
   }
 
-  private getTxBodyForTransfer(from: string, to: string, tokenId: string) {
+  getTxBodyForTransfer(from: string, to: string, tokenId: string) {
     const body = {
       address: from,
       toAddress: to,
@@ -35,7 +35,7 @@ export default class Ainft721 extends FactoryBase implements IAinft721 {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  private getTxBodyForMint(ownerAddress: string, to: string, tokenId: string) {
+  getTxBodyForMint(ownerAddress: string, to: string, tokenId: string) {
     const body = {
       address: ownerAddress,
       toAddress: to,
