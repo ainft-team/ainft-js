@@ -1,4 +1,4 @@
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import {
   HttpMethod,
   Task,
@@ -8,7 +8,7 @@ import {
   DiscordMessageInfo,
 } from './types';
 
-export default class TextToArt extends AinftBase {
+export default class TextToArt extends FactoryBase {
   /**
    * Get the result of a text-to-art task.
    * @param {string} appId - The ID of the app where the text-to-art task will be used.

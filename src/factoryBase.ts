@@ -5,7 +5,7 @@ import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types"
 import { buildData, isJoiError, sleep } from "./util";
 import FormData from "form-data";
 
-export default class AinftBase {
+export default class FactoryBase {
   public baseUrl = '';
   public route: string;
   public ain: Ain;
@@ -27,10 +27,10 @@ export default class AinftBase {
 
   signData(data: any) {
     if (typeof data !== 'string') {
-      return this.ain.wallet.sign(stringify(data));
+      return this.ain.signer.signMessage(stringify(data));
     }
 
-    return this.ain.wallet.sign(data);
+    return this.ain.signer.signMessage(stringify(data));
   }
 
   async sendRequest(method: HttpMethod, trailingUrl: string, data?: Record<string, any>) {  
@@ -41,7 +41,7 @@ export default class AinftBase {
       timestamp,
       data
     );
-    const signature = this.signData(dataForSignature);
+    const signature = await this.signData(dataForSignature);
     const headers = {
       'X-AINFT-Date': timestamp,
       Authorization: `AINFT ${signature}`,
@@ -93,7 +93,7 @@ export default class AinftBase {
       timestamp,
       stringFields
     );
-    const signature = this.signData(dataForSignature);
+    const signature = await this.signData(dataForSignature);
     const headers = {
       'X-AINFT-Date': timestamp,
       Authorization: `AINFT ${signature}`,
@@ -112,19 +112,6 @@ export default class AinftBase {
       } else {
         throw err;
       }
-    }
-  }
-
-  async waitTransaction(hash: string, maxCount: number) {
-    let count = 0;
-    while (maxCount > count) {
-      const transaction = await this.ain.getTransaction(hash);
-      if (transaction.is_finalized) {
-        break;
-      }
-      await sleep(10000);
-      count += 1;
-      console.log(`Waiting transaction - hash(${hash}), ${count}0 seconds...`);
     }
   }
 }

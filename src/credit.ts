@@ -1,4 +1,4 @@
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import {
   AppCreditInfo,
   HttpMethod,
@@ -11,7 +11,7 @@ import {
 } from './types';
 
 // TODO(kriii): Objectify params?
-export default class Credit extends AinftBase {
+export default class Credit extends FactoryBase {
   /**
    * Create app credit. 
    * @param {string} appId
