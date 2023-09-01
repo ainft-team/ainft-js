@@ -1,5 +1,5 @@
 import FactoryBase from "./factoryBase";
-import { ActivityNftInfo, AddAiHistoryParams, HttpMethod, NftActivityType, TaskTypeCategory, getTxbodyAddAiHistoryParams } from "./types";
+import { ActivityNftInfo, AiHistoryData, HttpMethod, NftActivityType, TaskTypeCategory } from "./types";
 
 export default class Activity extends FactoryBase {
   /**
@@ -28,7 +28,16 @@ export default class Activity extends FactoryBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  
+  /**
+   * Add activity history under nft path.
+   * @param {string} nftId 
+   * @param {string} tokenId 
+   * @param {string} userAddress 
+   * @param {any} data 
+   * @param {NftActivityType | TaskTypeCategory} activityType 
+   * @param {string} activityId - If you have any activityId, you can use it.
+   * @returns 
+   */
   async addNftActivty(nftId: string, tokenId: string, userAddress: string, data: any, activityType: NftActivityType | TaskTypeCategory, activityId?: string) {
     const signerAddress = this.ain.signer.getAddress();
     const txBody = await this.getTxBodyForAddNftActivity(nftId, tokenId, userAddress, data, signerAddress, activityType, activityId);
@@ -72,30 +81,16 @@ export default class Activity extends FactoryBase {
   }
 
   /**
-   * Add ai interaction history with nft.
-   * @param {AddAiHistoryParams} AddAiHistoryParams
+   * Add AI interaction history under nft path.
+   * @param {string} nftId 
+   * @param {string} tokenId 
+   * @param {string} label 
+   * @param {AiHistoryData} data - AI history data must include model name and result. 
    * @returns 
    */
-  async addNftAiHistory({
-    chain,
-    network,
-    appId,
-    collectionId,
-    tokenId,
-    data,
-    label,
-  }: AddAiHistoryParams) {
+  async addNftAiHistory(nftId: string, tokenId: string, label: string, data: AiHistoryData) {
     const address = this.ain.signer.getAddress();
-    const txInput = await this.getTxBodyForAddNftAiHistory({
-      chain,
-      network,
-      appId,
-      collectionId,
-      tokenId,
-      data,
-      label,
-      address,
-    });
+    const txInput = await this.getTxBodyForAddNftAiHistory(nftId, tokenId, label, data, address);
     return this.ain.sendTransaction(txInput);
   }
 
@@ -104,25 +99,13 @@ export default class Activity extends FactoryBase {
    * @param {getTxbodyAddAiHistoryParams} getTxbodyAddAiHistoryParams
    * @returns 
    */
-  getTxBodyForAddNftAiHistory({
-    chain,
-    network,
-    appId,
-    collectionId,
-    tokenId,
-    data,
-    address,
-    label,
-  }: getTxbodyAddAiHistoryParams) {
+  getTxBodyForAddNftAiHistory(nftId: string, tokenId: string, label: string, data: AiHistoryData, signerAddress: string) {
     const body = {
-      chain,
-      network,
-      appId,
-      collectionId,
+      nftId,
       tokenId,
-      historyData: data,
       label,
-      address,
+      data,
+      signerAddress
     };
     const trailingUrl = 'nft/ai_history';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
