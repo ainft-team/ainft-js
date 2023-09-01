@@ -28,28 +28,45 @@ export default class Activity extends FactoryBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  
+  async addNftActivty(nftId: string, tokenId: string, userAddress: string, data: any, activityType: NftActivityType | TaskTypeCategory, activityId?: string) {
+    const signerAddress = this.ain.signer.getAddress();
+    const txBody = await this.getTxBodyForAddNftActivity(nftId, tokenId, userAddress, data, signerAddress, activityType, activityId);
+    return this.ain.sendTransaction(txBody);
+  }
+  
+  getTxBodyForAddNftActivity(nftId: string, tokenId: string, userAddress: string, data: any, signerAddress: string, activityType: NftActivityType | TaskTypeCategory, activityId?: string) {
+    const body = { nftId, tokenId, userAddress, data, signerAddress, activityType, activityId };
+    const trailingUrl = '/nft';
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
   /**
    * You can update the record of one activity with NFT. record can be a statistic or count value from activity.
-   * @param appId
-   * @param userId
-   * @param nftInfo
+   * @param nftId
+   * @param tokenId
    * @param label Record label. Record data is recorded under the label.
    * @param data
    */
-  addNftRecord(
-    appId: string,
-    userId: string,
-    nftInfo: ActivityNftInfo,
+  async addNftRecord(
+    nftId: string,
+    tokenId: string,
     label: string,
     data: any
   ) {
+    const signerAddress = this.ain.signer.getAddress();
+    const txBody = await this.getTxBodyForAddNftRecord(nftId, tokenId, label, data, signerAddress);
+    return this.ain.sendTransaction(txBody);
+  }
+
+  getTxBodyForAddNftRecord(nftId: string, tokenId: string, label: string, data: string, signerAddress: string) {
     const body = {
-      appId,
-      userId,
-      nftInfo,
+      nftId,
+      tokenId,
       label,
       data,
-    };
+      signerAddress
+    }
     const trailingUrl = 'nft/record';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
