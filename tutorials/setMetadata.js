@@ -3,9 +3,8 @@ const AinftJs = require('@ainft-team/ainft-js').default;
 const myPrivateKey = 'your-private-key';
 const ainftJs = new AinftJs(myPrivateKey, 'https://ainft-api-dev.ainetwork.ai');
 
-const appId = 'my_first_native_nft';
-const collectionId = 'my_first_collection';
-const tokenId = '2';
+const nftId = 'your-nft-id';
+const tokenId = '1';
 const metadata = {
 	name: 'Native NFT Explorer',
   description: 'He is an explorer who pioneers AI networks.',
@@ -13,14 +12,11 @@ const metadata = {
 }
 
 ainftJs.nft.setNftMetadata({
-	chain: 'AIN',
-	network: 'testnet',
-	appId,
-	contractAddress: collectionId,
+	nftId,
 	tokenId,
 	metadata,
 }).then((res) => {
-	console.log(JSON.stringify(res, null, 2));
+	console.log(res);
 }).catch((error) => {
 	console.log(error);
 });
