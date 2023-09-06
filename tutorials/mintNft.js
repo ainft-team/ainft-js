@@ -1,24 +1,14 @@
 const AinftJs = require('@ainft-team/ainft-js').default;
 
 const myPrivateKey = 'your-private-key';
+const nftId = 'your-nft-id';
 const ainftJs = new AinftJs(myPrivateKey, 'https://ainft-api-dev.ainetwork.ai');
+const yourNft = ainftJs.nft.getAinft721(nftId);
 
-const appId = 'my_first_native_nft';
-const collectionId = 'my_first_collection';
-const metadata = {
-  name: 'Native NFT Explorer',
-  description: 'He is an explorer who pioneers AI networks.',
-};
+const tokenId = '1';
+const to = 'receiver address';
 
-ainftJs.nft
-  .mintNft({
-    chain: 'AIN',
-    network: 'testnet',
-    toAddress: 'your-receiver-address', // 0x...
-    appId,
-    collectionId,
-    metadata,
-  })
+yourNft.mint(to, tokenId)
   .then((res) => {
     console.log(JSON.stringify(res, null, 2));
   })

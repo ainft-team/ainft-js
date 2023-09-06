@@ -3,21 +3,15 @@ const AinftJs = require('@ainft-team/ainft-js').default;
 const myPrivateKey = 'your-private-key';
 const ainftJs = new AinftJs(myPrivateKey, 'https://ainft-api-dev.ainetwork.ai');
 
-const appId = 'my_first_native_nft';
-const collectionId = 'my_first_collection';
-const tokenId = '2';
+const nftId = 'your-nft-id';
+const from = 'token-owner-address';
+const to = 'receiver-address';
+const tokenId = '1';
 
-ainftJs.nft
-  .transferNft({
-    chain: 'AIN',
-    network: 'testnet',
-    toAddress: 'your-receiver-address', // 0x...
-    appId,
-    collectionId,
-    tokenId,
-  })
+const yourNft = ainftJs.nft.getAinft721(nftId);
+yourNft.transfer(from, to, tokenId)
   .then((res) => {
-    console.log(JSON.stringify(res, null, 2));
+    console.log(res);
   })
   .catch((error) => {
     console.log(error);
