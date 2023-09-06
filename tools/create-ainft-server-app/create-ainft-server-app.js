@@ -43,9 +43,9 @@ const main = async () => {
     }
     console.log('\nThe app has been created successfully.\n');
     const res1 = await ainftJs.auth.registerBlockchainApp(appId);
-		console.log('registerBlockchainApp response', res1);
-		const res2 = await ainftJs.auth.delegateApp(appId);
-		console.log('delegateApp response', JSON.stringify(res2, null, 2));
+    console.log('registerBlockchainApp response', res1);
+    const res2 = await ainftJs.auth.delegateApp(appId);
+    console.log('delegateApp response', JSON.stringify(res2, null, 2));
   } catch (error) {
     console.error('Ainft server app creation failed.');
     console.error(error);

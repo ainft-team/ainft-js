@@ -35,7 +35,7 @@ const main = async () => {
     console.log('------ NFT mint');
     console.log(JSON.stringify(res, null, 2));
 
-    await new Promise(resolve => setTimeout(resolve, 20000));
+    await new Promise(resolve => setTimeout(resolve, 30000));
 
     const res2 = await ainftJs.nft.setNftMetadata({
       nftId, tokenId,
