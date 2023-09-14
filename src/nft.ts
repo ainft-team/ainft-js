@@ -48,7 +48,7 @@ export default class Nft extends FactoryBase {
     if (!this.isSupportedStandard(standard)) {
       throw Error('Nft create: Not supported standard.');
     }
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     const body = { address, name, symbol, standard };
     const trailingUrl = 'native';
@@ -62,7 +62,7 @@ export default class Nft extends FactoryBase {
 
     await this.register(nftId);
 
-    return this.getAinft721(nftId);
+    return this.get(nftId);
   }
 
   /**
@@ -71,7 +71,7 @@ export default class Nft extends FactoryBase {
    * @returns 
    */
   async register(nftId: string) {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
     const message = stringify({
       address,
       timestamp: Date.now(),
@@ -84,10 +84,10 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Return Ainft721 instance by nftId.
+   * Return Ainft instance by nftId.
    * @param nftId
    */
-  getAinft721(nftId: string) {
+  get(nftId: string) {
     return new Ainft721(nftId, this.ain, this.baseUrl);
   }
 
@@ -265,7 +265,7 @@ export default class Nft extends FactoryBase {
       const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
       return this.sendRequest(HttpMethod.POST, trailingUrl, body);
     } else {
-      const address = this.ain.signer.getAddress();
+      const address = await this.ain.signer.getAddress();
       const txBody = await this.getTxBodyForSetNftMetadata({
         nftId,
         tokenId,
