@@ -1,6 +1,6 @@
 import Ain from "@ainblockchain/ain-js";
 import stringify = require("fast-json-stable-stringify");
-import axios from "axios";
+import axios, { AxiosRequestHeaders } from "axios";
 import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types";
 import { buildData, isJoiError, sleep } from "./util";
 import FormData from "form-data";
@@ -46,10 +46,14 @@ export default class FactoryBase {
       'X-AINFT-Date': timestamp,
       Authorization: `AINFT ${signature}`,
     };
+    return this.sendRequestWithoutSign(method, trailingUrl, data, headers);
+  }
+
+  async sendRequestWithoutSign(method: HttpMethod, trailingUrl: string, data?: Record<string, any>, headers?: AxiosRequestHeaders) {
     try {
       if (method === HttpMethod.GET || method === HttpMethod.DELETE) {
         const { data: receivedData }: SerializedMessage = (await axios[HttpMethodToAxiosMethod[method]](
-          `${this.baseUrl}/${trailingUrl}`, { params: data, headers }
+          `${this.baseUrl}/${trailingUrl}`, { params: data, headers },
         )).data;
         return receivedData;
       } else if (method === HttpMethod.POST || method === HttpMethod.PUT) {
@@ -59,14 +63,14 @@ export default class FactoryBase {
         return receivedData;
       } else {
         throw Error(`Invalid http method: ${method}`);
-      } 
-    } catch (err: any) {
-      if (isJoiError(err)) {
-        throw err.response?.data?.details[0];
-      } else if (axios.isAxiosError(err)) {
-        throw err.response?.data;
+      }
+    } catch (error: any) {
+      if (isJoiError(error)) {
+        throw error.response?.data?.details[0];
+      } else if (axios.isAxiosError(error)) {
+        throw error.response?.data;
       } else {
-        throw err;
+        throw error;
       }
     }
   }
