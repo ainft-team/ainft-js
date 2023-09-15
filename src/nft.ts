@@ -234,41 +234,16 @@ export default class Nft extends FactoryBase {
    * @returns
    */
   async setNftMetadata({
-    nftId,
-    tokenId,
-    metadata,
-  }: SetAinNftMetadataParams): Promise<any>;
-  async setNftMetadata({
     appId,
     chain,
     network,
     contractAddress,
     tokenId,
     metadata,
-  }: SetEthNftMetadataParams): Promise<NftMetadata>;
-  async setNftMetadata({
-    appId,
-    chain,
-    network,
-    contractAddress,
-    tokenId,
-    metadata,
-    nftId,
-  }: SetNftMetadataParams): Promise<NftMetadata | any> {
-    if (chain === 'ETH') {
-      const body = { appId, metadata };
-      const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
-      return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-    } else {
-      const address = await this.ain.signer.getAddress();
-      const txBody = await this.getTxBodyForSetNftMetadata({
-        nftId,
-        tokenId,
-        metadata,
-        userAddress: address
-      });
-      return this.ain.sendTransaction(txBody);
-    }
+  }: SetEthNftMetadataParams): Promise<NftMetadata> {
+    const body = { appId, metadata };
+    const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   /**
