@@ -32,25 +32,16 @@ import stringify from 'fast-json-stable-stringify';
 import {SUPPORTED_AINFT_STANDARDS} from "./constants";
 
 export default class Nft extends FactoryBase {
-
-  private isSupportedStandard(standard: string) {
-    return Object.values(SUPPORTED_AINFT_STANDARDS).includes(standard);
-  }
-
   /**
    * Create NFT. Default standard is 721.
    * @param name NFT name
    * @param symbol NFT symbol
    * @param standard
    */
-  async create(name: string, symbol: string, standard?: string) {
-    if (!standard) standard = SUPPORTED_AINFT_STANDARDS["721"];
-    if (!this.isSupportedStandard(standard)) {
-      throw Error('Nft create: Not supported standard.');
-    }
+  async create(name: string, symbol: string) {
     const address = await this.ain.signer.getAddress();
 
-    const body = { address, name, symbol, standard };
+    const body = { address, name, symbol };
     const trailingUrl = 'native';
     const { nftId, txBody, appId } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
     const txHash = await this.ain.sendTransaction(txBody);
@@ -61,7 +52,6 @@ export default class Nft extends FactoryBase {
     console.log(`txHash: `, txHash);
 
     await this.register(nftId);
-
     return this.get(nftId);
   }
 
