@@ -9,7 +9,7 @@ export default class Auth extends FactoryBase {
    * @returns
    */
   async createApp(appId: string) {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
     return this.ain.db.ref(`/manage_app/${appId}/create/${Date.now()}`).setValue({
       value: {
         admin: {
@@ -159,7 +159,7 @@ export default class Auth extends FactoryBase {
    * @returns
    */
   async registerBlockchainApp(appId: string, accessAinAddress?: string) {
-    const ownerAddress = this.ain.signer.getAddress();
+    const ownerAddress = await this.ain.signer.getAddress();
     const body = {
       appId,
       ownerAddress,
@@ -176,7 +176,7 @@ export default class Auth extends FactoryBase {
    * @returns
    */
   async getTxBodyForDelegateApp(appId: string) {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
     const body = { appId, address };
     const trailingUrl = `delegate_app`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
