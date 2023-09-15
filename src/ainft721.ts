@@ -1,3 +1,4 @@
+import { AinftToken } from "./ainftToken";
 import FactoryBase from "./factoryBase";
 import { HttpMethod } from "./types";
 import Ain from "@ainblockchain/ain-js";
@@ -9,10 +10,25 @@ interface IAinft721 {
 
 export default class Ainft721 extends FactoryBase implements IAinft721 {
   readonly id: string;
+  readonly name: string;
+  readonly symbol: string;
+  readonly owner: string;
 
-  constructor(id: string, ain: Ain, baseUrl: string) {
+  constructor(nftInfo: { id: string, name: string, symbol: string, owner: string}, ain: Ain, baseUrl: string) {
     super(ain, baseUrl);
-    this.id = id;
+    this.id = nftInfo.id;
+    this.name = nftInfo.name;
+    this.symbol = nftInfo.symbol;
+    this.owner = nftInfo.owner;
+  }
+
+  async get(tokenId: string) {
+    const { list } = await this.sendRequestWithoutSign(HttpMethod.GET, `native/search`, { nftId: this.id, tokenId });
+    if (list.length === 0) {
+      throw new Error('Not found token');
+    }
+    const token = list[0];
+    return new AinftToken({ nftId: this.id, tokenId, tokenURI: token.tokenURI, metadata: token.metadata }, this.ain, this.baseUrl);
   }
 
   async transfer(from: string, to: string, tokenId: string): Promise<any> {
@@ -21,7 +37,7 @@ export default class Ainft721 extends FactoryBase implements IAinft721 {
   }
 
   async mint(to: string, tokenId: string): Promise<any> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
     const txbody = await this.getTxBodyForMint(address, to, tokenId);
     return this.ain.sendTransaction(txbody);
   }

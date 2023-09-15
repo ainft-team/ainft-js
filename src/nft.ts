@@ -87,8 +87,13 @@ export default class Nft extends FactoryBase {
    * Return Ainft instance by nftId.
    * @param nftId
    */
-  get(nftId: string) {
-    return new Ainft721(nftId, this.ain, this.baseUrl);
+  async get(nftId: string) {
+    const { list } = await this.searchCollections({ nftId });
+    if (list.length === 0) {
+      throw new Error(`Not found ainft`);
+    }
+    const nft = list[0];
+    return new Ainft721({ id: nft.id, name: nft.name, symbol: nft.symbol, owner: nft.owner }, this.ain, this.baseUrl);
   }
 
   /**
@@ -298,7 +303,7 @@ export default class Nft extends FactoryBase {
    * @returns
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchCollections(searchParams: NftSearchParams & SearchOption): Promise<NftToken[]> {
+  searchCollections(searchParams: NftSearchParams & SearchOption) {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
