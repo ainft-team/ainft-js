@@ -26,6 +26,7 @@ import {
   UploadAssetFromBufferParams,
   UploadAssetFromDataUrlParams,
   SearchOption,
+  SearchReponse,
 } from './types';
 import Ainft721 from './ainft721';
 import stringify from 'fast-json-stable-stringify';
@@ -268,7 +269,7 @@ export default class Nft extends FactoryBase {
    * @returns
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchCollections(searchParams: NftSearchParams & SearchOption) {
+  searchCollections(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
@@ -282,7 +283,7 @@ export default class Nft extends FactoryBase {
    * Search nft assets on the ain blockchain.
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchAssets(searchParams: NftSearchParams & SearchOption) {
+  searchAssets(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, nftId, name, symbol, limit, offset, tokenId } = searchParams;
