@@ -880,8 +880,8 @@ export interface AinftTokenSearch {
   collectionInfo: AinftCollectionSearch;
 }
 
-export interface SearchReponse {
-  list: Array<AinftCollectionSearch | AinftTokenSearch>,
+export interface SearchReponse<T extends AinftCollectionSearch | AinftTokenSearch> {
+  list: Array<T>,
   isFinal: boolean;
   nextOffset: string;
 }
