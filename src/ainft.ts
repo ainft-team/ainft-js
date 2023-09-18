@@ -15,6 +15,9 @@ import { serializeEndpoint } from './util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
 
+/**
+ * A class that establishes a blockchain and ainft server connection and initializes other classes.
+ */
 export default class AinftJs {
   private baseUrl: string;
   public nft: Nft;
