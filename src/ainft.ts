@@ -12,7 +12,12 @@ import TextToArt from './textToArt';
 import Activity from './activity';
 import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT } from './constants';
 import { serializeEndpoint } from './util';
+import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
+import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
 
+/**
+ * A class that establishes a blockchain and ainft server connection and initializes other classes.
+ */
 export default class AinftJs {
   private baseUrl: string;
   public nft: Nft;
@@ -96,6 +101,15 @@ export default class AinftJs {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
     this.ain.wallet.addAndSetDefaultAccount(privateKey);
+  }
+
+  setSigner(signer: Signer) {
+    this.ain.setSigner(signer);
+  }
+
+  setAinWalletSigner() {
+    const signer = new AinWalletSigner();
+    this.setSigner(signer);
   }
 
   /**

@@ -68,7 +68,7 @@ export default class Activity extends FactoryBase {
     data,
     label,
   }: AddAiHistoryParams) {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
     const txInput = await this.getTxBodyForAddNftAiHistory({
       chain,
       network,

@@ -26,31 +26,23 @@ import {
   UploadAssetFromBufferParams,
   UploadAssetFromDataUrlParams,
   SearchOption,
+  SearchReponse,
 } from './types';
 import Ainft721 from './ainft721';
 import stringify from 'fast-json-stable-stringify';
 import {SUPPORTED_AINFT_STANDARDS} from "./constants";
 
 export default class Nft extends FactoryBase {
-
-  private isSupportedStandard(standard: string) {
-    return Object.values(SUPPORTED_AINFT_STANDARDS).includes(standard);
-  }
-
   /**
    * Create NFT. Default standard is 721.
    * @param name NFT name
    * @param symbol NFT symbol
    * @param standard
    */
-  async create(name: string, symbol: string, standard?: string) {
-    if (!standard) standard = SUPPORTED_AINFT_STANDARDS["721"];
-    if (!this.isSupportedStandard(standard)) {
-      throw Error('Nft create: Not supported standard.');
-    }
-    const address = this.ain.signer.getAddress();
+  async create(name: string, symbol: string) {
+    const address = await this.ain.signer.getAddress();
 
-    const body = { address, name, symbol, standard };
+    const body = { address, name, symbol };
     const trailingUrl = 'native';
     const { nftId, txBody, appId } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
     const txHash = await this.ain.sendTransaction(txBody);
@@ -61,8 +53,7 @@ export default class Nft extends FactoryBase {
     console.log(`txHash: `, txHash);
 
     await this.register(nftId);
-
-    return this.getAinft721(nftId);
+    return this.get(nftId);
   }
 
   /**
@@ -71,7 +62,7 @@ export default class Nft extends FactoryBase {
    * @returns 
    */
   async register(nftId: string) {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
     const message = stringify({
       address,
       timestamp: Date.now(),
@@ -84,11 +75,16 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Return Ainft721 instance by nftId.
+   * Return Ainft instance by nftId.
    * @param nftId
    */
-  getAinft721(nftId: string) {
-    return new Ainft721(nftId, this.ain, this.baseUrl);
+  async get(nftId: string) {
+    const { list } = await this.searchCollections({ nftId });
+    if (list.length === 0) {
+      throw new Error(`Not found ainft`);
+    }
+    const nft = list[0];
+    return new Ainft721({ id: nft.id, name: nft.name, symbol: nft.symbol, owner: nft.owner }, this.ain, this.baseUrl);
   }
 
   /**
@@ -239,41 +235,16 @@ export default class Nft extends FactoryBase {
    * @returns
    */
   async setNftMetadata({
-    nftId,
-    tokenId,
-    metadata,
-  }: SetAinNftMetadataParams): Promise<any>;
-  async setNftMetadata({
     appId,
     chain,
     network,
     contractAddress,
     tokenId,
     metadata,
-  }: SetEthNftMetadataParams): Promise<NftMetadata>;
-  async setNftMetadata({
-    appId,
-    chain,
-    network,
-    contractAddress,
-    tokenId,
-    metadata,
-    nftId,
-  }: SetNftMetadataParams): Promise<NftMetadata | any> {
-    if (chain === 'ETH') {
-      const body = { appId, metadata };
-      const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
-      return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-    } else {
-      const address = this.ain.signer.getAddress();
-      const txBody = await this.getTxBodyForSetNftMetadata({
-        nftId,
-        tokenId,
-        metadata,
-        userAddress: address
-      });
-      return this.ain.sendTransaction(txBody);
-    }
+  }: SetEthNftMetadataParams): Promise<NftMetadata> {
+    const body = { appId, metadata };
+    const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   /**
@@ -298,7 +269,7 @@ export default class Nft extends FactoryBase {
    * @returns
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchCollections(searchParams: NftSearchParams & SearchOption): Promise<NftToken[]> {
+  searchCollections(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
@@ -312,7 +283,7 @@ export default class Nft extends FactoryBase {
    * Search nft assets on the ain blockchain.
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchAssets(searchParams: NftSearchParams & SearchOption) {
+  searchAssets(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, nftId, name, symbol, limit, offset, tokenId } = searchParams;

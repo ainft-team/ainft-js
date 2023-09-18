@@ -863,3 +863,25 @@ export interface getTxbodyAddAiHistoryParams {
 }
 
 export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'address'> {};
+
+export interface AinftCollectionSearch {
+  id: string;
+  name: string;
+  symbol: string;
+  owner: string;
+  standard: string;
+}
+
+export interface AinftTokenSearch {
+  tokenId: string;
+  owner: string;
+  tokenURI: string;
+  metadata?: object;
+  collectionInfo: AinftCollectionSearch;
+}
+
+export interface SearchReponse {
+  list: Array<AinftCollectionSearch | AinftTokenSearch>,
+  isFinal: boolean;
+  nextOffset: string;
+}
