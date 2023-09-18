@@ -271,7 +271,7 @@ export default class Nft extends FactoryBase {
    * @returns
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchCollections(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftCollectionSearch> {
+  searchCollections(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftCollectionSearch>> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
