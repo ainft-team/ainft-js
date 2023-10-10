@@ -6,7 +6,7 @@ import Ain from "@ainblockchain/ain-js";
 /**
  * The class of AINFT 721.
  */
-export default class Ainft721 extends FactoryBase {
+export default class Ainft721Object extends FactoryBase {
   readonly id: string;
   readonly name: string;
   readonly symbol: string;
@@ -26,12 +26,12 @@ export default class Ainft721 extends FactoryBase {
    * @returns 
    */
   async get(tokenId: string) {
-    const { list } = await this.sendRequestWithoutSign(HttpMethod.GET, `native/search`, { nftId: this.id, tokenId });
+    const { list } = await this.sendRequestWithoutSign(HttpMethod.GET, `native/search/nfts`, { ainftObjectId: this.id, tokenId });
     if (list.length === 0) {
       throw new Error('Not found token');
     }
     const token = list[0];
-    return new AinftToken({ nftId: this.id, tokenId, tokenURI: token.tokenURI, metadata: token.metadata }, this.ain, this.baseUrl);
+    return new AinftToken({ ainftObjectId: this.id, tokenId, tokenURI: token.tokenURI, metadata: token.metadata }, this.ain, this.baseUrl);
   }
 
   /**

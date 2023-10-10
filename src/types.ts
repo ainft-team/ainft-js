@@ -810,7 +810,7 @@ export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {
 
 export interface NftSearchParams {
   userAddress?: string;
-  nftId?: string;
+  ainftObjectId?: string;
   tokenId?: string;
   name?: string;
   symbol?: string;
