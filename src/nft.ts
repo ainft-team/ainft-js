@@ -81,7 +81,7 @@ export default class Nft extends FactoryBase {
    * @param ainftObjectId
    */
   async get(ainftObjectId: string) {
-    const { list } = await this.searchCollections({ ainftObjectId });
+    const { list } = await this.searchAinftObjects({ ainftObjectId });
     if (list.length === 0) {
       throw new Error(`Not found ainft`);
     }
@@ -267,31 +267,31 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Search nfts created on the ain blockchain.
+   * Search ainftObjects created on the ain blockchain.
    * @returns
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchCollections(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftCollectionSearch>> {
+  searchAinftObjects(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftCollectionSearch>> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, ainftObjectId, name, symbol, limit, offset } = searchParams;
       query = { userAddress, ainftObjectId, name, symbol, offset, limit };
     }
-    const trailingUrl = `native/search/collections`;
+    const trailingUrl = `native/search/ainftObjects`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   /**
-   * Search nft assets on the ain blockchain.
+   * Search nfts on the ain blockchain.
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchAssets(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftTokenSearch>> {
+  searchNfts(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftTokenSearch>> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, ainftObjectId, name, symbol, limit, offset, tokenId } = searchParams;
       query = { userAddress, ainftObjectId, name, symbol, offset, limit, tokenId };
     }
-    const trailingUrl = `native/search/assets`;
+    const trailingUrl = `native/search/nfts`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
