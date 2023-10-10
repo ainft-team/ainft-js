@@ -11,7 +11,7 @@ export class AinftToken extends FactoryBase {
   readonly metadata?: object;
   readonly tokenURI: string;
 
-  constructor(tokenInfo: { ainftObjectId: string, tokenId: string, tokenURI: string, metadata?: object}, ain: Ain, baseUrl: string) {
+  constructor(tokenInfo: { ainftObjectId: string, tokenId: string, tokenURI: string, metadata?: object }, ain: Ain, baseUrl: string) {
     super(ain, baseUrl);
     this.ainftObjectId = tokenInfo.ainftObjectId;
     this.tokenId = tokenInfo.tokenId;
