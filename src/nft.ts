@@ -30,7 +30,7 @@ import {
   AinftTokenSearch,
   AinftCollectionSearch,
 } from './types';
-import Ainft721 from './ainft721';
+import Ainft721 from './ainft721Object';
 import stringify from 'fast-json-stable-stringify';
 import {SUPPORTED_AINFT_STANDARDS} from "./constants";
 
@@ -46,24 +46,24 @@ export default class Nft extends FactoryBase {
 
     const body = { address, name, symbol };
     const trailingUrl = 'native';
-    const { nftId, txBody, appId } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    const { ainftObjectId, txBody, appId } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
     const txHash = await this.ain.sendTransaction(txBody);
 
-    console.log(`Ainft is created!`);
-    console.log('nft ID: ', nftId);
+    console.log(`AinftObject is created!`);
+    console.log('ainft object ID: ', ainftObjectId);
     console.log('app ID: ', appId);
     console.log(`txHash: `, txHash);
 
-    await this.register(nftId);
-    return this.get(nftId);
+    await this.register(ainftObjectId);
+    return this.get(ainftObjectId);
   }
 
   /**
-   * Register nft to factory server.
-   * @param nftId 
+   * Register ainft object to factory server.
+   * @param ainftObjectId 
    * @returns 
    */
-  async register(nftId: string) {
+  async register(ainftObjectId: string) {
     const address = await this.ain.signer.getAddress();
     const message = stringify({
       address,
@@ -71,17 +71,17 @@ export default class Nft extends FactoryBase {
     });
     const signature = await this.ain.signer.signMessage(message, address);
 
-    const body = { signature, message, nftId };
+    const body = { signature, message, ainftObjectId };
     const trailingUrl = 'native/register';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   /**
-   * Return Ainft instance by nftId.
-   * @param nftId
+   * Return Ainft instance by ainftObjectId.
+   * @param ainftObjectId
    */
-  async get(nftId: string) {
-    const { list } = await this.searchCollections({ nftId });
+  async get(ainftObjectId: string) {
+    const { list } = await this.searchCollections({ ainftObjectId });
     if (list.length === 0) {
       throw new Error(`Not found ainft`);
     }
@@ -274,8 +274,8 @@ export default class Nft extends FactoryBase {
   searchCollections(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftCollectionSearch>> {
     let query: Record<string, any> = {};
     if (searchParams) {
-      const { userAddress, nftId, name, symbol, limit, offset } = searchParams;
-      query = { userAddress, nftId, name, symbol, offset, limit };
+      const { userAddress, ainftObjectId, name, symbol, limit, offset } = searchParams;
+      query = { userAddress, ainftObjectId, name, symbol, offset, limit };
     }
     const trailingUrl = `native/search/collections`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -288,8 +288,8 @@ export default class Nft extends FactoryBase {
   searchAssets(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftTokenSearch>> {
     let query: Record<string, any> = {};
     if (searchParams) {
-      const { userAddress, nftId, name, symbol, limit, offset, tokenId } = searchParams;
-      query = { userAddress, nftId, name, symbol, offset, limit, tokenId };
+      const { userAddress, ainftObjectId, name, symbol, limit, offset, tokenId } = searchParams;
+      query = { userAddress, ainftObjectId, name, symbol, offset, limit, tokenId };
     }
     const trailingUrl = `native/search/assets`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
