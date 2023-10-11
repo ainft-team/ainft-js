@@ -90,6 +90,28 @@ export default class Nft extends FactoryBase {
   }
 
   /**
+     * Get nfts by ainft object id.
+     * @param ainftObjectId - ainft object id.
+     * @param limit - The length of nfts.
+     * @param offset - offset if the next list exists.
+     * @returns 
+     */
+  async getNftsByAinftObject(ainftObjectId: string, limit?: number, offset?: string) {
+    return this.searchNfts({ ainftObjectId, limit, offset });
+  }
+
+  /**
+   * Get nfts by user address.
+   * @param address - User ain address.
+   * @param limit - The length of nfts.
+   * @param offset - offset if the next list exists.
+   * @returns 
+   */
+  async getNftsByAccount(address: string, limit?: number, offset?: string) {
+    return this.searchNfts({ userAddress: address, limit, offset });
+  }
+
+  /**
    * Search ainftObjects created on the ain blockchain.
    * @returns
    * @param {NftSearchParams & SearchOption} searchParams
