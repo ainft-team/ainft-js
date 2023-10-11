@@ -80,7 +80,7 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Get nft info by chain, network, contractAddress and tokenId.
+   * Get nft info by network, contractAddress and tokenId.
    * Symbol must be added.
    * @param {GetNftParams} GetNftParams
    * @returns
@@ -97,8 +97,8 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Get nft contract info by chain, network and contractAddress.
-   * Symbol must be added
+   * Get nft contract info by network and contractAddress.
+   * Symbol must be added.
    * @param {GetNftContractInfoParams} GetNftContractInfoParams
    * @returns
    */
@@ -151,7 +151,7 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Set managed nft metadata. If the chain is AIN, the transaction must be sent to the ain blockchain. Please set an appropriate privateKey.
+   * Set managed nft metadata.
    * @param {SetNftMetadataParams} SetNftMetadataParams
    * @returns
    */
