@@ -250,23 +250,6 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Get transaction body to set nft metadata in ain blockchain.
-   * Currently, only support AIN chain.
-   * @param {getTxBodySetNftMetadataParams} getTxBodySetNftMetadataParams
-   * @returns
-   */
-  private getTxBodyForSetNftMetadata({
-    nftId,
-    tokenId,
-    metadata,
-    userAddress,
-  }: getTxBodySetNftMetadataParams) {
-    const body = { nftId, tokenId, metadata, userAddress };
-    const trailingUrl = `native/metadata`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
-  /**
    * Search ainftObjects created on the ain blockchain.
    * @returns
    * @param {NftSearchParams & SearchOption} searchParams
