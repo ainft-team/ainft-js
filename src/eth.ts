@@ -22,6 +22,8 @@ import {
  * This class allows app to register and manage ETH Contracts. This allows you to enrich tokenomics.
  */
 export default class Eth extends FactoryBase {
+  private chain = 'ETH';
+
   /**
    * Add nfy symbol. You can add nft to reference in your factory activity.
    * @param {AddNftSymbolParams} AddNftSymbolParams
@@ -29,12 +31,11 @@ export default class Eth extends FactoryBase {
    */
   addNftSymbol({
     appId,
-    chain,
     network,
     contractAddress,
     options,
   }: AddNftSymbolParams): Promise<NftContractBySymbol> {
-    const body = { appId, chain, network, contractAddress, options };
+    const body = { appId, chain: this.chain, network, contractAddress, options };
     const trailingUrl = 'symbol';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
@@ -86,13 +87,12 @@ export default class Eth extends FactoryBase {
    */
   getNft({
     appId,
-    chain,
     network,
     contractAddress,
     tokenId,
   }: GetNftParams): Promise<NftToken> {
     const query = { appId, contractAddress, tokenId };
-    const trailingUrl = `info/${chain}/${network}`;
+    const trailingUrl = `info/${this.chain}/${network}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -104,12 +104,11 @@ export default class Eth extends FactoryBase {
    */
   getNftContractInfo({
     appId,
-    chain,
     network,
     contractAddress,
   }: GetNftContractInfoParams): Promise<NftContractInfo> {
     const query = { appId, contractAddress };
-    const trailingUrl = `info/${chain}/${network}`;
+    const trailingUrl = `info/${this.chain}/${network}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -119,7 +118,6 @@ export default class Eth extends FactoryBase {
    * @returns
    */
   getNftsInCollection({
-    chain,
     network,
     collectionId,
     appId
@@ -127,7 +125,7 @@ export default class Eth extends FactoryBase {
     const query: any = {
       appId,
     };
-    const trailingUrl = `info/${chain}/${network}/collections/${collectionId}`;
+    const trailingUrl = `info/${this.chain}/${network}/collections/${collectionId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -138,7 +136,6 @@ export default class Eth extends FactoryBase {
    */
   getUserNftList({
     appId,
-    chain,
     network,
     userAddress,
     contractAddress,
@@ -149,7 +146,7 @@ export default class Eth extends FactoryBase {
       ...(contractAddress && { contractAddress }),
       ...(tokenId && { tokenId }),
     };
-    const trailingUrl = `info/${chain}/${network}/${userAddress}`;
+    const trailingUrl = `info/${this.chain}/${network}/${userAddress}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
@@ -160,14 +157,13 @@ export default class Eth extends FactoryBase {
    */
   async setNftMetadata({
     appId,
-    chain,
     network,
     contractAddress,
     tokenId,
     metadata,
   }: SetEthNftMetadataParams): Promise<NftMetadata> {
     const body = { appId, metadata };
-    const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
+    const trailingUrl = `info/${this.chain}/${network}/${contractAddress}/${tokenId}/metadata`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 }
