@@ -21,7 +21,7 @@ import {
 /**
  * This class allows app to register and manage ETH Contracts. This allows you to enrich tokenomics.
  */
-class Eth extends FactoryBase {
+export default class Eth extends FactoryBase {
   /**
    * Add nfy symbol. You can add nft to reference in your factory activity.
    * @param {AddNftSymbolParams} AddNftSymbolParams

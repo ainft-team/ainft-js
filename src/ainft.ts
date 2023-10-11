@@ -14,6 +14,7 @@ import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT 
 import { serializeEndpoint } from './util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
+import Eth from './eth';
 
 /**
  * A class that establishes a blockchain and ainft server connection and initializes other classes.
@@ -30,6 +31,7 @@ export default class AinftJs {
   public personaModels: PersonaModels;
   public textToArt: TextToArt;
   public activity: Activity;
+  public eth: Eth;
 
   constructor(
     privateKey: string,
@@ -45,6 +47,7 @@ export default class AinftJs {
     this.setPrivateKey(privateKey);
 
     this.nft = new Nft(this.ain, this.baseUrl, '/nft');
+    this.eth = new Eth(this.ain, this.baseUrl, '/nft');
     this.credit = new Credit(this.ain, this.baseUrl, '/credit');
     this.auth = new Auth(this.ain, this.baseUrl, '/auth');
     this.discord = new Discord(this.ain, this.baseUrl, '/discord');
