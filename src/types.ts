@@ -864,24 +864,26 @@ export interface getTxbodyAddAiHistoryParams {
 
 export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'address'> {};
 
-export interface AinftCollectionSearch {
-  id: string;
-  name: string;
-  symbol: string;
-  owner: string;
-  standard: string;
+export interface AinftObjectSearchResponse extends SearchReponse {
+  ainftObjects: {
+    id: string;
+    name: string;
+    symbol: string;
+    owner: string;
+  }[];
 }
 
-export interface AinftTokenSearch {
-  tokenId: string;
-  owner: string;
-  tokenURI: string;
-  metadata?: object;
-  collectionInfo: AinftCollectionSearch;
+export interface AinftTokenSearchResponse extends SearchReponse {
+  nfts: {
+    tokenId: string;
+    owner: string;
+    tokenURI: string;
+    metadata?: object;
+    ainftObject: AinftObjectSearchResponse;
+  }[];
 }
 
-export interface SearchReponse<T extends AinftCollectionSearch | AinftTokenSearch> {
-  list: Array<T>,
+export interface SearchReponse {
   isFinal: boolean;
-  nextOffset: string;
+  nextOffset?: string;
 }
