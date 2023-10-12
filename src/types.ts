@@ -885,5 +885,5 @@ export interface AinftTokenSearchResponse extends SearchReponse {
 
 export interface SearchReponse {
   isFinal: boolean;
-  nextOffset?: string;
+  cursor?: string;
 }
