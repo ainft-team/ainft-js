@@ -52,7 +52,7 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Remove nft symbol in app.
+   * Remove nft symbol from app.
    * @param {RemoveNftSymbolParams} RemoveNftSymbolParams
    * @returns
    */
