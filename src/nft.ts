@@ -1,38 +1,16 @@
 import FactoryBase from './factoryBase';
 import {
-  AddNftSymbolParams,
   DeleteAssetParams,
-  GetAppNftSymbolListParams,
-  GetNftContractInfoParams,
-  GetNftParams,
-  GetNftsInAinCollectionParams,
-  GetNftsInCollectionParams,
-  GetNftsInEthContractParams,
-  GetNftSymbolParams,
-  getTxBodySetNftMetadataParams,
-  GetUserNftListParams,
   HttpMethod,
-  NftCollections,
-  NftContractBySymbol,
-  NftContractInfo,
-  NftMetadata,
-  NftToken,
-  NftTokens,
-  RemoveNftSymbolParams,
   NftSearchParams,
-  SetAinNftMetadataParams,
-  SetEthNftMetadataParams,
-  SetNftMetadataParams,
   UploadAssetFromBufferParams,
   UploadAssetFromDataUrlParams,
   SearchOption,
-  SearchReponse,
-  AinftTokenSearch,
-  AinftCollectionSearch,
+  AinftTokenSearchResponse,
+  AinftObjectSearchResponse,
 } from './types';
 import Ainft721 from './ainft721Object';
 import stringify from 'fast-json-stable-stringify';
-import {SUPPORTED_AINFT_STANDARDS} from "./constants";
 
 export default class Nft extends FactoryBase {
   /**
@@ -81,12 +59,12 @@ export default class Nft extends FactoryBase {
    * @param ainftObjectId
    */
   async get(ainftObjectId: string) {
-    const { list } = await this.searchAinftObjects({ ainftObjectId });
-    if (list.length === 0) {
+    const { ainftObjects } = await this.searchAinftObjects({ ainftObjectId });
+    if (ainftObjects.length === 0) {
       throw new Error(`Not found ainft`);
     }
-    const nft = list[0];
-    return new Ainft721({ id: nft.id, name: nft.name, symbol: nft.symbol, owner: nft.owner }, this.ain, this.baseUrl);
+    const ainftObject = ainftObjects[0];
+    return new Ainft721(ainftObject, this.ain, this.baseUrl);
   }
 
   /**
@@ -116,7 +94,7 @@ export default class Nft extends FactoryBase {
    * @returns
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchAinftObjects(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftCollectionSearch>> {
+  searchAinftObjects(searchParams: NftSearchParams & SearchOption): Promise<AinftObjectSearchResponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, ainftObjectId, name, symbol, limit, offset } = searchParams;
@@ -130,7 +108,7 @@ export default class Nft extends FactoryBase {
    * Search nfts on the ain blockchain.
    * @param {NftSearchParams & SearchOption} searchParams
    */
-  searchNfts(searchParams: NftSearchParams & SearchOption): Promise<SearchReponse<AinftTokenSearch>> {
+  searchNfts(searchParams: NftSearchParams & SearchOption): Promise<AinftTokenSearchResponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
       const { userAddress, ainftObjectId, name, symbol, limit, offset, tokenId } = searchParams;
