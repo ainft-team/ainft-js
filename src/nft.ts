@@ -9,17 +9,17 @@ import {
   AinftTokenSearchResponse,
   AinftObjectSearchResponse,
 } from './types';
-import Ainft721 from './ainft721Object';
+import Ainft721Object from './ainft721Object';
 import stringify from 'fast-json-stable-stringify';
 
 export default class Nft extends FactoryBase {
   /**
-   * Create NFT. Default standard is 721.
-   * @param name NFT name
-   * @param symbol NFT symbol
-   * @param standard
+   * Create AINFT Object.
+   * @param name The name of AINFT Object.
+   * @param symbol The symbol of AINFT Object.
+   * @returns The generated AINFT Object.
    */
-  async create(name: string, symbol: string) {
+  async create(name: string, symbol: string): Promise<Ainft721Object> {
     const address = await this.ain.signer.getAddress();
 
     const body = { address, name, symbol };
@@ -37,11 +37,10 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Register ainft object to factory server.
-   * @param ainftObjectId 
-   * @returns 
+   * Register AINFT object to factory server.
+   * @param ainftObjectId The ID of AINFT Object.
    */
-  async register(ainftObjectId: string) {
+  async register(ainftObjectId: string): Promise<void> {
     const address = await this.ain.signer.getAddress();
     const message = stringify({
       address,
@@ -55,8 +54,9 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Return Ainft instance by ainftObjectId.
-   * @param ainftObjectId
+   * Get AINFT object instance by ainftObjectId.
+   * @param ainftObjectId The ID of AINFT Object.
+   * @returns Returns the AINFT Object corresponding to the given ID.
    */
   async get(ainftObjectId: string) {
     const { ainftObjects } = await this.searchAinftObjects({ ainftObjectId });
@@ -64,16 +64,16 @@ export default class Nft extends FactoryBase {
       throw new Error(`Not found ainft`);
     }
     const ainftObject = ainftObjects[0];
-    return new Ainft721(ainftObject, this.ain, this.baseUrl);
+    return new Ainft721Object(ainftObject, this.ain, this.baseUrl);
   }
 
   /**
-     * Get nfts by ainft object id.
-     * @param ainftObjectId - ainft object id.
-     * @param limit - The length of nfts.
-     * @param offset - offset if the next list exists.
-     * @returns 
-     */
+   * Get nfts by ainft object id.
+   * @param ainftObjectId - The ID of AINFT Object.
+   * @param limit - The length of nfts.
+   * @param cursor - offset if the next list exists.
+   * @returns 
+   */
   async getNftsByAinftObject(ainftObjectId: string, limit?: number, offset?: string) {
     return this.searchNfts({ ainftObjectId, limit, offset });
   }
