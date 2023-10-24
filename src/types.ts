@@ -808,17 +808,21 @@ export interface getTxBodyMintNftParams {
 
 export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {}
 
-export interface NftSearchParams {
-  userAddress?: string;
-  ainftObjectId?: string;
-  tokenId?: string;
-  name?: string;
-  symbol?: string;
-}
-
 export interface SearchOption {
   limit?: number,
-  offset?: string,
+  cursor?: string,
+}
+export interface NftSearchParams extends SearchOption {
+  /** The address of the user who owns the AINFT. */
+  userAddress?: string;
+  /** The ID of AINFT object. */
+  ainftObjectId?: string;
+  /** The token ID of AINFT. */
+  tokenId?: string;
+  /** The name of AINFT object. */
+  name?: string;
+  /** The symbol of AINFT object. */
+  symbol?: string;
 }
 
 export interface getTxBodyTransferNftParams {
@@ -832,20 +836,26 @@ export interface getTxBodyTransferNftParams {
 }
 
 export interface UploadAssetParams {
+  /** The ID of app. */
   appId: string;
+  /** The file path of asset to upload. */
   filePath: string;
 }
 
 export interface UploadAssetFromBufferParams extends UploadAssetParams {
+  /** The buffer of asset to upload. */
   buffer: Buffer;
 }
 
 export interface UploadAssetFromDataUrlParams extends UploadAssetParams {
+  /** The data url of asset to upload. */
   dataUrl: string;
 }
 
 export interface DeleteAssetParams {
+  /** The ID of app. */
   appId: string;
+  /** The file path of asset to delete. */
   filePath: string;
 }
 

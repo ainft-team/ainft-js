@@ -5,7 +5,6 @@ import {
   NftSearchParams,
   UploadAssetFromBufferParams,
   UploadAssetFromDataUrlParams,
-  SearchOption,
   AinftTokenSearchResponse,
   AinftObjectSearchResponse,
 } from './types';
@@ -14,10 +13,10 @@ import stringify from 'fast-json-stable-stringify';
 
 export default class Nft extends FactoryBase {
   /**
-   * Create AINFT Object.
-   * @param name The name of AINFT Object.
-   * @param symbol The symbol of AINFT Object.
-   * @returns The generated AINFT Object.
+   * Create AINFT object.
+   * @param name The name of AINFT object.
+   * @param symbol The symbol of AINFT object.
+   * @returns The generated AINFT object.
    */
   async create(name: string, symbol: string): Promise<Ainft721Object> {
     const address = await this.ain.signer.getAddress();
@@ -28,7 +27,7 @@ export default class Nft extends FactoryBase {
     const txHash = await this.ain.sendTransaction(txBody);
 
     console.log(`AinftObject is created!`);
-    console.log('ainft object ID: ', ainftObjectId);
+    console.log('AINFT object ID: ', ainftObjectId);
     console.log('app ID: ', appId);
     console.log(`txHash: `, txHash);
 
@@ -38,7 +37,8 @@ export default class Nft extends FactoryBase {
 
   /**
    * Register AINFT object to factory server.
-   * @param ainftObjectId The ID of AINFT Object.
+   * @param ainftObjectId The ID of AINFT object.
+   * @returns There is no return value.
    */
   async register(ainftObjectId: string): Promise<void> {
     const address = await this.ain.signer.getAddress();
@@ -55,8 +55,8 @@ export default class Nft extends FactoryBase {
 
   /**
    * Get AINFT object instance by ainftObjectId.
-   * @param ainftObjectId The ID of AINFT Object.
-   * @returns Returns the AINFT Object corresponding to the given ID.
+   * @param ainftObjectId The ID of AINFT object.
+   * @returns Returns the AINFT object corresponding to the given ID.
    */
   async get(ainftObjectId: string) {
     const { ainftObjects } = await this.searchAinftObjects({ ainftObjectId });
@@ -68,51 +68,52 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Get nfts by ainft object id.
-   * @param ainftObjectId - The ID of AINFT Object.
-   * @param limit - The length of nfts.
-   * @param cursor - offset if the next list exists.
-   * @returns 
+   * Get AINFTs by AINFT object id.
+   * @param ainftObjectId - The ID of AINFT object.
+   * @param limit - Sets the maximum number of NFTs to retrieve.
+   * @param cursor - Optional cursor to use for pagination.
+   * @returns Returns AINFTs.
    */
-  async getNftsByAinftObject(ainftObjectId: string, limit?: number, offset?: string) {
-    return this.searchNfts({ ainftObjectId, limit, offset });
+  async getAinftsByAinftObject(ainftObjectId: string, limit?: number, cursor?: string): Promise<AinftTokenSearchResponse> {
+    return this.searchNfts({ ainftObjectId, limit, cursor });
   }
 
   /**
-   * Get nfts by user address.
-   * @param address - User ain address.
-   * @param limit - The length of nfts.
-   * @param offset - offset if the next list exists.
-   * @returns 
+   * Get AINFTs by user address.
+   * @param address - The ID of AINFT object.
+   * @param limit - Sets the maximum number of NFTs to retrieve.
+   * @param cursor - Optional cursor to use for pagination.
+   * @returns Returns AINFTs.
    */
-  async getNftsByAccount(address: string, limit?: number, offset?: string) {
-    return this.searchNfts({ userAddress: address, limit, offset });
+  async getAinftsByAccount(address: string, limit?: number, cursor?: string): Promise<AinftTokenSearchResponse> {
+    return this.searchNfts({ userAddress: address, limit, cursor });
   }
 
   /**
-   * Search ainftObjects created on the ain blockchain.
-   * @returns
-   * @param {NftSearchParams & SearchOption} searchParams
+   * Searches for AINFT objects created on the AIN Blockchain.
+   * @param {NftSearchParams} searchParams The parameters to search AINFT object.
+   * @returns Returns searched AINFT objects.
    */
-  searchAinftObjects(searchParams: NftSearchParams & SearchOption): Promise<AinftObjectSearchResponse> {
+  searchAinftObjects(searchParams: NftSearchParams): Promise<AinftObjectSearchResponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
-      const { userAddress, ainftObjectId, name, symbol, limit, offset } = searchParams;
-      query = { userAddress, ainftObjectId, name, symbol, offset, limit };
+      const { userAddress, ainftObjectId, name, symbol, limit, cursor } = searchParams;
+      query = { userAddress, ainftObjectId, name, symbol, cursor, limit };
     }
     const trailingUrl = `native/search/ainftObjects`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
   /**
-   * Search nfts on the ain blockchain.
-   * @param {NftSearchParams & SearchOption} searchParams
+   * Searches for AINFTs on the ain blockchain.
+   * @param {NftSearchParams} searchParams The parameters to search AINFT.
+   * @returns Returns searched AINFTs
    */
-  searchNfts(searchParams: NftSearchParams & SearchOption): Promise<AinftTokenSearchResponse> {
+  searchNfts(searchParams: NftSearchParams): Promise<AinftTokenSearchResponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
-      const { userAddress, ainftObjectId, name, symbol, limit, offset, tokenId } = searchParams;
-      query = { userAddress, ainftObjectId, name, symbol, offset, limit, tokenId };
+      const { userAddress, ainftObjectId, name, symbol, limit, cursor, tokenId } = searchParams;
+      query = { userAddress, ainftObjectId, name, symbol, cursor, limit, tokenId };
     }
     const trailingUrl = `native/search/nfts`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
