@@ -50,8 +50,8 @@ export default class Ainft721Object extends FactoryBase {
 
   /**
    * Transfers token to other account.
-   * @param from The address the AINFT was sent from.
-   * @param to 	The address the AINFT was sent.
+   * @param from The address the AINFT will be send from.
+   * @param to 	The address the AINFT will be send to.
    * @param tokenId The ID of token.
    * @returns Returns transaction result.
    */
@@ -62,7 +62,7 @@ export default class Ainft721Object extends FactoryBase {
 
   /**
    * Mints new token.
-   * @param to The address the AINFT was minted.
+   * @param to The address the AINFT will be minted.
    * @param tokenId The ID of token.
    * @returns Returns transaction result.
    */
@@ -74,8 +74,8 @@ export default class Ainft721Object extends FactoryBase {
 
   /**
    * Gets transaction body to transfer token.
-   * @param from The address the AINFT was sent from.
-   * @param to The address the AINFT was sent.
+   * @param from The address the AINFT will be send from.
+   * @param to The address the AINFT will be send to.
    * @param tokenId The ID of token.
    * @returns Returns transaction body without signature.
    */
@@ -91,7 +91,7 @@ export default class Ainft721Object extends FactoryBase {
   /**
    * Gets transaction body to mint token.
    * @param ownerAddress The address of the AINFT object owner.
-   * @param to The address the AINFT was sent.
+   * @param to The address the AINFT will be send.
    * @param tokenId The ID of token.
    * @returns Returns transaction body without signature.
    */
