@@ -705,11 +705,17 @@ export type NftContractBySymbol = {
 };
 
 export type AppCreditInfo = {
+  /** The name of credit. */
   name: string,
+  /** The symbol of credit */
   symbol: string,
+  /** The total supply of credit. */
   totalSupply: number,
+  /** The amount of credit burned.  */
   burnedSupply: number,
+  /** The max supply of credit. */
   maxSupply: number | null,
+  /** The timestamp of credit creation. */
   createdAt: number,
 };
 
@@ -727,15 +733,22 @@ export enum AppCreditWithdrawStatus {
 }
 
 export interface WithdrawInfo {
+  /** The status of withdraw request. */
   status: AppCreditWithdrawStatus;
+  /** The amount of credits requested for withdrawal. */
   amount: number;
+  /** The timestamp of the withdrawal request. */
   timestamp: number;
+  /** The transaction hash that resulted from the completed withdrawal. */
   txHash?: string;
 }
 
 export interface UserWithdrawList {
+  /** The symbol of chain */
   [chain: string]: {
+    /** The address of user. */
     [userAddress: string]: {
+      /** The ID of withdraw request. */
       [requestId: string]: WithdrawInfo;
     };
   };
@@ -745,10 +758,14 @@ export interface AppWithdrawList {
   [userId: string]: UserWithdrawList;
 }
 
-export interface WithdrawRequestList {
+export interface WithdrawRequestMap {
+  /** The Id of user. */
   [userId: string]: {
+    /** The symbol of chain. */
     [chain: string]: {
+      /** The address of user. */
       [userAddress: string]: {
+        /** The ID of withdrawal request. */
         [requestId: string]: number;
       };
     };
@@ -756,23 +773,35 @@ export interface WithdrawRequestList {
 }
 
 export interface DepositTransaction {
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** The address the token was sent from. */
   from: string;
+  /** The address the token was send to. */
   to: string;
+  /** The value of deposit transaction. */
   value: number;
+  /** The transaction hash of deposit. */
   txHash: string;
+  /** The block number at which the deposit transaction was applied. */
   blockNumber: number;
 }
 
 export interface LockupInfo {
+  /** The timestamp when the lockup period ends.  */
   endAt: number;
+  /** The amount of credit to lock. */
   amount: number;
+  /** The reason for the lockup. */
   reason: string;
 }
 
 export interface LockupList {
+  /** The ID of lockup. */
   [lockupId: string]: LockupInfo;
 }
 
