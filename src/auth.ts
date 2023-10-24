@@ -4,13 +4,13 @@ import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from './constants';
 import { HttpMethod, User } from './types';
 export default class Auth extends FactoryBase {
   /**
-   * Create AIN Blockchain app using private key.
-   * @param {string} appId - AppId you want.
-   * @returns
+   * Creates AIN Blockchain app using private key.
+   * @param {string} appname - The name of app.
+   * @returns Returns transaction result.
    */
-  async createApp(appId: string) {
+  async createApp(appname: string) {
     const address = await this.ain.signer.getAddress();
-    return this.ain.db.ref(`/manage_app/${appId}/create/${Date.now()}`).setValue({
+    return this.ain.db.ref(`/manage_app/${appname}/create/${Date.now()}`).setValue({
       value: {
         admin: {
           [address]: true,
@@ -28,9 +28,9 @@ export default class Auth extends FactoryBase {
   }
 
   /**
-   * Create AINFT Factory user in app.
-   * @param {string} appId
-   * @param {string} userId
+   * Creates AINFT factory user in app.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user to create.
    * @returns
    */
   createUser(appId: string, userId: string): Promise<User> {
@@ -40,9 +40,9 @@ export default class Auth extends FactoryBase {
   }
 
   /**
-   * Create AINFT Factory admin user in app.
-   * @param {string} appId
-   * @param {string} userId
+   * Create AINFT factory admin user in app.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user to be admin.
    * @returns
    */
   createAdmin(appId: string, userId: string): Promise<User> {
@@ -53,10 +53,10 @@ export default class Auth extends FactoryBase {
   // TODO(hyeonwoong): add registerUserToAdmin and deregisterUserFromAdmin
 
   /**
-   * Get user in app.
-   * @param {string} appId
-   * @param {string} userId
-   * @returns
+   * Gets AINFT factory user in app.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user to get.
+   * @returns Return user information.
    */
   getUser(appId: string, userId: string): Promise<User> {
     const query = { appId };
@@ -65,10 +65,10 @@ export default class Auth extends FactoryBase {
   }
 
   /**
-   * Add ETH address info to user.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} ethAddress
+   * Adds ETH address info to AINFT factory user.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user.
+   * @param {string} ethAddress The ethereum address to add.
    * @returns
    */
   addUserEthAddress(
@@ -85,10 +85,10 @@ export default class Auth extends FactoryBase {
   }
 
   /**
-   * Remove ETH address info from user.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} ethAddress
+   * Removes ETH address info from user.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user.
+   * @param {string} ethAddress The ethereum address to delete.
    * @returns
    */
   removeUserEthAddress(
@@ -105,11 +105,11 @@ export default class Auth extends FactoryBase {
   }
 
   /**
-   * Register contract to managed contract. By registering as a managed contract, metadata can be managed in AINFT Factory.
-   * @param {string} appId
-   * @param {string} chain
-   * @param {string} network
-   * @param {string} contractAddress
+   * Registers contract to managed contract. By registering as a managed contract, metadata can be managed in AINFT Factory.
+   * @param {string} appId The ID of app.
+   * @param {string} chain The symbol of chain with a contract.
+   * @param {string} network The name of network.
+   * @param {string} contractAddress The address of contract.
    * @returns
    */
   addManagedContract(
@@ -129,11 +129,11 @@ export default class Auth extends FactoryBase {
   }
 
   /**
-   * Remove managed contract.
-   * @param {string} appId
-   * @param {string} chain
-   * @param {string} network
-   * @param {string} contractAddress
+   * Removes managed contract.
+   * @param {string} appId The ID of app.
+   * @param {string} chain The symbol of chain with a contract.
+   * @param {string} network The name of network.
+   * @param {string} contractAddress The address of contract.
    * @returns
    */
   removeManagedContract(
@@ -153,9 +153,9 @@ export default class Auth extends FactoryBase {
   }
 
   /**
-   * Register exsiting AIN blockchain app to AINFT Factory.
-   * @param {string} appId
-   * @param {string} accessAinAddress - This is the address of the account that can access the AINFT Factory app. If not set, it is set to the address of the account set as the privateKey.
+   * Registers exsiting AIN blockchain app to AINFT Factory.
+   * @param {string} appId The ID of app.
+   * @param {string} accessAinAddress This is the address of the account that will be accessible to the AINFT Factory app. If not set, it is set to the address of the account set as the privateKey.
    * @returns
    */
   async registerBlockchainApp(appId: string, accessAinAddress?: string) {
@@ -170,9 +170,9 @@ export default class Auth extends FactoryBase {
   }
 
   /**
-   * Get transaction body to delegate app.
-   * App permission is obtained from ainft factory, and trigger function for ainft is registered.
-   * @param {string} appId
+   * Gets transaction body to delegate app.
+   * App permission is obtained from AINFT factory, and trigger function for ainft is registered.
+   * @param {string} appId The ID of app.
    * @returns
    */
   async getTxBodyForDelegateApp(appId: string) {
@@ -183,9 +183,9 @@ export default class Auth extends FactoryBase {
   }
 
   /**
-   * Send transaction to delegate app using private key.
+   * Sends transaction to delegate app using private key.
    * App permission is obtained from ainft factory, and trigger function for ainft is registered.
-   * @param {string} appId
+   * @param {string} appId The ID of app.
    * @returns
    */
   async delegateApp(appId: string) {
@@ -196,9 +196,9 @@ export default class Auth extends FactoryBase {
   /**
    * You can get user deposit crypto address.
    * If user doesn't have address, create new deposit account.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} chain
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user.
+   * @param {string} chain The symbol of chain.
    */
   getUserDepositAddress(
     appId: string,
@@ -215,8 +215,8 @@ export default class Auth extends FactoryBase {
 
   /**
    * You can add blockchain app owners.
-   * @param {string} appId
-   * @param {string[]} owners
+   * @param {string} appId The ID of app.
+   * @param {string[]} owners The list of addresses to be owner.
    * @returns {string} transaction hash
    */
   addOwners(appId: string, owners: string[]): Promise<string> {
