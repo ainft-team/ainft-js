@@ -335,11 +335,14 @@ export interface ChatResponse {
 }
 
 export interface ChannelPersonaModelInfo {
+  /** The ID of persona model. */
   modelId: string;
+  /** The name of persona model. */
   modelName: string;
 }
 
 export interface ServerPersonaModelInfo {
+  /** The Discord Channel ID to which the persona model is linked.  */
   [channelId: string]: ChannelPersonaModelInfo;
 }
 
@@ -385,8 +388,11 @@ export interface TextToArtTxHash {
 }
 
 export interface InviteInfo {
+  /** The ID of inviter. */
   inviterId: string,
+  /** A flag indicating whether the reward has been received or not. */
   isRewarded: boolean,
+  /** Map by userId invited in a short time. */
   ambiguousInviters?: {
     [key: number]: string
   },
