@@ -862,17 +862,25 @@ export interface DeleteAssetParams {
 export interface TransferNftParams extends Omit<getTxBodyTransferNftParams, 'address'> {}
 
 export interface getTxbodyAddAiHistoryParams {
+  /** The symbol of chain. e.g. ETH */
   chain: string;
+  /** The name of network. e.g. homestead  */
   network: string;
+  /** The ID of app. */
   appId: string;
+  /** The ID of collection. */
   collectionId: string;
+  /** The ID of token. */
   tokenId: string;
+  /** Data about ai history. */
   data: object;
+  /** The label of history. */
   label: string;
-  address: string;
+  /** The address of user. */
+  userAddress: string;
 }
 
-export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'address'> {};
+export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {};
 
 export interface AinftObjectSearchResponse extends SearchReponse {
   ainftObjects: {

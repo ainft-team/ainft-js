@@ -3,12 +3,12 @@ import { ActivityNftInfo, AddAiHistoryParams, HttpMethod, NftActivityType, TaskT
 
 export default class Activity extends FactoryBase {
   /**
-   * You can add activity without event. Just add activity.
-   * @param appId 
-   * @param userId 
-   * @param data 
-   * @param activityType 
-   * @param nftInfo 
+   * Add activity.
+   * @param appId The ID of app.
+   * @param userId The ID of user.
+   * @param data Data related to the activity.
+   * @param activityType The type of activity.
+   * @param nftInfo Information about the NFTs used in the activity.
    */
   add(
     appId: string,
@@ -29,12 +29,12 @@ export default class Activity extends FactoryBase {
   }
 
   /**
-   * You can update the record of one activity with NFT. record can be a statistic or count value from activity.
-   * @param appId
-   * @param userId
-   * @param nftInfo
-   * @param label Record label. Record data is recorded under the label.
-   * @param data
+   * Adds a record accomplished with an NFT.
+   * @param appId The ID of app.
+   * @param userId The ID of user.
+   * @param nftInfo Information about the NFTs used in the activity.
+   * @param label The label of record.
+   * @param data Data related to the activity.
    */
   addNftRecord(
     appId: string,
@@ -55,8 +55,8 @@ export default class Activity extends FactoryBase {
   }
 
   /**
-   * Add ai interaction history with nft.
-   * @param {AddAiHistoryParams} AddAiHistoryParams
+   * Adds ai history with NFT.
+   * @param {AddAiHistoryParams} AddAiHistoryParams The paramters to add ai history.
    * @returns 
    */
   async addNftAiHistory({
@@ -77,15 +77,16 @@ export default class Activity extends FactoryBase {
       tokenId,
       data,
       label,
-      address,
+      userAddress: address,
     });
     return this.ain.sendTransaction(txInput);
   }
 
   /**
-   * Get transaction body to add ai interaction history with nft. Sending the transaction must be done manually.
+   * Gets transaction body to add ai history with NFT.
+   * Sending the transaction must be done manually.
    * @param {getTxbodyAddAiHistoryParams} getTxbodyAddAiHistoryParams
-   * @returns 
+   * @returns Returns transaction body without signature.
    */
   getTxBodyForAddNftAiHistory({
     chain,
@@ -94,7 +95,7 @@ export default class Activity extends FactoryBase {
     collectionId,
     tokenId,
     data,
-    address,
+    userAddress,
     label,
   }: getTxbodyAddAiHistoryParams) {
     const body = {
@@ -105,7 +106,7 @@ export default class Activity extends FactoryBase {
       tokenId,
       historyData: data,
       label,
-      address,
+      userAddress,
     };
     const trailingUrl = 'nft/ai_history';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
