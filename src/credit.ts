@@ -263,7 +263,7 @@ export default class Credit extends FactoryBase {
   rejectWithdrawal(
     appId: string,
     symbol: string,
-    requestList: string,
+    requestList: WithdrawRequestList,
     reason: string,
   ): Promise<void> {
     const body = { appId, requestList, reason };
