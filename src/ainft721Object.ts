@@ -15,6 +15,8 @@ export default class Ainft721Object extends FactoryBase {
   readonly symbol: string;
   /** Owner of AINFT object. */
   readonly owner: string;
+  /** The ID of app in AIN blockchain. */
+  readonly appId: string;
 
   /**
    * Constructor of Ainft721Object.
@@ -32,6 +34,7 @@ export default class Ainft721Object extends FactoryBase {
     this.name = objectInfo.name;
     this.symbol = objectInfo.symbol;
     this.owner = objectInfo.owner;
+    this.appId = this.getAppId();
   }
 
   /**
@@ -103,5 +106,13 @@ export default class Ainft721Object extends FactoryBase {
     }
     const trailingUrl = `native/${this.id}/mint`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Gets app ID by AINFT object ID.
+   * @param id 
+   */
+  private getAppId(): string {
+    return `ainft721_${this.id.toLowerCase()}`;
   }
 }

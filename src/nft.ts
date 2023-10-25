@@ -23,13 +23,8 @@ export default class Nft extends FactoryBase {
 
     const body = { address, name, symbol };
     const trailingUrl = 'native';
-    const { ainftObjectId, txBody, appId } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
-    const txHash = await this.ain.sendTransaction(txBody);
-
-    console.log(`AinftObject is created!`);
-    console.log('AINFT object ID: ', ainftObjectId);
-    console.log('app ID: ', appId);
-    console.log(`txHash: `, txHash);
+    const { ainftObjectId, txBody } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    await this.ain.sendTransaction(txBody);
 
     await this.register(ainftObjectId);
     return this.get(ainftObjectId);
