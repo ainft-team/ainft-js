@@ -63,21 +63,21 @@ export default class Activity extends FactoryBase {
     chain,
     network,
     appId,
-    collectionId,
+    ainftObjectId,
     tokenId,
     data,
     label,
   }: AddAiHistoryParams) {
-    const address = await this.ain.signer.getAddress();
+    const userAddress = await this.ain.signer.getAddress();
     const txInput = await this.getTxBodyForAddNftAiHistory({
       chain,
       network,
       appId,
-      collectionId,
+      ainftObjectId,
       tokenId,
       data,
       label,
-      userAddress: address,
+      userAddress,
     });
     return this.ain.sendTransaction(txInput);
   }
@@ -92,7 +92,7 @@ export default class Activity extends FactoryBase {
     chain,
     network,
     appId,
-    collectionId,
+    ainftObjectId,
     tokenId,
     data,
     userAddress,
@@ -102,7 +102,7 @@ export default class Activity extends FactoryBase {
       chain,
       network,
       appId,
-      collectionId,
+      collectionId: ainftObjectId,
       tokenId,
       historyData: data,
       label,

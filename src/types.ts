@@ -966,8 +966,8 @@ export interface getTxbodyAddAiHistoryParams {
   network: string;
   /** The ID of app. */
   appId: string;
-  /** The ID of collection. */
-  collectionId: string;
+  /** The ID of AINFT object. */
+  ainftObjectId: string;
   /** Token ID of NFT. */
   tokenId: string;
   /** Data about ai history. */
