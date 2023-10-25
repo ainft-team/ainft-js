@@ -42,7 +42,7 @@ export default class Ainft721Object extends FactoryBase {
    * @param tokenId Token ID of AINFT.
    * @returns Returns AINFT token instance.
    */
-  async get(tokenId: string) {
+  async getToken(tokenId: string) {
     const { nfts } = await this.sendRequestWithoutSign(HttpMethod.GET, `native/search/nfts`, { ainftObjectId: this.id, tokenId });
     if (nfts.length === 0) {
       throw new Error('Not found token');
