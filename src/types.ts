@@ -321,28 +321,48 @@ export interface RewardInfo {
 }
 
 export interface CreateEventParams {
+  /** The ID of event. It should not overlap with the IDs of existing events in the app. */
   eventId: string;
+  /** The ID of app. */
   appId: string;
+  /** The ID of user. */
   userId: string;
+  /** The description of event. */
   description: string;
+  /** List of tasks to be performed in the event. */
   taskInstanceList: Array<TaskInstance>;
+  /** List of rewards received upon completion of all tasks in the event. */
   rewardInstanceList: Array<RewardInstance>;
+  /** The start time of the event. */
   startAt: number;
+  /** The end time of the event. */
   endAt: number;
+  /** The platform where the event takes place. */
   platform?: Platforms;
 }
 
 export interface TokenomicsEvent {
+  /** The ID of app. */
   appId: string;
+  /** The ID of event. */
   eventId: string;
+  /** The start time of the event. */
   startAt: number;
+  /** The end time of the event. */
   endAt: number;
+  /** The description of event. */
   description: string;
+  /** Map of tasks by task ID to be performed in the event. */
   taskInstances: { [taskInstanceId: string]: TaskInstance };
+  /** Map of rewards by reward ID received upon completion of all tasks in the event. */
   rewardInstances: { [rewardInstanceId: string]: RewardInstance };
+  /** The status of event. */
   status?: EventStatus;
+  /** The platform where the event takes place. */
   platform?: Platforms;
+  /** The timestamp when the event was created." */
   createdAt?: number;
+  /** The timestamp when the event was updated." */
   updatedAt?: number;
 };
 
@@ -430,23 +450,33 @@ export interface InviteInfo {
 }
 
 export interface AddActivityParams {
+  /** The ID of app. */
   appId: string,
+  /** The ID of user. */
   userId: string,
+  /** The ID of event. */
   eventId?: string,
-  smartGalleryPosId?: string,
+  /** The task ID being executed in this activity. */
   taskInstanceId?: string,
+  /** The data of activity. */
   data: any,
 };
 
 export interface AddEventActivityParams extends AddActivityParams {
+  /** The ID of event. */
   eventId: string,
 };
 
 export interface GetActivityParams {
+  /** The ID of app. */
   appId: string,
+  /** The timestamp when the activity was created.*/
   createdAt: number,
+  /** The ID of user who performed the activity.  */
   userId?: string,
+  /** The ID of the event that the activity belongs to. */
   eventId?: string,
+  /** The ID of activity. */
   activityId?: string,
   options?: any,
 };
@@ -465,7 +495,9 @@ export interface Activity extends AddActivityParams {
 };
 
 export interface GetEventActivityParams extends GetActivityParams {
+  /** The ID of user. */
   userId: string,
+  /** The ID of event. */
   eventId: string,
 }
 
