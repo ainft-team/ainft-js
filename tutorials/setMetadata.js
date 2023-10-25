@@ -1,9 +1,9 @@
 const AinftJs = require('@ainft-team/ainft-js').default;
 
-const myPrivateKey = 'your-private-key';
+const myPrivateKey = 'YOUR_PRIVATE_KEY';
 const ainftJs = new AinftJs(myPrivateKey, 'https://ainft-api-dev.ainetwork.ai');
 
-const ainftObjectId = 'your-nft-id';
+const ainftObjectId = 'YOUR_AINFT_OBJECT_ID';
 const tokenId = '1';
 const metadata = {
   name: 'my first token',
@@ -17,3 +17,5 @@ const main = async () => {
   const result = await ainft.setMetadata(metadata);
   console.log(result);
 }
+
+main();
