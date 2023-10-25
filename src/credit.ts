@@ -254,6 +254,25 @@ export default class Credit extends FactoryBase {
   }
 
   /**
+   * Reject requested withdrawals.
+   * @param {string} appId
+   * @param {string} symbol
+   * @param {withdrawRequestList} requestList
+   * @param {string} reason
+   */
+  rejectWithdrawal(
+    appId: string,
+    symbol: string,
+    requestList: string,
+    reason: string,
+  ): Promise<void> {
+    const body = { appId, requestList, reason };
+    const trailingUrl = `symbol/${symbol}/withdraw/reject`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+  
+
+  /**
    * You can restrict the user to leave a certain amount of credit
    * @param {string} appId
    * @param {string} symbol
