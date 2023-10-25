@@ -303,7 +303,7 @@ export default class Credit extends FactoryBase {
   }
 
   /**
-   * Reflects withdraws complete status to server after transfer tokens
+   * Deposits user's credits to Crypto tokens.
    * @param {string} appId The ID of app.
    * @param {DepositTransaction} transaction The transaction information about deposit.
    */
