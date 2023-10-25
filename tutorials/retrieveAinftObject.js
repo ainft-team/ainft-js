@@ -3,8 +3,8 @@ const AinftJs = require('@ainft-team/ainft-js').default;
 const myPrivateKey = 'YOUR_PRIVATE_KEY';
 const ainftJs = new AinftJs(myPrivateKey, 'https://ainft-api-dev.ainetwork.ai');
 
-const userAddress = '';
-ainftJs.nft.getNftsByAinftObject(userAddress)
+const ainftObjectId = '';
+ainftJs.nft.getNftsByAinftObject(ainftObjectId)
   .then((res) => {
     console.log(res);
   })
