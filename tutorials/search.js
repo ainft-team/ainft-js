@@ -4,7 +4,15 @@ const myPrivateKey = 'YOUR_PRIVATE_KEY';
 const ainftJs = new AinftJs(myPrivateKey, 'https://ainft-api-dev.ainetwork.ai');
 
 const searchAinftObjects = async () => {
-  ainftJs.nft.searchAinftObjects()
+  const filter = {
+    ainftObjectId: '',
+    userAddress: '',
+    name: '',
+    symbol: '',
+    limit: 0,
+    cursor: '',
+  }
+  ainftJs.nft.searchAinftObjects(filter)
     .then((res) => {
       console.log(res);
     })
@@ -14,6 +22,15 @@ const searchAinftObjects = async () => {
 }
 
 const searchNfts = async () => {
+  const filter = {
+    ainftObjectId: '',
+    userAddress: '',
+    tokenId: '',
+    name: '',
+    symbol: '',
+    limit: 0,
+    cursor: '',
+  }
   ainftJs.nft.searchNfts()
     .then((res) => {
       console.log(res);
