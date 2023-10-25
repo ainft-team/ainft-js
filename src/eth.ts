@@ -25,8 +25,8 @@ export default class Eth extends FactoryBase {
   private chain = 'ETH';
 
   /**
-   * Add nfy symbol. You can add nft to reference in your factory activity.
-   * @param {AddNftSymbolParams} AddNftSymbolParams
+   * Adds NFT symbol. You can add NFT to reference in your factory app.
+   * @param {AddNftSymbolParams} AddNftSymbolParams The parameters to add NFT symbol.
    * @returns
    */
   addNftSymbol({
@@ -41,9 +41,9 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Get nft symbol list in app.
-   * @param {GetAppNftSymbolListParams} GetAppNftSymbolListParams
-   * @returns
+   * Gets NFT symbol list in app.
+   * @param {GetAppNftSymbolListParams} GetAppNftSymbolListParams The parameters to get NFT symbol list in app.
+   * @returns Returns a list of symbols registered in the app.
    */
   getAppNftSymbolList({ appId }: GetAppNftSymbolListParams): Promise<string[]> {
     const query = { appId };
@@ -52,9 +52,9 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Remove nft symbol from app.
-   * @param {RemoveNftSymbolParams} RemoveNftSymbolParams
-   * @returns
+   * Removes NFT symbol from app.
+   * @param {RemoveNftSymbolParams} RemoveNftSymbolParams The parameters to remove NFT symbol from app.
+   * @returns Returns removed contract information.
    */
   removeNftSymbol({
     appId,
@@ -66,11 +66,11 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Get nft contract info by symbol.
-   * @param {GetNftSymbolParams} GetNftSymbolParams
-   * @returns
+   * Gets NFT contract info by symbol.
+   * @param {GetNftSymbolParams} GetNftSymbolParams The parameters to get contract by symbol.
+   * @returns Returns contract information by symbol.
    */
-  getNftSymbol({
+  getContractInfoBySymbol({
     appId,
     symbol,
   }: GetNftSymbolParams): Promise<NftContractBySymbol> {
@@ -80,10 +80,10 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Get nft info by network, contractAddress and tokenId.
+   * Gets NFT info by network, contractAddress and tokenId.
    * Symbol must be added.
-   * @param {GetNftParams} GetNftParams
-   * @returns
+   * @param {GetNftParams} GetNftParams The parameters to get NFT information.
+   * @returns Returns NFT information.
    */
   getNft({
     appId,
@@ -97,10 +97,10 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Get nft contract info by network and contractAddress.
+   * Gets contract info by network and contractAddress.
    * Symbol must be added.
-   * @param {GetNftContractInfoParams} GetNftContractInfoParams
-   * @returns
+   * @param {GetNftContractInfoParams} GetNftContractInfoParams The parameters to get contract information.
+   * @returns Returns contract information.
    */
   getNftContractInfo({
     appId,
@@ -115,7 +115,7 @@ export default class Eth extends FactoryBase {
   /**
    * Get nft list in the collection.
    * @param {GetNftsInCollectionParams} GetNftsInCollectionParams
-   * @returns
+   * @returns Returns a map of NFTs distinguished by their token IDs.
    */
   getNftsInCollection({
     network,
@@ -130,9 +130,9 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Get nft list by user address.
-   * @param {GetUserNftListParams} GetUserNftListParams
-   * @returns
+   * Gets NFT list by user address.
+   * @param {GetUserNftListParams} GetUserNftListParams The parameters to get NFT list user owned.
+   * @returns Returns NFTs owned by the user along with their contract information.
    */
   getUserNftList({
     appId,
@@ -151,9 +151,9 @@ export default class Eth extends FactoryBase {
   }
 
   /**
-   * Set managed nft metadata.
-   * @param {SetNftMetadataParams} SetNftMetadataParams
-   * @returns
+   * Sets managed NFT metadata.
+   * @param {SetEthNftMetadataParams} SetNftMetadataParams The parameters to set NFT metadata.
+   * @returns Returns set metadata.
    */
   async setNftMetadata({
     appId,

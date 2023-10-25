@@ -114,39 +114,60 @@ export enum SchedulerID {
 }
 
 export interface AddNftSymbolParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** Adds optional parameters.
+   * Currently, it supports the 'isDynamic' option.
+   * Setting the 'isDynamic' parameter to true allows hosting metadata through the AINFT factory. */
   options?: Record<string, any>;
 }
 
 export interface GetAppNftSymbolListParams {
+  /** The ID of app. */
   appId: string;
 }
 
 export interface GetNftSymbolParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of NFT. */
   symbol: string;
 }
 
 export interface RemoveNftSymbolParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of NFT. */
   symbol: string;
 }
 
 export interface GetNftParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** Token ID of NFT. */
   tokenId: string;
 }
 
 export interface GetNftContractInfoParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
 }
 
@@ -167,11 +188,17 @@ export interface GetNftsInAinCollectionParams extends GetNftsInCollectionParams 
 }
 
 export interface GetUserNftListParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of user. */
   userAddress: string;
+  /** The address of contract. Use this if you want to find NFTs specific to a particular contract. */
   contractAddress?: string;
+  /** Token ID of NFT. Use this if you want to find a specific NFT. You need to provide the contract address for it to work. */
   tokenId?: string;
 }
 
@@ -185,11 +212,15 @@ export interface getTxBodySetNftMetadataParams {
 export interface SetNftMetadataParams extends SetEthNftMetadataParams, SetAinNftMetadataParams {}
 
 export interface SetEthNftMetadataParams {
+  /** The ID of app. */
   appId: string;
-  chain: "ETH";
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** Token ID of NFT. */
   tokenId: string;
+  /** The metadata to be set. */
   metadata: NftMetadata;
 };
 
@@ -905,7 +936,7 @@ export interface getTxbodyAddAiHistoryParams {
   appId: string;
   /** The ID of collection. */
   collectionId: string;
-  /** The ID of token. */
+  /** Token ID of NFT. */
   tokenId: string;
   /** Data about ai history. */
   data: object;
