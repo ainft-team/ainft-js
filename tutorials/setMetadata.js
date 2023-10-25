@@ -1,22 +1,21 @@
 const AinftJs = require('@ainft-team/ainft-js').default;
 
-const myPrivateKey = 'your-private-key';
+const myPrivateKey = 'YOUR_PRIVATE_KEY';
 const ainftJs = new AinftJs(myPrivateKey, 'https://ainft-api-dev.ainetwork.ai');
 
-const nftId = 'your-nft-id';
+const ainftObjectId = 'YOUR_AINFT_OBJECT_ID';
 const tokenId = '1';
 const metadata = {
-	name: 'Native NFT Explorer',
-  description: 'He is an explorer who pioneers AI networks.',
-	image: 'https://images.ctfassets.net/9o7r47v65nft/2YvQoZFlzYjJmx2k1oQryI/7f9c9bc30458ad1b940a77c310704467/OG_tag.png'
+  name: 'my first token',
+  image: 'https://miro.medium.com/v2/resize:fit:2400/1*GWMy0ibykACFKS_rRxFlcw.png'
 }
 
-ainftJs.nft.setNftMetadata({
-	nftId,
-	tokenId,
-	metadata,
-}).then((res) => {
-	console.log(res);
-}).catch((error) => {
-	console.log(error);
-});
+
+const main = async () => {
+  const ainftObject = await ainftJs.nft.get(ainftObjectId);
+  const ainft = await ainftObject.get(tokenId);
+  const result = await ainft.setMetadata(metadata);
+  console.log(result);
+}
+
+main();
