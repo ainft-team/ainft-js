@@ -36,7 +36,7 @@ export default class Ainft721Object extends FactoryBase {
 
   /**
    * Gets specific token object.
-   * @param tokenId The ID of token.
+   * @param tokenId Token ID of AINFT.
    * @returns Returns AINFT token instance.
    */
   async get(tokenId: string) {
@@ -52,7 +52,7 @@ export default class Ainft721Object extends FactoryBase {
    * Transfers token to other account.
    * @param from The address the AINFT will be send from.
    * @param to 	The address the AINFT will be send to.
-   * @param tokenId The ID of token.
+   * @param tokenId Token ID of AINFT.
    * @returns Returns transaction result.
    */
   async transfer(from: string, to: string, tokenId: string): Promise<any> {
@@ -63,7 +63,7 @@ export default class Ainft721Object extends FactoryBase {
   /**
    * Mints new token.
    * @param to The address the AINFT will be minted.
-   * @param tokenId The ID of token.
+   * @param tokenId Token ID of AINFT.
    * @returns Returns transaction result.
    */
   async mint(to: string, tokenId: string): Promise<any> {
@@ -76,7 +76,7 @@ export default class Ainft721Object extends FactoryBase {
    * Gets transaction body to transfer token.
    * @param from The address the AINFT will be send from.
    * @param to The address the AINFT will be send to.
-   * @param tokenId The ID of token.
+   * @param tokenId Token ID of AINFT.
    * @returns Returns transaction body without signature.
    */
   getTxBodyForTransfer(from: string, to: string, tokenId: string) {
@@ -92,7 +92,7 @@ export default class Ainft721Object extends FactoryBase {
    * Gets transaction body to mint token.
    * @param ownerAddress The address of the AINFT object owner.
    * @param to The address the AINFT will be send.
-   * @param tokenId The ID of token.
+   * @param tokenId Token ID of AINFT.
    * @returns Returns transaction body without signature.
    */
   getTxBodyForMint(ownerAddress: string, to: string, tokenId: string) {
