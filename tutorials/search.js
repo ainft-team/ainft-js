@@ -31,7 +31,7 @@ const searchNfts = async () => {
     limit: 0,
     cursor: '',
   }
-  ainftJs.nft.searchNfts()
+  ainftJs.nft.searchNfts(filter)
     .then((res) => {
       console.log(res);
       })
