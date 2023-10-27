@@ -4,20 +4,23 @@ import {
   HttpMethod,
   AppWithdrawList,
   UserWithdrawList,
-  WithdrawRequestList,
+  WithdrawRequestMap,
   DepositTransaction,
   LockupList,
   DepositHistory,
 } from './types';
 
 // TODO(kriii): Objectify params?
+/**
+ * The class for creating and managing credits to be used in each app.
+ */
 export default class Credit extends FactoryBase {
   /**
-   * Create app credit. 
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {string} name
-   * @param {number} maxSupply
+   * Creates credit to use in app.
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {string} name The name of credit.
+   * @param {number} maxSupply Maximum number of credits that can be generated.
    * @returns
    */
   createAppCredit(
@@ -37,10 +40,10 @@ export default class Credit extends FactoryBase {
   }
 
   /**
-   * Get app credit info.
-   * @param {string} appId
-   * @param {string} symbol
-   * @returns
+   * Gets app credit info.
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @returns Returns credit information.
    */
   getAppCredit(appId: string, symbol: string): Promise<AppCreditInfo> {
     const query = {
@@ -51,10 +54,9 @@ export default class Credit extends FactoryBase {
   }
 
   /**
-   * Delete app credit.
-   * @param {string} appId
-   * @param {string} symbol
-   * @returns
+   * Deletes app credit.
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
    */
   deleteAppCredit(appId: string, symbol: string): Promise<void> {
     const query = {
@@ -65,12 +67,12 @@ export default class Credit extends FactoryBase {
   }
 
   /**
-   * Mint app credit to user.
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {string} to
-   * @param {number} amount
-   * @param {object} payload
+   * Mints app credit to user.
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {string} to The ID of user the credit will be minted.
+   * @param {number} amount The amount of credit to mint.
+   * @param {object} payload The additional data about minting.
    * @returns
    */
   mintAppCredit(
@@ -91,12 +93,12 @@ export default class Credit extends FactoryBase {
   }
 
   /**
-   * Burn credit app from user.
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {string} from
-   * @param {number} amount
-   * @param {object} payload
+   * Burn credit from user.
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {string} from The ID of user the credit will be burned.
+   * @param {number} amount The amount of credit to burn.
+   * @param {object} payload The additional data about burning.
    * @returns
    */
   burnAppCredit(
@@ -119,12 +121,12 @@ export default class Credit extends FactoryBase {
   // NOTE(liayoo): calling this function will create a user if the recipient ('to') doesn't exist.
   /**
    * Transfer app credit to user.
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {string} from
-   * @param {string} to
-   * @param {number} amount
-   * @param {object} payload
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {string} from The address the credit will send from. 
+   * @param {string} to The address the credit will send to.
+   * @param {number} amount The amount of credit to transfer.
+   * @param {object} payload The additional data about transferring.
    * @returns
    */
   transferAppCredit(
@@ -148,12 +150,12 @@ export default class Credit extends FactoryBase {
 
   /**
    * You can request withdraw app credit to crypto wallet.
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {string} userId
-   * @param {string} chain
-   * @param {number} amount
-   * @param {string} userAddress
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {string} userId The ID of user who request withdraw.
+   * @param {string} chain The symbol of chain.
+   * @param {number} amount The amount of withdraw credit.
+   * @param {string} userAddress The address where will receive withdraw credit.
    */
   withdrawAppCredit(
     appId: string,
@@ -176,8 +178,8 @@ export default class Credit extends FactoryBase {
 
   /**
    * You can get withdrawal list applied by all users
-   * @param {string} appId
-   * @param {string} symbol
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
    * @return {Promise<AppWithdrawList>} Return AppWithdrawList Object
    */
   getWithdrawList(appId: string, symbol: string): Promise<AppWithdrawList> {
@@ -188,9 +190,9 @@ export default class Credit extends FactoryBase {
 
   /**
    * You can get withdrawal list apllied by one user
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {string} userId
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {string} userId The ID of user.
    * @returns {Promise<UserWithdrawList>} Return UserWithdrawList Object
    */
   getWithdrawListByUserId(
@@ -205,9 +207,9 @@ export default class Credit extends FactoryBase {
 
   /**
    * Get the user's credit balance
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {string} userId
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {string} userId The ID of user.
    * @returns {Promise<number>} A Promise that resolves to the credit balance of the user
    */
   getCreditBalanceOfUser(
@@ -222,8 +224,8 @@ export default class Credit extends FactoryBase {
 
   /**
    * Get the credit balance of all users
-   * @param {string} appId
-   * @param {string} symbol
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
    * @returns {Promise<{[userId: string]: number}>} A Promise that resolves to the credit balance of all users.
    */
   getCreditBalances(
@@ -236,19 +238,19 @@ export default class Credit extends FactoryBase {
   }
 
   /**
-   * Reflect withdraws complete status to server after transfer tokens
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {WithdrawRequestList} requestList
-   * @param {string} txHash Hash of transfer transaction
+   * Reflects withdraws complete status to server after transfer tokens
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {WithdrawRequestMap} requestMap A map containing withdrawal request information for each user.
+   * @param {string} txHash Hash of transfer transaction.
    */
   withdrawComplete(
     appId: string,
     symbol: string,
-    requestList: WithdrawRequestList,
+    requestMap: WithdrawRequestMap,
     txHash: string,
   ): Promise<void> {
-    const body = { appId, requestList, txHash };
+    const body = { appId, requestList: requestMap, txHash };
     const trailingUrl = `symbol/${symbol}/withdraw/complete`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
@@ -273,12 +275,12 @@ export default class Credit extends FactoryBase {
   
   /**
    * You can restrict the user to leave a certain amount of credit
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {string} userId
-   * @param {number} amount
-   * @param {number} endAt
-   * @param {string} reason
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {string} userId The ID of user.
+   * @param {number} amount The amount of credit to lock.
+   * @param {number} endAt The timestamp when the lockup period ends.
+   * @param {string} reason The reason for the lockup.
    */
   lockupUserBalance(
     appId: string,
@@ -300,11 +302,11 @@ export default class Credit extends FactoryBase {
   }
 
   /**
-   * Get's a user's lockup list.
-   * @param {string} appId
-   * @param {string} symbol
-   * @param {string} userId
-   * @returns
+   * Gets a user's lockup list.
+   * @param {string} appId The ID of app.
+   * @param {string} symbol The symbol of credit.
+   * @param {string} userId The ID of user.
+   * @returns Returns lockup list by userId.
    */
   getUserLockupList(
     appId: string,
@@ -319,9 +321,9 @@ export default class Credit extends FactoryBase {
   }
 
   /**
-   * Reflect withdraws complete status to server after transfer tokens
-   * @param {string} appId
-   * @param {DepositTransaction} transaction
+   * Deposits user's credits to Crypto tokens.
+   * @param {string} appId The ID of app.
+   * @param {DepositTransaction} transaction The transaction information about deposit.
    */
   depositToken(appId: string, transaction: DepositTransaction): Promise<void> {
     const body = { appId, transaction };
@@ -330,11 +332,11 @@ export default class Credit extends FactoryBase {
   }
 
   /**
-   * Get user's deposit history.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} chain
-   * @returns {Promise<DepositHistory>} Return depositHistory list of user.
+   * Gets user's deposit history.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user.
+   * @param {string} chain The symbol of chain.
+   * @returns {Promise<DepositHistory>} Returns depositHistory list of user.
    */
   getDepositHistory(
     appId: string,

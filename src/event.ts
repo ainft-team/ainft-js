@@ -15,10 +15,13 @@ import {
   RewardInfo,
 } from './types';
 
+/**
+ * This class supports event functionality for activating tokenomics in the community.
+ */
 export default class Event extends FactoryBase {
   /**
-   * Create a new event. Set the tasks to be performed and the rewards to receive.
-   * @param {CreateEventParams} CreateEventParams
+   * Creates a new event. Sets the tasks to be performed and the rewards to receive.
+   * @param {CreateEventParams} CreateEventParams The parameters to create event.
    */
   create({
     appId,
@@ -45,8 +48,8 @@ export default class Event extends FactoryBase {
   }
 
   /**
-   * Update an existing event.
-   * @param {Partial<CreateEventParams>} UpdateEventParams
+   * Updates an event.
+   * @param {Partial<CreateEventParams>} UpdateEventParams The parameters to update event.
    */
   update({
     appId,
@@ -70,9 +73,9 @@ export default class Event extends FactoryBase {
   }
 
   /**
-   * Delete an existing event.
-   * @param {string} appId
-   * @param {string} eventId
+   * Deletes an event.
+   * @param {string} appId The ID of app.
+   * @param {string} eventId The ID of event.
    */
   delete(appId: string, eventId: string): Promise<void> {
     const query = { appId };
@@ -81,9 +84,10 @@ export default class Event extends FactoryBase {
   }
 
   /**
-   * Get event.
-   * @param {string} appId
-   * @param {string} eventId
+   * Gets event.
+   * @param {string} appId The ID of app.
+   * @param {string} eventId The ID of event.
+   * @returns Returns event information.
    */
   get(appId: string, eventId: string): Promise<TokenomicsEvent> {
     const query = { appId };
@@ -93,22 +97,20 @@ export default class Event extends FactoryBase {
 
   // NOTE(liayoo): calling this function will create a user if the userId doesn't exist.
   /**
-   * Add an activity that matches the event.
-   * @param {AddEventActivityParams} AddEventActivityParams
-   * @returns return activity ID.
+   * Adds an activity that matches the event.
+   * @param {AddEventActivityParams} AddEventActivityParams The parameters to add event activity.
+   * @returns Returns activity ID.
    */
   addActivity({
     appId,
     userId,
     eventId,
-    smartGalleryPosId,
     taskInstanceId,
     data: _data,
   }: AddEventActivityParams): Promise<string> {
     const body = {
       appId,
       userId,
-      smartGalleryPosId,
       taskInstanceId,
       data: _data,
     };
@@ -117,8 +119,9 @@ export default class Event extends FactoryBase {
   }
 
   /**
-   * @param {GetEventActivityParams} GetEventActivityParams
-   * @returns {Promise<Activity | null>} Return activity object or null.
+   * Gets activity information.
+   * @param {GetEventActivityParams} GetEventActivityParams The parameters to get event activity.
+   * @returns {Promise<Activity | null>} Returns activity object or null.
    */
   getActivity({
     appId,

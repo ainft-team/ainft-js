@@ -114,39 +114,60 @@ export enum SchedulerID {
 }
 
 export interface AddNftSymbolParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** Adds optional parameters.
+   * Currently, it supports the 'isDynamic' option.
+   * Setting the 'isDynamic' parameter to true allows hosting metadata through the AINFT factory. */
   options?: Record<string, any>;
 }
 
 export interface GetAppNftSymbolListParams {
+  /** The ID of app. */
   appId: string;
 }
 
 export interface GetNftSymbolParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of NFT. */
   symbol: string;
 }
 
 export interface RemoveNftSymbolParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of NFT. */
   symbol: string;
 }
 
 export interface GetNftParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** Token ID of NFT. */
   tokenId: string;
 }
 
 export interface GetNftContractInfoParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
 }
 
@@ -167,11 +188,17 @@ export interface GetNftsInAinCollectionParams extends GetNftsInCollectionParams 
 }
 
 export interface GetUserNftListParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of user. */
   userAddress: string;
+  /** The address of contract. Use this if you want to find NFTs specific to a particular contract. */
   contractAddress?: string;
+  /** Token ID of NFT. Use this if you want to find a specific NFT. You need to provide the contract address for it to work. */
   tokenId?: string;
 }
 
@@ -185,11 +212,15 @@ export interface getTxBodySetNftMetadataParams {
 export interface SetNftMetadataParams extends SetEthNftMetadataParams, SetAinNftMetadataParams {}
 
 export interface SetEthNftMetadataParams {
+  /** The ID of app. */
   appId: string;
-  chain: "ETH";
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** Token ID of NFT. */
   tokenId: string;
+  /** The metadata to be set. */
   metadata: NftMetadata;
 };
 
@@ -290,28 +321,48 @@ export interface RewardInfo {
 }
 
 export interface CreateEventParams {
+  /** The ID of event. It should not overlap with the IDs of existing events in the app. */
   eventId: string;
+  /** The ID of app. */
   appId: string;
+  /** The ID of user. */
   userId: string;
+  /** The description of event. */
   description: string;
+  /** List of tasks to be performed in the event. */
   taskInstanceList: Array<TaskInstance>;
+  /** List of rewards received upon completion of all tasks in the event. */
   rewardInstanceList: Array<RewardInstance>;
+  /** The start time of the event. */
   startAt: number;
+  /** The end time of the event. */
   endAt: number;
+  /** The platform where the event takes place. */
   platform?: Platforms;
 }
 
 export interface TokenomicsEvent {
+  /** The ID of app. */
   appId: string;
+  /** The ID of event. */
   eventId: string;
+  /** The start time of the event. */
   startAt: number;
+  /** The end time of the event. */
   endAt: number;
+  /** The description of event. */
   description: string;
+  /** Map of tasks by task ID to be performed in the event. */
   taskInstances: { [taskInstanceId: string]: TaskInstance };
+  /** Map of rewards by reward ID received upon completion of all tasks in the event. */
   rewardInstances: { [rewardInstanceId: string]: RewardInstance };
+  /** The status of event. */
   status?: EventStatus;
+  /** The platform where the event takes place. */
   platform?: Platforms;
+  /** The timestamp when the event was created." */
   createdAt?: number;
+  /** The timestamp when the event was updated." */
   updatedAt?: number;
 };
 
@@ -335,11 +386,14 @@ export interface ChatResponse {
 }
 
 export interface ChannelPersonaModelInfo {
+  /** The ID of persona model. */
   modelId: string;
+  /** The name of persona model. */
   modelName: string;
 }
 
 export interface ServerPersonaModelInfo {
+  /** The Discord Channel ID to which the persona model is linked.  */
   [channelId: string]: ChannelPersonaModelInfo;
 }
 
@@ -385,31 +439,44 @@ export interface TextToArtTxHash {
 }
 
 export interface InviteInfo {
+  /** The ID of inviter. */
   inviterId: string,
+  /** A flag indicating whether the reward has been received or not. */
   isRewarded: boolean,
+  /** Map by userId invited in a short time. */
   ambiguousInviters?: {
     [key: number]: string
   },
 }
 
 export interface AddActivityParams {
+  /** The ID of app. */
   appId: string,
+  /** The ID of user. */
   userId: string,
+  /** The ID of event. */
   eventId?: string,
-  smartGalleryPosId?: string,
+  /** The task ID being executed in this activity. */
   taskInstanceId?: string,
+  /** The data of activity. */
   data: any,
 };
 
 export interface AddEventActivityParams extends AddActivityParams {
+  /** The ID of event. */
   eventId: string,
 };
 
 export interface GetActivityParams {
+  /** The ID of app. */
   appId: string,
+  /** The timestamp when the activity was created.*/
   createdAt: number,
+  /** The ID of user who performed the activity.  */
   userId?: string,
+  /** The ID of the event that the activity belongs to. */
   eventId?: string,
+  /** The ID of activity. */
   activityId?: string,
   options?: any,
 };
@@ -428,7 +495,9 @@ export interface Activity extends AddActivityParams {
 };
 
 export interface GetEventActivityParams extends GetActivityParams {
+  /** The ID of user. */
   userId: string,
+  /** The ID of event. */
   eventId: string,
 }
 
@@ -705,11 +774,17 @@ export type NftContractBySymbol = {
 };
 
 export type AppCreditInfo = {
+  /** The name of credit. */
   name: string,
+  /** The symbol of credit */
   symbol: string,
+  /** The total supply of credit. */
   totalSupply: number,
+  /** The amount of credit burned.  */
   burnedSupply: number,
+  /** The max supply of credit. */
   maxSupply: number | null,
+  /** The timestamp of credit creation. */
   createdAt: number,
 };
 
@@ -727,15 +802,22 @@ export enum AppCreditWithdrawStatus {
 }
 
 export interface WithdrawInfo {
+  /** The status of withdraw request. */
   status: AppCreditWithdrawStatus;
+  /** The amount of credits requested for withdrawal. */
   amount: number;
+  /** The timestamp of the withdrawal request. */
   timestamp: number;
+  /** The transaction hash that resulted from the completed withdrawal. */
   txHash?: string;
 }
 
 export interface UserWithdrawList {
+  /** The symbol of chain */
   [chain: string]: {
+    /** The address of user. */
     [userAddress: string]: {
+      /** The ID of withdraw request. */
       [requestId: string]: WithdrawInfo;
     };
   };
@@ -745,10 +827,14 @@ export interface AppWithdrawList {
   [userId: string]: UserWithdrawList;
 }
 
-export interface WithdrawRequestList {
+export interface WithdrawRequestMap {
+  /** The Id of user. */
   [userId: string]: {
+    /** The symbol of chain. */
     [chain: string]: {
+      /** The address of user. */
       [userAddress: string]: {
+        /** The ID of withdrawal request. */
         [requestId: string]: number;
       };
     };
@@ -756,23 +842,35 @@ export interface WithdrawRequestList {
 }
 
 export interface DepositTransaction {
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** The address the token was sent from. */
   from: string;
+  /** The address the token was send to. */
   to: string;
+  /** The value of deposit transaction. */
   value: number;
+  /** The transaction hash of deposit. */
   txHash: string;
+  /** The block number at which the deposit transaction was applied. */
   blockNumber: number;
 }
 
 export interface LockupInfo {
+  /** The timestamp when the lockup period ends.  */
   endAt: number;
+  /** The amount of credit to lock. */
   amount: number;
+  /** The reason for the lockup. */
   reason: string;
 }
 
 export interface LockupList {
+  /** The ID of lockup. */
   [lockupId: string]: LockupInfo;
 }
 
@@ -808,17 +906,21 @@ export interface getTxBodyMintNftParams {
 
 export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {}
 
-export interface NftSearchParams {
-  userAddress?: string;
-  ainftObjectId?: string;
-  tokenId?: string;
-  name?: string;
-  symbol?: string;
-}
-
 export interface SearchOption {
   limit?: number,
-  offset?: string,
+  cursor?: string,
+}
+export interface NftSearchParams extends SearchOption {
+  /** The address of the user who owns the AINFT. */
+  userAddress?: string;
+  /** The ID of AINFT object. */
+  ainftObjectId?: string;
+  /** The token ID of AINFT. */
+  tokenId?: string;
+  /** The name of AINFT object. */
+  name?: string;
+  /** The symbol of AINFT object. */
+  symbol?: string;
 }
 
 export interface getTxBodyTransferNftParams {
@@ -832,37 +934,51 @@ export interface getTxBodyTransferNftParams {
 }
 
 export interface UploadAssetParams {
+  /** The ID of app. */
   appId: string;
+  /** The file path of asset to upload. */
   filePath: string;
 }
 
 export interface UploadAssetFromBufferParams extends UploadAssetParams {
+  /** The buffer of asset to upload. */
   buffer: Buffer;
 }
 
 export interface UploadAssetFromDataUrlParams extends UploadAssetParams {
+  /** The data url of asset to upload. */
   dataUrl: string;
 }
 
 export interface DeleteAssetParams {
+  /** The ID of app. */
   appId: string;
+  /** The file path of asset to delete. */
   filePath: string;
 }
 
 export interface TransferNftParams extends Omit<getTxBodyTransferNftParams, 'address'> {}
 
 export interface getTxbodyAddAiHistoryParams {
+  /** The symbol of chain. e.g. ETH */
   chain: string;
+  /** The name of network. e.g. homestead  */
   network: string;
+  /** The ID of app. */
   appId: string;
-  collectionId: string;
+  /** The ID of AINFT object. */
+  ainftObjectId: string;
+  /** Token ID of NFT. */
   tokenId: string;
+  /** Data about ai history. */
   data: object;
+  /** The label of history. */
   label: string;
-  address: string;
+  /** The address of user. */
+  userAddress: string;
 }
 
-export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'address'> {};
+export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {};
 
 export interface AinftObjectSearchResponse extends SearchReponse {
   ainftObjects: {
