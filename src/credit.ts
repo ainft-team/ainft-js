@@ -259,16 +259,16 @@ export default class Credit extends FactoryBase {
    * Rejects requested withdrawals.
    * @param {string} appId The ID of app.
    * @param {string} symbol The symbol of credit.
-   * @param {withdrawRequestList} requestList A map containing withdrawal request information to reject.
+   * @param {WithdrawRequestMap} requestMap A map containing withdrawal request information to reject.
    * @param {string} reason The reason for the reject.
    */
   rejectWithdrawal(
     appId: string,
     symbol: string,
-    requestList: WithdrawRequestList,
+    requestMap: WithdrawRequestMap,
     reason: string,
   ): Promise<void> {
-    const body = { appId, requestList, reason };
+    const body = { appId, requestList: requestMap, reason };
     const trailingUrl = `symbol/${symbol}/withdraw/reject`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
