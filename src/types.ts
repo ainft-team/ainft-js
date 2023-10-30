@@ -537,75 +537,121 @@ export interface RewardOptions {
 };
 
 export interface StorePurchaseParams {
+  /** The ID of the app. */
   appId: string;
+  /** The ID of the store. */
   storeId: string;
+  /** The ID of the user to buy store item. */
   userId: string;
+  /** The name of the item to purchase. */
   itemName: string;
+  /** The quantity of the item to purchase. */
   quantity: number;
 };
 
 export interface GetPurchaseHistoryParams {
+  /** The ID of the app. */
   appId: string;
+  /** The year to filter the history by. */
   year: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetItemPurchaseHistoryParams {
+  /** The ID of the app. */
   appId: string;
+  /** The name of the item. */
   itemName: string;
+  /** The year to filter the history by. */
   year?: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetUserPurchaseHistoryParams {
+  /** The ID of app. */
   appId: string;
+  /** The ID of the user subject to the purchase history. */
   userId: string;
+  /** The year to filter the history by. */
   year?: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetItemHistoryParams {
+  /** The ID of app. */
   appId: string;
+  /** The year to filter the history by. */
   year: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetSingleItemHistoryParams {
+  /** The ID of app. */
   appId: string;
+  /** The name of the item. */
   itemName: string;
+  /** The year to filter the history by. */
   year?: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetUserItemHistoryParams {
+  /** The ID of app. */
   appId: string;
+  /** The ID of the user subject to the item history. */
   userId: string;
+  /** The year to filter the history by. */
   year?: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface ItemTryOnParams {
+  /** The ID of app. */
   appId: string,
+  /** The ID of user to try on. */
   userId: string,
+  /** The ID of the store with the item to try on. */
   storeId: string,
+  /** The name of item to try on. */
   itemName: string,
+  /** The symbol of chain with the NFT to try on the item. */
   chain: string,
+  /** The name of network with the NFT to try on the item. */
   network: string,
+  /** The contract address of NFT to try on the item. */
   nftContractAddress: string,
+  /** The ID of NFT to try on the item. */
   nftTokenId: string,
 };
 
 export interface ItemUseParams {
+  /** The ID of app. */
   appId: string,
+  /** The ID of user to use item. */
   userId: string,
+  /** The name of item to use. */
   itemName: string,
+  /** The number of items user wants to use. */
   quantity: number,
+  /** The parameters to send when using the item. It mainly contains NFT information. */
   params?: any,
 }
 
@@ -628,49 +674,83 @@ export interface Item {
 };
 
 export interface CreateItemParams {
+  /** The ID of the app. */
   appId: string;
   name: string;
+  /** The type of the item. The combination of type, subtype, and value is unique. */
   type: string;
+  /** The subtype of the item. The combination of type, subtype, and value is unique. */
   subtype: string;
+  /** The value of the item. The combination of type, subtype, and value is unique. */
   value: string;
+  /** The description of the item. */
   description: string;
+  /** The image of the item. */
   image?: string;
+  /** The quantity of the item. */
   quantity: number;
+  /** The additional information of the item. */
   additionalInfo?: { [key: string]: any };
 }
 
 export interface UpdateItemParams {
+  /** The ID of the app. */
   appId: string;
+  /** The name of the item. */
   itemName: string;
+  /** New name of item to be set. */
   name?: string;
+  /** Image of the item to be set. */
   image?: string;
+  /** Description of the item to be set. */
   description?: string;
+  /** Quantity of the item to increase or decrease. */
   quantity?: number;
+  /** AdditionalInfo of the item to be set. */
   additionalInfo?: { [key: string]: any };
 }
 
 export interface RegisterItemParams {
+  /** The ID of the app. */
   appId: string;
+  /** The ID of the store for sale. */
   storeId: string;
+  /** The name of the item. */
   itemName: string;
+  /** The ID of user who sells an item. */
   seller: string;
+  /** The quantity of to add to the store. */
   quantity: number;
+  /** The price of the item in the store. */
   price: number;
+  /** The currency used to purchase the item. */
   currency: string;
+  /** The timestamp when the sale starts. */
   saleStartAt?: number;
+  /** The timestamp when the sale ends. */
   saleEndAt?: number;
+  /** The limit of item purchase per user. */
   maxPurchasePerUser?: number;
 }
 
 export interface UpdateStoreItemParams {
+  /** The ID of the app. */
   appId: string;
+  /** The ID of the store. */
   storeId: string;
+  /** The name of the item. */
   itemName: string;
+  /** The quantity of store item to be increase or decrease. */
   quantity?: number;
+  /** The price of store item to be set. */
   price?: string;
+  /** The timestamp when items start selling in the store. */
   saleStartAt?: number;
+  /** The timestamp when items end selling in the store. */
   saleEndAt?: number;
+  /** The status of the store item to be set. */
   status?: StoreItemStatus;
+  /** The limit of item purchase per user. */
   maxPurchasePerUser?: number;
 }
 
@@ -742,10 +822,15 @@ export type History<Type> = {
 }
 
 export type NftMetadata = {
+  /** The name of NFT. */
   name?: string;
+  /** The description of NFT. */
   description?: string;
+  /** The image of NFT. */
   image?: string;
+  /** The attributes of NFT. */
   attributes?: object[];
+  /** The additional fields of NFT metadata. */
   [additionalFields: string]: any;
 };
 
