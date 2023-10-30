@@ -5,9 +5,13 @@ import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types"
 import { buildData, isJoiError, sleep } from "./util";
 import FormData from "form-data";
 
+/** This class supports requests to the api server of the AINFT Factory. */
 export default class FactoryBase {
+  /** The base url of api server of AINFT Factory. */
   public baseUrl = '';
+  /** The subpath of api server request url. */
   public route: string;
+  /** The Ain object for sign and send transaction to AIN blockchain. */
   public ain: Ain;
 
   constructor(
@@ -21,11 +25,20 @@ export default class FactoryBase {
     this.setBaseUrl(baseUrl);
   }
 
+  /**
+   * Sets base url.
+   * @param baseUrl New base url to be set to base url of api server of AINFT Factory.
+   */
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl + this.route;
   }
 
-  signData(data: any) {
+  /**
+   * Sign the data with the private key that the user has registered.
+   * @param data The data to sign.
+   * @returns Returns signature string.
+   */
+  signData(data: any): Promise<string> | string {
     if (typeof data !== 'string') {
       return this.ain.signer.signMessage(stringify(data));
     }
@@ -33,6 +46,14 @@ export default class FactoryBase {
     return this.ain.signer.signMessage(stringify(data));
   }
 
+  /**
+   * Sends request to api server of AINFT Factory.
+   * Authenticate by signing data.
+   * @param method The method of Http request.
+   * @param trailingUrl The suffix of request url.
+   * @param data The data to be included in the api request.
+   * @returns Returns response of api request.
+   */
   async sendRequest(method: HttpMethod, trailingUrl: string, data?: Record<string, any>) {  
     const timestamp = Date.now();
     const dataForSignature = buildData(
@@ -49,6 +70,15 @@ export default class FactoryBase {
     return this.sendRequestWithoutSign(method, trailingUrl, data, headers);
   }
 
+  /**
+   * Sends request to api server of AINFT Factory.
+   * Used when authentication is not required.
+   * @param method The method of Http request.
+   * @param trailingUrl The suffix of request url.
+   * @param data The data to be included in the api request.
+   * @param headers The headers of Http api request.
+   * @returns Returns response of api request.
+   */
   async sendRequestWithoutSign(method: HttpMethod, trailingUrl: string, data?: Record<string, any>, headers?: AxiosRequestHeaders) {
     try {
       if (method === HttpMethod.GET || method === HttpMethod.DELETE) {
@@ -75,6 +105,15 @@ export default class FactoryBase {
     }
   }
 
+  /**
+   * Sends request that include form to api server of AINFT Factory.
+   * Used to upload asset data.
+   * @param method The method of Http request.
+   * @param trailingUrl The suffix of request url.
+   * @param stringFields The string fields of form.
+   * @param fileFields The file fields of form.
+   * @returns Returns response of api request.
+   */
   async sendFormRequest(method: HttpMethod.POST | HttpMethod.PUT, trailingUrl: string, stringFields: {
     [key: string]: string
   }, fileFields: {
