@@ -375,12 +375,16 @@ export interface TaskIdListByEventId {
 }
 
 export interface CreatePersonaModelInfo {
+  /** The ID of model. */
   modelId: string,
 }
 
 export interface ChatResponse {
+  /** The chat response with persona model. */
   response: {
+    /** The ID of message. */
     messageId: string;
+    /** The message answered by persona Model. */
     message: string;
   };
 }
@@ -398,7 +402,9 @@ export interface ServerPersonaModelInfo {
 }
 
 export interface PersonaModelCreditInfo {
+  /** The symbol of credit */
   symbol: string;
+  /** The credit cost for chating with persona model. */
   burnAmount: number;
 };
 

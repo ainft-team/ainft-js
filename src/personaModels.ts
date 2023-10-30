@@ -3,12 +3,12 @@ import { HttpMethod, CreatePersonaModelInfo, ChatResponse, PersonaModelCreditInf
 
 export default class PersonaModels extends FactoryBase {
   /**
-   * Create persona model.
-   * @param appId
-   * @param userId
-   * @param modelName
+   * Creates persona model.
+   * @param appId The ID of app.
+   * @param userId The ID of user who create persona model.
+   * @param modelName The name of persona model.
    * @param coreBeliefs - This is the central content of the persona model. The model reflects this with the highest priority.
-   * @returns
+   * @returns Returns the information of the persona model created.
    */
   create(
     appId: string,
@@ -27,13 +27,13 @@ export default class PersonaModels extends FactoryBase {
   }
 
   /**
-   * Chat with your persona model.
-   * @param modelId 
-   * @param appId 
-   * @param userId 
-   * @param message 
-   * @param messageId 
-   * @returns 
+   * Chats with your persona model.
+   * @param modelId The ID of persona model.
+   * @param appId The ID of app.
+   * @param userId The ID of user who want to chat with persona model.
+   * @param message The message the user wants to send.
+   * @param messageId (Optional) The ID of message. If you want to manage the message ID separately, set it up.
+   * @returns Returns response of persona model.
    */
   chat(
     modelId: string,
@@ -54,10 +54,10 @@ export default class PersonaModels extends FactoryBase {
   }
 
   /**
-   * Get credit info with connected persona model.
-   * @param appId 
-   * @param modelId 
-   * @returns 
+   * Gets credit info with connected persona model.
+   * @param appId The ID of app.
+   * @param modelId The ID of persona model.
+   * @returns If set, returns credit and burn amount information.
    */
   getCreditInfo(
     appId: string,
