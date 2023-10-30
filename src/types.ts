@@ -233,9 +233,13 @@ export interface Account {
 }
 
 export interface DiscordMessageInfo {
+  /** The ID of user. */
   user_id: string;
+  /** The ID of discord guild. */
   guild_id: string;
+  /** The ID of discord channel. */
   channel_id: string;
+  /** The ID of discord message. */
   message_id: string;
 }
 
@@ -422,7 +426,9 @@ export interface TextToArtParams {
 }
 
 export interface Task {
+  /** The ID of task. */
   task_id: string;
+  /** The timestamp when task was last updated. */
   updated_at: number;
 }
 
@@ -433,8 +439,11 @@ export interface TextToArtResult {
 }
 
 export interface TextToArtResponse {
+  /** The response of text-to-art request.  */
   status: ResponseStatus,
+  /** The timestamp when Text to art request was last updated. */
   updated_at: number,
+  /** The result of text-to-art. */
   result: { [imageIndex: string]: TextToArtResult },
 }
 
