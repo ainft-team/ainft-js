@@ -482,8 +482,11 @@ export interface GetActivityParams {
 };
 
 export enum ActivityStatus {
+  /** Status of activity valid after creation. */
   CREATED = 'CREATED',
+  /** Status of activity already rewarded. */
   REWARDED = 'REWARDED',
+  /** Status of invalid or excluded activity from reward. */
   FAILED = 'FAILED',
 }
 
@@ -502,11 +505,16 @@ export interface GetEventActivityParams extends GetActivityParams {
 }
 
 export interface UpdateEventActivityStatusParams {
+  /** The ID of app. */
   appId: string,
+  /** The timestamp of activity creation */
   createdAt: number,
+  /** The ID of event. */
   eventId: string,
+  /** The ID of activity */
   activityId: string,
-  status: string,
+  /** The status of activity. */
+  status: ActivityStatus,
 };
 
 export interface User {
@@ -518,6 +526,7 @@ export interface User {
 };
 
 export interface RewardOptions {
+  /** If the reward has not been confirmed, you can enter the amount of reward. */
   amount?: number;
 };
 
