@@ -31,7 +31,7 @@
     "@types/jest": "^27.4.1",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
-    "typedoc": "^0.23.17",
+    "typedoc": "0.22.15",
     "typedoc-plugin-remove-references": "^0.0.6",
     "typedoc-plugin-rename-defaults": "^0.6.4",
     "typedoc-theme-hierarchy": "^3.0.0",
