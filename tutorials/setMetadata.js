@@ -13,7 +13,7 @@ const metadata = {
 
 const main = async () => {
   const ainftObject = await ainftJs.nft.get(ainftObjectId);
-  const ainft = await ainftObject.get(tokenId);
+  const ainft = await ainftObject.getToken(tokenId);
   const result = await ainft.setMetadata(metadata);
   console.log(result);
 }
