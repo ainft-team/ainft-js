@@ -17,6 +17,7 @@ export class AinftToken extends FactoryBase {
 
   /**
    * Create AinftToken instance.
+   * Do not use it directly; use the Ainft721Object.getToken() function instead.
    * @param tokenInfo The information about the AINFT.
    * @param tokenInfo.ainftObjectId The AINFT object ID of AINFT.
    * @param tokenInfo.tokenId The token ID of AINFT.
@@ -37,6 +38,21 @@ export class AinftToken extends FactoryBase {
    * Sets AINFT's metadata.
    * @param metadata The value to be set as metadata for the AINFT.
    * @returns Returns transaction result.
+   * 
+   * ```ts
+   * import AinftJs from '@ainft-team/ainft-js';
+   * 
+   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * async function main() {
+   *  const ainftObject = await ainftJs.nft.get('YOUR-AINFT-OBJECT-ID');
+   *  const ainft = await ainftObject.getToken('YOUR-TOKEN-ID);
+   *  const metadata = {
+   *    image: '...',
+   *  }
+   *  const result = await ainft.setMetadata(metadata);
+   *  console.log(result) // result of transaction.
+   * }
+   * ```
    */
   async setMetadata(metadata: object) { 
     const address = await this.ain.signer.getAddress();
