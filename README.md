@@ -42,7 +42,6 @@ const ainftJs = new AinftJs(<YOUR_PRIVATE_KEY>, config);
 ## Features
 ### AINFT
 You can create AINFT object and mint AINFT though AINFT object. Below modules support it.
-Ain blockchain에서 AINFT object를 만들고, 이를 통해 AINFT를 민팅할 수 있습니다. 아래 모듈들은 그런 작업들을 도와줍니다.
 - `nft`: Creates AINFT object and Searches AINFTs and AINFT objects.
 - `ainft721Object`: It is AINFT object class. Mints AINFTs and Transfers it to other accounts.
 - `ainftToken`: It is AINFT class. Updates metadata.
@@ -69,7 +68,6 @@ Introducing the main API functions that can be used in the `nft` module.
 
 ## AINFT721 Object API
 Introducing the main API functions that can be used in the `ainftObject` module.
-`ainft721Object` module의 주요 API를 소개합니다.
 
 - `getToken(tokenId)`: Gets AINFT that was minted by AINFT object.
 - `transfer(from, to, tokenId)`: Transfers AINFT to other account.
