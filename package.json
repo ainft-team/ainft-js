@@ -40,8 +40,10 @@
   "dependencies": {
     "@ainblockchain/ain-js": "^1.6.0",
     "@ainblockchain/ain-util": "^1.1.9",
+    "@types/lodash": "^4.14.200",
     "axios": "^0.26.1",
     "fast-json-stable-stringify": "^2.1.0",
-    "form-data": "^4.0.0"
+    "form-data": "^4.0.0",
+    "lodash": "^4.17.21"
   }
 }
