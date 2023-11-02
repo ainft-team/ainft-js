@@ -2,6 +2,11 @@ import Reference from '@ainblockchain/ain-js/lib/ain-db/ref';
 import FactoryBase from './factoryBase';
 import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from './constants';
 import { HttpMethod, User } from './types';
+
+/**
+ * This class supports creating AINFT factory app and users. \
+ * Do not create it directly; Get it from AinftJs instance.
+ */
 export default class Auth extends FactoryBase {
   /**
    * Creates AIN Blockchain app using private key.

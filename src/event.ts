@@ -16,7 +16,8 @@ import {
 } from './types';
 
 /**
- * This class supports event functionality for activating tokenomics in the community.
+ * This class supports event functionality for activating tokenomics in the community.\
+ * Do not create it directly; Get it from AinftJs instance.
  */
 export default class Event extends FactoryBase {
   /**

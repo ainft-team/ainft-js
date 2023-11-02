@@ -5,7 +5,9 @@ import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types"
 import { buildData, isJoiError, sleep } from "./util";
 import FormData from "form-data";
 
-/** This class supports requests to the api server of the AINFT Factory. */
+/** 
+ * This class supports requests to the api server of the AINFT Factory.
+ */
 export default class FactoryBase {
   /** The base url of api server of AINFT Factory. */
   public baseUrl = '';

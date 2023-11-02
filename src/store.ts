@@ -26,6 +26,10 @@ import {
   UseItemReturnType,
 } from './types';
 
+/**
+ * This class supports managing items, store and user items.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
 export default class Store extends FactoryBase {
   /**
    * Creates a new item.

@@ -19,7 +19,8 @@ import {
 } from "./types";
 
 /**
- * This class allows app to register and manage ETH Contracts. This allows you to enrich tokenomics.
+ * This class allows app to register and manage ETH Contracts. This allows you to enrich tokenomics.\
+ * Do not create it directly; Get it from AinftJs instance.
  */
 export default class Eth extends FactoryBase {
   private chain = 'ETH';

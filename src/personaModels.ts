@@ -1,6 +1,10 @@
 import FactoryBase from './factoryBase';
 import { HttpMethod, CreatePersonaModelInfo, ChatResponse, PersonaModelCreditInfo } from './types';
 
+/**
+ * This class supports creating persona models and managing it.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
 export default class PersonaModels extends FactoryBase {
   /**
    * Creates persona model.

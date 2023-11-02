@@ -8,6 +8,10 @@ import {
   DiscordMessageInfo,
 } from './types';
 
+/**
+ * This class supports using text-to-art ai.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
 export default class TextToArt extends FactoryBase {
   /**
    * Gets the result of a text-to-art task.
