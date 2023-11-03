@@ -26,20 +26,15 @@ import {
   UseItemReturnType,
 } from './types';
 
+/**
+ * This class supports managing items, store and user items.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
 export default class Store extends FactoryBase {
   /**
    * Creates a new item.
    * @param {CreateItemParams} CreateItemParams - The parameters to create a new item.
-   * @param {string} CreateItemParams.appId - The ID of the app.
-   * @param {string} CreateItemParams.type - The type of the item. The combination of type, subtype, and value is unique.
-   * @param {string} CreateItemParams.subtype - The subtype of the item. The combination of type, subtype, and value is unique.
-   * @param {string} CreateItemParams.value - The value of the item. The combination of type, subtype, and value is unique.
-   * @param {string} CreateItemParams.name - The name ofthe item. Name also is unique.
-   * @param {string=} CreateItemParams.description - The description of the item.
-   * @param {string=} CreateItemParams.image - The image of the item.
-   * @param {string} CreateItemParams.quantity - The quantity of the item.
-   * @param {object=} CreateItemParams.additionalInfo - The additional information of the item. You can add your own content for each item.
-   * @returns {Promise<Item>} Created item.
+   * @returns {Promise<Item>} Returns created item information.
    */
   createItem({
     appId,
@@ -70,14 +65,6 @@ export default class Store extends FactoryBase {
   /**
    * Updates an item.
    * @param {UpdateItemParams} UpdateItemParams - The parameters to update an item.
-   * @param {string} UpdateItemParams.appId - The ID of the app.
-   * @param {string} UpdateItemParams.itemName - Current name of the item.
-   * @param {string=} UpdateItemParams.name - Name of the item to be changed.
-   * @param {string=} UpdateItemParams.image - Image of the item to be changed.
-   * @param {string=} UpdateItemParams.description - Description of the item to be changed.
-   * @param {string} UpdateItemParams.quantity - Quantity of the item to increase or decrease.
-   * @param {string=} UpdateItemParams.additionalInfo - AdditionalInfo of the item to be changed.
-   * @returns {Promise} void.
    */
   updateItem({
     appId,
@@ -106,7 +93,6 @@ export default class Store extends FactoryBase {
    * @param {string} type - The type of the item.
    * @param {string} subtype - The subtype of the item.
    * @param {string} value - The value of the item.
-   * @returns {Promise} void.
    */
   deregisterItemFromAllStore(
     appId: string,
@@ -122,17 +108,7 @@ export default class Store extends FactoryBase {
   /**
    * Registers an item in the store for selling.
    * @param {RegisterItemParams} RegisterItemParams - The parameters to register an item.
-   * @param {string} RegisterItemParams.appId - The ID of the app.
-   * @param {string} RegisterItemParams.storeId - The ID of the store for sale.
-   * @param {string} RegisterItemParams.itemName - The name of the item for sale.
-   * @param {string} RegisterItemParams.seller - The ID of the seller.
-   * @param {number} RegisterItemParams.quantity - The quantity of to add to the store.
-   * @param {number} RegisterItemParams.price - The price of the item in the store.
-   * @param {string} RegisterItemParams.currency - The currency used to purchase the item.
-   * @param {number=} RegisterItemParams.saleStartAt - Sale start date.
-   * @param {number=} RegisterItemParams.saleEndAt - Sale end date.
-   * @param {number=} RegisterItemParams.maxPurchasePerUser - Item purchase limit per user.
-   * @returns {Promise<StoreItem>} The store item is registered.
+   * @returns {Promise<StoreItem>} Returns item information registered in the store.
    */
   registerItem({
     appId,
@@ -165,7 +141,6 @@ export default class Store extends FactoryBase {
    * @param {string} appId - The ID of the app.
    * @param {string} storeId - The ID of the store.
    * @param {string} itemName - The name of the item.
-   * @returns {Promise} void.
    */
   deregisterItem(appId: string, storeId: string, itemName: string) {
     const query = { appId };
@@ -174,13 +149,13 @@ export default class Store extends FactoryBase {
   }
 
   /**
-   * Returns a list of all items created in the app. If type/subtype is given, returns only items of the given type/subtype.
-   * @param {string} appId
-   * @param {string} userId The ID of the user who will receive the item.
+   * Gives item to user.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user who will receive the item.
    * @param {string} itemName The name of the item to give.
    * @param {string} quantity The quantity of the item to give.
    * @param {string=} reason The reason for giving an item. ex) Event for NFT holder
-   * @returns {Promise<ItemGiveHistory>}
+   * @returns {Promise<ItemGiveHistory>} Returns information of item give history.
    */
   giveItemToUser(
     appId: string,
@@ -200,18 +175,8 @@ export default class Store extends FactoryBase {
   }
 
   /**
-   * Update item in store.
+   * Updates item in store.
    * @param {UpdateStoreItemParams} UpdateStoreItemParams - The parameters to update store item.
-   * @param {string} UpdateStoreItemParams.appId - The ID of the app.
-   * @param {string} UpdateStoreItemParams.storeId - The ID of the store.
-   * @param {string} UpdateStoreItemParams.itemName - The name of the item.
-   * @param {number=} UpdateStoreItemParams.price - The price of store item to be changed.
-   * @param {number=} UpdateStoreItemParams.quantity - The quantity of store item to be increase or decrease.
-   * @param {StoreItemStatus=} UpdateStoreItemParams.status - The status of the store item to be changed.
-   * @param {number=} UpdateStoreItemParams.saleStartAt - The sale start date time of the store item to be changed.
-   * @param {number=} UpdateStoreItemParams.saleEndAt - The sale end date time of the store item to be changed.
-   * @param {number=} UpdateStoreItemParams.maxPurchasePerUser - The purchase limit per user of the store item to be changed.
-   * @returns {Promise<void>}
    */
   updateStoreItem({
     appId,
@@ -313,12 +278,7 @@ export default class Store extends FactoryBase {
   /**
    * Purchases a store item.
    * @param {StorePurchaseParams} StorePurchaseParams - The purchase parameters.
-   * @param {string} StorePurchaseParams.appId - The ID of the app.
-   * @param {string} StorePurchaseParams.storeId - The ID of the store.
-   * @param {string} StorePurchaseParams.userId - The ID of the user.
-   * @param {string} StorePurchaseParams.itemName - The name of the item to purchase.
-   * @param {number} StorePurchaseParams.quantity - The quantity of the item to purchase.
-   * @returns {Promise<PurchaseHistory>} The purchase history.
+   * @returns {Promise<PurchaseHistory>} Returns purchase history.
    */
   purchaseStoreItem({
     appId,
@@ -340,10 +300,6 @@ export default class Store extends FactoryBase {
   /**
    * Retrieves the purchase history of all items of an app.
    * @param {GetPurchaseHistoryParams} GetPurchaseHistoryParams - The parameters for the request.
-   * @param {string} GetPurchaseHistoryParams.appId - The ID of the app.
-   * @param {number} GetPurchaseHistoryParams.year - The year to filter the history by.
-   * @param {number=} GetPurchaseHistoryParams.month - The month to filter the history by.
-   * @param {number=} GetPurchaseHistoryParams.day - The day to filter the history by.
    * @returns {Promise<History<PurchaseHistory>>} - A Promise that resolves to an object containing the purchase history.
    */
   getPurchaseHistory({
@@ -363,12 +319,7 @@ export default class Store extends FactoryBase {
   /**
    * Retrieves the purchase history of a specific item of an app.
    * @param {GetItemPurchaseHistoryParams} GetItemPurchaseHistoryParams - The parameters for the request.
-   * @param {string} GetItemPurchaseHistoryParams.appId - The ID of the app.
-   * @param {string} GetItemPurchaseHistoryParams.itemName - The name of the item.
-   * @param {number} GetItemPurchaseHistoryParams.year - The year to filter the history by.
-   * @param {number=} GetItemPurchaseHistoryParams.month - The month to filter the history by.
-   * @param {number=} GetItemPurchaseHistoryParams.day - The day to filter the history by.
-   * @returns {Promise<History<PurchaseHistory>>} - A Promise that resolves to an object containing the purchase history of the item.
+   * @returns {Promise<History<PurchaseHistory>>} A Promise that resolves to an object containing the purchase history of the item.
    */
   getItemPurchaseHistory({
     appId,
@@ -389,11 +340,6 @@ export default class Store extends FactoryBase {
   /**
    * Retrieves the purchase history of a specific user of an app.
    * @param {GetUserPurchaseHistoryParams} GetUserPurchaseHistoryParams - The parameters for the request.
-   * @param {string} GetUserPurchaseHistoryParams.appId - The ID of the app.
-   * @param {string} GetUserPurchaseHistoryParams.userId - The ID of the user.
-   * @param {number} GetUserPurchaseHistoryParams.year - The year to filter the history by.
-   * @param {number=} GetUserPurchaseHistoryParams.month - The month to filter the history by.
-   * @param {number=} GetUserPurchaseHistoryParams.day - The day to filter the history by.
    * @returns {Promise<History<PurchaseHistory>>} - A Promise that resolves to an object containing the purchase history of the user.
    */
   getUserPurchaseHistory({
@@ -414,10 +360,6 @@ export default class Store extends FactoryBase {
   /**
    * Retrieves the usage history of all items of an app.
    * @param {GetItemHistoryParams} GetItemHistoryParams - The parameters for the request.
-   * @param {string} GetItemHistoryParams.appId - The ID of the app.
-   * @param {number} GetItemHistoryParams.year - The year to filter the history by.
-   * @param {number=} GetItemHistoryParams.month - The month to filter the history by.
-   * @param {number=} GetItemHistoryParams.day - The day to filter the history by.
    * @returns {Promise<History<ItemHistory>>} - A Promise that resolves to an object containing the usage history.
    */
   getItemHistory({
@@ -437,11 +379,6 @@ export default class Store extends FactoryBase {
   /**
    * Retrieves the usage history of a specific item of an app.
    * @param {GetSingleItemHistoryParams} GetSingleItemHistoryParams - The parameters for the request.
-   * @param {string} GetSingleItemHistoryParams.appId - The ID of the app.
-   * @param {string} GetSingleItemHistoryParams.itemName - The name of the item.
-   * @param {number} GetSingleItemHistoryParams.year - The year to filter the history by.
-   * @param {number=} GetSingleItemHistoryParams.month - The month to filter the history by.
-   * @param {number=} GetSingleItemHistoryParams.day - The day to filter the history by.
    * @returns {Promise<History<ItemHistory>>} - A Promise that resolves to an object containing the usage history of the item.
    */
   getSingleItemHistory({
@@ -463,11 +400,6 @@ export default class Store extends FactoryBase {
   /**
    * Retrieves the usage history of a specific user of an app.
    * @param {GetUserItemHistoryParams} GetUserItemHistoryParams - The parameters for the request.
-   * @param {string} GetUserItemHistoryParams.appId - The ID of the app.
-   * @param {string} GetUserItemHistoryParams.userId - The ID of the user.
-   * @param {number} GetUserItemHistoryParams.year - The year to filter the history by.
-   * @param {number=} GetUserItemHistoryParams.month - The month to filter the history by.
-   * @param {number=} GetUserItemHistoryParams.day - The day to filter the history by.
    * @returns {Promise<History<ItemHistory>>} - A Promise that resolves to an object containing the item usage history of the user.
    */
   getUserItemHistory({
@@ -487,14 +419,7 @@ export default class Store extends FactoryBase {
 
   /**
    * Tries on store item to own NFT
-   * @param {ItemTryOnParams} ItemTryOnParams - Parameters for trying on an item.
-   * @param {string} ItemTryOnParams.appId - The ID of the application.
-   * @param {string} ItemTryOnParams.userId - The ID of the user.
-   * @param {string} ItemTryOnParams.storeId - The ID of the store.
-   * @param {string} ItemTryOnParams.itemName - The name of the item.
-   * @param {string} ItemTryOnParams.chain - The chain of the nft.
-   * @param {string} ItemTryOnParams.nftContractAddress - The address of the NFT contract.
-   * @param {string} ItemTryOnParams.nftTokenId - The ID of the NFT token.
+   * @param {ItemTryOnParams} ItemTryOnParams - The parameters for trying on an item.
    * @returns {Promise<{ image: string; isOccupied: boolean }>} - A promise that returns an object containing the image and whether the item is occupied or not.
    */
   tryOnItem({
@@ -523,12 +448,7 @@ export default class Store extends FactoryBase {
   /**
    * Uses an item
    * @template T - The itemType.
-   * @param {ItemUseParams} ItemUseParams - Parameters for using an item.
-   * @param {string} ItemUseParams.appId - The ID of the app.
-   * @param {string} ItemUseParams.userId - The ID of the user.
-   * @param {string} ItemUseParams.itemName - The name of the item.
-   * @param {number} ItemUseParams.quantity - The quantity of item to use.
-   * @param {object=} ItemUseParams.params - The parameters to send when using the item. It mainly contains NFT information.
+   * @param {ItemUseParams} ItemUseParams - The parameters for using an item.
    * @returns {UseItemReturnType[T]} - A Promise representing the retrieved item. The return type is determined based on the itemType.
    */
   useItem<T extends itemType>({
@@ -553,10 +473,10 @@ export default class Store extends FactoryBase {
    * @param {string} appId - The ID of the app.
    * @param {string} userId - The ID of the user.
    * @param {string} itemName - The name of the item to unequip.
-   * @param {string} chain - The chain ID of the nft contract. Currently, we only support ETH.
-   * @param {string} network - The network name of the nft contract. e.g) homestead, goerli.
-   * @param {string} contractAddress - The nft contract address.
-   * @param {string} tokenId - The id of the your nft token.
+   * @param {string} chain - The symbol of chain with the NFT to unequip item.
+   * @param {string} network - The name of network with the NFT to unequip item.
+   * @param {string} contractAddress - The contract address of NFT to unequip item.
+   * @param {string} tokenId - The ID of NFT to unequip item.
    * @returns {Promise<NftMetadata>} - A promise that returns the metadata of the NFT after unequip nft trait item.
    */
   unequipNftTraitItem(
@@ -584,10 +504,10 @@ export default class Store extends FactoryBase {
    * Unequips all NFT traits currently worn on the NFT.
    * @param {string} appId - The ID of the app.
    * @param {string} userId - The ID of the user.
-   * @param {string} chain - The chain ID of the nft contract. Currently, we only support ETH.
-   * @param {string} network - The network name of the nft contract. e.g) homestead, goerli.
-   * @param {string} contractAddress - The nft contract address.
-   * @param {string} tokenId - The id of the your nft token.
+   * @param {string} chain - The symbol of chain with the NFT to unequip item.
+   * @param {string} network - The name of network with the NFT to unequip item.
+   * @param {string} contractAddress - The contract address of NFT to unequip item.
+   * @param {string} tokenId - The ID of NFT to unequip item.
    * @returns {Promise<NftMetadata>} - A promise that returns the metadata of the NFT after unequip nft trait item.
    */
   resetNftTraitItem(

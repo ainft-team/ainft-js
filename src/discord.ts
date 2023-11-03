@@ -9,7 +9,8 @@ import {
 import FactoryBase from "./factoryBase";
 
 /**
- * This class supports the functionality of the AINFT factory for seamless use on Discord.
+ * This class supports the functionality of the AINFT factory for seamless use on Discord.\
+ * Do not create it directly; Get it from AinftJs instance.
  */
 export default class Discord extends FactoryBase {
   /**

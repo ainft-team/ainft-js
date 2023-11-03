@@ -1,6 +1,10 @@
 import FactoryBase from "./factoryBase";
 import { ActivityNftInfo, AddAiHistoryParams, HttpMethod, NftActivityType, TaskTypeCategory, getTxbodyAddAiHistoryParams } from "./types";
 
+/**
+ * This class supports add activities.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
 export default class Activity extends FactoryBase {
   /**
    * Add activity.

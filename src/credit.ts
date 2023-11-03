@@ -12,7 +12,8 @@ import {
 
 // TODO(kriii): Objectify params?
 /**
- * The class for creating and managing credits to be used in each app.
+ * The class for creating and managing credits to be used in each app.\
+ * Do not create it directly; Get it from AinftJs instance.
  */
 export default class Credit extends FactoryBase {
   /**

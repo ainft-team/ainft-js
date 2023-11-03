@@ -31,7 +31,7 @@
     "@types/jest": "^27.4.1",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
-    "typedoc": "^0.23.17",
+    "typedoc": "0.22.15",
     "typedoc-plugin-remove-references": "^0.0.6",
     "typedoc-plugin-rename-defaults": "^0.6.4",
     "typedoc-theme-hierarchy": "^3.0.0",
@@ -40,8 +40,10 @@
   "dependencies": {
     "@ainblockchain/ain-js": "^1.6.0",
     "@ainblockchain/ain-util": "^1.1.9",
+    "@types/lodash": "^4.14.200",
     "axios": "^0.26.1",
     "fast-json-stable-stringify": "^2.1.0",
-    "form-data": "^4.0.0"
+    "form-data": "^4.0.0",
+    "lodash": "^4.17.21"
   }
 }

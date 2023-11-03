@@ -15,6 +15,7 @@ import { serializeEndpoint } from './util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
 import Eth from './eth';
+import _ from 'lodash';
 
 /**
  * A class that establishes a blockchain and ainft server connection and initializes other classes.
@@ -35,15 +36,16 @@ export default class AinftJs {
 
   constructor(
     privateKey: string,
-    ainftServerEndpoint: string,
-    ainBlockchainEndpoint?: string,
-    chainId?: number,
+    config?: {
+      ainftServerEndpoint?: string,
+      ainBlockchainEndpoint?: string,
+      chainId?: number,
+    }
   ) {
-    const _ainftServerEndpoint = serializeEndpoint(ainftServerEndpoint);
-    const stage = this.getStage(_ainftServerEndpoint);
+    this.baseUrl = _.get(config, 'ainftServerEndpoint') || AINFT_SERVER_ENDPOINT['prod'];
+    const stage = this.getStage(this.baseUrl);
 
-    this.baseUrl = _ainftServerEndpoint;
-    this.ain = new Ain(ainBlockchainEndpoint || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId || AIN_BLOCKCHAIN_CHAINID[stage]);
+    this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAINID[stage]);
     this.setPrivateKey(privateKey);
 
     this.nft = new Nft(this.ain, this.baseUrl, '/nft');

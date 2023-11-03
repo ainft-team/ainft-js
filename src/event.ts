@@ -16,7 +16,8 @@ import {
 } from './types';
 
 /**
- * This class supports event functionality for activating tokenomics in the community.
+ * This class supports event functionality for activating tokenomics in the community.\
+ * Do not create it directly; Get it from AinftJs instance.
  */
 export default class Event extends FactoryBase {
   /**
@@ -143,8 +144,8 @@ export default class Event extends FactoryBase {
   }
 
   /**
-   * Update the activity's status. Activity status includes CREATED, REWARDED, and FAILED.
-   * @param {UpdateEventActivityStatusParams} UpdateEventActivityStatusParams
+   * Updates the activity's status. Activity status includes CREATED, REWARDED, and FAILED.
+   * @param {UpdateEventActivityStatusParams} UpdateEventActivityStatusParams The parameters to update activity status
    */
   updateActivityStatus({
     eventId,
@@ -164,7 +165,7 @@ export default class Event extends FactoryBase {
 
   /**
    * Returns a list of TaskTypes to use for events.
-   * @param {string} appId
+   * @param {string} appId The ID of app.
    */
   getTaskTypeList(appId: string): Promise<TaskType[]> {
     const query = { appId };
@@ -174,7 +175,7 @@ export default class Event extends FactoryBase {
 
   /**
    * Returns a list of RewardTypes to use for events.
-   * @param {string} appId
+   * @param {string} appId The ID of app.
    */
   getRewardTypeList(appId: string): Promise<RewardType[]> {
     const query = { appId };
@@ -184,9 +185,9 @@ export default class Event extends FactoryBase {
 
   /**
    * Return user's pending reward from event.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} eventId
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of the user who wants to check pending rewards.
+   * @param {string} eventId The ID of event to check pending rewards.
    */
   getPendingRewards(
     appId: string,
@@ -199,11 +200,11 @@ export default class Event extends FactoryBase {
   }
 
   /**
-   * Provide event rewards to users.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} eventId
-   * @param {RewardOptions} options If the reward has not been confirmed, you can enter the amount of reward.
+   * Provides event rewards to users.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user to be rewarded.
+   * @param {string} eventId The ID of the event that the user participated in.
+   * @param {RewardOptions} options The options of reward.
    */
   reward(
     appId: string,
@@ -222,9 +223,9 @@ export default class Event extends FactoryBase {
 
   /**
    * Returns list of user's reward history.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} eventId
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of the user who wants to check reward history.
+   * @param {string} eventId The ID of event to check reward history.
    */
   getRewardHistory(
     appId: string,
@@ -241,9 +242,9 @@ export default class Event extends FactoryBase {
 
   /**
    * Returns list of user's activity.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} eventId
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of the user who wants to check the activity history.
+   * @param {string} eventId The ID of the event you want to check activity history.
    */
   getActivityHistory(
     appId: string,
