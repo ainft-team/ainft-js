@@ -20,14 +20,15 @@ export default class Nft extends FactoryBase {
    * Create AINFT object.
    * @param name The name of AINFT object.
    * @param symbol The symbol of AINFT object.
-   * @returns The generated AINFT object.
+   * @returns Transaction hash and AINFT object instance.
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
    * 
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * ainftJs.nft.create('nameOfAinftObject', 'symbolOfAinftObject')
    *  .then((res) => {
-   *    const ainftObject = res;
+   *    const { txHash, ainftObject } = res;
+   *    console.log(txHash); // 0x...
    *    console.log(ainftObject.id); // 0x...
    *    console.log(ainftObject.appId); // ainft721_0x...
    *  })
