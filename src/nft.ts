@@ -20,14 +20,15 @@ export default class Nft extends FactoryBase {
    * Create AINFT object.
    * @param name The name of AINFT object.
    * @param symbol The symbol of AINFT object.
-   * @returns The generated AINFT object.
+   * @returns Transaction hash and AINFT object instance.
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
    * 
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * ainftJs.nft.create('nameOfAinftObject', 'symbolOfAinftObject')
    *  .then((res) => {
-   *    const ainftObject = res;
+   *    const { txHash, ainftObject } = res;
+   *    console.log(txHash); // 0x...
    *    console.log(ainftObject.id); // 0x...
    *    console.log(ainftObject.appId); // ainft721_0x...
    *  })
@@ -36,16 +37,17 @@ export default class Nft extends FactoryBase {
    *  });
    * ```
    */
-  async create(name: string, symbol: string): Promise<Ainft721Object> {
+  async create(name: string, symbol: string): Promise<{ txHash: string, ainftObject: Ainft721Object }> {
     const address = await this.ain.signer.getAddress();
 
     const body = { address, name, symbol };
     const trailingUrl = 'native';
     const { ainftObjectId, txBody } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
-    await this.ain.sendTransaction(txBody);
+    const res = await this.ain.sendTransaction(txBody);
 
     await this.register(ainftObjectId);
-    return this.get(ainftObjectId);
+    const ainftObject = await this.get(ainftObjectId);
+    return { txHash: res.tx_hash, ainftObject }
   }
 
   /**
