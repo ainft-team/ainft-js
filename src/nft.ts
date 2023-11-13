@@ -10,6 +10,7 @@ import {
 } from './types';
 import Ainft721Object from './ainft721Object';
 import stringify from 'fast-json-stable-stringify';
+import { isTransactionSuccess } from './util';
 
 /**
  * This class supports creating AINFT object, searching AINFTs and things about NFTs.\
@@ -44,6 +45,10 @@ export default class Nft extends FactoryBase {
     const trailingUrl = 'native';
     const { ainftObjectId, txBody } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
     const res = await this.ain.sendTransaction(txBody);
+
+    if (!isTransactionSuccess(res)) {
+      throw Error(`App creation is failed. - ${JSON.stringify(res)}`);
+    }
 
     await this.register(ainftObjectId);
     const ainftObject = await this.get(ainftObjectId);
