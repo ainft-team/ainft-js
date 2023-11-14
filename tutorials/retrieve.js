@@ -1,10 +1,15 @@
 const AinftJs = require('@ainft-team/ainft-js').default;
 
-const myPrivateKey = '94c429182bca8023fcf846921d99f72e4244229bdf9c8972f479c45ea83acb17';
-const ainftJs = new AinftJs(myPrivateKey, 'https://ainft-api-dev.ainetwork.ai');
+const config = {
+  ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
+  ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
+}
 
-const getNftsByAccount = (userAddress, limit, cursor) => {
-  ainftJs.nft.getNftsByAccount(userAddress, limit, cursor)
+const myPrivateKey = 'YOUR_PRIVATE_KEY';
+const ainftJs = new AinftJs(myPrivateKey, config);
+
+const getAinftsByAccount = (userAddress, limit, cursor) => {
+  ainftJs.nft.getAinftsByAccount(userAddress, limit, cursor)
     .then((res) => {
       console.log(res);
     })
@@ -13,8 +18,8 @@ const getNftsByAccount = (userAddress, limit, cursor) => {
     });
 }
 
-const getNftsByAinftObject = (ainftObjectId, limit, cursor) => {
-  ainftJs.nft.getNftsByAinftObject(ainftObjectId, limit, cursor)
+const getAinftsByAinftObject = (ainftObjectId, limit, cursor) => {
+  ainftJs.nft.getAinftsByAinftObject(ainftObjectId, limit, cursor)
     .then((res) => {
       console.log(res);
     })
@@ -23,5 +28,5 @@ const getNftsByAinftObject = (ainftObjectId, limit, cursor) => {
     });
 }
 
-// getNftsByAccount('YOUR_ACCOUNT_ADDRESS', 10);
-// getNftsByAinftObject('YOUR_AINFT_OBJECT_ID', 20);
+// getAinftsByAccount('YOUR_ACCOUNT_ADDRESS');
+// getAinftsByAinftObject('YOUR_AINFT_OBJECT_ID');
