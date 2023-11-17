@@ -14,6 +14,7 @@
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,
+    "esModuleInterop": true,
     "target": "es2016",
   },
   "include": [
@@ -24,7 +25,6 @@
       "entryPointStrategy": "expand",
       "out": "docs",
       "name": "Ainft-Js",
-      "plugin": ["typedoc-plugin-remove-references", "typedoc-plugin-rename-defaults",  "typedoc-theme-hierarchy"],
-      "theme": "hierarchy"
+      "plugin": ["typedoc-plugin-remove-references", "typedoc-plugin-rename-defaults"]
     }
 }

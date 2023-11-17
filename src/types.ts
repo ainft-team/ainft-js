@@ -114,61 +114,117 @@ export enum SchedulerID {
 }
 
 export interface AddNftSymbolParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** Adds optional parameters.
+   * Currently, it supports the 'isDynamic' option.
+   * Setting the 'isDynamic' parameter to true allows hosting metadata through the AINFT factory. */
   options?: Record<string, any>;
 }
 
 export interface GetAppNftSymbolListParams {
+  /** The ID of app. */
   appId: string;
 }
 
 export interface GetNftSymbolParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of NFT. */
   symbol: string;
 }
 
 export interface RemoveNftSymbolParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of NFT. */
   symbol: string;
 }
 
 export interface GetNftParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** Token ID of NFT. */
   tokenId: string;
 }
 
 export interface GetNftContractInfoParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
+  chain: string;
+  /** The name of network. */
+  network: string;
+  /** The address of contract. */
+  contractAddress: string;
+}
+
+export interface GetNftsInCollectionParams {
   chain: string;
   network: string;
-  contractAddress: string;
+  collectionId: string;
+  appId?: string;
+}
+
+export interface GetNftsInEthContractParams extends Omit<GetNftsInCollectionParams, 'appId'> {
+  chain: "ETH",
+}
+
+export interface GetNftsInAinCollectionParams extends GetNftsInCollectionParams {
+  chain: "AIN",
+  appId: string,
 }
 
 export interface GetUserNftListParams {
+  /** The ID of app. */
   appId: string;
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of user. */
   userAddress: string;
+  /** The address of contract. Use this if you want to find NFTs specific to a particular contract. */
   contractAddress?: string;
+  /** Token ID of NFT. Use this if you want to find a specific NFT. You need to provide the contract address for it to work. */
   tokenId?: string;
 }
 
-export interface SetNftMetadataParams {
-  appId: string;
-  chain: string;
-  network: string;
-  contractAddress: string;
+export interface getTxBodySetNftMetadataParams {
+  nftId: string;
   tokenId: string;
   metadata: NftMetadata;
-  ownerAddress?: string;
-  imageData?: any;
+  userAddress: string;
 }
+
+export interface SetNftMetadataParams extends SetEthNftMetadataParams, SetAinNftMetadataParams {}
+
+export interface SetEthNftMetadataParams {
+  /** The ID of app. */
+  appId: string;
+  /** The name of network. */
+  network: string;
+  /** The address of contract. */
+  contractAddress: string;
+  /** Token ID of NFT. */
+  tokenId: string;
+  /** The metadata to be set. */
+  metadata: NftMetadata;
+};
+
+export interface SetAinNftMetadataParams extends Omit<getTxBodySetNftMetadataParams, 'userAddress'> {}
 
 export interface Account {
   address: string;
@@ -177,9 +233,13 @@ export interface Account {
 }
 
 export interface DiscordMessageInfo {
+  /** The ID of user. */
   user_id: string;
+  /** The ID of discord guild. */
   guild_id: string;
+  /** The ID of discord channel. */
   channel_id: string;
+  /** The ID of discord message. */
   message_id: string;
 }
 
@@ -265,28 +325,48 @@ export interface RewardInfo {
 }
 
 export interface CreateEventParams {
+  /** The ID of event. It should not overlap with the IDs of existing events in the app. */
   eventId: string;
+  /** The ID of app. */
   appId: string;
+  /** The ID of user. */
   userId: string;
+  /** The description of event. */
   description: string;
+  /** List of tasks to be performed in the event. */
   taskInstanceList: Array<TaskInstance>;
+  /** List of rewards received upon completion of all tasks in the event. */
   rewardInstanceList: Array<RewardInstance>;
+  /** The start time of the event. */
   startAt: number;
+  /** The end time of the event. */
   endAt: number;
+  /** The platform where the event takes place. */
   platform?: Platforms;
 }
 
 export interface TokenomicsEvent {
+  /** The ID of app. */
   appId: string;
+  /** The ID of event. */
   eventId: string;
+  /** The start time of the event. */
   startAt: number;
+  /** The end time of the event. */
   endAt: number;
+  /** The description of event. */
   description: string;
+  /** Map of tasks by task ID to be performed in the event. */
   taskInstances: { [taskInstanceId: string]: TaskInstance };
+  /** Map of rewards by reward ID received upon completion of all tasks in the event. */
   rewardInstances: { [rewardInstanceId: string]: RewardInstance };
+  /** The status of event. */
   status?: EventStatus;
+  /** The platform where the event takes place. */
   platform?: Platforms;
+  /** The timestamp when the event was created." */
   createdAt?: number;
+  /** The timestamp when the event was updated." */
   updatedAt?: number;
 };
 
@@ -299,27 +379,36 @@ export interface TaskIdListByEventId {
 }
 
 export interface CreatePersonaModelInfo {
+  /** The ID of model. */
   modelId: string,
 }
 
 export interface ChatResponse {
+  /** The chat response with persona model. */
   response: {
+    /** The ID of message. */
     messageId: string;
+    /** The message answered by persona Model. */
     message: string;
   };
 }
 
 export interface ChannelPersonaModelInfo {
+  /** The ID of persona model. */
   modelId: string;
+  /** The name of persona model. */
   modelName: string;
 }
 
 export interface ServerPersonaModelInfo {
+  /** The Discord Channel ID to which the persona model is linked.  */
   [channelId: string]: ChannelPersonaModelInfo;
 }
 
 export interface PersonaModelCreditInfo {
+  /** The symbol of credit */
   symbol: string;
+  /** The credit cost for chating with persona model. */
   burnAmount: number;
 };
 
@@ -337,7 +426,9 @@ export interface TextToArtParams {
 }
 
 export interface Task {
+  /** The ID of task. */
   task_id: string;
+  /** The timestamp when task was last updated. */
   updated_at: number;
 }
 
@@ -348,8 +439,11 @@ export interface TextToArtResult {
 }
 
 export interface TextToArtResponse {
+  /** The response of text-to-art request.  */
   status: ResponseStatus,
+  /** The timestamp when Text to art request was last updated. */
   updated_at: number,
+  /** The result of text-to-art. */
   result: { [imageIndex: string]: TextToArtResult },
 }
 
@@ -360,38 +454,54 @@ export interface TextToArtTxHash {
 }
 
 export interface InviteInfo {
+  /** The ID of inviter. */
   inviterId: string,
+  /** A flag indicating whether the reward has been received or not. */
   isRewarded: boolean,
+  /** Map by userId invited in a short time. */
   ambiguousInviters?: {
     [key: number]: string
   },
 }
 
 export interface AddActivityParams {
+  /** The ID of app. */
   appId: string,
+  /** The ID of user. */
   userId: string,
+  /** The ID of event. */
   eventId?: string,
-  smartGalleryPosId?: string,
+  /** The task ID being executed in this activity. */
   taskInstanceId?: string,
+  /** The data of activity. */
   data: any,
 };
 
 export interface AddEventActivityParams extends AddActivityParams {
+  /** The ID of event. */
   eventId: string,
 };
 
 export interface GetActivityParams {
+  /** The ID of app. */
   appId: string,
+  /** The timestamp when the activity was created.*/
   createdAt: number,
+  /** The ID of user who performed the activity.  */
   userId?: string,
+  /** The ID of the event that the activity belongs to. */
   eventId?: string,
+  /** The ID of activity. */
   activityId?: string,
   options?: any,
 };
 
 export enum ActivityStatus {
+  /** Status of activity valid after creation. */
   CREATED = 'CREATED',
+  /** Status of activity already rewarded. */
   REWARDED = 'REWARDED',
+  /** Status of invalid or excluded activity from reward. */
   FAILED = 'FAILED',
 }
 
@@ -403,16 +513,23 @@ export interface Activity extends AddActivityParams {
 };
 
 export interface GetEventActivityParams extends GetActivityParams {
+  /** The ID of user. */
   userId: string,
+  /** The ID of event. */
   eventId: string,
 }
 
 export interface UpdateEventActivityStatusParams {
+  /** The ID of app. */
   appId: string,
+  /** The timestamp of activity creation */
   createdAt: number,
+  /** The ID of event. */
   eventId: string,
+  /** The ID of activity */
   activityId: string,
-  status: string,
+  /** The status of activity. */
+  status: ActivityStatus,
 };
 
 export interface User {
@@ -424,79 +541,126 @@ export interface User {
 };
 
 export interface RewardOptions {
+  /** If the reward has not been confirmed, you can enter the amount of reward. */
   amount?: number;
 };
 
 export interface StorePurchaseParams {
+  /** The ID of the app. */
   appId: string;
+  /** The ID of the store. */
   storeId: string;
+  /** The ID of the user to buy store item. */
   userId: string;
+  /** The name of the item to purchase. */
   itemName: string;
+  /** The quantity of the item to purchase. */
   quantity: number;
 };
 
 export interface GetPurchaseHistoryParams {
+  /** The ID of the app. */
   appId: string;
+  /** The year to filter the history by. */
   year: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetItemPurchaseHistoryParams {
+  /** The ID of the app. */
   appId: string;
+  /** The name of the item. */
   itemName: string;
+  /** The year to filter the history by. */
   year?: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetUserPurchaseHistoryParams {
+  /** The ID of app. */
   appId: string;
+  /** The ID of the user subject to the purchase history. */
   userId: string;
+  /** The year to filter the history by. */
   year?: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetItemHistoryParams {
+  /** The ID of app. */
   appId: string;
+  /** The year to filter the history by. */
   year: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetSingleItemHistoryParams {
+  /** The ID of app. */
   appId: string;
+  /** The name of the item. */
   itemName: string;
+  /** The year to filter the history by. */
   year?: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface GetUserItemHistoryParams {
+  /** The ID of app. */
   appId: string;
+  /** The ID of the user subject to the item history. */
   userId: string;
+  /** The year to filter the history by. */
   year?: number;
+  /** The month to filter the history by. */
   month?: number;
+  /** The day to filter the history by. */
   day?: number;
 };
 
 export interface ItemTryOnParams {
+  /** The ID of app. */
   appId: string,
+  /** The ID of user to try on. */
   userId: string,
+  /** The ID of the store with the item to try on. */
   storeId: string,
+  /** The name of item to try on. */
   itemName: string,
+  /** The symbol of chain with the NFT to try on the item. */
   chain: string,
+  /** The name of network with the NFT to try on the item. */
   network: string,
+  /** The contract address of NFT to try on the item. */
   nftContractAddress: string,
+  /** The ID of NFT to try on the item. */
   nftTokenId: string,
 };
 
 export interface ItemUseParams {
+  /** The ID of app. */
   appId: string,
+  /** The ID of user to use item. */
   userId: string,
+  /** The name of item to use. */
   itemName: string,
+  /** The number of items user wants to use. */
   quantity: number,
+  /** The parameters to send when using the item. It mainly contains NFT information. */
   params?: any,
 }
 
@@ -519,49 +683,83 @@ export interface Item {
 };
 
 export interface CreateItemParams {
+  /** The ID of the app. */
   appId: string;
   name: string;
+  /** The type of the item. The combination of type, subtype, and value is unique. */
   type: string;
+  /** The subtype of the item. The combination of type, subtype, and value is unique. */
   subtype: string;
+  /** The value of the item. The combination of type, subtype, and value is unique. */
   value: string;
+  /** The description of the item. */
   description: string;
+  /** The image of the item. */
   image?: string;
+  /** The quantity of the item. */
   quantity: number;
+  /** The additional information of the item. */
   additionalInfo?: { [key: string]: any };
 }
 
 export interface UpdateItemParams {
+  /** The ID of the app. */
   appId: string;
+  /** The name of the item. */
   itemName: string;
+  /** New name of item to be set. */
   name?: string;
+  /** Image of the item to be set. */
   image?: string;
+  /** Description of the item to be set. */
   description?: string;
+  /** Quantity of the item to increase or decrease. */
   quantity?: number;
+  /** AdditionalInfo of the item to be set. */
   additionalInfo?: { [key: string]: any };
 }
 
 export interface RegisterItemParams {
+  /** The ID of the app. */
   appId: string;
+  /** The ID of the store for sale. */
   storeId: string;
+  /** The name of the item. */
   itemName: string;
+  /** The ID of user who sells an item. */
   seller: string;
+  /** The quantity of to add to the store. */
   quantity: number;
+  /** The price of the item in the store. */
   price: number;
+  /** The currency used to purchase the item. */
   currency: string;
+  /** The timestamp when the sale starts. */
   saleStartAt?: number;
+  /** The timestamp when the sale ends. */
   saleEndAt?: number;
+  /** The limit of item purchase per user. */
   maxPurchasePerUser?: number;
 }
 
 export interface UpdateStoreItemParams {
+  /** The ID of the app. */
   appId: string;
+  /** The ID of the store. */
   storeId: string;
+  /** The name of the item. */
   itemName: string;
+  /** The quantity of store item to be increase or decrease. */
   quantity?: number;
+  /** The price of store item to be set. */
   price?: string;
+  /** The timestamp when items start selling in the store. */
   saleStartAt?: number;
+  /** The timestamp when items end selling in the store. */
   saleEndAt?: number;
+  /** The status of the store item to be set. */
   status?: StoreItemStatus;
+  /** The limit of item purchase per user. */
   maxPurchasePerUser?: number;
 }
 
@@ -633,10 +831,15 @@ export type History<Type> = {
 }
 
 export type NftMetadata = {
+  /** The name of NFT. */
   name?: string;
+  /** The description of NFT. */
   description?: string;
+  /** The image of NFT. */
   image?: string;
+  /** The attributes of NFT. */
   attributes?: object[];
+  /** The additional fields of NFT metadata. */
   [additionalFields: string]: any;
 };
 
@@ -680,11 +883,17 @@ export type NftContractBySymbol = {
 };
 
 export type AppCreditInfo = {
+  /** The name of credit. */
   name: string,
+  /** The symbol of credit */
   symbol: string,
+  /** The total supply of credit. */
   totalSupply: number,
+  /** The amount of credit burned.  */
   burnedSupply: number,
+  /** The max supply of credit. */
   maxSupply: number | null,
+  /** The timestamp of credit creation. */
   createdAt: number,
 };
 
@@ -702,15 +911,22 @@ export enum AppCreditWithdrawStatus {
 }
 
 export interface WithdrawInfo {
+  /** The status of withdraw request. */
   status: AppCreditWithdrawStatus;
+  /** The amount of credits requested for withdrawal. */
   amount: number;
+  /** The timestamp of the withdrawal request. */
   timestamp: number;
+  /** The transaction hash that resulted from the completed withdrawal. */
   txHash?: string;
 }
 
 export interface UserWithdrawList {
+  /** The symbol of chain */
   [chain: string]: {
+    /** The address of user. */
     [userAddress: string]: {
+      /** The ID of withdraw request. */
       [requestId: string]: WithdrawInfo;
     };
   };
@@ -720,10 +936,14 @@ export interface AppWithdrawList {
   [userId: string]: UserWithdrawList;
 }
 
-export interface WithdrawRequestList {
+export interface WithdrawRequestMap {
+  /** The Id of user. */
   [userId: string]: {
+    /** The symbol of chain. */
     [chain: string]: {
+      /** The address of user. */
       [userAddress: string]: {
+        /** The ID of withdrawal request. */
         [requestId: string]: number;
       };
     };
@@ -731,23 +951,35 @@ export interface WithdrawRequestList {
 }
 
 export interface DepositTransaction {
+  /** The symbol of chain. */
   chain: string;
+  /** The name of network. */
   network: string;
+  /** The address of contract. */
   contractAddress: string;
+  /** The address the token was sent from. */
   from: string;
+  /** The address the token was send to. */
   to: string;
+  /** The value of deposit transaction. */
   value: number;
+  /** The transaction hash of deposit. */
   txHash: string;
+  /** The block number at which the deposit transaction was applied. */
   blockNumber: number;
 }
 
 export interface LockupInfo {
+  /** The timestamp when the lockup period ends.  */
   endAt: number;
+  /** The amount of credit to lock. */
   amount: number;
+  /** The reason for the lockup. */
   reason: string;
 }
 
 export interface LockupList {
+  /** The ID of lockup. */
   [lockupId: string]: LockupInfo;
 }
 
@@ -769,19 +1001,8 @@ export interface TokenUpdatePermission {
   collectionOwner: boolean;
   tokenOwner: boolean;
 }
-export interface CreateNftCollectionParams {
-  address: string;
-  chain: string;
-  network: string;
-  appId: string;
-  collectionId: string;
-  symbol: string;
-  name: string;
-  connectWhitelist?: string[]; //TODO(hyeonwoong): Need more design.
-  tokenUpdatePermission?: TokenUpdatePermission;
-}
 
-export interface MintNftParams {
+export interface getTxBodyMintNftParams {
   address: string;
   chain: string;
   network: string;
@@ -792,20 +1013,102 @@ export interface MintNftParams {
   tokenId?: number;
 }
 
-export interface SearchNftOption {
-  address?: string;
-  appId?: string;
-  collectionId?: string;
-  chain: string;
-  network: string;
+export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {}
+
+export interface SearchOption {
+  limit?: number,
+  cursor?: string,
+}
+export interface NftSearchParams extends SearchOption {
+  /** The address of the user who owns the AINFT. */
+  userAddress?: string;
+  /** The ID of AINFT object. */
+  ainftObjectId?: string;
+  /** The token ID of AINFT. */
+  tokenId?: string;
+  /** The name of AINFT object. */
+  name?: string;
+  /** The symbol of AINFT object. */
+  symbol?: string;
 }
 
-export interface TransferNftParams {
-  address: string;
+export interface getTxBodyTransferNftParams {
+  address?: string;
   chain: string;
   network: string;
   appId: string;
   collectionId: string;
   tokenId: number;
   toAddress: string;
+}
+
+export interface UploadAssetParams {
+  /** The ID of app. */
+  appId: string;
+  /** The file path of asset to upload. */
+  filePath: string;
+}
+
+export interface UploadAssetFromBufferParams extends UploadAssetParams {
+  /** The buffer of asset to upload. */
+  buffer: Buffer;
+}
+
+export interface UploadAssetFromDataUrlParams extends UploadAssetParams {
+  /** The data url of asset to upload. */
+  dataUrl: string;
+}
+
+export interface DeleteAssetParams {
+  /** The ID of app. */
+  appId: string;
+  /** The file path of asset to delete. */
+  filePath: string;
+}
+
+export interface TransferNftParams extends Omit<getTxBodyTransferNftParams, 'address'> {}
+
+export interface getTxbodyAddAiHistoryParams {
+  /** The symbol of chain. e.g. ETH */
+  chain: string;
+  /** The name of network. e.g. homestead  */
+  network: string;
+  /** The ID of app. */
+  appId: string;
+  /** The ID of AINFT object. */
+  ainftObjectId: string;
+  /** Token ID of NFT. */
+  tokenId: string;
+  /** Data about ai history. */
+  data: object;
+  /** The label of history. */
+  label: string;
+  /** The address of user. */
+  userAddress: string;
+}
+
+export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {};
+
+export interface AinftObjectSearchResponse extends SearchReponse {
+  ainftObjects: {
+    id: string;
+    name: string;
+    symbol: string;
+    owner: string;
+  }[];
+}
+
+export interface AinftTokenSearchResponse extends SearchReponse {
+  nfts: {
+    tokenId: string;
+    owner: string;
+    tokenURI: string;
+    metadata?: object;
+    ainftObject: AinftObjectSearchResponse;
+  }[];
+}
+
+export interface SearchReponse {
+  isFinal: boolean;
+  cursor?: string;
 }

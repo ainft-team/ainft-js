@@ -1,187 +1,288 @@
-import { TransactionInput } from '@ainblockchain/ain-js/lib/types';
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import {
-    HttpMethod,
-    AddNftSymbolParams,
-    GetAppNftSymbolListParams,
-    GetNftSymbolParams,
-    RemoveNftSymbolParams,
-    NftContractBySymbol,
-    GetNftParams,
-    NftToken,
-    GetNftContractInfoParams,
-    NftContractInfo,
-    GetUserNftListParams,
-    NftCollections,
-    SetNftMetadataParams,
-    NftMetadata,
-    CreateNftCollectionParams,
-    MintNftParams,
-    SearchNftOption,
-    TransferNftParams
+  DeleteAssetParams,
+  HttpMethod,
+  NftSearchParams,
+  UploadAssetFromBufferParams,
+  UploadAssetFromDataUrlParams,
+  AinftTokenSearchResponse,
+  AinftObjectSearchResponse,
 } from './types';
+import Ainft721Object from './ainft721Object';
+import stringify from 'fast-json-stable-stringify';
+import { isTransactionSuccess } from './util';
 
-export default class Nft extends AinftBase {
-  addNftSymbol({
-    appId,
-    chain,
-    network,
-    contractAddress,
-    options,
-  }: AddNftSymbolParams): Promise<NftContractBySymbol> {
-    const body = { appId, chain, network, contractAddress, options };
-    const trailingUrl = 'symbol';
+/**
+ * This class supports creating AINFT object, searching AINFTs and things about NFTs.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
+export default class Nft extends FactoryBase {
+  /**
+   * Create AINFT object.
+   * @param name The name of AINFT object.
+   * @param symbol The symbol of AINFT object.
+   * @returns Transaction hash and AINFT object instance.
+   * ```ts
+   * import AinftJs from '@ainft-team/ainft-js';
+   * 
+   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * ainftJs.nft.create('nameOfAinftObject', 'symbolOfAinftObject')
+   *  .then((res) => {
+   *    const { txHash, ainftObject } = res;
+   *    console.log(txHash); // 0x...
+   *    console.log(ainftObject.id); // 0x...
+   *    console.log(ainftObject.appId); // ainft721_0x...
+   *  })
+   *  .catch((error) =>{
+   *    console.log(error);
+   *  });
+   * ```
+   */
+  async create(name: string, symbol: string): Promise<{ txHash: string, ainftObject: Ainft721Object }> {
+    const address = await this.ain.signer.getAddress();
+
+    const body = { address, name, symbol };
+    const trailingUrl = 'native';
+    const { ainftObjectId, txBody } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    const res = await this.ain.sendTransaction(txBody);
+
+    if (!isTransactionSuccess(res)) {
+      throw Error(`App creation is failed. - ${JSON.stringify(res)}`);
+    }
+
+    await this.register(ainftObjectId);
+    const ainftObject = await this.get(ainftObjectId);
+    return { txHash: res.tx_hash, ainftObject }
+  }
+
+  /**
+   * Register AINFT object to factory server.
+   * If functions such as mint, transfer, or search do not work well after executing the create function, try executing this function.
+   * @param ainftObjectId The ID of AINFT object.
+   * ```ts
+   * import AinftJs from '@ainft-team/ainft-js';
+   * 
+   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * ainftJs.nft.register('YOUR-AINFT-OBJECT-ID')
+   *  .catch((error) => {
+   *    console.log(error);
+   *  })
+   * ```
+   */
+  async register(ainftObjectId: string): Promise<void> {
+    const address = await this.ain.signer.getAddress();
+    const message = stringify({
+      address,
+      timestamp: Date.now(),
+    });
+    const signature = await this.ain.signer.signMessage(message, address);
+
+    const body = { signature, message, ainftObjectId };
+    const trailingUrl = 'native/register';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  getAppNftSymbolList({ appId }: GetAppNftSymbolListParams): Promise<string[]> {
-    const query = { appId };
-    const trailingUrl = 'symbol';
+  /**
+   * Get AINFT object instance by ainftObjectId.
+   * @param ainftObjectId The ID of AINFT object.
+   * @returns Returns the AINFT object corresponding to the given ID.
+   * 
+   * ```ts
+   * import AinftJs from '@ainft-team/ainft-js';
+   * 
+   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * ainftJs.nft.get('YOUR-AINFT-OBJECT-ID')
+   *  .then((res) => {
+   *    const ainftObject = res;
+   *    console.log(ainftObject.appId);
+   *  })
+   *  .catch((error) => {
+   *    console.log(error);
+   *  })
+   * ```
+   */
+  async get(ainftObjectId: string) {
+    const { ainftObjects } = await this.searchAinftObjects({ ainftObjectId });
+    if (ainftObjects.length === 0) {
+      throw new Error(`Not found ainft`);
+    }
+    const ainftObject = ainftObjects[0];
+    return new Ainft721Object(ainftObject, this.ain, this.baseUrl);
+  }
+
+  /**
+   * Get AINFTs by AINFT object id.
+   * @param ainftObjectId - The ID of AINFT object.
+   * @param limit - Sets the maximum number of NFTs to retrieve.
+   * @param cursor - Optional cursor to use for pagination.
+   * @returns Returns AINFTs.
+   * 
+   * ```ts
+   * import AinftJs from '@ainft-team/ainft-js';
+   * 
+   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * ainftJs.nft.getAinftsByAinftObject('YOUR-AINFT-OBJECT-ID', 5)
+   *  .then((res) => {
+   *    const { nfts, isFinal, cursor } = res;
+   *    console.log(nfts); // list of nft information.
+   *  })
+   *  .catch((error) => {
+   *    console.log(error);
+   *  })
+   * ```
+   */
+  async getAinftsByAinftObject(ainftObjectId: string, limit?: number, cursor?: string): Promise<AinftTokenSearchResponse> {
+    return this.searchNfts({ ainftObjectId, limit, cursor });
+  }
+
+  /**
+   * Get AINFTs by user address.
+   * @param address - The ID of AINFT object.
+   * @param limit - Sets the maximum number of NFTs to retrieve.
+   * @param cursor - Optional cursor to use for pagination.
+   * @returns Returns AINFTs.
+   * 
+   * ```ts
+   * import AinftJs from '@ainft-team/ainft-js';
+   * 
+   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * ainftJs.nft.getAinftsByAccount('TOKEN-OWNER-ADDRESS')
+   *  .then((res) => {
+   *    const { nfts, isFinal, cursor } = res;
+   *    console.log(nfts); // list of nft information.
+   *  })
+   *  .catch((error) => {
+   *    console.log(error);
+   *  })
+   * ```
+   */
+  async getAinftsByAccount(address: string, limit?: number, cursor?: string): Promise<AinftTokenSearchResponse> {
+    return this.searchNfts({ userAddress: address, limit, cursor });
+  }
+
+  /**
+   * Searches for AINFT objects created on the AIN Blockchain.
+   * @param {NftSearchParams} searchParams The parameters to search AINFT object.
+   * @returns Returns searched AINFT objects.
+   * 
+   * ```ts
+   * import AinftJs from '@ainft-team/ainft-js';
+   * 
+   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * const params = {
+   *  userAddress: '0x...',
+   *  name: '...',
+   *  symbol: '...',
+   *  limit: 5,
+   *  cursor: '...'
+   * }
+   * ainftJs.nft.searchAinftObjects(params)
+   *  .then((res) => {
+   *    const { ainftObjects, isFinal, cursor } = res;
+   *    console.log(ainftObjects); // list of ainftObject information.
+   *  })
+   *  .catch((error) => {
+   *    console.log(error);
+   *  })
+   * ```
+   */
+  searchAinftObjects(searchParams: NftSearchParams): Promise<AinftObjectSearchResponse> {
+    let query: Record<string, any> = {};
+    if (searchParams) {
+      const { userAddress, ainftObjectId, name, symbol, limit, cursor } = searchParams;
+      query = { userAddress, ainftObjectId, name, symbol, cursor, limit };
+    }
+    const trailingUrl = `native/search/ainftObjects`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  removeNftSymbol({
-    appId,
-    symbol,
-  }: RemoveNftSymbolParams): Promise<NftContractBySymbol> {
-    const query = { appId };
-    const trailingUrl = `symbol/${symbol}`;
-    return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
-  }
-
-  getNftSymbol({
-    appId,
-    symbol,
-  }: GetNftSymbolParams): Promise<NftContractBySymbol> {
-    const query = { appId, symbol: encodeURIComponent(symbol) };
-    const trailingUrl = 'info';
+  /**
+   * Searches for AINFTs on the ain blockchain.
+   * @param {NftSearchParams} searchParams The parameters to search AINFT.
+   * @returns Returns searched AINFTs
+   * ```ts
+   * import AinftJs from '@ainft-team/ainft-js';
+   * 
+   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * const params = {
+   *  userAddress: '0x...',
+   *  name: '...',
+   *  symbol: '...',
+   *  limit: 5,
+   *  cursor: '...',
+   *  tokenId: '...'
+   * }
+   * ainftJs.nft.searchNfts(params)
+   *  .then((res) => {
+   *    const { nfts, isFinal, cursor } = res;
+   *    console.log(nfts); // list of nfts information.
+   *  })
+   *  .catch((error) => {
+   *    console.log(error);
+   *  })
+   * ```
+   */
+  searchNfts(searchParams: NftSearchParams): Promise<AinftTokenSearchResponse> {
+    let query: Record<string, any> = {};
+    if (searchParams) {
+      const { userAddress, ainftObjectId, name, symbol, limit, cursor, tokenId } = searchParams;
+      query = { userAddress, ainftObjectId, name, symbol, cursor, limit, tokenId };
+    }
+    const trailingUrl = `native/search/nfts`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
-  getNft({
+  /**
+   * Upload the asset file using the buffer.
+   * @param {UploadAssetFromBufferParams} UploadAssetFromBufferParams 
+   * @returns {Promise<string>} Return the asset url.
+   */
+  uploadAsset({
     appId,
-    chain,
-    network,
-    contractAddress,
-    tokenId,
-  }: GetNftParams): Promise<NftToken> {
-    const query = { appId, contractAddress, tokenId };
-    const trailingUrl = `info/${chain}/${network}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
-  }
-
-  getNftContractInfo({
-    appId,
-    chain,
-    network,
-    contractAddress,
-  }: GetNftContractInfoParams): Promise<NftContractInfo> {
-    const query = { appId, contractAddress };
-    const trailingUrl = `info/${chain}/${network}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
-  }
-
-  getUserNftList({
-    appId,
-    chain,
-    network,
-    userAddress,
-    contractAddress,
-    tokenId,
-  }: GetUserNftListParams): Promise<NftCollections> {
-    const query: any = {
+    buffer,
+    filePath
+  }: UploadAssetFromBufferParams): Promise<string> {
+    const trailingUrl = `asset/${appId}`;
+    return this.sendFormRequest(HttpMethod.POST, trailingUrl, {
       appId,
-      ...(contractAddress && { contractAddress }),
-      ...(tokenId && { tokenId }),
-    };
-    const trailingUrl = `info/${chain}/${network}/${userAddress}`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+      filePath
+    }, {
+      asset: {
+        filename: filePath,
+        buffer
+      }
+    });
   }
 
-  setNftMetadata({
+  /**
+   * Upload the asset file using the data url.
+   * @param {UploadAssetFromDataUrlParams} UploadAssetFromDataUrlParams 
+   * @returns {Promise<string>} Return the asset url.
+   */
+  uploadAssetWithDataUrl({
     appId,
-    chain,
-    network,
-    contractAddress,
-    tokenId,
-    metadata,
-    ownerAddress,
-    imageData
-  }: SetNftMetadataParams): Promise<NftMetadata> {
-    const body = { appId, metadata, ownerAddress, imageData };
-    const trailingUrl = `info/${chain}/${network}/${contractAddress}/${tokenId}/metadata`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
-  createNftCollection({
-    address,
-    chain,
-    network,
-    appId,
-    collectionId,
-    symbol,
-    name,
-    connectWhitelist,
-    tokenUpdatePermission
-  }: CreateNftCollectionParams): Promise<TransactionInput> {
+    dataUrl,
+    filePath
+  }: UploadAssetFromDataUrlParams): Promise<string> {
     const body = {
-      address,
-      collectionId,
-      symbol,
-      name,
-      connectWhitelist,
-      tokenUpdatePermission,
+      appId,
+      dataUrl,
+      filePath
     };
-    const trailingUrl = `native/${appId}/${chain}/${network}/collection`;
+    const trailingUrl = `asset/${appId}`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  mintNft({
-    address,
-    chain,
-    network,
+  /**
+   * Delete the asset you uploaded.
+   * @param {DeleteAssetParams} DeleteAssetParams 
+   */
+  deleteAsset({
     appId,
-    collectionId,
-    metadata,
-    toAddress,
-    tokenId,
-  }: MintNftParams): Promise<TransactionInput> {
-    const body = {
-      address,
-      metadata,
-      toAddress,
-      tokenId,
-    };
-    const trailingUrl = `native/${appId}/${chain}/${network}/${collectionId}/mint`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
-  searchNft({
-    address,
-    appId,
-    collectionId,
-    chain,
-    network,
-  }: SearchNftOption): Promise<NftToken[]> {
-    const query = { address, appId, collectionId, chain, network };
-    const trailingUrl = `native/search`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
-  }
-
-  transferNft({
-    address,
-    chain,
-    network,
-    appId,
-    collectionId,
-    tokenId,
-    toAddress,
-  }: TransferNftParams): Promise<TransactionInput> {
-    const body = {
-      address,
-      toAddress,
-    };
-    const trailingUrl = `native/${appId}/${chain}/${network}/${collectionId}/${tokenId}/transfer`;
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+    filePath
+  }: DeleteAssetParams): Promise<void> {
+    const encodeFilePath = encodeURIComponent(filePath)
+    const trailingUrl = `asset/${appId}/${encodeFilePath}`;
+    return this.sendRequest(HttpMethod.DELETE, trailingUrl);
   }
 }

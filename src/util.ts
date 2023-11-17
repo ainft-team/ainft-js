@@ -1,14 +1,15 @@
 import stringify = require("fast-json-stable-stringify");
 import { HttpMethod } from "./types";
+import { TransactionResult } from "@ainblockchain/ain-js/lib/types";
 
-export const buildData = (method: HttpMethod, path: string, timestamp: number, data: any) => {
+export const buildData = (method: HttpMethod, path: string, timestamp: number, data?: Record<string, any>) => {
   const _data: any = {
     method,
     path,
     timestamp
   }
 
-  if (Object.keys(data).length === 0) {
+  if (!data || Object.keys(data).length === 0) {
     return _data;
   } 
 
@@ -29,4 +30,22 @@ export function sleep(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+export function serializeEndpoint(endpoint: string) {
+  return endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint;
+}
+
+export function isTransactionSuccess(transactionResponse: any) {
+  const { result } = transactionResponse;
+  if (result.code && result.code !== 0) {
+    return false;
+  }
+
+  if (result.result_list) {
+    const results = Object.values(result.result_list);
+    return results.every((_result: any) => _result.code === 0);
+  }
+
+  return true;
 }

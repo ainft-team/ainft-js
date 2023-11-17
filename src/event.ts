@@ -1,4 +1,4 @@
-import AinftBase from './ainftBase';
+import FactoryBase from './factoryBase';
 import {
   AddEventActivityParams,
   CreateEventParams,
@@ -15,10 +15,14 @@ import {
   RewardInfo,
 } from './types';
 
-export default class Event extends AinftBase {
+/**
+ * This class supports event functionality for activating tokenomics in the community.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
+export default class Event extends FactoryBase {
   /**
-   * Create a new event. Set the tasks to be performed and the rewards to receive.
-   * @param {CreateEventParams} CreateEventParams
+   * Creates a new event. Sets the tasks to be performed and the rewards to receive.
+   * @param {CreateEventParams} CreateEventParams The parameters to create event.
    */
   create({
     appId,
@@ -45,8 +49,8 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * Update an existing event.
-   * @param {Partial<CreateEventParams>} UpdateEventParams
+   * Updates an event.
+   * @param {Partial<CreateEventParams>} UpdateEventParams The parameters to update event.
    */
   update({
     appId,
@@ -70,9 +74,9 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * Delete an existing event.
-   * @param {string} appId
-   * @param {string} eventId
+   * Deletes an event.
+   * @param {string} appId The ID of app.
+   * @param {string} eventId The ID of event.
    */
   delete(appId: string, eventId: string): Promise<void> {
     const query = { appId };
@@ -81,9 +85,10 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * Get event.
-   * @param {string} appId
-   * @param {string} eventId
+   * Gets event.
+   * @param {string} appId The ID of app.
+   * @param {string} eventId The ID of event.
+   * @returns Returns event information.
    */
   get(appId: string, eventId: string): Promise<TokenomicsEvent> {
     const query = { appId };
@@ -93,22 +98,20 @@ export default class Event extends AinftBase {
 
   // NOTE(liayoo): calling this function will create a user if the userId doesn't exist.
   /**
-   * Add an activity that matches the event.
-   * @param {AddEventActivityParams} AddEventActivityParams
-   * @returns return activity ID.
+   * Adds an activity that matches the event.
+   * @param {AddEventActivityParams} AddEventActivityParams The parameters to add event activity.
+   * @returns Returns activity ID.
    */
   addActivity({
     appId,
     userId,
     eventId,
-    smartGalleryPosId,
     taskInstanceId,
     data: _data,
   }: AddEventActivityParams): Promise<string> {
     const body = {
       appId,
       userId,
-      smartGalleryPosId,
       taskInstanceId,
       data: _data,
     };
@@ -117,8 +120,9 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * @param {GetEventActivityParams} GetEventActivityParams
-   * @returns {Promise<Activity | null>} Return activity object or null.
+   * Gets activity information.
+   * @param {GetEventActivityParams} GetEventActivityParams The parameters to get event activity.
+   * @returns {Promise<Activity | null>} Returns activity object or null.
    */
   getActivity({
     appId,
@@ -140,8 +144,8 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * Update the activity's status. Activity status includes CREATED, REWARDED, and FAILED.
-   * @param {UpdateEventActivityStatusParams} UpdateEventActivityStatusParams
+   * Updates the activity's status. Activity status includes CREATED, REWARDED, and FAILED.
+   * @param {UpdateEventActivityStatusParams} UpdateEventActivityStatusParams The parameters to update activity status
    */
   updateActivityStatus({
     eventId,
@@ -161,7 +165,7 @@ export default class Event extends AinftBase {
 
   /**
    * Returns a list of TaskTypes to use for events.
-   * @param {string} appId
+   * @param {string} appId The ID of app.
    */
   getTaskTypeList(appId: string): Promise<TaskType[]> {
     const query = { appId };
@@ -171,7 +175,7 @@ export default class Event extends AinftBase {
 
   /**
    * Returns a list of RewardTypes to use for events.
-   * @param {string} appId
+   * @param {string} appId The ID of app.
    */
   getRewardTypeList(appId: string): Promise<RewardType[]> {
     const query = { appId };
@@ -181,9 +185,9 @@ export default class Event extends AinftBase {
 
   /**
    * Return user's pending reward from event.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} eventId
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of the user who wants to check pending rewards.
+   * @param {string} eventId The ID of event to check pending rewards.
    */
   getPendingRewards(
     appId: string,
@@ -196,11 +200,11 @@ export default class Event extends AinftBase {
   }
 
   /**
-   * Provide event rewards to users.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} eventId
-   * @param {RewardOptions} options If the reward has not been confirmed, you can enter the amount of reward.
+   * Provides event rewards to users.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user to be rewarded.
+   * @param {string} eventId The ID of the event that the user participated in.
+   * @param {RewardOptions} options The options of reward.
    */
   reward(
     appId: string,
@@ -219,9 +223,9 @@ export default class Event extends AinftBase {
 
   /**
    * Returns list of user's reward history.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} eventId
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of the user who wants to check reward history.
+   * @param {string} eventId The ID of event to check reward history.
    */
   getRewardHistory(
     appId: string,
@@ -238,9 +242,9 @@ export default class Event extends AinftBase {
 
   /**
    * Returns list of user's activity.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} eventId
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of the user who wants to check the activity history.
+   * @param {string} eventId The ID of the event you want to check activity history.
    */
   getActivityHistory(
     appId: string,

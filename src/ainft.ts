@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
+import * as AinUtil from '@ainblockchain/ain-util';
 import Nft from './nft';
 import Credit from './credit';
 import Auth from './auth';
@@ -9,7 +10,16 @@ import Store from './store';
 import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
+import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT } from './constants';
+import { serializeEndpoint } from './util';
+import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
+import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
+import Eth from './eth';
+import _ from 'lodash';
 
+/**
+ * A class that establishes a blockchain and ainft server connection and initializes other classes.
+ */
 export default class AinftJs {
   private baseUrl: string;
   public nft: Nft;
@@ -22,13 +32,24 @@ export default class AinftJs {
   public personaModels: PersonaModels;
   public textToArt: TextToArt;
   public activity: Activity;
+  public eth: Eth;
 
-  constructor(accessKey: string, nftServerEndpoint: string, ainBlockchainEndpoint: string, chainId: 0 | 1) {
-    this.baseUrl = nftServerEndpoint;
-    this.ain = new Ain(ainBlockchainEndpoint, chainId);
-    this.setAccessKey(accessKey);
+  constructor(
+    privateKey: string,
+    config?: {
+      ainftServerEndpoint?: string,
+      ainBlockchainEndpoint?: string,
+      chainId?: number,
+    }
+  ) {
+    this.baseUrl = _.get(config, 'ainftServerEndpoint') || AINFT_SERVER_ENDPOINT['prod'];
+    const stage = this.getStage(this.baseUrl);
+
+    this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAINID[stage]);
+    this.setPrivateKey(privateKey);
 
     this.nft = new Nft(this.ain, this.baseUrl, '/nft');
+    this.eth = new Eth(this.ain, this.baseUrl, '/nft');
     this.credit = new Credit(this.ain, this.baseUrl, '/credit');
     this.auth = new Auth(this.ain, this.baseUrl, '/auth');
     this.discord = new Discord(this.ain, this.baseUrl, '/discord');
@@ -57,6 +78,19 @@ export default class AinftJs {
   }
 
   /**
+   * Set AIN blockchain network info
+   * @param providerUrl
+   * @param chainId
+   */
+  setAiNetworkInfo(
+    providerUrl: string,
+    chainId: number,
+    axiosConfig?: any
+  ) {
+    this.ain.setProvider(providerUrl, chainId, axiosConfig);
+  }
+
+  /**
    * Return the currently registered Access Account.
    * @returns
    */
@@ -65,13 +99,22 @@ export default class AinftJs {
   }
 
   /**
-   * Set a new accessKey. From now on, you can access the apps that match your new accessKey.
-   * @param accessKey
+   * Set a new privateKey. From now on, you can access the apps that match your new privateKey.
+   * @param privateKey
    */
-  setAccessKey(accessKey: string) {
+  setPrivateKey(privateKey: string) {
     // NOTE(liayoo): always have only 1 access account for now
     this.ain.wallet.clear();
-    this.ain.wallet.addAndSetDefaultAccount(accessKey);
+    this.ain.wallet.addAndSetDefaultAccount(privateKey);
+  }
+
+  setSigner(signer: Signer) {
+    this.ain.setSigner(signer);
+  }
+
+  setAinWalletSigner() {
+    const signer = new AinWalletSigner();
+    this.setSigner(signer);
   }
 
   /**
@@ -80,6 +123,17 @@ export default class AinftJs {
    */
   async getStatus(): Promise<{ health: boolean }> {
     return (await axios.get(`${this.baseUrl}/status`)).data;
+  }
+
+  static createAccount() {
+    return AinUtil.createAccount();
+  }
+
+  private getStage(endpoint: string) {
+    if (AINFT_SERVER_ENDPOINT.prod === endpoint) {
+      return 'prod';
+    }
+    return 'dev';
   }
 }
 

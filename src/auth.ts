@@ -1,42 +1,55 @@
-import AinftBase from './ainftBase';
-import { MIN_GAS_PRICE } from './constants';
+import Reference from '@ainblockchain/ain-js/lib/ain-db/ref';
+import FactoryBase from './factoryBase';
+import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from './constants';
 import { HttpMethod, User } from './types';
-export default class Auth extends AinftBase {
-  async initializeApp(appId: string, userId: string, owners?: string[]): Promise<void> {
-    console.log('Starting app initialization... This may take up to a minute.');
-    const accessKey = this.ain.wallet.defaultAccount?.address!;
-    const createAppRes = await this.createApp(appId, userId, accessKey, owners);
-    console.log(`create app tx hash - ${createAppRes.txHash}`);
 
-    const stakeRes = await this.initialStake(appId, userId);
-    console.log(`stake tx hash - ${stakeRes.txHash}`);
-
-    const setRuleRes = await this.setBlockchainActivityRule(appId);
-    console.log(`set rule tx hash - ${setRuleRes.txHash}`);
-  }
-
-  createApp(appId: string, userId: string, accessKey: string, owners?: string[]) {
-    const body = { appId, userId, accessKey, owners };
-    const trailingUrl = 'create_app';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+/**
+ * This class supports creating AINFT factory app and users. \
+ * Do not create it directly; Get it from AinftJs instance.
+ */
+export default class Auth extends FactoryBase {
+  /**
+   * Creates AIN Blockchain app using private key.
+   * @param {string} appname - The name of app.
+   * @returns Returns transaction result.
+   */
+  async createApp(appname: string) {
+    const address = await this.ain.signer.getAddress();
+    return this.ain.db.ref(`/manage_app/${appname}/create/${Date.now()}`).setValue({
+      value: {
+        admin: {
+          [address]: true,
+        },
+        service: {
+          staking: {
+            lockup_duration: APP_STAKING_LOCKUP_DURATION_MS,
+          },
+        },
+      },
+      address,
+      nonce: -1,
+      gas_price: MIN_GAS_PRICE,
+    });
   }
 
   /**
-   * A function that stakes all initial ains. Use it if staking is not done after intializeApp.
+   * Creates AINFT factory user in app.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user to create.
+   * @returns
    */
-  // TODO(hyeonwoong): Add stake API with the user's personal account
-  initialStake(appId: string, userId: string) {
-    const body = { appId, userId };
-    const trailingUrl = 'initial_stake';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
   createUser(appId: string, userId: string): Promise<User> {
     const body = { appId, userId };
     const trailingUrl = 'create_user_account';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * Create AINFT factory admin user in app.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user to be admin.
+   * @returns
+   */
   createAdmin(appId: string, userId: string): Promise<User> {
     const body = { appId, userId };
     const trailingUrl = 'create_admin_account';
@@ -44,18 +57,25 @@ export default class Auth extends AinftBase {
   }
   // TODO(hyeonwoong): add registerUserToAdmin and deregisterUserFromAdmin
 
-  setBlockchainActivityRule(appId: string) {
-    const body = { appId };
-    const trailingUrl = 'ain_rule/activity';
-    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
-  }
-
+  /**
+   * Gets AINFT factory user in app.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user to get.
+   * @returns Return user information.
+   */
   getUser(appId: string, userId: string): Promise<User> {
     const query = { appId };
     const trailingUrl = `user/${userId}`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
   }
 
+  /**
+   * Adds ETH address info to AINFT factory user.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user.
+   * @param {string} ethAddress The ethereum address to add.
+   * @returns
+   */
   addUserEthAddress(
     appId: string,
     userId: string,
@@ -69,6 +89,13 @@ export default class Auth extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * Removes ETH address info from user.
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user.
+   * @param {string} ethAddress The ethereum address to delete.
+   * @returns
+   */
   removeUserEthAddress(
     appId: string,
     userId: string,
@@ -82,6 +109,14 @@ export default class Auth extends AinftBase {
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
+  /**
+   * Registers contract to managed contract. By registering as a managed contract, metadata can be managed in AINFT Factory.
+   * @param {string} appId The ID of app.
+   * @param {string} chain The symbol of chain with a contract.
+   * @param {string} network The name of network.
+   * @param {string} contractAddress The address of contract.
+   * @returns
+   */
   addManagedContract(
     appId: string,
     chain: string,
@@ -98,6 +133,14 @@ export default class Auth extends AinftBase {
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
+  /**
+   * Removes managed contract.
+   * @param {string} appId The ID of app.
+   * @param {string} chain The symbol of chain with a contract.
+   * @param {string} network The name of network.
+   * @param {string} contractAddress The address of contract.
+   * @returns
+   */
   removeManagedContract(
     appId: string,
     chain: string,
@@ -114,77 +157,58 @@ export default class Auth extends AinftBase {
     return this.sendRequest(HttpMethod.DELETE, trailingUrl, query);
   }
 
-  async registerBlockchainApp(
-    appId: string,
-    userId: string,
-    accessAinAddress?: string
-  ) {
-    const ownerAddress = this.ain.wallet.defaultAccount?.address;
+  /**
+   * Registers exsiting AIN blockchain app to AINFT Factory.
+   * @param {string} appId The ID of app.
+   * @param {string} accessAinAddress This is the address of the account that will be accessible to the AINFT Factory app. If not set, it is set to the address of the account set as the privateKey.
+   * @returns
+   */
+  async registerBlockchainApp(appId: string, accessAinAddress?: string) {
+    const ownerAddress = await this.ain.signer.getAddress();
     const body = {
       appId,
-      userId,
       ownerAddress,
       accessAinAddress,
     };
     const trailingUrl = `register_blockchain_app`;
-    const { adminAddress, txHash } = await this.sendRequest(
-      HttpMethod.POST,
-      trailingUrl,
-      body
-    );
-
-    console.log(
-      `The gas fee for setting the admin account as the owner of blockchain app has been sent.`
-    );
-    await this.waitTransaction(txHash, 3);
-
-    const setOwnerRes = await this.setOwner(appId, adminAddress);
-    if (setOwnerRes.result.code !== 0) {
-      console.log(
-        'Failed to set nft server admin address as owner. Please check fail response.'
-      );
-      console.log(setOwnerRes);
-    } else {
-      const msg =
-        'You have successfully registered your blockchain app to the nft server.\n' +
-        `txHash: ${setOwnerRes.tx_hash}\n\n` +
-        'Apps created outside the nft server do not support initial staking. If you would like an initial staking, please contact the ainftJs team.\n\n' +
-        'For smooth use of ainftJs, it is recommended to use the following function.\n' +
-        '- ainftJs.auth.setBlockchainActivityRule';
-      console.log(msg);
-    }
+    return await this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
-  private setOwner(appId: string, address: string) {
-    return this.ain.db.ref(`/apps/${appId}`).setOwner({
-      value: {
-        '.owner': {
-          owners: {
-            [address]: {
-              branch_owner: true,
-              write_function: true,
-              write_owner: true,
-              write_rule: true,
-            },
-          },
-        },
-      },
-      nonce: -1,
-      gas_price: MIN_GAS_PRICE,
-    });
+  /**
+   * Gets transaction body to delegate app.
+   * App permission is obtained from AINFT factory, and trigger function for ainft is registered.
+   * @param {string} appId The ID of app.
+   * @returns
+   */
+  async getTxBodyForDelegateApp(appId: string) {
+    const address = await this.ain.signer.getAddress();
+    const body = { appId, address };
+    const trailingUrl = `delegate_app`;
+    return this.sendRequest(HttpMethod.POST, trailingUrl, body);
+  }
+
+  /**
+   * Sends transaction to delegate app using private key.
+   * App permission is obtained from ainft factory, and trigger function for ainft is registered.
+   * @param {string} appId The ID of app.
+   * @returns
+   */
+  async delegateApp(appId: string) {
+    const txBody = await this.getTxBodyForDelegateApp(appId);
+    return this.ain.sendTransaction(txBody);
   }
 
   /**
    * You can get user deposit crypto address.
    * If user doesn't have address, create new deposit account.
-   * @param {string} appId
-   * @param {string} userId
-   * @param {string} chain
+   * @param {string} appId The ID of app.
+   * @param {string} userId The ID of user.
+   * @param {string} chain The symbol of chain.
    */
   getUserDepositAddress(
     appId: string,
     userId: string,
-    chain: string,
+    chain: string
   ): Promise<string> {
     const body = {
       appId,
@@ -196,14 +220,11 @@ export default class Auth extends AinftBase {
 
   /**
    * You can add blockchain app owners.
-   * @param {string} appId 
-   * @param {string[]} owners 
+   * @param {string} appId The ID of app.
+   * @param {string[]} owners The list of addresses to be owner.
    * @returns {string} transaction hash
    */
-  addOwners(
-    appId: string,
-    owners: string[],
-  ): Promise<string> {
+  addOwners(appId: string, owners: string[]): Promise<string> {
     const body = {
       appId,
       owners,
