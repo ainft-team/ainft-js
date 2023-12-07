@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
+import Ainize from '@ainize-team/ainize-sdk';
 import * as AinUtil from '@ainblockchain/ain-util';
 import Nft from './nft';
 import Credit from './credit';
@@ -10,11 +11,12 @@ import Store from './store';
 import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
+import Eth from './eth';
+import AI from './ai';
+import ChatAI from './chatai';
 import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT } from './constants';
-import { serializeEndpoint } from './util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
-import Eth from './eth';
 import _ from 'lodash';
 
 /**
@@ -22,6 +24,7 @@ import _ from 'lodash';
  */
 export default class AinftJs {
   private baseUrl: string;
+  private ainize: Ainize;
   public nft: Nft;
   public credit: Credit;
   public auth: Auth;
@@ -33,6 +36,8 @@ export default class AinftJs {
   public textToArt: TextToArt;
   public activity: Activity;
   public eth: Eth;
+  public ai: AI;
+  public chatai: ChatAI;
 
   constructor(
     privateKey: string,
@@ -44,8 +49,14 @@ export default class AinftJs {
   ) {
     this.baseUrl = _.get(config, 'ainftServerEndpoint') || AINFT_SERVER_ENDPOINT['prod'];
     const stage = this.getStage(this.baseUrl);
+    const chainId = _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAINID[stage];
 
-    this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAINID[stage]);
+    if (!(chainId === 0 || chainId === 1)) {
+      throw new Error(`Invalid chain ID: ${chainId}`);
+    }
+
+    this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId);
+    this.ainize = new Ainize(chainId);
     this.setPrivateKey(privateKey);
 
     this.nft = new Nft(this.ain, this.baseUrl, '/nft');
@@ -58,6 +69,8 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
     this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
     this.activity = new Activity(this.ain, this.baseUrl, '/activity');
+    this.ai = new AI(this.ain, this.ainize);
+    this.chatai = new ChatAI(this.ain, this.ainize);
   }
 
   /**
