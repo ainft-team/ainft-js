@@ -22,3 +22,12 @@ export const APP_STAKING_LOCKUP_DURATION_MS = 30 * 1000 // 30 seconds
 export const SUPPORTED_AINFT_STANDARDS = {
   721: '721',
 }
+
+export const Path = {
+  app: (appId: string): any => {
+    return {
+      root: () => `/apps/${appId}`,
+      connectionStatus: (serviceName: string) => `${Path.app(appId).root()}/ai/${serviceName}/status`
+    };
+  },
+}
