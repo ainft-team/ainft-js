@@ -1,6 +1,7 @@
 import stringify = require("fast-json-stable-stringify");
 import { HttpMethod } from "./types";
-import { TransactionResult } from "@ainblockchain/ain-js/lib/types";
+import { SetOperation, TransactionInput } from "@ainblockchain/ain-js/lib/types";
+import { MIN_GAS_PRICE } from "./constants";
 
 export const buildData = (method: HttpMethod, path: string, timestamp: number, data?: Record<string, any>) => {
   const _data: any = {
@@ -20,6 +21,14 @@ export const buildData = (method: HttpMethod, path: string, timestamp: number, d
   }
 
   return _data;
+}
+
+export const buildTransactionBody = (operation: SetOperation): TransactionInput => {
+  return {
+    operation: operation,
+    gas_price: MIN_GAS_PRICE,
+    nonce: -1,
+  };
 }
 
 export const isJoiError = (error: any) => {
