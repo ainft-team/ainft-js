@@ -101,10 +101,10 @@ export default class Nft extends FactoryBase {
    *  })
    * ```
    */
-  async get(ainftObjectId: string) {
+  async get(ainftObjectId: string): Promise<Ainft721Object> {
     const { ainftObjects } = await this.searchAinftObjects({ ainftObjectId });
     if (ainftObjects.length === 0) {
-      throw new Error(`Not found ainft`);
+      throw new Error('AINFT object not found');
     }
     const ainftObject = ainftObjects[0];
     return new Ainft721Object(ainftObject, this.ain, this.baseUrl);
