@@ -28,14 +28,10 @@ describe("AI", () => {
       value: {
         ".rule": {
           write:
-            "!!getValue('/apps/' + $serviceName) && util.isString(newData.status) && (newData.status === 'CONNECTED' || newData.status === 'DISCONNECTED')",
+            "!!getValue('/apps/' + $serviceName) && util.isDict(newData) && util.isString(newData.name) && util.isString(newData.url)",
         },
       },
     });
-  }
-
-  function isDate(timestamp: number): boolean {
-    return !isNaN(new Date(timestamp).getTime());
   }
 
   beforeAll(async () => {
@@ -58,6 +54,7 @@ describe("AI", () => {
   });
 
   it("should create ainft object", () => {
+    console.log(ainftObject);
     expect(ainftObject.id).toMatch(/^0x[a-fA-F0-9]{40}$/);
     expect(ainftObject.name).toBe("name");
     expect(ainftObject.symbol).toBe("symbol");
@@ -78,30 +75,20 @@ describe("AI", () => {
         "$serviceName": {
           ".rule": {
             "write":
-              "!!getValue('/apps/' + $serviceName) && util.isString(newData.status) && (newData.status === 'CONNECTED' || newData.status === 'DISCONNECTED')",
+              "!!getValue('/apps/' + $serviceName) && util.isDict(newData) && util.isString(newData.name) && util.isString(newData.url)",
           },
         },
       },
     });
   });
 
-  it("should send transaction to connect", async () => {
-    const serviceName = "ainize_test14";
-    await ainftJs.ai.connect(ainftObject, serviceName);
-    const { status, timestamp } = await ainftJs.ain.db
-      .ref(`/apps/${ainftObject.appId}/ai/${serviceName}`)
+  it("should send transaction to configure", async () => {
+    const aiName = "ainize_test14";
+    await ainftJs.baseAI.config(ainftObject.id, aiName);
+    const value = await ainftJs.ain.db
+      .ref(`/apps/${ainftObject.appId}/ai/${aiName}`)
       .getValue();
-    expect(status).toBe("CONNECTED");
-    expect(isDate(timestamp)).toBe(true);
-  });
-
-  it("should send transaction to disconnect", async () => {
-    const serviceName = "ainize_test14";
-    await ainftJs.ai.disconnect(ainftObject, serviceName);
-    const { status, timestamp } = await ainftJs.ain.db
-      .ref(`/apps/${ainftObject.appId}/ai/${serviceName}`)
-      .getValue();
-    expect(status).toBe("DISCONNECTED");
-    expect(isDate(timestamp)).toBe(true);
+    expect(value.name).toBe(aiName);
+    expect(value.url).toBe(`https://${aiName}.ainetwork.xyz`);
   });
 });

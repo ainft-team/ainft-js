@@ -114,11 +114,6 @@ export enum SchedulerID {
   LMS_DISCRETE = 'lms_discrete',
 }
 
-export enum AiConnectionStatus {
-  CONNECTED = "CONNECTED",
-  DISCONNECTED = "DISCONNECTED",
-}
-
 export interface AddNftSymbolParams {
   /** The ID of app. */
   appId: string;
