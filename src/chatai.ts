@@ -1,8 +1,8 @@
 import Ain from "@ainblockchain/ain-js";
 import Ainize from "@ainize-team/ainize-sdk";
-import AI from "./ai";
+import BaseAI from "./baseai";
 
-export default class ChatAI extends AI {
+export default class ChatAI extends BaseAI {
   constructor(ain: Ain, ainize: Ainize) {
     super(ain, ainize);
   }
