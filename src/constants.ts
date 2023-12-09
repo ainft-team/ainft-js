@@ -27,7 +27,7 @@ export const Path = {
   app: (appId: string): any => {
     return {
       root: () => `/apps/${appId}`,
-      connectionStatus: (serviceName: string) => `${Path.app(appId).root()}/ai/${serviceName}/status`
+      aiConfig: (serviceName: string) => `${Path.app(appId).root()}/ai/${serviceName}`
     };
   },
 }

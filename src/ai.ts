@@ -2,7 +2,6 @@ import Ain from "@ainblockchain/ain-js";
 import Ainize from "@ainize-team/ainize-sdk";
 import Ainft721Object from "./ainft721Object";
 import { Path } from "./constants";
-import { AiConnectionStatus } from "./types";
 import { buildTransactionBody } from "./util";
 
 export default class AI {
@@ -14,11 +13,8 @@ export default class AI {
     this.ainize = ainize;
   }
 
-  async connect(
-    ainftObject: Ainft721Object,
-    serviceName: string
-  ): Promise<any> {
-    const appId = ainftObject.appId;
+  async config(ainftObjectId: string, aiName: string): Promise<any> {
+    const appId = Ainft721Object.getAppId(ainftObjectId);
     const appPath = Path.app(appId).root();
     const app = await this.ain.db.ref(appPath).getValue();
     if (!app) {
@@ -27,57 +23,19 @@ export default class AI {
 
     const address = this.ain.signer.getAddress();
     if (address !== app.owner) {
-      throw new Error(`Not AINFT object owner: ${address}`);
+      throw new Error("Address is not AINFT object owner");
     }
 
-    const service = await this.ainize!.getService(serviceName);
-    // TODO(jiyoung): update to handle boolean return from service.isRunning() when implemented.
+    const service = await this.ainize!.getService(aiName); // aiName == serviceName
+    // TODO(jiyoung): update to handle boolean return from service.isRunning() when implemented by ainize-sdk.
     await service.isRunning();
 
     const txBody = buildTransactionBody({
       type: "SET_VALUE",
-      ref: `/apps/${appId}/ai/${serviceName}`,
+      ref: `/apps/${appId}/ai/${aiName}`,
       value: {
-        status: AiConnectionStatus.CONNECTED,
-        timestamp: Date.now(),
-      },
-    });
-    return this.ain.sendTransaction(txBody);
-  }
-
-  async disconnect(
-    ainftObject: Ainft721Object,
-    serviceName: string
-  ): Promise<any> {
-    const appId = ainftObject.appId;
-    const appPath = Path.app(appId).root();
-    const app = await this.ain.db.ref(appPath).getValue();
-    if (!app) {
-      throw new Error("AINFT object not found");
-    }
-
-    const address = this.ain.signer.getAddress();
-    if (address !== app.owner) {
-      throw new Error(`Not AINFT object owner: ${address}`);
-    }
-
-    const connectionStatusPath = Path.app(appId).connectionStatus(serviceName);
-    const connectionStatus = await this.ain.db
-      .ref(connectionStatusPath)
-      .getValue();
-    if (
-      !connectionStatus ||
-      connectionStatus !== AiConnectionStatus.CONNECTED
-    ) {
-      throw new Error(`AINFT object not connected to service`);
-    }
-
-    const txBody = buildTransactionBody({
-      type: "SET_VALUE",
-      ref: `/apps/${appId}/ai/${serviceName}`,
-      value: {
-        status: AiConnectionStatus.DISCONNECTED,
-        timestamp: Date.now(),
+        name: aiName,
+        url: `https://${aiName}.ainetwork.xyz`,
       },
     });
     return this.ain.sendTransaction(txBody);
