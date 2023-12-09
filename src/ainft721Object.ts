@@ -3,6 +3,7 @@ import FactoryBase from "./factoryBase";
 import { HttpMethod } from "./types";
 import Ain from "@ainblockchain/ain-js";
 
+// TODO(jiyoung): standardize naming for clarity (e.g. 'ainft', 'nft', 'ainft721Object', 'ainftObject')
 /**
  * The class of AINFT 721 object.
  */
@@ -35,7 +36,7 @@ export default class Ainft721Object extends FactoryBase {
     this.name = objectInfo.name;
     this.symbol = objectInfo.symbol;
     this.owner = objectInfo.owner;
-    this.appId = this.getAppId();
+    this.appId = Ainft721Object.getAppId(objectInfo.id);
   }
 
   /**
@@ -165,7 +166,7 @@ export default class Ainft721Object extends FactoryBase {
    * Gets app ID by AINFT object ID.
    * @param id 
    */
-  private getAppId(): string {
-    return `ainft721_${this.id.toLowerCase()}`;
+  static getAppId(id: string): string {
+    return `ainft721_${id.toLowerCase()}`;
   }
 }
