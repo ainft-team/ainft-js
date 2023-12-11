@@ -12,7 +12,7 @@ import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
 import Eth from './eth';
-import AI from './ai';
+import BaseAI from './baseai';
 import ChatAI from './chatai';
 import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT } from './constants';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
@@ -36,8 +36,8 @@ export default class AinftJs {
   public textToArt: TextToArt;
   public activity: Activity;
   public eth: Eth;
-  public ai: AI;
-  public chatai: ChatAI;
+  public baseAI: BaseAI;
+  public chatAI: ChatAI;
 
   constructor(
     privateKey: string,
@@ -69,8 +69,8 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
     this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
     this.activity = new Activity(this.ain, this.baseUrl, '/activity');
-    this.ai = new AI(this.ain, this.ainize);
-    this.chatai = new ChatAI(this.ain, this.ainize);
+    this.baseAI = new BaseAI(this.ain, this.ainize);
+    this.chatAI = new ChatAI(this.ain, this.ainize);
   }
 
   /**

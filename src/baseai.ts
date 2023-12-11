@@ -4,7 +4,7 @@ import Ainft721Object from "./ainft721Object";
 import { Path } from "./constants";
 import { buildTransactionBody } from "./util";
 
-export default class AI {
+export default class BaseAI {
   private ain: Ain;
   private ainize: Ainize;
 
@@ -27,9 +27,10 @@ export default class AI {
     }
 
     const service = await this.ainize!.getService(aiName); // aiName == serviceName
-    // TODO(jiyoung): update to handle boolean return from service.isRunning() when implemented by ainize-sdk.
+    // TODO(jiyoung): update to process service.isRunning() boolean return when implemented.
     await service.isRunning();
 
+    // TODO(jiyoung): switch to using service.getInformation() when implemented.
     const txBody = buildTransactionBody({
       type: "SET_VALUE",
       ref: `/apps/${appId}/ai/${aiName}`,

@@ -1,7 +1,7 @@
 import AinftJs from "../src/ainft";
 import Ainft721Object from "../src/ainft721Object";
 
-describe("AI", () => {
+describe("BaseAI", () => {
   let ainftJs: AinftJs;
   let ainftObject: Ainft721Object;
 
