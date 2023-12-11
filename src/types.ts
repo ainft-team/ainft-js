@@ -1113,3 +1113,7 @@ export interface SearchReponse {
   isFinal: boolean;
   cursor?: string;
 }
+
+export interface TransactionResult {
+  txHash: string
+}
