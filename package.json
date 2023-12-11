@@ -4,7 +4,7 @@
   "types": "dist/ainft.d.ts",
   "version": "1.0.0",
   "engines": {
-    "node": ">=12"
+    "node": ">=16"
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc",
