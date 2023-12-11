@@ -1,7 +1,7 @@
 import AinftJs from '../src/ainft';
 import Ainft721Object from '../src/ainft721Object';
 
-describe('BaseAi', () => {
+describe("ChatAi", () => {
   let ainftJs: AinftJs;
   let ainftObject: Ainft721Object;
 
@@ -38,19 +38,19 @@ describe('BaseAi', () => {
     const privateKey =
       'f0a2599e5629d4e67266169ea9ad1999f86995418391175af6d66005c1e1d96c';
     ainftJs = initAinftJs(privateKey);
-    ainftObject = await createAinftObject('name', 'symbol');
+    // ainftObject = await createAinftObject("name", "symbol");
     // NOTE(jiyoung): uncomment to reuse existing ainft object.
-    // ainftObject = new Ainft721Object(
-    //   {
-    //     id: "0x29b87a6435f06a0a0B0A50Db837199f43cfbAE2F",
-    //     name: "name",
-    //     symbol: "symbol",
-    //     owner: "0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0",
-    //   },
-    //   ainftJs.ain,
-    //   "https://ainft-api-dev.ainetwork.ai"
-    // );
-    await setWriteRule(ainftObject.appId);
+    ainftObject = new Ainft721Object(
+      {
+        id: "0x29b87a6435f06a0a0B0A50Db837199f43cfbAE2F",
+        name: "name",
+        symbol: "symbol",
+        owner: "0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0",
+      },
+      ainftJs.ain,
+      "https://ainft-api-dev.ainetwork.ai"
+    );
+    // await setWriteRule(ainftObject.appId);
   });
 
   it('should have private key', () => {
@@ -86,11 +86,11 @@ describe('BaseAi', () => {
     });
   });
 
-  it('should send transaction to configure', async () => {
+  it("should configure with valid inputs", async () => {
     const ainftObjectId = ainftObject.id;
     const aiName = 'ainize_test14';
 
-    const result = await ainftJs.baseAi.config(ainftObjectId, aiName);
+    const result = await ainftJs.chatAi.config(ainftObjectId, aiName);
     const value = await ainftJs.ain.db
       .ref(`/apps/${ainftObject.appId}/ai/${aiName}`)
       .getValue();
@@ -98,5 +98,32 @@ describe('BaseAi', () => {
     expect(result.txHash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(value.name).toBe(aiName);
     expect(value.url).toBe(`https://${aiName}.ainetwork.xyz`);
+  });
+
+  it("should fail if ainft object is not found", async () => {
+    const ainftObjectId = "not_found_id";
+    const aiName = "ainize_test14";
+
+    expect(ainftJs.chatAi.config(ainftObjectId, aiName)).rejects.toThrowError(
+      new Error("AINFT object not found")
+    );
+  });
+
+  it("should fail if signer is not ainft object owner", async () => {
+    const ainftObjectId = "0x0096aa0c748b950b4b491b0971c08d61277c53e5";
+    const aiName = "ainize_test14";
+
+    expect(ainftJs.chatAi.config(ainftObjectId, aiName)).rejects.toThrowError(
+      new Error(
+        "0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0 is not AINFT object owner"
+      )
+    );
+  });
+
+  it("should fail if ai service is not found", async () => {
+    const ainftObjectId = ainftObject.id;
+    const aiName = "not_found_ai";
+
+    expect(ainftJs.chatAi.config(ainftObjectId, aiName)).rejects.toThrow();
   });
 });

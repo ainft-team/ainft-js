@@ -26,7 +26,7 @@ export default class BaseAi {
 
     const address = this.ain.signer.getAddress();
     if (address !== app.owner) {
-      throw new Error("Address is not AINFT object owner");
+      throw new Error(`${address} is not AINFT object owner`);
     }
 
     const service = await this.ainize!.getService(aiName); // aiName == serviceName
