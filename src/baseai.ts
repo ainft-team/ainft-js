@@ -4,7 +4,7 @@ import Ainft721Object from "./ainft721Object";
 import { Path } from "./constants";
 import { buildTransactionBody } from "./util";
 
-export default class BaseAI {
+export default class BaseAi {
   private ain: Ain;
   private ainize: Ainize;
 

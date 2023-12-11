@@ -1,7 +1,7 @@
 import AinftJs from "../src/ainft";
 import Ainft721Object from "../src/ainft721Object";
 
-describe("BaseAI", () => {
+describe("BaseAi", () => {
   let ainftJs: AinftJs;
   let ainftObject: Ainft721Object;
 
@@ -84,7 +84,7 @@ describe("BaseAI", () => {
 
   it("should send transaction to configure", async () => {
     const aiName = "ainize_test14";
-    await ainftJs.baseAI.config(ainftObject.id, aiName);
+    await ainftJs.baseAi.config(ainftObject.id, aiName);
     const value = await ainftJs.ain.db
       .ref(`/apps/${ainftObject.appId}/ai/${aiName}`)
       .getValue();
