@@ -1,8 +1,8 @@
 import Ain from "@ainblockchain/ain-js";
 import Ainize from "@ainize-team/ainize-sdk";
 import Ainft721Object from "./ainft721Object";
-import { Path } from "./constants";
-import { buildTransactionBody } from "./util";
+import { BlockchainPathMap } from "./util";
+import { buildSetTransactionBody } from "./util";
 
 export default class BaseAi {
   private ain: Ain;
@@ -13,9 +13,9 @@ export default class BaseAi {
     this.ainize = ainize;
   }
 
-  async config(ainftObjectId: string, aiName: string): Promise<any> {
+  async config(ainftObjectId: string, aiName: string): Promise<void> {
     const appId = Ainft721Object.getAppId(ainftObjectId);
-    const appPath = Path.app(appId).root();
+    const appPath = BlockchainPathMap.app(appId).root();
     const app = await this.ain.db.ref(appPath).getValue();
     if (!app) {
       throw new Error("AINFT object not found");
@@ -31,7 +31,7 @@ export default class BaseAi {
     await service.isRunning();
 
     // TODO(jiyoung): switch to using service.getInformation() when implemented.
-    const txBody = buildTransactionBody({
+    const txBody = buildSetTransactionBody({
       type: "SET_VALUE",
       ref: `/apps/${appId}/ai/${aiName}`,
       value: {

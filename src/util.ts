@@ -23,7 +23,7 @@ export const buildData = (method: HttpMethod, path: string, timestamp: number, d
   return _data;
 }
 
-export const buildTransactionBody = (operation: SetOperation): TransactionInput => {
+export const buildSetTransactionBody = (operation: SetOperation): TransactionInput => {
   return {
     operation: operation,
     gas_price: MIN_GAS_PRICE,
@@ -57,4 +57,13 @@ export function isTransactionSuccess(transactionResponse: any) {
   }
 
   return true;
+}
+
+export const BlockchainPathMap = {
+  app: (appId: string): any => {
+    return {
+      root: () => `/apps/${appId}`,
+      aiConfig: (serviceName: string) => `${BlockchainPathMap.app(appId).root()}/ai/${serviceName}`
+    };
+  },
 }
