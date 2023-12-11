@@ -1,8 +1,8 @@
 import Ain from "@ainblockchain/ain-js";
 import Ainize from "@ainize-team/ainize-sdk";
 import Ainft721Object from "./ainft721Object";
-import { BlockchainPathMap } from "./util";
-import { buildSetTransactionBody } from "./util";
+import { BlockchainPathMap, buildSetTransactionBody } from "./util";
+import { TransactionResult } from "./types";
 
 export default class BaseAi {
   private ain: Ain;
@@ -13,7 +13,10 @@ export default class BaseAi {
     this.ainize = ainize;
   }
 
-  async config(ainftObjectId: string, aiName: string): Promise<void> {
+  async config(
+    ainftObjectId: string,
+    aiName: string
+  ): Promise<TransactionResult> {
     const appId = Ainft721Object.getAppId(ainftObjectId);
     const appPath = BlockchainPathMap.app(appId).root();
     const app = await this.ain.db.ref(appPath).getValue();
@@ -39,7 +42,8 @@ export default class BaseAi {
         url: `https://${aiName}.ainetwork.xyz`,
       },
     });
-    return this.ain.sendTransaction(txBody);
+    const result = await this.ain.sendTransaction(txBody);
+    return { txHash: result.tx_hash };
   }
 
   getStatus(): void {}

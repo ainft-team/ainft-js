@@ -83,11 +83,15 @@ describe("BaseAi", () => {
   });
 
   it("should send transaction to configure", async () => {
+    const ainftObjectId = ainftObject.id;
     const aiName = "ainize_test14";
-    await ainftJs.baseAi.config(ainftObject.id, aiName);
+
+    const result = await ainftJs.baseAi.config(ainftObjectId, aiName);
     const value = await ainftJs.ain.db
       .ref(`/apps/${ainftObject.appId}/ai/${aiName}`)
       .getValue();
+
+    expect(result.txHash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(value.name).toBe(aiName);
     expect(value.url).toBe(`https://${aiName}.ainetwork.xyz`);
   });
