@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
-import Ainize from '@ainize-team/ainize-sdk';
+import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
 import Nft from './nft';
 import Credit from './credit';
