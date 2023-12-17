@@ -1117,3 +1117,14 @@ export interface SearchReponse {
 export interface TransactionResult {
   txHash: string
 }
+
+export interface ServiceKey {
+  provider: 'openai';
+  api: 'assistants';
+}
+
+export interface ChatConfigureParams {
+  ainftObjectId: string;
+  provider: 'openai';
+  api: 'assistants';
+}
