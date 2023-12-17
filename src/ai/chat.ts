@@ -1,5 +1,4 @@
-import Ain from '@ainblockchain/ain-js';
-import Ainize from '@ainize-team/ainize-js';
+import SdkBase from '../sdkBase';
 import { ChatConfigureParams, TransactionResult } from '../types';
 import Ainft721Object from '../ainft721Object';
 import {
@@ -8,15 +7,7 @@ import {
   buildSetTransactionBody,
 } from '../util';
 
-export default class Chat {
-  private ain: Ain;
-  private ainize: Ainize;
-
-  constructor(ain: Ain, ainize: Ainize) {
-    this.ain = ain;
-    this.ainize = ainize;
-  }
-
+export default class Chat extends SdkBase {
   async config({
     ainftObjectId,
     provider,
