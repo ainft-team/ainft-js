@@ -1,6 +1,7 @@
+import Ain from '@ainblockchain/ain-js';
+import Ainize from '@ainize-team/ainize-js';
 import OpenAI from 'openai';
 
-import SdkBase from '../../sdkBase';
 import Ainft721Object from '../../ainft721Object';
 import { AssistantCreateParams, AssistantTransactionResult } from '../../types';
 import {
@@ -13,12 +14,20 @@ import {
   validateToken,
 } from '../../util';
 
-export default class Assistants extends SdkBase {
+export default class Assistants {
+  private ain: Ain;
+  private ainize: Ainize;
   // TODO(jiyoung): [TEMP] openai instance is temporarily initialized.
   // it should be removed when ainize service is deployed.
-  private openai: OpenAI = new OpenAI({
-    apiKey: process.env['OPENAI_API_KEY'],
-  });
+  private openai: OpenAI;
+
+  constructor(ain: Ain, ainize: Ainize) {
+    this.ain = ain;
+    this.ainize = ainize;
+    this.openai = new OpenAI({
+      apiKey: process.env['OPENAI_API_KEY'],
+    });
+  }
 
   async create({
     objectId,
