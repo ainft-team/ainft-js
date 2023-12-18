@@ -1,26 +1,27 @@
 name: Test Pipeline for opened PR
 on:
   pull_request:
-    branches: [ main, develop ] #put your branches which you want to execute test pipeline
-    types: [ opened, ready_for_review ]
-concurrency: 
-      group: ${{ github.event.pull_request.number }}
-      cancel-in-progress: true
+    branches: [main, develop] #put your branches which you want to execute test pipeline
+    types: [opened, ready_for_review]
+concurrency:
+  group: ${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 jobs:
   run_test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ 16, 18 ]
+        node: [16, 18]
     name: Run Test on Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v3
-      - name: Create env file
-        run: |
-          echo "{{ secrets.TEST_ENV_FILE }}" > .env.test
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+      - name: Create env file
+        run: |
+          touch .env.test
+          echo "{{ secrets.ENV_FILE }}" > .env.test
       - run: yarn install --immutable --immutable-cache --check-cache
       - run: yarn test
