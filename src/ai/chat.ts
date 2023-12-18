@@ -1,4 +1,5 @@
 import SdkBase from '../sdkBase';
+import Assistants from './assistants/assistants';
 import { ChatConfigureParams, TransactionResult } from '../types';
 import Ainft721Object from '../ainft721Object';
 import {
@@ -8,6 +9,8 @@ import {
 } from '../util';
 
 export default class Chat extends SdkBase {
+  assistants: Assistants = new Assistants(this.ain, this.ainize);
+
   async config({
     ainftObjectId,
     provider,
