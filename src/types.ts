@@ -1115,7 +1115,8 @@ export interface SearchReponse {
 }
 
 export interface TransactionResult {
-  txHash: string;
+  tx_hash: string;
+  result: Record<string, unknown>;
 }
 
 export interface ChatConfigureParamsBase {

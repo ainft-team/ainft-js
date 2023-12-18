@@ -47,8 +47,6 @@ export default class ChatAi {
       },
     });
 
-    const result = await this.ain.sendTransaction(txBody);
-    // TODO(jiyoung): return transaction status into user-friendly format.
-    return { txHash: result.tx_hash };
+    return this.ain.sendTransaction(txBody);
   }
 }

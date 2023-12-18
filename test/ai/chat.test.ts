@@ -21,7 +21,7 @@ describe('Chat', () => {
       .ref(`/apps/${appId}/ai/${serviceName}`)
       .getValue();
 
-    expect(result.txHash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(value.name).toBe(serviceName);
     expect(value.type).toBe('chat');
     expect(value.url).toBe(`https://${serviceName}.ainetwork.xyz`);

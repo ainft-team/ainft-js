@@ -79,10 +79,7 @@ export default class Assistants {
     });
 
     // TODO(jiyoung): implement failure handling logic.
-    const result = await this.ain.sendTransaction(txBody);
-    return {
-      txHash: result.tx_hash,
-      assistant: assistant,
-    };
+    const txResult = await this.ain.sendTransaction(txBody);
+    return { ...txResult, assistant: assistant };
   }
 }

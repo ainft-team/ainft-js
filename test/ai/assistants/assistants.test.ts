@@ -23,22 +23,22 @@ describe('Assistant', () => {
       instructions: 'instructions',
     };
 
-    const resp = await ainft.ai.chat.assistants.create(params);
+    const result = await ainft.ai.chat.assistants.create(params);
     const value = await ainft.ain.db
       .ref(`/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`)
       .getValue();
 
-    expect(resp.txHash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(resp.assistant.id).toMatch(/^asst_[A-Za-z0-9]{24}/);
-    expect(resp.assistant.model).toBe(params.model);
-    expect(resp.assistant.name).toBe(params.name);
-    expect(resp.assistant.instructions).toBe(params.instructions);
-    expect(resp.assistant.description).toBe(null);
+    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(result.assistant.id).toMatch(/^asst_[A-Za-z0-9]{24}/);
+    expect(result.assistant.model).toBe(params.model);
+    expect(result.assistant.name).toBe(params.name);
+    expect(result.assistant.instructions).toBe(params.instructions);
+    expect(result.assistant.description).toBe(null);
 
-    expect(value.id).toBe(resp.assistant.id);
-    expect(value.config.model).toBe(resp.assistant.model);
-    expect(value.config.name).toBe(resp.assistant.name);
-    expect(value.config.instructions).toBe(resp.assistant.instructions);
+    expect(value.id).toBe(result.assistant.id);
+    expect(value.config.model).toBe(result.assistant.model);
+    expect(value.config.name).toBe(result.assistant.name);
+    expect(value.config.instructions).toBe(result.assistant.instructions);
     expect(value.config).not.toHaveProperty('description');
   });
 });
