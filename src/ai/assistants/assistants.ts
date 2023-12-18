@@ -1,6 +1,5 @@
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
-import OpenAI from 'openai';
 
 import Ainft721Object from '../../ainft721Object';
 import { AssistantCreateParams, AssistantTransactionResult } from '../../types';
@@ -17,16 +16,10 @@ import {
 export default class Assistants {
   private ain: Ain;
   private ainize: Ainize;
-  // TODO(jiyoung): [TEMP] openai instance is temporarily initialized.
-  // it should be removed when ainize service is deployed.
-  private openai: OpenAI;
 
   constructor(ain: Ain, ainize: Ainize) {
     this.ain = ain;
     this.ainize = ainize;
-    this.openai = new OpenAI({
-      apiKey: process.env['OPENAI_API_KEY'],
-    });
   }
 
   async create({
@@ -53,16 +46,14 @@ export default class Assistants {
 
     // TODO(jiyoung): replace with ainize.request() function after deployment of ainize service.
     // const response = await service.request(<REQUEST_DATA>);
-    try {
-      var assistant = await this.openai.beta.assistants.create({
-        model: model,
-        name: name,
-        instructions: instructions,
-        description: description,
-      });
-    } catch (error) {
-      throw new Error(`Failed to create assistant: ${error}`);
-    }
+    const assistant = {
+      id: 'asst_000000000000000000000001',
+      model: model,
+      name: name,
+      instructions: instructions,
+      description: description || null,
+      created_at: 0,
+    };
 
     const txBody = buildSetTransactionBody({
       type: 'SET_VALUE',

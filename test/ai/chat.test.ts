@@ -1,6 +1,6 @@
 import AinftJs from '../../src/ainft';
 
-const ainft = new AinftJs(process.env['TEST_PRIVATE_KEY']!, {
+const ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
   ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
   ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
   chainId: 0,
