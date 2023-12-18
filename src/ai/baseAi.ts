@@ -1,6 +1,6 @@
 import SdkBase from '../sdkBase';
-import Chat from './chat';
+import ChatAi from './chatAi';
 
 export default class BaseAi extends SdkBase {
-  chat: Chat = new Chat(this.ain, this.ainize);
+  chat: ChatAi = new ChatAi(this.ain, this.ainize);
 }

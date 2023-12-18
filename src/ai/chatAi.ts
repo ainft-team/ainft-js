@@ -10,7 +10,7 @@ import {
   validateServiceName,
 } from '../util';
 
-export default class Chat extends SdkBase {
+export default class ChatAi extends SdkBase {
   assistants: Assistants = new Assistants(this.ain, this.ainize);
 
   async config({

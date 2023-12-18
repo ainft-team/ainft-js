@@ -12,7 +12,7 @@ import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
 import Eth from './eth';
-import BaseAi from './ai/base';
+import BaseAi from './ai/baseAi';
 import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT } from './constants';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
