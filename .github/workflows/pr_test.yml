@@ -3,6 +3,7 @@ on:
   pull_request:
     branches: [main, develop] #put your branches which you want to execute test pipeline
     types: [opened, ready_for_review]
+  workflow_dispatch:
 concurrency:
   group: ${{ github.event.pull_request.number }}
   cancel-in-progress: true
