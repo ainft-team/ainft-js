@@ -1,4 +1,6 @@
-import SdkBase from '../sdkBase';
+import Ain from '@ainblockchain/ain-js';
+import Ainize from '@ainize-team/ainize-js';
+
 import Ainft721Object from '../ainft721Object';
 import Assistants from './assistants/assistants';
 import { ChatConfigureParams, TransactionResult } from '../types';
@@ -10,8 +12,16 @@ import {
   validateServiceName,
 } from '../util';
 
-export default class ChatAi extends SdkBase {
-  assistants: Assistants = new Assistants(this.ain, this.ainize);
+export default class ChatAi {
+  assistants: Assistants;
+  private ain: Ain;
+  private ainize: Ainize;
+
+  constructor(ain: Ain, ainize: Ainize) {
+    this.ain = ain;
+    this.ainize = ainize;
+    this.assistants = new Assistants(ain, ainize);
+  }
 
   async config({
     objectId,
