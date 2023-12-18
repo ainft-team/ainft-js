@@ -13,9 +13,9 @@ import {
 } from '../util';
 
 export default class ChatAi {
-  assistants: Assistants;
   private ain: Ain;
   private ainize: Ainize;
+  assistants: Assistants;
 
   constructor(ain: Ain, ainize: Ainize) {
     this.ain = ain;
