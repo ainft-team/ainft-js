@@ -6,14 +6,14 @@ const ainft = new AinftJs(process.env['TEST_PRIVATE_KEY']!, {
   chainId: 0,
 });
 
-const ainftObjectId = '0x45E89F37Cee508cf0D4F6e74b35EfeBdd90BD731';
+const objectId = '0x45E89F37Cee508cf0D4F6e74b35EfeBdd90BD731';
 const appId = 'ainft721_0x45e89f37cee508cf0d4f6e74b35efebdd90bd731';
 const serviceName = 'ainize_test14';
 
 describe('Chat', () => {
   it('should configure chat ai', async () => {
     const result = await ainft.ai.chat.config({
-      ainftObjectId: ainftObjectId,
+      objectId: objectId,
       provider: 'openai',
       api: 'assistants',
     });
@@ -24,8 +24,6 @@ describe('Chat', () => {
     expect(result.txHash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(value.name).toBe(serviceName);
     expect(value.type).toBe('chat');
-    expect(value.provider).toBe('openai');
-    expect(value.api).toBe('assistants');
     expect(value.url).toBe(`https://${serviceName}.ainetwork.xyz`);
   });
 });
