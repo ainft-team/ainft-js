@@ -1,42 +1,31 @@
 import SdkBase from '../sdkBase';
+import Ainft721Object from '../ainft721Object';
 import Assistants from './assistants/assistants';
 import { ChatConfigureParams, TransactionResult } from '../types';
-import Ainft721Object from '../ainft721Object';
 import {
-  BlockchainPathMap,
-  getAinizeServiceName,
   buildSetTransactionBody,
+  validateObject,
+  validateObjectOwnership,
+  validateService,
+  validateServiceName,
 } from '../util';
 
 export default class Chat extends SdkBase {
   assistants: Assistants = new Assistants(this.ain, this.ainize);
 
   async config({
-    ainftObjectId,
+    objectId,
     provider,
     api,
   }: ChatConfigureParams): Promise<TransactionResult> {
-    const appId = Ainft721Object.getAppId(ainftObjectId);
-    const appPath = BlockchainPathMap.app(appId).root();
-    const app = await this.ain.db.ref(appPath).getValue();
-    if (!app) {
-      throw new Error('AINFT object not found');
-    }
-
+    const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
-    if (address !== app.owner) {
-      throw new Error(`${address} is not AINFT object owner`);
-    }
 
-    const serviceName = getAinizeServiceName({ provider, api });
-    if (!serviceName) {
-      throw new Error('Service not found');
-    }
+    await validateObject(appId, this.ain);
+    await validateObjectOwnership(appId, address, this.ain);
 
-    const service = await this.ainize.getService(serviceName);
-    if (!service.isRunning()) {
-      throw new Error('Service is not running');
-    }
+    const serviceName = validateServiceName(provider, api);
+    const service = await validateService(serviceName, this.ainize);
 
     const txBody = buildSetTransactionBody({
       type: 'SET_VALUE',
@@ -44,8 +33,6 @@ export default class Chat extends SdkBase {
       value: {
         name: serviceName,
         type: 'chat',
-        provider: provider,
-        api: api,
         url: `https://${serviceName}.ainetwork.xyz`,
       },
     });
