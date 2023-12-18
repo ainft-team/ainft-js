@@ -22,7 +22,7 @@ export enum TaskTypeCategory {
   NFT_GAME = 'NFT_GAME',
   DISCORD_INVITE = 'DISCORD_INVITE',
   DISCORD_INVITE_FIRST_CHAT = 'DISCORD_INVITE_FIRST_CHAT',
-  DRESSUP_TWITTER_MINING = 'DRESSUP_TWITTER_MINING',
+  DRESSUP_TWITTER_MINING = 'DRESSUP_TWITTER_MINING'
 }
 
 export enum NftActivityType {
@@ -30,11 +30,11 @@ export enum NftActivityType {
   GAME = 'GAME',
   USE = 'USE',
   ACHIEVE = 'ACHIEVE',
-  NFT_CUSTOMIZATION = 'NFT_CUSTOMIZATION',
+  NFT_CUSTOMIZATION = 'NFT_CUSTOMIZATION'
 }
 
 export enum Platforms {
-  DISCORD = 'DISCORD',
+  DISCORD = 'DISCORD'
 }
 
 export enum EventStatus {
@@ -62,28 +62,28 @@ export enum StoreItemStatus {
   AVAILABLE = 'AVAILABLE',
   PREVIEW = 'PREVIEW',
   SOLD_OUT = 'SOLD_OUT',
-}
+};
 
 export enum PurchaseStatus {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
-}
+};
 
 export enum ItemGiveStatus {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
-}
+};
 
 export enum itemType {
   TICKET = 'TICKET',
   NFT_TRAIT = 'NFT_TRAIT',
   NFT = 'NFT',
-}
+};
 
 export type UseItemReturnType = {
-  [itemType.TICKET]: Promise<void>;
-  [itemType.NFT_TRAIT]: Promise<NftMetadata>;
-  [itemType.NFT]: Promise<string>;
+  [itemType.TICKET]: Promise<void>,
+  [itemType.NFT_TRAIT]: Promise<NftMetadata>,
+  [itemType.NFT]: Promise<string>,
 };
 
 // Text to Art
@@ -179,15 +179,13 @@ export interface GetNftsInCollectionParams {
   appId?: string;
 }
 
-export interface GetNftsInEthContractParams
-  extends Omit<GetNftsInCollectionParams, 'appId'> {
-  chain: 'ETH';
+export interface GetNftsInEthContractParams extends Omit<GetNftsInCollectionParams, 'appId'> {
+  chain: "ETH",
 }
 
-export interface GetNftsInAinCollectionParams
-  extends GetNftsInCollectionParams {
-  chain: 'AIN';
-  appId: string;
+export interface GetNftsInAinCollectionParams extends GetNftsInCollectionParams {
+  chain: "AIN",
+  appId: string,
 }
 
 export interface GetUserNftListParams {
@@ -212,9 +210,7 @@ export interface getTxBodySetNftMetadataParams {
   userAddress: string;
 }
 
-export interface SetNftMetadataParams
-  extends SetEthNftMetadataParams,
-    SetAinNftMetadataParams {}
+export interface SetNftMetadataParams extends SetEthNftMetadataParams, SetAinNftMetadataParams {}
 
 export interface SetEthNftMetadataParams {
   /** The ID of app. */
@@ -227,10 +223,9 @@ export interface SetEthNftMetadataParams {
   tokenId: string;
   /** The metadata to be set. */
   metadata: NftMetadata;
-}
+};
 
-export interface SetAinNftMetadataParams
-  extends Omit<getTxBodySetNftMetadataParams, 'userAddress'> {}
+export interface SetAinNftMetadataParams extends Omit<getTxBodySetNftMetadataParams, 'userAddress'> {}
 
 export interface Account {
   address: string;
@@ -273,9 +268,9 @@ export interface RewardType {
   category: RewardTypeCategory;
   description: string;
   params: {
-    name: string;
-    description: string;
-    contractAddress?: string;
+    name: string,
+    description: string,
+    contractAddress?: string,
   } & InstanceParams;
 }
 
@@ -374,7 +369,7 @@ export interface TokenomicsEvent {
   createdAt?: number;
   /** The timestamp when the event was updated." */
   updatedAt?: number;
-}
+};
 
 export interface EventInfo extends TokenomicsEvent {
   id: string;
@@ -386,7 +381,7 @@ export interface TaskIdListByEventId {
 
 export interface CreatePersonaModelInfo {
   /** The ID of model. */
-  modelId: string;
+  modelId: string,
 }
 
 export interface ChatResponse {
@@ -416,19 +411,19 @@ export interface PersonaModelCreditInfo {
   symbol: string;
   /** The credit cost for chating with persona model. */
   burnAmount: number;
-}
+};
 
 export interface TextToArtParams {
-  prompt: string;
-  negative_prompt: string;
-  steps: number;
-  seed: number;
-  width: number;
-  height: number;
-  images: number;
-  guidance_scale: number;
-  model_id: ModelID;
-  scheduler_type: SchedulerID;
+  prompt: string,
+  negative_prompt: string,
+  steps: number,
+  seed: number,
+  width: number,
+  height: number,
+  images: number,
+  guidance_scale: number,
+  model_id: ModelID,
+  scheduler_type: SchedulerID,
 }
 
 export interface Task {
@@ -439,68 +434,68 @@ export interface Task {
 }
 
 export interface TextToArtResult {
-  url: string;
-  origin_url?: string;
-  is_filtered: boolean;
+  url: string,
+  origin_url?: string,
+  is_filtered: boolean,
 }
 
 export interface TextToArtResponse {
   /** The response of text-to-art request.  */
-  status: ResponseStatus;
+  status: ResponseStatus,
   /** The timestamp when Text to art request was last updated. */
-  updated_at: number;
+  updated_at: number,
   /** The result of text-to-art. */
-  result: { [imageIndex: string]: TextToArtResult };
+  result: { [imageIndex: string]: TextToArtResult },
 }
 
 export interface TextToArtTxHash {
-  status: ResponseStatus;
-  updated_at: number;
-  result: { [status: string]: string };
+  status: ResponseStatus,
+  updated_at: number,
+  result: { [status: string]: string },
 }
 
 export interface InviteInfo {
   /** The ID of inviter. */
-  inviterId: string;
+  inviterId: string,
   /** A flag indicating whether the reward has been received or not. */
-  isRewarded: boolean;
+  isRewarded: boolean,
   /** Map by userId invited in a short time. */
   ambiguousInviters?: {
-    [key: number]: string;
-  };
+    [key: number]: string
+  },
 }
 
 export interface AddActivityParams {
   /** The ID of app. */
-  appId: string;
+  appId: string,
   /** The ID of user. */
-  userId: string;
+  userId: string,
   /** The ID of event. */
-  eventId?: string;
+  eventId?: string,
   /** The task ID being executed in this activity. */
-  taskInstanceId?: string;
+  taskInstanceId?: string,
   /** The data of activity. */
-  data: any;
-}
+  data: any,
+};
 
 export interface AddEventActivityParams extends AddActivityParams {
   /** The ID of event. */
-  eventId: string;
-}
+  eventId: string,
+};
 
 export interface GetActivityParams {
   /** The ID of app. */
-  appId: string;
+  appId: string,
   /** The timestamp when the activity was created.*/
-  createdAt: number;
+  createdAt: number,
   /** The ID of user who performed the activity.  */
-  userId?: string;
+  userId?: string,
   /** The ID of the event that the activity belongs to. */
-  eventId?: string;
+  eventId?: string,
   /** The ID of activity. */
-  activityId?: string;
-  options?: any;
-}
+  activityId?: string,
+  options?: any,
+};
 
 export enum ActivityStatus {
   /** Status of activity valid after creation. */
@@ -512,44 +507,44 @@ export enum ActivityStatus {
 }
 
 export interface Activity extends AddActivityParams {
-  status: ActivityStatus;
-  createdAt: number;
-  updatedAt: number;
-  id: string;
-}
+  status: ActivityStatus,
+  createdAt: number,
+  updatedAt: number,
+  id: string,
+};
 
 export interface GetEventActivityParams extends GetActivityParams {
   /** The ID of user. */
-  userId: string;
+  userId: string,
   /** The ID of event. */
-  eventId: string;
+  eventId: string,
 }
 
 export interface UpdateEventActivityStatusParams {
   /** The ID of app. */
-  appId: string;
+  appId: string,
   /** The timestamp of activity creation */
-  createdAt: number;
+  createdAt: number,
   /** The ID of event. */
-  eventId: string;
+  eventId: string,
   /** The ID of activity */
-  activityId: string;
+  activityId: string,
   /** The status of activity. */
-  status: ActivityStatus;
-}
+  status: ActivityStatus,
+};
 
 export interface User {
-  id: string;
-  address: string;
+  id: string,
+  address: string,
   ethAddresses?: {
-    [ethAddress: string]: boolean;
-  };
-}
+    [ethAddress: string]: boolean,
+  },
+};
 
 export interface RewardOptions {
   /** If the reward has not been confirmed, you can enter the amount of reward. */
   amount?: number;
-}
+};
 
 export interface StorePurchaseParams {
   /** The ID of the app. */
@@ -562,7 +557,7 @@ export interface StorePurchaseParams {
   itemName: string;
   /** The quantity of the item to purchase. */
   quantity: number;
-}
+};
 
 export interface GetPurchaseHistoryParams {
   /** The ID of the app. */
@@ -573,7 +568,7 @@ export interface GetPurchaseHistoryParams {
   month?: number;
   /** The day to filter the history by. */
   day?: number;
-}
+};
 
 export interface GetItemPurchaseHistoryParams {
   /** The ID of the app. */
@@ -586,7 +581,7 @@ export interface GetItemPurchaseHistoryParams {
   month?: number;
   /** The day to filter the history by. */
   day?: number;
-}
+};
 
 export interface GetUserPurchaseHistoryParams {
   /** The ID of app. */
@@ -599,7 +594,7 @@ export interface GetUserPurchaseHistoryParams {
   month?: number;
   /** The day to filter the history by. */
   day?: number;
-}
+};
 
 export interface GetItemHistoryParams {
   /** The ID of app. */
@@ -610,7 +605,7 @@ export interface GetItemHistoryParams {
   month?: number;
   /** The day to filter the history by. */
   day?: number;
-}
+};
 
 export interface GetSingleItemHistoryParams {
   /** The ID of app. */
@@ -623,7 +618,7 @@ export interface GetSingleItemHistoryParams {
   month?: number;
   /** The day to filter the history by. */
   day?: number;
-}
+};
 
 export interface GetUserItemHistoryParams {
   /** The ID of app. */
@@ -636,38 +631,38 @@ export interface GetUserItemHistoryParams {
   month?: number;
   /** The day to filter the history by. */
   day?: number;
-}
+};
 
 export interface ItemTryOnParams {
   /** The ID of app. */
-  appId: string;
+  appId: string,
   /** The ID of user to try on. */
-  userId: string;
+  userId: string,
   /** The ID of the store with the item to try on. */
-  storeId: string;
+  storeId: string,
   /** The name of item to try on. */
-  itemName: string;
+  itemName: string,
   /** The symbol of chain with the NFT to try on the item. */
-  chain: string;
+  chain: string,
   /** The name of network with the NFT to try on the item. */
-  network: string;
+  network: string,
   /** The contract address of NFT to try on the item. */
-  nftContractAddress: string;
+  nftContractAddress: string,
   /** The ID of NFT to try on the item. */
-  nftTokenId: string;
-}
+  nftTokenId: string,
+};
 
 export interface ItemUseParams {
   /** The ID of app. */
-  appId: string;
+  appId: string,
   /** The ID of user to use item. */
-  userId: string;
+  userId: string,
   /** The name of item to use. */
-  itemName: string;
+  itemName: string,
   /** The number of items user wants to use. */
-  quantity: number;
+  quantity: number,
   /** The parameters to send when using the item. It mainly contains NFT information. */
-  params?: any;
+  params?: any,
 }
 
 export interface Item {
@@ -686,7 +681,7 @@ export interface Item {
   updatedAt: number;
   storeOnSale?: { [storeId: string]: number };
   owners?: { [userId: string]: boolean };
-}
+};
 
 export interface CreateItemParams {
   /** The ID of the app. */
@@ -777,12 +772,11 @@ export interface StoreItem extends Omit<Item, 'quantityOnSale'> {
   saleStartAt?: number;
   saleEndAt?: number;
   maxPurchasePerUser?: number;
-}
+};
 
-export interface UserItem
-  extends Omit<Item, 'quantityTotal' | 'quantityOnSale'> {
+export interface UserItem extends Omit<Item, 'quantityTotal' | 'quantityOnSale'> {
   quantityBought: number;
-}
+};
 
 export interface PurchaseHistory {
   id: string;
@@ -799,7 +793,7 @@ export interface PurchaseHistory {
   currency: string;
   createdAt: number;
   status: PurchaseStatus;
-}
+};
 
 export type ItemGiveHistory = {
   id: string;
@@ -814,28 +808,28 @@ export type ItemGiveHistory = {
 };
 
 export interface ItemHistory {
-  id: string;
-  appId: string;
-  userId: string;
-  type: string;
-  name: string;
-  subtype: string;
-  value: string;
-  quantity: number;
-  quantityRemaining: number;
-  createdAt: number;
-  params?: any;
-}
+  id: string,
+  appId: string,
+  userId: string,
+  type: string,
+  name: string,
+  subtype: string,
+  value: string,
+  quantity: number,
+  quantityRemaining: number,
+  createdAt: number,
+  params?: any,
+};
 
 export type History<Type> = {
   [year: string]: {
     [month: string]: {
       [date: string]: {
-        [id: string]: Type;
-      };
-    };
-  };
-};
+        [id: string]: Type
+      }
+    }
+  }
+}
 
 export type NftMetadata = {
   /** The name of NFT. */
@@ -851,57 +845,57 @@ export type NftMetadata = {
 };
 
 export type NftToken = {
-  owner: string;
-  tokenURI: string;
-  metadata: NftMetadata;
-  isBurnt: boolean;
+  owner: string,
+  tokenURI: string,
+  metadata: NftMetadata,
+  isBurnt: boolean,
 };
 
 export type NftTokens = {
-  [nftTokenId: string]: NftToken;
+  [nftTokenId: string]: NftToken,
 };
 
 export type NftContractInfo = {
-  chain: string;
-  network: string;
-  name: string;
-  symbol: string;
-  contractAddress: string;
-  deployAddress: string;
-  totalSupply: number;
-  lastBlockNumber: number;
+  chain: string,
+  network: string,
+  name: string,
+  symbol: string,
+  contractAddress: string,
+  deployAddress: string,
+  totalSupply: number,
+  lastBlockNumber: number,
 };
 
 export type NftContract = {
-  info: NftContractInfo;
-  tokens: NftTokens;
+  info: NftContractInfo,
+  tokens: NftTokens,
 };
 
 export type NftCollections = {
-  [nftContractAddress: string]: NftContract;
+  [nftContractAddress: string]: NftContract,
 };
 
 export type NftContractBySymbol = {
-  chain: string;
-  network: string;
-  name: string;
-  symbol: string;
-  contractAddress: string;
+  chain: string,
+  network: string,
+  name: string,
+  symbol: string,
+  contractAddress: string,
 };
 
 export type AppCreditInfo = {
   /** The name of credit. */
-  name: string;
+  name: string,
   /** The symbol of credit */
-  symbol: string;
+  symbol: string,
   /** The total supply of credit. */
-  totalSupply: number;
+  totalSupply: number,
   /** The amount of credit burned.  */
-  burnedSupply: number;
+  burnedSupply: number,
   /** The max supply of credit. */
-  maxSupply: number | null;
+  maxSupply: number | null,
   /** The timestamp of credit creation. */
-  createdAt: number;
+  createdAt: number,
 };
 
 export type ActivityNftInfo = {
@@ -910,7 +904,7 @@ export type ActivityNftInfo = {
   contractAddress: string;
   tokenId: string;
   userAddress: string;
-};
+}
 
 export enum AppCreditWithdrawStatus {
   REQUESTED = 'requested',
@@ -998,11 +992,11 @@ export interface DepositHistoryInfo {
   symbol: string;
   chain: string;
   network: string;
-}
+};
 
 export interface DepositHistory {
   [txHash: string]: DepositHistoryInfo;
-}
+};
 
 export interface TokenUpdatePermission {
   collectionOwner: boolean;
@@ -1020,12 +1014,11 @@ export interface getTxBodyMintNftParams {
   tokenId?: number;
 }
 
-export interface MintNftParams
-  extends Omit<getTxBodyMintNftParams, 'address'> {}
+export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {}
 
 export interface SearchOption {
-  limit?: number;
-  cursor?: string;
+  limit?: number,
+  cursor?: string,
 }
 export interface NftSearchParams extends SearchOption {
   /** The address of the user who owns the AINFT. */
@@ -1074,8 +1067,7 @@ export interface DeleteAssetParams {
   filePath: string;
 }
 
-export interface TransferNftParams
-  extends Omit<getTxBodyTransferNftParams, 'address'> {}
+export interface TransferNftParams extends Omit<getTxBodyTransferNftParams, 'address'> {}
 
 export interface getTxbodyAddAiHistoryParams {
   /** The symbol of chain. e.g. ETH */
@@ -1096,8 +1088,7 @@ export interface getTxbodyAddAiHistoryParams {
   userAddress: string;
 }
 
-export interface AddAiHistoryParams
-  extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {}
+export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {};
 
 export interface AinftObjectSearchResponse extends SearchReponse {
   ainftObjects: {
