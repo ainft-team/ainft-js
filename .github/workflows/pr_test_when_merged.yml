@@ -22,6 +22,8 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: yarn install --immutable --immutable-cache --check-cache
       - run: yarn test
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
   publish:
     needs: [ run_test ]
     if: ${{ startsWith(github.head_ref, 'release/') && (github.base_ref == 'main') && (github.event.pull_request.merged == true) }}
