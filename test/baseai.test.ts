@@ -1,14 +1,14 @@
-import AinftJs from "../src/ainft";
-import Ainft721Object from "../src/ainft721Object";
+import AinftJs from '../src/ainft';
+import Ainft721Object from '../src/ainft721Object';
 
-describe("BaseAi", () => {
+describe('BaseAi', () => {
   let ainftJs: AinftJs;
   let ainftObject: Ainft721Object;
 
   function initAinftJs(privateKey: string): AinftJs {
     const config = {
-      ainftServerEndpoint: "https://ainft-api-dev.ainetwork.ai",
-      ainBlockchainEndpoint: "https://testnet-api.ainetwork.ai",
+      ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
+      ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
     };
     return new AinftJs(privateKey, config);
@@ -26,7 +26,7 @@ describe("BaseAi", () => {
     return ainftJs.ain.db.ref().setRule({
       ref: `/apps/${appId}/ai/$serviceName`,
       value: {
-        ".rule": {
+        '.rule': {
           write:
             "!!getValue('/apps/' + $serviceName) && util.isDict(newData) && util.isString(newData.name) && util.isString(newData.url)",
         },
@@ -36,9 +36,9 @@ describe("BaseAi", () => {
 
   beforeAll(async () => {
     const privateKey =
-      "f0a2599e5629d4e67266169ea9ad1999f86995418391175af6d66005c1e1d96c";
+      'f0a2599e5629d4e67266169ea9ad1999f86995418391175af6d66005c1e1d96c';
     ainftJs = initAinftJs(privateKey);
-    ainftObject = await createAinftObject("name", "symbol");
+    ainftObject = await createAinftObject('name', 'symbol');
     // NOTE(jiyoung): uncomment to reuse existing ainft object.
     // ainftObject = new Ainft721Object(
     //   {
@@ -53,28 +53,32 @@ describe("BaseAi", () => {
     await setWriteRule(ainftObject.appId);
   });
 
-  it("should create ainft object", () => {
+  it('should have private key', () => {
+    expect(process.env['PRIVATE_KEY']).toBeDefined();
+  });
+
+  it('should create ainft object', () => {
     console.log(ainftObject);
     expect(ainftObject.id).toMatch(/^0x[a-fA-F0-9]{40}$/);
-    expect(ainftObject.name).toBe("name");
-    expect(ainftObject.symbol).toBe("symbol");
+    expect(ainftObject.name).toBe('name');
+    expect(ainftObject.symbol).toBe('symbol');
     expect(ainftObject.owner).toBe(
-      "0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0"
+      '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0'
     );
     expect(ainftObject.appId).toMatch(/^ainft721_0x[a-f0-9]{40}$/); // lowercase
   });
 
-  it("should set write rule", async () => {
+  it('should set write rule', async () => {
     const appId = ainftObject.appId;
     const rule = await ainftJs.ain.db.ref(`/apps/${appId}`).getRule();
     expect(rule).toMatchObject({
-      ".rule": {
-        "write": `auth.addr === '${ainftObject.owner}'`,
+      '.rule': {
+        write: `auth.addr === '${ainftObject.owner}'`,
       },
-      "ai": {
-        "$serviceName": {
-          ".rule": {
-            "write":
+      ai: {
+        $serviceName: {
+          '.rule': {
+            write:
               "!!getValue('/apps/' + $serviceName) && util.isDict(newData) && util.isString(newData.name) && util.isString(newData.url)",
           },
         },
@@ -82,9 +86,9 @@ describe("BaseAi", () => {
     });
   });
 
-  it("should send transaction to configure", async () => {
+  it('should send transaction to configure', async () => {
     const ainftObjectId = ainftObject.id;
-    const aiName = "ainize_test14";
+    const aiName = 'ainize_test14';
 
     const result = await ainftJs.baseAi.config(ainftObjectId, aiName);
     const value = await ainftJs.ain.db
