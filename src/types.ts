@@ -1119,27 +1119,34 @@ export interface TransactionResult {
   result: Record<string, unknown>;
 }
 
-export interface ChatConfigureParamsBase {
-  objectId: string;
-}
-
-export interface OpenAIChatConfigureParams extends ChatConfigureParamsBase {
-  provider: 'openai';
-  api: 'assistants';
+export interface AssistantTransactionResult extends TransactionResult {
+  assistant: Assistant;
 }
 
 export type ChatConfigureParams = OpenAIChatConfigureParams;
 
-export interface AssistantCreateParamsBase {
-  tokenId: string;
-  name: string;
-  instructions: string;
-  description?: string | null;
+interface ChatConfigureParamsBase {
+  objectId: string;
 }
 
-export interface OpenAIAssistantCreateParams
-  extends OpenAIChatConfigureParams,
-    AssistantCreateParamsBase {
+export interface OpenAIChatConfigureParams extends ChatConfigureParamsBase {
+  api: 'assistants';
+  provider: 'openai';
+}
+
+export type AssistantCreateParams = OpenAIAssistantCreateParams;
+
+interface AssistantCreateParamsBase {
+  description?: string | null;
+  instructions: string;
+  // TODO(jiyoung): set of 16 key-value pairs (key max: 64 chars, value max: 512 chars)
+  metadata?: object | null;
+  name: string;
+  tokenId: string;
+}
+
+export interface OpenAIAssistantCreateParams extends AssistantCreateParamsBase {
+  config: OpenAIChatConfigureParams;
   /**
    * Name of the model to use. You can see the
    * [OpenAI model overview](https://platform.openai.com/docs/models/overview)
@@ -1155,17 +1162,12 @@ export interface OpenAIAssistantCreateParams
     | 'gpt-3.5-turbo-instruct';
 }
 
-export type AssistantCreateParams = OpenAIAssistantCreateParams;
-
 export interface Assistant {
   id: string;
   created_at: number;
   description: string | null;
-  instructions: string | null;
+  instructions: string;
+  metadata: object;
   model: string;
-  name: string | null;
-}
-
-export interface AssistantTransactionResult extends TransactionResult {
-  assistant: Assistant;
+  name: string;
 }

@@ -35,6 +35,14 @@ export const buildData = (
   return _data;
 };
 
+export const buildSetValueTransactionBody = (ref: string, value: any) => {
+  return buildSetTransactionBody({
+    type: 'SET_VALUE',
+    ref: ref,
+    value: value,
+  });
+};
+
 export const buildSetTransactionBody = (
   operation: SetOperation
 ): TransactionInput => {
