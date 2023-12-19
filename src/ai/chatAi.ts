@@ -5,11 +5,11 @@ import Ainft721Object from '../ainft721Object';
 import Assistants from './assistants/assistants';
 import { ChatConfigureParams, TransactionResult } from '../types';
 import {
-  buildSetTransactionBody,
+  buildSetValueTransactionBody,
   validateObject,
   validateObjectOwnership,
-  validateService,
-  validateServiceName,
+  validateAndGetServiceName,
+  validateAndGetService,
 } from '../util';
 
 export default class ChatAi {
@@ -34,19 +34,19 @@ export default class ChatAi {
     await validateObject(appId, this.ain);
     await validateObjectOwnership(appId, address, this.ain);
 
-    const serviceName = validateServiceName(provider, api);
-    const service = await validateService(serviceName, this.ainize);
+    const serviceName = validateAndGetServiceName(provider, api);
+    await validateAndGetService(serviceName, this.ainize);
 
-    const txBody = buildSetTransactionBody({
-      type: 'SET_VALUE',
-      ref: `/apps/${appId}/ai/${serviceName}`,
-      value: {
-        name: serviceName,
-        type: 'chat',
-        url: `https://${serviceName}.ainetwork.xyz`,
-      },
-    });
+    const txBody = this.getChatConfigureTxBody(appId, serviceName);
 
     return this.ain.sendTransaction(txBody);
+  }
+
+  private getChatConfigureTxBody(appId: string, serviceName: string) {
+    return buildSetValueTransactionBody(`/apps/${appId}/ai/${serviceName}`, {
+      name: serviceName,
+      type: 'chat',
+      url: `https://${serviceName}.ainetwork.xyz`,
+    });
   }
 }

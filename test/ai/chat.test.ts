@@ -17,6 +17,7 @@ describe('Chat', () => {
       provider: 'openai',
       api: 'assistants',
     });
+
     const value = await ainft.ain.db
       .ref(`/apps/${appId}/ai/${serviceName}`)
       .getValue();

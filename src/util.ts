@@ -7,7 +7,7 @@ import {
 } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import { MIN_GAS_PRICE } from './constants';
+import { AINIZE_SERVICE_NAME, MIN_GAS_PRICE } from './constants';
 import { HttpMethod } from './types';
 
 export const buildData = (
@@ -92,18 +92,17 @@ export const BlockchainPath = {
   },
 };
 
-export const getServiceName = (
+export const validateAndGetServiceName = (
   provider: string,
   api: string
-): string | undefined => {
+): string => {
   const key = `${provider}-${api}`;
-  return serviceName.get(key);
+  const serviceName = AINIZE_SERVICE_NAME.get(key);
+  if (!serviceName) {
+    throw new Error('Service not found');
+  }
+  return serviceName;
 };
-
-// TODO(jiyoung): update service name after deployment of ainize service.
-const serviceName = new Map<string, string>([
-  ['openai-assistants', 'ainize_test14' /*'ainize-openai-assistants-service'*/],
-]);
 
 export const validateObject = async (appId: string, ain: Ain) => {
   const appPath = BlockchainPath.app(appId).root();
@@ -124,19 +123,11 @@ export const validateObjectOwnership = async (
   }
 };
 
-export const validateServiceName = (provider: string, api: string): string => {
-  const serviceName = getServiceName(provider, api);
-  if (!serviceName) {
-    throw new Error('Service not found');
-  }
-  return serviceName;
-};
-
-export const validateService = async (
-  name: string,
+export const validateAndGetService = async (
+  serviceName: string,
   ainize: Ainize
 ): Promise<Service> => {
-  const service = await ainize.getService(name);
+  const service = await ainize.getService(serviceName);
   if (!service.isRunning()) {
     throw new Error('Service is not running');
   }

@@ -22,3 +22,8 @@ export const APP_STAKING_LOCKUP_DURATION_MS = 30 * 1000 // 30 seconds
 export const SUPPORTED_AINFT_STANDARDS = {
   721: '721',
 }
+
+export const AINIZE_SERVICE_NAME = new Map<string, string>([
+  // TODO(jiyoung): update value after deployment of ainize service.
+  ['openai-assistants', 'ainize_test14'], // temp
+]);
