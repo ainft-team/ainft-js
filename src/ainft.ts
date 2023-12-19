@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
-import Ainize from '@ainize-team/ainize-sdk';
+import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
 import Nft from './nft';
 import Credit from './credit';
@@ -12,8 +12,7 @@ import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
 import Eth from './eth';
-import BaseAi from './baseAi';
-import ChatAi from './chatAi';
+import BaseAi from './ai/baseAi';
 import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT } from './constants';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
@@ -36,8 +35,7 @@ export default class AinftJs {
   public textToArt: TextToArt;
   public activity: Activity;
   public eth: Eth;
-  public baseAi: BaseAi;
-  public chatAi: ChatAi;
+  public ai: BaseAi;
 
   constructor(
     privateKey: string,
@@ -69,8 +67,7 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
     this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
     this.activity = new Activity(this.ain, this.baseUrl, '/activity');
-    this.baseAi = new BaseAi(this.ain, this.ainize);
-    this.chatAi = new ChatAi(this.ain, this.ainize);
+    this.ai = new BaseAi(this.ain, this.ainize);
   }
 
   /**

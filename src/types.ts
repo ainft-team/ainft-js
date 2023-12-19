@@ -1115,5 +1115,57 @@ export interface SearchReponse {
 }
 
 export interface TransactionResult {
-  txHash: string
+  tx_hash: string;
+  result: Record<string, unknown>;
+}
+
+export interface ChatConfigureParamsBase {
+  objectId: string;
+}
+
+export interface OpenAIChatConfigureParams extends ChatConfigureParamsBase {
+  provider: 'openai';
+  api: 'assistants';
+}
+
+export type ChatConfigureParams = OpenAIChatConfigureParams;
+
+export interface AssistantCreateParamsBase {
+  tokenId: string;
+  name: string;
+  instructions: string;
+  description?: string | null;
+}
+
+export interface OpenAIAssistantCreateParams
+  extends OpenAIChatConfigureParams,
+    AssistantCreateParamsBase {
+  /**
+   * Name of the model to use. You can see the
+   * [OpenAI model overview](https://platform.openai.com/docs/models/overview)
+   * for description of them.
+   */
+  model:
+    | 'gpt-4-1106-preview'
+    | 'gpt-4'
+    | 'gpt-4-32k'
+    | 'gpt-3.5-turbo-1106'
+    | 'gpt-3.5-turbo'
+    | 'gpt-3.5-turbo-16k'
+    | 'gpt-3.5-turbo-instruct';
+}
+
+export type AssistantCreateParams = OpenAIAssistantCreateParams;
+
+export interface Assistant {
+  id: string;
+  created_at: number;
+  description: string | null;
+  instructions: string | null;
+  model: string;
+  name: string | null;
+}
+
+export interface AssistantTransactionResult extends TransactionResult {
+  assistant: Assistant;
 }
