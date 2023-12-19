@@ -21,3 +21,5 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: yarn install --immutable --immutable-cache --check-cache
       - run: yarn test
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}

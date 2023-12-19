@@ -36,6 +36,8 @@ jobs:
         run: yarn
       - name: Test Success
         run: yarn test
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
       - name: Publish package
         run: |
           yarn
