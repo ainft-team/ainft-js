@@ -8,8 +8,9 @@ import {
   buildSetValueTransactionBody,
   validateObject,
   validateObjectOwnership,
-  validateAndGetServiceName,
-  validateAndGetService,
+  validateAndGetAiName,
+  validateAndGetAiService,
+  Ref,
 } from '../util';
 
 export default class ChatAi {
@@ -34,19 +35,20 @@ export default class ChatAi {
     await validateObject(appId, this.ain);
     await validateObjectOwnership(appId, address, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider, api);
-    await validateAndGetService(serviceName, this.ainize);
+    const aiName = validateAndGetAiName(provider, api);
+    await validateAndGetAiService(aiName, this.ainize); //validate
 
-    const txBody = this.getChatConfigureTxBody(appId, serviceName);
+    const txBody = this.getChatConfigureTxBody(appId, aiName);
 
     return this.ain.sendTransaction(txBody);
   }
 
-  private getChatConfigureTxBody(appId: string, serviceName: string) {
-    return buildSetValueTransactionBody(`/apps/${appId}/ai/${serviceName}`, {
-      name: serviceName,
+  private getChatConfigureTxBody(appId: string, aiName: string) {
+    const aiRef = Ref.app(appId).ai(aiName);
+    return buildSetValueTransactionBody(aiRef, {
+      name: aiName,
       type: 'chat',
-      url: `https://${serviceName}.ainetwork.xyz`,
+      url: `https://${aiName}.ainetwork.xyz`,
     });
   }
 }
