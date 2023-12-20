@@ -7,7 +7,7 @@ import {
 } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import { AINIZE_SERVICE_NAME, MIN_GAS_PRICE } from './constants';
+import { AINIZE_AI_SERVICE_NAME, MIN_GAS_PRICE } from './constants';
 import { HttpMethod } from './types';
 
 export const buildData = (
@@ -81,31 +81,55 @@ export function isTransactionSuccess(transactionResponse: any) {
   return true;
 }
 
-export const BlockchainPath = {
-  app: (appId: string): any => {
+export const Ref = {
+  app: (appId: string): AppRef => {
     return {
       root: () => `/apps/${appId}`,
-      ai: () => `${BlockchainPath.app(appId).root()}/ai`,
-      token: (tokenId: string) =>
-        `${BlockchainPath.app(appId).root()}/tokens/${tokenId}`,
+      ai: (aiName: string) => `${Ref.app(appId).root()}/ai/${aiName}`,
+      token: (tokenId: string): TokenRef => {
+        return {
+          root: () => `${Ref.app(appId).root()}/tokens/${tokenId}`,
+          ai: (aiName: string): TokenAiRef => {
+            return {
+              root: () =>
+                `${Ref.app(appId).token(tokenId).root()}/ai/${aiName}`,
+              config: () =>
+                `${Ref.app(appId).token(tokenId).ai(aiName).root()}/config`,
+            };
+          },
+        };
+      },
     };
   },
 };
 
-export const validateAndGetServiceName = (
-  provider: string,
-  api: string
-): string => {
+type AppRef = {
+  root: () => string;
+  ai: (aiName: string) => string;
+  token: (tokenId: string) => TokenRef;
+};
+
+type TokenRef = {
+  root: () => string;
+  ai: (aiName: string) => TokenAiRef;
+};
+
+type TokenAiRef = {
+  root: () => string;
+  config: () => string;
+};
+
+export const validateAndGetAiName = (provider: string, api: string): string => {
   const key = `${provider}-${api}`;
-  const serviceName = AINIZE_SERVICE_NAME.get(key);
-  if (!serviceName) {
-    throw new Error('Service not found');
+  const aiName = AINIZE_AI_SERVICE_NAME.get(key);
+  if (!aiName) {
+    throw new Error('AI service not supported');
   }
-  return serviceName;
+  return aiName;
 };
 
 export const validateObject = async (appId: string, ain: Ain) => {
-  const appPath = BlockchainPath.app(appId).root();
+  const appPath = Ref.app(appId).root();
   if (!(await exists(appPath, ain))) {
     throw new Error('AINFT object not found');
   }
@@ -116,32 +140,45 @@ export const validateObjectOwnership = async (
   address: string,
   ain: Ain
 ) => {
-  const appPath = BlockchainPath.app(appId).root();
+  const appPath = Ref.app(appId).root();
   const app = await getValue(appPath, ain);
   if (address !== app.owner) {
     throw new Error(`${address} is not AINFT object owner`);
   }
 };
 
-export const validateAndGetService = async (
-  serviceName: string,
+export const validateAndGetAiService = async (
+  aiName: string,
   ainize: Ainize
 ): Promise<Service> => {
-  const service = await ainize.getService(serviceName);
+  const service = await ainize.getService(aiName);
   if (!service.isRunning()) {
-    throw new Error('Service is not running');
+    throw new Error('AI service is not running');
   }
   return service;
 };
 
-export const validateAi = async (
+export const validateAi = async (appId: string, aiName: string, ain: Ain) => {
+  const aiPath = Ref.app(appId).ai(aiName);
+  if (!(await exists(aiPath, ain))) {
+    throw new Error('AI not configured');
+  }
+};
+
+export const validateTokenAi = async (
   appId: string,
-  serviceName: string,
+  tokenId: string,
+  aiName: string,
+  aiId: string,
   ain: Ain
 ) => {
-  const aiPath = `${BlockchainPath.app(appId).ai()}/${serviceName}`;
-  if (!(await exists(aiPath, ain))) {
-    throw new Error('AI is not configured');
+  const tokenAiPath = Ref.app(appId).token(tokenId).ai(aiName).root();
+  const tokenAi = await getValue(tokenAiPath, ain);
+  if (!tokenAi) {
+    throw new Error('Token AI(Assistant) not found');
+  }
+  if (tokenAi?.id !== aiId) {
+    throw new Error('Incorrect token AI(Assistant) ID');
   }
 };
 
@@ -150,16 +187,16 @@ export const validateToken = async (
   tokenId: string,
   ain: Ain
 ) => {
-  const tokenPath = BlockchainPath.app(appId).token(tokenId);
+  const tokenPath = Ref.app(appId).token(tokenId).root();
   if (!(await exists(tokenPath, ain))) {
     throw new Error('Token not found');
   }
 };
 
-const exists = async (path: string, ain: Ain): Promise<boolean> => {
+export const exists = async (path: string, ain: Ain): Promise<boolean> => {
   return !!(await ain.db.ref(path).getValue());
 };
 
-const getValue = async (path: string, ain: Ain): Promise<any> => {
+export const getValue = async (path: string, ain: Ain): Promise<any> => {
   return ain.db.ref(path).getValue();
 };
