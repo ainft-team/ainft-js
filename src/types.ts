@@ -539,7 +539,7 @@ export interface User {
   ethAddresses?: {
     [ethAddress: string]: boolean,
   },
-};
+  };
 
 export interface RewardOptions {
   /** If the reward has not been confirmed, you can enter the amount of reward. */
@@ -1119,53 +1119,73 @@ export interface TransactionResult {
   result: Record<string, unknown>;
 }
 
-export interface ChatConfigureParamsBase {
-  objectId: string;
-}
-
-export interface OpenAIChatConfigureParams extends ChatConfigureParamsBase {
-  provider: 'openai';
-  api: 'assistants';
+export interface AssistantTransactionResult extends TransactionResult {
+  assistant: Assistant;
 }
 
 export type ChatConfigureParams = OpenAIChatConfigureParams;
 
-export interface AssistantCreateParamsBase {
-  tokenId: string;
-  name: string;
-  instructions: string;
-  description?: string | null;
+interface ChatConfigureParamsBase {
+  objectId: string;
 }
 
-export interface OpenAIAssistantCreateParams
-  extends OpenAIChatConfigureParams,
-    AssistantCreateParamsBase {
-  /**
-   * Name of the model to use. You can see the
-   * [OpenAI model overview](https://platform.openai.com/docs/models/overview)
-   * for description of them.
-   */
-  model:
-    | 'gpt-4-1106-preview'
-    | 'gpt-4'
-    | 'gpt-4-32k'
-    | 'gpt-3.5-turbo-1106'
-    | 'gpt-3.5-turbo'
-    | 'gpt-3.5-turbo-16k'
-    | 'gpt-3.5-turbo-instruct';
+export interface OpenAIChatConfigureParams extends ChatConfigureParamsBase {
+  api: 'assistants';
+  provider: 'openai';
 }
+
+/**
+ * Name of the model to use. You can see the
+ * [OpenAI model overview](https://platform.openai.com/docs/models/overview)
+ * for description of them.
+ */
+export type OpenAIChatModel =
+  | 'gpt-4-1106-preview'
+  | 'gpt-4'
+  | 'gpt-4-32k'
+  | 'gpt-3.5-turbo-1106'
+  | 'gpt-3.5-turbo'
+  | 'gpt-3.5-turbo-16k'
+  | 'gpt-3.5-turbo-instruct';
 
 export type AssistantCreateParams = OpenAIAssistantCreateParams;
+
+interface AssistantCreateParamsBase {
+  description?: string | null;
+  instructions: string;
+  // TODO(jiyoung): set of 16 key-value pairs (key max: 64 chars, value max: 512 chars)
+  metadata?: object | null;
+  name: string;
+  tokenId: string;
+}
+
+export interface OpenAIAssistantCreateParams extends AssistantCreateParamsBase {
+  config: OpenAIChatConfigureParams;
+  model: OpenAIChatModel;
+}
+
+export type AssistantUpdateParams = OpenAIAssistantUpdateParams;
+
+interface AssistantUpdateParamsBase {
+  description?: string | null;
+  instructions?: string | null;
+  // TODO(jiyoung): set of 16 key-value pairs (key max: 64 chars, value max: 512 chars)
+  metadata?: object | null;
+  name?: string | null;
+  tokenId: string;
+}
+
+export interface OpenAIAssistantUpdateParams extends AssistantUpdateParamsBase {
+  config: OpenAIChatConfigureParams;
+  model?: OpenAIChatModel;
+}
 
 export interface Assistant {
   id: string;
   created_at: number;
   description: string | null;
-  instructions: string | null;
+  instructions: string;
+  metadata: object;
   model: string;
-  name: string | null;
-}
-
-export interface AssistantTransactionResult extends TransactionResult {
-  assistant: Assistant;
+  name: string;
 }
