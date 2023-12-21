@@ -7,7 +7,7 @@ import {
 } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import { AINIZE_AI_SERVICE_NAME, MIN_GAS_PRICE } from './constants';
+import { PROVIDER_API_AI_NAME_MAP, MIN_GAS_PRICE } from './constants';
 import { HttpMethod } from './types';
 
 export const buildData = (
@@ -121,7 +121,7 @@ type TokenAiRef = {
 
 export const validateAndGetAiName = (provider: string, api: string): string => {
   const key = `${provider}-${api}`;
-  const aiName = AINIZE_AI_SERVICE_NAME.get(key);
+  const aiName = PROVIDER_API_AI_NAME_MAP.get(key);
   if (!aiName) {
     throw new Error('AI service not supported');
   }
