@@ -151,12 +151,7 @@ export default class Assistants {
     // NOTE(jiyoung): mocked deleted assistant.
     const delAssistant = { id: assistantId, deleted: true };
 
-    const txBody = this.getAssistantDeleteTxBody(
-      appId,
-      tokenId,
-      aiName,
-      delAssistant
-    );
+    const txBody = this.getAssistantDeleteTxBody(appId, tokenId, aiName);
 
     const txResult = await this.ain.sendTransaction(txBody);
     return { ...txResult, delAssistant };
@@ -170,12 +165,12 @@ export default class Assistants {
   ) {
     const tokenAiRef = Ref.app(appId).token(tokenId).ai(aiName).root();
     return buildSetValueTransactionBody(tokenAiRef, {
-        id: assistant.id,
-        config: {
-          model: assistant.model,
-          name: assistant.name,
-          instructions: assistant.instructions,
-          ...(assistant.description && { description: assistant.description }),
+      id: assistant.id,
+      config: {
+        model: assistant.model,
+        name: assistant.name,
+        instructions: assistant.instructions,
+        ...(assistant.description && { description: assistant.description }),
         ...(!(Object.keys(assistant.metadata).length === 0) && {
           metadata: assistant.metadata,
         }),
@@ -204,13 +199,10 @@ export default class Assistants {
   private getAssistantDeleteTxBody(
     appId: string,
     tokenId: string,
-    aiName: string,
-    delAssistant: AssistantDeleted
+    aiName: string
   ) {
     const tokenAiRef = Ref.app(appId).token(tokenId).ai(aiName).root();
     // FIXME(jiyoung): in insight, neither boolean values nor string forms like 'true' are visible.
-    return buildSetValueTransactionBody(tokenAiRef, {
-      ...delAssistant,
-    });
+    return buildSetValueTransactionBody(tokenAiRef, null);
   }
 }
