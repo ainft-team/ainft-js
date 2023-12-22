@@ -1123,6 +1123,10 @@ export interface AssistantTransactionResult extends TransactionResult {
   assistant: Assistant;
 }
 
+export interface AssistantDeleteTransactionResult extends TransactionResult {
+  delAssistant: AssistantDeleted;
+}
+
 export type ChatConfigureParams = OpenAIChatConfigureParams;
 
 interface ChatConfigureParamsBase {
@@ -1180,6 +1184,16 @@ export interface OpenAIAssistantUpdateParams extends AssistantUpdateParamsBase {
   model?: OpenAIChatModel;
 }
 
+export type AssistantDeleteParams = OpenAIAssistantDeleteParams;
+
+interface AssistantDeleteParamsBase {
+  tokenId: string;
+}
+
+export interface OpenAIAssistantDeleteParams extends AssistantDeleteParamsBase {
+  config: OpenAIChatConfigureParams;
+}
+
 export interface Assistant {
   id: string;
   created_at: number;
@@ -1188,4 +1202,9 @@ export interface Assistant {
   metadata: object;
   model: string;
   name: string;
+}
+
+export interface AssistantDeleted {
+  id: string;
+  deleted: boolean;
 }

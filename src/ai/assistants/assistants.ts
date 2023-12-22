@@ -5,6 +5,9 @@ import Ainft721Object from '../../ainft721Object';
 import {
   Assistant,
   AssistantCreateParams,
+  AssistantDeleteParams,
+  AssistantDeleteTransactionResult,
+  AssistantDeleted,
   AssistantTransactionResult,
   AssistantUpdateParams,
 } from '../../types';
@@ -32,12 +35,12 @@ export default class Assistants {
 
   async create({
     config,
-    description,
-    instructions,
-    metadata,
+    tokenId,
     model,
     name,
-    tokenId,
+    instructions,
+    description,
+    metadata,
   }: AssistantCreateParams): Promise<AssistantTransactionResult> {
     const appId = Ainft721Object.getAppId(config.objectId);
     const address = this.ain.signer.getAddress();
@@ -80,12 +83,12 @@ export default class Assistants {
     assistantId: string,
     {
       config,
-      description,
-      instructions,
-      metadata,
+      tokenId,
       model,
       name,
-      tokenId,
+      instructions,
+      description,
+      metadata,
     }: AssistantUpdateParams
   ): Promise<AssistantTransactionResult> {
     const appId = Ainft721Object.getAppId(config.objectId);
@@ -105,7 +108,7 @@ export default class Assistants {
     // const response = await ai.request(<REQUEST_DATA>);
     // NOTE(jiyoung): mocked assistant.
     const assistant = {
-      id: 'asst_000000000000000000000001',
+      id: assistantId,
       ...{ model: model || 'gpt-3.5-turbo' },
       ...{ name: name || 'name' },
       ...{ instructions: instructions || 'instructions' },
@@ -124,6 +127,39 @@ export default class Assistants {
     // TODO(jiyoung): implement failure handling logic.
     const txResult = await this.ain.sendTransaction(txBody);
     return { ...txResult, assistant: assistant };
+  }
+
+  async delete(
+    assistantId: string,
+    { config, tokenId }: AssistantDeleteParams
+  ): Promise<AssistantDeleteTransactionResult> {
+    const appId = Ainft721Object.getAppId(config.objectId);
+    const address = this.ain.signer.getAddress();
+
+    await validateObject(appId, this.ain);
+    await validateObjectOwnership(appId, address, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const aiName = validateAndGetAiName(config.provider, config.api);
+    await validateAi(appId, aiName, this.ain);
+    await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
+
+    const ai = await validateAndGetAiService(aiName, this.ainize);
+
+    // TODO(jiyoung): replace with ainize.request() function after deployment of ainize service.
+    // const response = await ai.request(<REQUEST_DATA>);
+    // NOTE(jiyoung): mocked deleted assistant.
+    const delAssistant = { id: assistantId, deleted: true };
+
+    const txBody = this.getAssistantDeleteTxBody(
+      appId,
+      tokenId,
+      aiName,
+      delAssistant
+    );
+
+    const txResult = await this.ain.sendTransaction(txBody);
+    return { ...txResult, delAssistant };
   }
 
   private getAssistantCreateTxBody(
@@ -147,7 +183,7 @@ export default class Assistants {
     });
   }
 
-  private async getAssistantUpdateTxBody(
+  private getAssistantUpdateTxBody(
     appId: string,
     tokenId: string,
     aiName: string,
@@ -162,6 +198,19 @@ export default class Assistants {
       ...(!(Object.keys(assistant.metadata).length === 0) && {
         metadata: assistant.metadata,
       }),
+    });
+  }
+
+  private getAssistantDeleteTxBody(
+    appId: string,
+    tokenId: string,
+    aiName: string,
+    delAssistant: AssistantDeleted
+  ) {
+    const tokenAiRef = Ref.app(appId).token(tokenId).ai(aiName).root();
+    // FIXME(jiyoung): in insight, neither boolean values nor string forms like 'true' are visible.
+    return buildSetValueTransactionBody(tokenAiRef, {
+      ...delAssistant,
     });
   }
 }
