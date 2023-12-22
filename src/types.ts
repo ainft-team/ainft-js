@@ -1194,6 +1194,16 @@ export interface OpenAIAssistantDeleteParams extends AssistantDeleteParamsBase {
   config: OpenAIChatConfigureParams;
 }
 
+export type AssistantGetParams = OpenAIAssistantGetParams;
+
+interface AssistantGetParamsBase {
+  tokenId: string;
+}
+
+export interface OpenAIAssistantGetParams extends AssistantGetParamsBase {
+  config: OpenAIChatConfigureParams;
+}
+
 export interface Assistant {
   id: string;
   created_at: number;

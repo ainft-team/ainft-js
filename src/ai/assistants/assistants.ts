@@ -7,6 +7,7 @@ import {
   AssistantCreateParams,
   AssistantDeleteParams,
   AssistantDeleteTransactionResult,
+  AssistantGetParams,
   AssistantTransactionResult,
   AssistantUpdateParams,
 } from '../../types';
@@ -153,6 +154,37 @@ export default class Assistants {
 
     const txResult = await this.ain.sendTransaction(txBody);
     return { ...txResult, delAssistant };
+  }
+
+  async get(
+    assistantId: string,
+    { config, tokenId }: AssistantGetParams
+  ): Promise<Assistant> {
+    const appId = Ainft721Object.getAppId(config.objectId);
+
+    await validateObject(appId, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const aiName = validateAndGetAiName(config.provider, config.api);
+    await validateAi(appId, aiName, this.ain);
+    await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
+
+    const ai = await validateAndGetAiService(aiName, this.ainize);
+
+    // TODO(jiyoung): replace with ainize.request() function after deployment of ainize service.
+    // const response = await ai.request(<REQUEST_DATA>);
+    // NOTE(jiyoung): mocked assistant.
+    const assistant = {
+      id: assistantId,
+      model: 'gpt-3.5-turbo',
+      name: 'name',
+      instructions: 'instructions',
+      description: 'description',
+      metadata: { key: 'value' },
+      created_at: 0,
+    };
+
+    return assistant;
   }
 
   private getAssistantCreateTxBody(
