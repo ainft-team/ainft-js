@@ -7,7 +7,6 @@ import {
   AssistantCreateParams,
   AssistantDeleteParams,
   AssistantDeleteTransactionResult,
-  AssistantDeleted,
   AssistantTransactionResult,
   AssistantUpdateParams,
 } from '../../types';
@@ -21,7 +20,6 @@ import {
   validateAndGetAiService,
   validateTokenAi,
   Ref,
-  getValue,
 } from '../../util';
 
 export default class Assistants {
@@ -202,7 +200,6 @@ export default class Assistants {
     aiName: string
   ) {
     const tokenAiRef = Ref.app(appId).token(tokenId).ai(aiName).root();
-    // FIXME(jiyoung): in insight, neither boolean values nor string forms like 'true' are visible.
     return buildSetValueTransactionBody(tokenAiRef, null);
   }
 }
