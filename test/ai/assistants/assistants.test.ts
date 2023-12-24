@@ -149,6 +149,8 @@ describe('Assistant', () => {
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(txResult.result).toBeDefined();
+    expect(txResult.delAssistant.id).toBe(assistantId);
+    expect(txResult.delAssistant.deleted).toBe(true);
     expect(value).toBeNull();
   });
 });
