@@ -196,6 +196,7 @@ export default class Assistants {
     const tokenAiRef = Ref.app(appId).token(tokenId).ai(aiName).root();
     return buildSetValueTransactionBody(tokenAiRef, {
       id: assistant.id,
+      object: 'assistant',
       config: {
         model: assistant.model,
         name: assistant.name,

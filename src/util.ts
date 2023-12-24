@@ -175,10 +175,10 @@ export const validateTokenAi = async (
   const tokenAiPath = Ref.app(appId).token(tokenId).ai(aiName).root();
   const tokenAi = await getValue(tokenAiPath, ain);
   if (!tokenAi) {
-    throw new Error('Token AI(Assistant) not found');
+    throw new Error('Token AI not found');
   }
   if (tokenAi?.id !== aiId) {
-    throw new Error('Incorrect token AI(Assistant) ID');
+    throw new Error(`Incorrect token AI(${tokenAi?.object}) ID`);
   }
 };
 
