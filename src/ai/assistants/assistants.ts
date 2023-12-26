@@ -155,6 +155,40 @@ export default class Assistants {
     return { ...txResult, delAssistant };
   }
 
+  async get(
+    assistantId: string,
+    objectId: string,
+    provider: string,
+    api: string,
+    tokenId: string
+  ): Promise<Assistant> {
+    const appId = Ainft721Object.getAppId(objectId);
+
+    await validateObject(appId, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const aiName = validateAndGetAiName(provider, api);
+    await validateAi(appId, aiName, this.ain);
+    await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
+
+    const ai = await validateAndGetAiService(aiName, this.ainize);
+
+    // TODO(jiyoung): replace with ainize.request() function after deployment of ainize service.
+    // const response = await ai.request(<REQUEST_DATA>);
+    // NOTE(jiyoung): mocked assistant.
+    const assistant = {
+      id: assistantId,
+      model: 'gpt-3.5-turbo',
+      name: 'name',
+      instructions: 'instructions',
+      description: 'description',
+      metadata: { key: 'value' },
+      created_at: 0,
+    };
+
+    return assistant;
+  }
+
   private getAssistantCreateTxBody(
     appId: string,
     tokenId: string,
@@ -164,6 +198,7 @@ export default class Assistants {
     const tokenAiRef = Ref.app(appId).token(tokenId).ai(aiName).root();
     return buildSetValueTransactionBody(tokenAiRef, {
       id: assistant.id,
+      object: 'assistant',
       config: {
         model: assistant.model,
         name: assistant.name,
