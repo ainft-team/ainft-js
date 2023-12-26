@@ -177,8 +177,8 @@ export const validateTokenAi = async (
   if (!tokenAi) {
     throw new Error('Token AI not found');
   }
-  if (tokenAi?.id !== aiId) {
-    throw new Error(`Incorrect token AI(${tokenAi?.object}) ID`);
+  if (tokenAi.id !== aiId) {
+    throw new Error(`Incorrect token AI(${tokenAi.object}) ID`);
   }
 };
 

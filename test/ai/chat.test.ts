@@ -8,23 +8,21 @@ const ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
 
 const objectId = '0x45E89F37Cee508cf0D4F6e74b35EfeBdd90BD731';
 const appId = 'ainft721_0x45e89f37cee508cf0d4f6e74b35efebdd90bd731';
-const serviceName = 'ainize_test14';
+const aiName = 'ainize_test14';
 
 describe('Chat', () => {
-  it('should configure chat ai', async () => {
-    const result = await ainft.ai.chat.config({
+  it('config: should configure chat ai', async () => {
+    const txResult = await ainft.ai.chat.config({
       objectId: objectId,
       provider: 'openai',
       api: 'assistants',
     });
 
-    const value = await ainft.ain.db
-      .ref(`/apps/${appId}/ai/${serviceName}`)
-      .getValue();
+    const ai = await ainft.ain.db.ref(`/apps/${appId}/ai/${aiName}`).getValue();
 
-    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(value.name).toBe(serviceName);
-    expect(value.type).toBe('chat');
-    expect(value.url).toBe(`https://${serviceName}.ainetwork.xyz`);
+    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(ai.name).toBe(aiName);
+    expect(ai.type).toBe('chat');
+    expect(ai.url).toBe(`https://${aiName}.ainetwork.xyz`);
   });
 });

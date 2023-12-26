@@ -1127,16 +1127,17 @@ export interface AssistantDeleteTransactionResult extends TransactionResult {
   delAssistant: AssistantDeleted;
 }
 
-export type ChatConfigureParams = OpenAIChatConfigureParams;
 
 interface ChatConfigureParamsBase {
   objectId: string;
 }
 
 export interface OpenAIChatConfigureParams extends ChatConfigureParamsBase {
-  api: 'assistants';
   provider: 'openai';
+  api: 'assistants';
 }
+
+export type ChatConfigureParams = OpenAIChatConfigureParams;
 
 /**
  * Name of the model to use. You can see the
@@ -1152,15 +1153,27 @@ export type OpenAIChatModel =
   | 'gpt-3.5-turbo-16k'
   | 'gpt-3.5-turbo-instruct';
 
-export type AssistantCreateParams = OpenAIAssistantCreateParams;
+export interface Assistant {
+  id: string;
+  model: string;
+  name: string;
+  instructions: string;
+  description: string | null;
+  metadata: object | null;
+  created_at: number;
+}
+
+export interface AssistantDeleted {
+  id: string;
+  deleted: boolean;
+}
 
 interface AssistantCreateParamsBase {
-  description?: string | null;
-  instructions: string;
-  // TODO(jiyoung): set of 16 key-value pairs (key max: 64 chars, value max: 512 chars)
-  metadata?: object | null;
-  name: string;
   tokenId: string;
+  name: string;
+  instructions: string;
+  description?: string | null;
+  metadata?: object | null;
 }
 
 export interface OpenAIAssistantCreateParams extends AssistantCreateParamsBase {
@@ -1168,15 +1181,14 @@ export interface OpenAIAssistantCreateParams extends AssistantCreateParamsBase {
   model: OpenAIChatModel;
 }
 
-export type AssistantUpdateParams = OpenAIAssistantUpdateParams;
+export type AssistantCreateParams = OpenAIAssistantCreateParams;
 
 interface AssistantUpdateParamsBase {
-  description?: string | null;
-  instructions?: string | null;
-  // TODO(jiyoung): set of 16 key-value pairs (key max: 64 chars, value max: 512 chars)
-  metadata?: object | null;
-  name?: string | null;
   tokenId: string;
+  name?: string | null;
+  instructions?: string | null;
+  description?: string | null;
+  metadata?: object | null;
 }
 
 export interface OpenAIAssistantUpdateParams extends AssistantUpdateParamsBase {
@@ -1184,7 +1196,7 @@ export interface OpenAIAssistantUpdateParams extends AssistantUpdateParamsBase {
   model?: OpenAIChatModel;
 }
 
-export type AssistantDeleteParams = OpenAIAssistantDeleteParams;
+export type AssistantUpdateParams = OpenAIAssistantUpdateParams;
 
 interface AssistantDeleteParamsBase {
   tokenId: string;
@@ -1194,17 +1206,5 @@ export interface OpenAIAssistantDeleteParams extends AssistantDeleteParamsBase {
   config: OpenAIChatConfigureParams;
 }
 
-export interface Assistant {
-  id: string;
-  created_at: number;
-  description: string | null;
-  instructions: string;
-  metadata: object;
-  model: string;
-  name: string;
-}
+export type AssistantDeleteParams = OpenAIAssistantDeleteParams;
 
-export interface AssistantDeleted {
-  id: string;
-  deleted: boolean;
-}

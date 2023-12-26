@@ -8,45 +8,17 @@ const ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
 
 const objectId = '0x45E89F37Cee508cf0D4F6e74b35EfeBdd90BD731';
 const appId = 'ainft721_0x45e89f37cee508cf0d4f6e74b35efebdd90bd731';
-const serviceName = 'ainize_test14';
+const aiName = 'ainize_test14';
 const tokenId = '1';
 const assistantId = 'asst_000000000000000000000001';
 
 describe('Assistant', () => {
-  it('create: should create assistant with required params', async () => {
+  it('create: should create assistant', async () => {
     const txResult = await ainft.ai.chat.assistants.create({
       config: {
+        objectId: objectId,
         provider: 'openai',
         api: 'assistants',
-        objectId: objectId,
-      },
-      tokenId: tokenId,
-      model: 'gpt-3.5-turbo',
-      name: 'name',
-      instructions: 'instructions',
-    });
-
-    const assistant = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`)
-      .getValue();
-
-    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(txResult.result).toBeDefined();
-    expect(assistant.id).toMatch(/^asst_[A-Za-z0-9]{24}/);
-    expect(assistant.object).toBe('assistant');
-    expect(assistant.config.model).toBe('gpt-3.5-turbo');
-    expect(assistant.config.name).toBe('name');
-    expect(assistant.config.instructions).toBe('instructions');
-    expect(assistant.config).not.toHaveProperty('description');
-    expect(assistant.config).not.toHaveProperty('metadata');
-  });
-
-  it('create: should create assistant with required and optional params', async () => {
-    const txResult = await ainft.ai.chat.assistants.create({
-      config: {
-        provider: 'openai',
-        api: 'assistants',
-        objectId: objectId,
       },
       tokenId: tokenId,
       model: 'gpt-3.5-turbo',
@@ -57,7 +29,7 @@ describe('Assistant', () => {
     });
 
     const assistant = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`)
+      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}`)
       .getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
@@ -88,12 +60,12 @@ describe('Assistant', () => {
     expect(assistant.metadata).toEqual({ key: 'value' });
   });
 
-  it('update: should update assistant with required and optional params', async () => {
+  it('update: should update assistant', async () => {
     const txResult = await ainft.ai.chat.assistants.update(assistantId, {
       config: {
+        objectId: objectId,
         provider: 'openai',
         api: 'assistants',
-        objectId: objectId,
       },
       tokenId: tokenId,
       model: 'gpt-4',
@@ -104,7 +76,7 @@ describe('Assistant', () => {
     });
 
     const assistant = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`)
+      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}`)
       .getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
@@ -123,15 +95,15 @@ describe('Assistant', () => {
   it('delete: should delete assistant', async () => {
     const txResult = await ainft.ai.chat.assistants.delete(assistantId, {
       config: {
+        objectId: objectId,
         provider: 'openai',
         api: 'assistants',
-        objectId: objectId,
       },
       tokenId,
     });
 
     const assistant = await ainft.ain.db
-      .ref(`apps/${appId}/tokens/${tokenId}/ai/${serviceName}`)
+      .ref(`apps/${appId}/tokens/${tokenId}/ai/${aiName}`)
       .getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);

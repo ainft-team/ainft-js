@@ -50,11 +50,7 @@ export default class Assistants {
     const aiName = validateAndGetAiName(config.provider, config.api);
     await validateAi(appId, aiName, this.ain);
 
-    const ai = await validateAndGetAiService(aiName, this.ainize);
-
-    // TODO(jiyoung): replace with ainize.request() function after deployment of ainize service.
-    // const response = await ai.request(<REQUEST_DATA>);
-    // NOTE(jiyoung): mocked assistant.
+    // NOTE(jiyoung): mocked assistant for test.
     const assistant = {
       id: 'asst_000000000000000000000001',
       model: model,
@@ -64,6 +60,10 @@ export default class Assistants {
       metadata: metadata || {},
       created_at: 0,
     };
+
+    // TODO(jiyoung): use ainize.request() function after deployment.
+    // const ai = await validateAndGetAiService(aiName, this.ainize);
+    // const response = await ai.request(<REQUEST_DATA>);
 
     const txBody = this.getAssistantCreateTxBody(
       appId,
@@ -100,11 +100,7 @@ export default class Assistants {
     await validateAi(appId, aiName, this.ain);
     await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 
-    const ai = await validateAndGetAiService(aiName, this.ainize);
-
-    // TODO(jiyoung): replace with ainize.request() function after deployment of ainize service.
-    // const response = await ai.request(<REQUEST_DATA>);
-    // NOTE(jiyoung): mocked assistant.
+    // NOTE(jiyoung): mocked assistant for test.
     const assistant = {
       id: assistantId,
       ...{ model: model || 'gpt-3.5-turbo' },
@@ -115,7 +111,11 @@ export default class Assistants {
       created_at: 0,
     };
 
-    const txBody = await this.getAssistantUpdateTxBody(
+    // TODO(jiyoung): use ainize.request() function after deployment.
+    // const ai = await validateAndGetAiService(aiName, this.ainize);
+    // const response = await ai.request(<REQUEST_DATA>);
+
+    const txBody = this.getAssistantUpdateTxBody(
       appId,
       tokenId,
       aiName,
@@ -142,12 +142,12 @@ export default class Assistants {
     await validateAi(appId, aiName, this.ain);
     await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 
-    const ai = await validateAndGetAiService(aiName, this.ainize);
-
-    // TODO(jiyoung): replace with ainize.request() function after deployment of ainize service.
-    // const response = await ai.request(<REQUEST_DATA>);
-    // NOTE(jiyoung): mocked deleted assistant.
+    // NOTE(jiyoung): mocked deleted assistant for test.
     const delAssistant = { id: assistantId, deleted: true };
+
+    // TODO(jiyoung): use ainize.request() function after deployment.
+    // const ai = await validateAndGetAiService(aiName, this.ainize);
+    // const response = await ai.request(<REQUEST_DATA>);
 
     const txBody = this.getAssistantDeleteTxBody(appId, tokenId, aiName);
 
@@ -171,11 +171,7 @@ export default class Assistants {
     await validateAi(appId, aiName, this.ain);
     await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 
-    const ai = await validateAndGetAiService(aiName, this.ainize);
-
-    // TODO(jiyoung): replace with ainize.request() function after deployment of ainize service.
-    // const response = await ai.request(<REQUEST_DATA>);
-    // NOTE(jiyoung): mocked assistant.
+    // NOTE(jiyoung): mocked assistant for test.
     const assistant = {
       id: assistantId,
       model: 'gpt-3.5-turbo',
@@ -185,6 +181,10 @@ export default class Assistants {
       metadata: { key: 'value' },
       created_at: 0,
     };
+
+    // TODO(jiyoung): use ainize.request() function after deployment.
+    // const ai = await validateAndGetAiService(aiName, this.ainize);
+    // const response = await ai.request(<REQUEST_DATA>);
 
     return assistant;
   }
@@ -204,9 +204,10 @@ export default class Assistants {
         name: assistant.name,
         instructions: assistant.instructions,
         ...(assistant.description && { description: assistant.description }),
-        ...(!(Object.keys(assistant.metadata).length === 0) && {
-          metadata: assistant.metadata,
-        }),
+        ...(assistant.metadata &&
+          !(Object.keys(assistant.metadata).length === 0) && {
+            metadata: assistant.metadata,
+          }),
       },
     });
   }
@@ -223,9 +224,10 @@ export default class Assistants {
       name: assistant.name,
       instructions: assistant.instructions,
       ...(assistant.description && { description: assistant.description }),
-      ...(!(Object.keys(assistant.metadata).length === 0) && {
-        metadata: assistant.metadata,
-      }),
+      ...(assistant.metadata &&
+        !(Object.keys(assistant.metadata).length === 0) && {
+          metadata: assistant.metadata,
+        }),
     });
   }
 
