@@ -18,7 +18,7 @@ import {
   validateToken,
   validateAndGetAiName,
   validateAndGetAiService,
-  validateTokenAi,
+  validateAndGetTokenAi,
   Ref,
 } from '../../util';
 
@@ -98,7 +98,7 @@ export default class Assistants {
 
     const aiName = validateAndGetAiName(config.provider, config.api);
     await validateAi(appId, aiName, this.ain);
-    await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
+    await validateAndGetTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 
     // NOTE(jiyoung): mocked assistant for test.
     const assistant = {
@@ -140,7 +140,7 @@ export default class Assistants {
 
     const aiName = validateAndGetAiName(config.provider, config.api);
     await validateAi(appId, aiName, this.ain);
-    await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
+    await validateAndGetTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 
     // NOTE(jiyoung): mocked deleted assistant for test.
     const delAssistant = { id: assistantId, deleted: true };
@@ -169,7 +169,7 @@ export default class Assistants {
 
     const aiName = validateAndGetAiName(provider, api);
     await validateAi(appId, aiName, this.ain);
-    await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
+    await validateAndGetTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 
     // NOTE(jiyoung): mocked assistant for test.
     const assistant = {

@@ -165,11 +165,11 @@ export const validateAi = async (appId: string, aiName: string, ain: Ain) => {
   }
 };
 
-export const validateTokenAi = async (
+export const validateAndGetTokenAi = async (
   appId: string,
   tokenId: string,
   aiName: string,
-  aiId: string,
+  aiId: string | null,
   ain: Ain
 ) => {
   const tokenAiPath = Ref.app(appId).token(tokenId).ai(aiName).root();
@@ -177,9 +177,10 @@ export const validateTokenAi = async (
   if (!tokenAi) {
     throw new Error('Token AI not found');
   }
-  if (tokenAi.id !== aiId) {
+  if (aiId && tokenAi.id !== aiId) {
     throw new Error(`Incorrect token AI(${tokenAi.object}) ID`);
   }
+  return tokenAi;
 };
 
 export const validateToken = async (
