@@ -1127,6 +1127,9 @@ export interface AssistantDeleteTransactionResult extends TransactionResult {
   delAssistant: AssistantDeleted;
 }
 
+export interface ThreadTransactionResult extends TransactionResult {
+  thread: Thread;
+}
 
 interface ChatConfigureParamsBase {
   objectId: string;
@@ -1208,3 +1211,37 @@ export interface OpenAIAssistantDeleteParams extends AssistantDeleteParamsBase {
 
 export type AssistantDeleteParams = OpenAIAssistantDeleteParams;
 
+export interface Thread {
+  id: string;
+  messages: Array<ThreadMessage>;
+  metadata: object | null;
+  created_at: number;
+}
+
+export interface ThreadMessage {
+  id: string;
+  content: string;
+  role: 'user' | 'assistant';
+  metadata: object | null;
+  created_at: number;
+}
+
+interface ThreadCreateParamsBase {
+  tokenId: string;
+  messages?: Array<ThreadCreateParams.Message>;
+  metadata?: object | null;
+}
+
+export namespace ThreadCreateParams {
+  export interface Message {
+    content: string;
+    role: 'user';
+    metadata?: object | null;
+  }
+}
+
+export interface OpenAIThreadCreateParams extends ThreadCreateParamsBase {
+  config: OpenAIChatConfigureParams;
+}
+
+export type ThreadCreateParams = OpenAIThreadCreateParams;

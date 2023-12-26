@@ -3,6 +3,7 @@ import Ainize from '@ainize-team/ainize-js';
 
 import Ainft721Object from '../ainft721Object';
 import Assistants from './assistants/assistants';
+import Threads from './threads/threads';
 import { ChatConfigureParams, TransactionResult } from '../types';
 import {
   buildSetValueTransactionBody,
@@ -17,11 +18,13 @@ export default class ChatAi {
   private ain: Ain;
   private ainize: Ainize;
   assistants: Assistants;
+  threads: Threads;
 
   constructor(ain: Ain, ainize: Ainize) {
     this.ain = ain;
     this.ainize = ainize;
     this.assistants = new Assistants(ain, ainize);
+    this.threads = new Threads(ain, ainize);
   }
 
   async config({
@@ -36,7 +39,7 @@ export default class ChatAi {
     await validateObjectOwnership(appId, address, this.ain);
 
     const aiName = validateAndGetAiName(provider, api);
-    await validateAndGetAiService(aiName, this.ainize); //validate
+    await validateAndGetAiService(aiName, this.ainize);
 
     const txBody = this.getChatConfigureTxBody(appId, aiName);
 

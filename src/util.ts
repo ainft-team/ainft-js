@@ -95,6 +95,31 @@ export const Ref = {
                 `${Ref.app(appId).token(tokenId).root()}/ai/${aiName}`,
               config: () =>
                 `${Ref.app(appId).token(tokenId).ai(aiName).root()}/config`,
+              history: (address: string): HistoryRef => {
+                return {
+                  root: () =>
+                    `${Ref.app(appId)
+                      .token(tokenId)
+                      .ai(aiName)
+                      .root()}/history/${address}`,
+                  thread: (threadId: string): ThreadRef => {
+                    return {
+                      root: () =>
+                        `${Ref.app(appId)
+                          .token(tokenId)
+                          .ai(aiName)
+                          .history(address)
+                          .root()}/threads/${threadId}`,
+                      message: (messageId: string) =>
+                        `${Ref.app(appId)
+                          .token(tokenId)
+                          .ai(aiName)
+                          .history(address)
+                          .thread(threadId)}/messages/${messageId}`,
+                    };
+                  },
+                };
+              },
             };
           },
         };
@@ -117,6 +142,17 @@ type TokenRef = {
 type TokenAiRef = {
   root: () => string;
   config: () => string;
+  history: (address: string) => HistoryRef;
+};
+
+type HistoryRef = {
+  root: () => string;
+  thread: (threadId: string) => ThreadRef;
+};
+
+type ThreadRef = {
+  root: () => string;
+  message: (messageId: string) => string;
 };
 
 export const validateAndGetAiName = (provider: string, api: string): string => {
