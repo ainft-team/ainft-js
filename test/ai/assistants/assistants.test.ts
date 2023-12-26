@@ -20,10 +20,10 @@ describe('Assistant', () => {
         api: 'assistants',
         objectId: objectId,
       },
+      tokenId: tokenId,
       model: 'gpt-3.5-turbo',
       name: 'name',
       instructions: 'instructions',
-      tokenId: tokenId,
     });
 
     const value = await ainft.ain.db
@@ -47,12 +47,12 @@ describe('Assistant', () => {
         api: 'assistants',
         objectId: objectId,
       },
+      tokenId: tokenId,
       model: 'gpt-3.5-turbo',
       name: 'name',
       instructions: 'instructions',
       description: 'description',
       metadata: { key: 'value' },
-      tokenId: tokenId,
     });
 
     const value = await ainft.ain.db
@@ -101,6 +101,7 @@ describe('Assistant', () => {
         api: 'assistants',
         objectId: objectId,
       },
+      tokenId: tokenId,
       model: 'gpt-4',
       name: 'new_name',
       instructions: 'new_instructions',
@@ -111,7 +112,6 @@ describe('Assistant', () => {
         key3: 'value3',
         key4: 'value4',
       },
-      tokenId: tokenId,
     });
 
     const value = await ainft.ain.db
@@ -131,5 +131,26 @@ describe('Assistant', () => {
       key3: 'value3',
       key4: 'value4',
     });
+  });
+
+  it('delete', async () => {
+    const txResult = await ainft.ai.chat.assistants.delete(assistantId, {
+      config: {
+        provider: 'openai',
+        api: 'assistants',
+        objectId: objectId,
+      },
+      tokenId,
+    });
+
+    const value = await ainft.ain.db
+      .ref(`apps/${appId}/tokens/${tokenId}/ai/${serviceName}`)
+      .getValue();
+
+    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(txResult.result).toBeDefined();
+    expect(txResult.delAssistant.id).toBe(assistantId);
+    expect(txResult.delAssistant.deleted).toBe(true);
+    expect(value).toBeNull();
   });
 });
