@@ -7,7 +7,6 @@ import {
   AssistantCreateParams,
   AssistantDeleteParams,
   AssistantDeleteTransactionResult,
-  AssistantGetParams,
   AssistantTransactionResult,
   AssistantUpdateParams,
 } from '../../types';
@@ -158,14 +157,17 @@ export default class Assistants {
 
   async get(
     assistantId: string,
-    { config, tokenId }: AssistantGetParams
+    objectId: string,
+    provider: string,
+    api: string,
+    tokenId: string
   ): Promise<Assistant> {
-    const appId = Ainft721Object.getAppId(config.objectId);
+    const appId = Ainft721Object.getAppId(objectId);
 
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const aiName = validateAndGetAiName(config.provider, config.api);
+    const aiName = validateAndGetAiName(provider, api);
     await validateAi(appId, aiName, this.ain);
     await validateTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 

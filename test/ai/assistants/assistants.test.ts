@@ -72,14 +72,13 @@ describe('Assistant', () => {
   });
 
   it('get: should get assistant', async () => {
-    const assistant = await ainft.ai.chat.assistants.get(assistantId, {
-      config: {
-        provider: 'openai',
-        api: 'assistants',
-        objectId: objectId,
-      },
-      tokenId,
-    });
+    const assistant = await ainft.ai.chat.assistants.get(
+      assistantId,
+      objectId,
+      'openai',
+      'assistants',
+      tokenId
+    );
 
     expect(assistant.id).toBe(assistantId);
     expect(assistant.model).toBe('gpt-3.5-turbo');
