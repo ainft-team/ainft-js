@@ -9,11 +9,25 @@ const ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
 const objectId = '0x45E89F37Cee508cf0D4F6e74b35EfeBdd90BD731';
 const appId = 'ainft721_0x45e89f37cee508cf0d4f6e74b35efebdd90bd731';
 const aiName = 'ainize_test14';
-const tokenId = '1';
+const tokenId = '2';
 const address = '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0';
 const threadId = 'thread_000000000000000000000001';
 
 describe('Thread', () => {
+  beforeAll(async () => {
+    await ainft.ai.chat.assistants.create({
+      config: {
+        objectId: objectId,
+        provider: 'openai',
+        api: 'assistants',
+      },
+      tokenId: tokenId,
+      model: 'gpt-3.5-turbo',
+      name: 'name',
+      instructions: 'instructions',
+    });
+  });
+
   it('create: should create thread', async () => {
     const txResult = await ainft.ai.chat.threads.create({
       config: {
