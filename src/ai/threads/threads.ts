@@ -90,11 +90,14 @@ export default class Threads {
       .thread(thread.id)
       .root();
 
-    return buildSetValueTransactionBody(threadRef, {
-      messages: thread.messages.reduce<Record<string, object>>((obj, msg) => {
-        obj[msg.id] = { content: msg.content, role: msg.role };
-        return obj;
-      }, {}),
+    const messages: { [key: string]: object } = {};
+    thread.messages.forEach((msg) => {
+      messages[msg.id] = { content: msg.content, role: msg.role };
     });
+
+    return buildSetValueTransactionBody(
+      threadRef,
+      !(Object.keys(messages).length === 0) ? { messages: messages } : true
+    );
   }
 }
