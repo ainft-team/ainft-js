@@ -9,13 +9,13 @@ import {
   ThreadTransactionResult,
 } from '../../types';
 import {
+  buildSetValueTransactionBody,
   validateAi,
   validateAndGetAiName,
   validateObject,
   validateToken,
   validateAndGetTokenAi,
   Ref,
-  buildSetValueTransactionBody,
 } from '../../util';
 
 export default class Threads {
@@ -83,17 +83,17 @@ export default class Threads {
     address: string,
     thread: Thread
   ) {
+    const messages: { [key: string]: object } = {};
+    thread.messages.forEach((msg) => {
+      messages[msg.id] = { content: msg.content, role: msg.role };
+    });
+
     const threadRef = Ref.app(appId)
       .token(tokenId)
       .ai(aiName)
       .history(address)
       .thread(thread.id)
       .root();
-
-    const messages: { [key: string]: object } = {};
-    thread.messages.forEach((msg) => {
-      messages[msg.id] = { content: msg.content, role: msg.role };
-    });
 
     return buildSetValueTransactionBody(
       threadRef,
