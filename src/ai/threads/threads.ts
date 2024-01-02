@@ -156,6 +156,36 @@ export default class Threads {
     return { ...txResult, delThread };
   }
 
+  async get(
+    threadId: string,
+    objectId: string,
+    provider: string,
+    api: string,
+    tokenId: string
+  ): Promise<Thread> {
+    const appId = Ainft721Object.getAppId(objectId);
+    const address = this.ain.signer.getAddress();
+
+    await validateObject(appId, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const aiName = validateAndGetAiName(provider, api);
+    await validateAiConfig(appId, aiName, this.ain);
+    await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
+
+    await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
+
+    // NOTE(jiyoung): mocked thread for test.
+    const thread = {
+      id: threadId,
+      messages: [],
+      metadata: {},
+      created_at: 0,
+    };
+
+    return thread;
+  }
+
   private getThreadCreateTxBody(
     appId: string,
     tokenId: string,
