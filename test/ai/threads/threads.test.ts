@@ -54,6 +54,21 @@ describe('Thread', () => {
     expect(thread.metadata).toEqual({ key: 'value' });
   });
 
+  it('get: should get thread', async () => {
+    const thread = await ainft.ai.chat.threads.get(
+      threadId,
+      objectId,
+      'openai',
+      'assistants',
+      tokenId
+    );
+
+    expect(thread.id).toBe(threadId);
+    expect(thread.messages).toEqual([]);
+    expect(thread.metadata).toEqual({});
+    expect(thread.created_at).toBe(0);
+  });
+
   it('update: should update thread', async () => {
     const txResult = await ainft.ai.chat.threads.update(threadId, {
       config: {
