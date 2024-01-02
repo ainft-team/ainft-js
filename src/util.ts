@@ -194,7 +194,11 @@ export const validateAndGetAiService = async (
   return service;
 };
 
-export const validateAi = async (appId: string, aiName: string, ain: Ain) => {
+export const validateAiConfig = async (
+  appId: string,
+  aiName: string,
+  ain: Ain
+) => {
   const aiPath = Ref.app(appId).ai(aiName);
   if (!(await exists(aiPath, ain))) {
     throw new Error('AI not configured');

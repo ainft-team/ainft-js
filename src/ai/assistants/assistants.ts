@@ -12,7 +12,7 @@ import {
 } from '../../types';
 import {
   buildSetValueTransactionBody,
-  validateAi,
+  validateAiConfig,
   validateObject,
   validateObjectOwnership,
   validateToken,
@@ -48,7 +48,7 @@ export default class Assistants {
     await validateToken(appId, tokenId, this.ain);
 
     const aiName = validateAndGetAiName(config.provider, config.api);
-    await validateAi(appId, aiName, this.ain);
+    await validateAiConfig(appId, aiName, this.ain);
 
     // NOTE(jiyoung): mocked assistant for test.
     const assistant = {
@@ -97,7 +97,7 @@ export default class Assistants {
     await validateToken(appId, tokenId, this.ain);
 
     const aiName = validateAndGetAiName(config.provider, config.api);
-    await validateAi(appId, aiName, this.ain);
+    await validateAiConfig(appId, aiName, this.ain);
     await validateAndGetTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 
     // NOTE(jiyoung): mocked assistant for test.
@@ -139,7 +139,7 @@ export default class Assistants {
     await validateToken(appId, tokenId, this.ain);
 
     const aiName = validateAndGetAiName(config.provider, config.api);
-    await validateAi(appId, aiName, this.ain);
+    await validateAiConfig(appId, aiName, this.ain);
     await validateAndGetTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 
     // NOTE(jiyoung): mocked deleted assistant for test.
@@ -168,7 +168,7 @@ export default class Assistants {
     await validateToken(appId, tokenId, this.ain);
 
     const aiName = validateAndGetAiName(provider, api);
-    await validateAi(appId, aiName, this.ain);
+    await validateAiConfig(appId, aiName, this.ain);
     await validateAndGetTokenAi(appId, tokenId, aiName, assistantId, this.ain);
 
     // NOTE(jiyoung): mocked assistant for test.
