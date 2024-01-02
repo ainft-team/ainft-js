@@ -5,6 +5,8 @@ import Ainft721Object from '../../ainft721Object';
 import {
   Thread,
   ThreadCreateParams,
+  ThreadDeleteParams,
+  ThreadDeleteTransactionResult,
   ThreadMessage,
   ThreadTransactionResult,
   ThreadUpdateParams,
@@ -119,6 +121,71 @@ export default class Threads {
     return { ...txResult, thread };
   }
 
+  async delete(
+    threadId: string,
+    { config, tokenId }: ThreadDeleteParams
+  ): Promise<ThreadDeleteTransactionResult> {
+    const appId = Ainft721Object.getAppId(config.objectId);
+    const address = this.ain.signer.getAddress();
+
+    await validateObject(appId, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const aiName = validateAndGetAiName(config.provider, config.api);
+    await validateAiConfig(appId, aiName, this.ain);
+    await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
+
+    await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
+
+    // NOTE(jiyoung): mocked deleted thread for test.
+    const delThread = { id: threadId, deleted: true };
+
+    // TODO(jiyoung): use ainize.request() function after deployment.
+    // const ai = await validateAndGetAiService(aiName, this.ainize);
+    // const response = await ai.request(<REQUEST_DATA>);
+
+    const txBody = this.getThreadDeleteTxBody(
+      appId,
+      tokenId,
+      aiName,
+      address,
+      threadId
+    );
+
+    const txResult = await this.ain.sendTransaction(txBody);
+    return { ...txResult, delThread };
+  }
+
+  async get(
+    threadId: string,
+    objectId: string,
+    provider: string,
+    api: string,
+    tokenId: string
+  ): Promise<Thread> {
+    const appId = Ainft721Object.getAppId(objectId);
+    const address = this.ain.signer.getAddress();
+
+    await validateObject(appId, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const aiName = validateAndGetAiName(provider, api);
+    await validateAiConfig(appId, aiName, this.ain);
+    await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
+
+    await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
+
+    // NOTE(jiyoung): mocked thread for test.
+    const thread = {
+      id: threadId,
+      messages: [],
+      metadata: {},
+      created_at: 0,
+    };
+
+    return thread;
+  }
+
   private getThreadCreateTxBody(
     appId: string,
     tokenId: string,
@@ -175,5 +242,22 @@ export default class Threads {
           metadata: thread.metadata,
         }),
     });
+  }
+
+  private getThreadDeleteTxBody(
+    appId: string,
+    tokenId: string,
+    aiName: string,
+    address: string,
+    threadId: string
+  ) {
+    const threadRef = Ref.app(appId)
+      .token(tokenId)
+      .ai(aiName)
+      .history(address)
+      .thread(threadId)
+      .root();
+
+    return buildSetValueTransactionBody(threadRef, null);
   }
 }

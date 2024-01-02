@@ -1131,6 +1131,10 @@ export interface ThreadTransactionResult extends TransactionResult {
   thread: Thread;
 }
 
+export interface ThreadDeleteTransactionResult extends TransactionResult {
+  delThread: ThreadDeleted;
+}
+
 interface ChatConfigureParamsBase {
   objectId: string;
 }
@@ -1226,6 +1230,11 @@ export interface ThreadMessage {
   created_at: number;
 }
 
+export interface ThreadDeleted {
+  id: string;
+  deleted: boolean;
+}
+
 interface ThreadCreateParamsBase {
   tokenId: string;
   messages?: Array<ThreadCreateParams.Message>;
@@ -1256,3 +1265,13 @@ export interface OpenAIThreadUpdateParams extends ThreadUpdateParamsBase {
 }
 
 export type ThreadUpdateParams = OpenAIThreadUpdateParams;
+
+interface ThreadDeleteParamsBase {
+  tokenId: string;
+}
+
+export interface OpenAIThreadDeleteParams extends ThreadDeleteParamsBase {
+  config: OpenAIChatConfigureParams;
+}
+
+export type ThreadDeleteParams = OpenAIThreadDeleteParams;
