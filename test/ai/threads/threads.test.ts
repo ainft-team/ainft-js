@@ -74,4 +74,25 @@ describe('Thread', () => {
     expect(Object.keys(thread.messages).length).toBe(2);
     expect(thread.metadata).toEqual({ key1: 'value1', key2: 'value2' });
   });
+
+  it('delete: should delete thread', async () => {
+    const txResult = await ainft.ai.chat.threads.delete(threadId, {
+      config: {
+        objectId: objectId,
+        provider: 'openai',
+        api: 'assistants',
+      },
+      tokenId: tokenId,
+    });
+
+    const thread = await ainft.ain.db
+      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}`)
+      .getValue();
+
+    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(txResult.result).toBeDefined();
+    expect(txResult.delThread.id).toBe(threadId);
+    expect(txResult.delThread.deleted).toBe(true);
+    expect(thread).toBeNull();
+  });
 });
