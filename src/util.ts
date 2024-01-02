@@ -234,6 +234,26 @@ export const validateToken = async (
   }
 };
 
+export const validateThread = async (
+  appId: string,
+  tokenId: string,
+  aiName: string,
+  address: string,
+  threadId: string,
+  ain: Ain
+) => {
+  const threadPath = Ref.app(appId)
+    .token(tokenId)
+    .ai(aiName)
+    .history(address)
+    .thread(threadId)
+    .root();
+
+  if (!(await exists(threadPath, ain))) {
+    throw new Error('Thread not found');
+  }
+};
+
 export const exists = async (path: string, ain: Ain): Promise<boolean> => {
   return !!(await ain.db.ref(path).getValue());
 };

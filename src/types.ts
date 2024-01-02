@@ -1245,3 +1245,14 @@ export interface OpenAIThreadCreateParams extends ThreadCreateParamsBase {
 }
 
 export type ThreadCreateParams = OpenAIThreadCreateParams;
+
+interface ThreadUpdateParamsBase {
+  tokenId: string;
+  metadata?: object | null;
+}
+
+export interface OpenAIThreadUpdateParams extends ThreadUpdateParamsBase {
+  config: OpenAIChatConfigureParams;
+}
+
+export type ThreadUpdateParams = OpenAIThreadUpdateParams;
