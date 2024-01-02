@@ -194,7 +194,11 @@ export const validateAndGetAiService = async (
   return service;
 };
 
-export const validateAi = async (appId: string, aiName: string, ain: Ain) => {
+export const validateAiConfig = async (
+  appId: string,
+  aiName: string,
+  ain: Ain
+) => {
   const aiPath = Ref.app(appId).ai(aiName);
   if (!(await exists(aiPath, ain))) {
     throw new Error('AI not configured');
@@ -227,6 +231,26 @@ export const validateToken = async (
   const tokenPath = Ref.app(appId).token(tokenId).root();
   if (!(await exists(tokenPath, ain))) {
     throw new Error('Token not found');
+  }
+};
+
+export const validateThread = async (
+  appId: string,
+  tokenId: string,
+  aiName: string,
+  address: string,
+  threadId: string,
+  ain: Ain
+) => {
+  const threadPath = Ref.app(appId)
+    .token(tokenId)
+    .ai(aiName)
+    .history(address)
+    .thread(threadId)
+    .root();
+
+  if (!(await exists(threadPath, ain))) {
+    throw new Error('Thread not found');
   }
 };
 

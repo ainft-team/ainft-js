@@ -7,15 +7,18 @@ import {
   ThreadCreateParams,
   ThreadMessage,
   ThreadTransactionResult,
+  ThreadUpdateParams,
 } from '../../types';
 import {
   buildSetValueTransactionBody,
-  validateAi,
+  validateAiConfig,
   validateAndGetAiName,
   validateObject,
   validateToken,
   validateAndGetTokenAi,
   Ref,
+  validateThread,
+  getValue,
 } from '../../util';
 
 export default class Threads {
@@ -40,7 +43,7 @@ export default class Threads {
     await validateToken(appId, tokenId, this.ain);
 
     const aiName = validateAndGetAiName(config.provider, config.api);
-    await validateAi(appId, aiName, this.ain);
+    await validateAiConfig(appId, aiName, this.ain);
     await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
 
     // NOTE(jiyoung): mocked thread for test.
@@ -76,6 +79,46 @@ export default class Threads {
     return { ...txResult, thread };
   }
 
+  async update(
+    threadId: string,
+    { config, tokenId, metadata }: ThreadUpdateParams
+  ): Promise<ThreadTransactionResult> {
+    const appId = Ainft721Object.getAppId(config.objectId);
+    const address = this.ain.signer.getAddress();
+
+    await validateObject(appId, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const aiName = validateAndGetAiName(config.provider, config.api);
+    await validateAiConfig(appId, aiName, this.ain);
+    await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
+
+    await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
+
+    // NOTE(jiyoung): mocked thread for test.
+    const thread = <Thread>{
+      id: 'thread_000000000000000000000001',
+      messages: [],
+      ...{ metadata: metadata || {} },
+      created_at: 0,
+    };
+
+    // TODO(jiyoung): use ainize.request() function after deployment.
+    // const ai = await validateAndGetAiService(aiName, this.ainize);
+    // const response = await ai.request(<REQUEST_DATA>);
+
+    const txBody = await this.getThreadUpdateTxBody(
+      appId,
+      tokenId,
+      aiName,
+      address,
+      thread
+    );
+
+    const txResult = await this.ain.sendTransaction(txBody);
+    return { ...txResult, thread };
+  }
+
   private getThreadCreateTxBody(
     appId: string,
     tokenId: string,
@@ -95,9 +138,42 @@ export default class Threads {
       .thread(thread.id)
       .root();
 
+    const value = {
+      ...(!(Object.keys(messages).length === 0) && { messages: messages }),
+      ...(thread.metadata &&
+        !(Object.keys(thread.metadata).length === 0) && {
+          metadata: thread.metadata,
+        }),
+    };
+
     return buildSetValueTransactionBody(
       threadRef,
-      !(Object.keys(messages).length === 0) ? { messages: messages } : true
+      !(Object.keys(value).length === 0) ? value : true
     );
+  }
+
+  private async getThreadUpdateTxBody(
+    appId: string,
+    tokenId: string,
+    aiName: string,
+    address: string,
+    thread: Thread
+  ) {
+    const threadRef = Ref.app(appId)
+      .token(tokenId)
+      .ai(aiName)
+      .history(address)
+      .thread(thread.id)
+      .root();
+
+    const prev = await getValue(threadRef, this.ain);
+
+    return buildSetValueTransactionBody(threadRef, {
+      ...prev,
+      ...(thread.metadata &&
+        !(Object.keys(thread.metadata).length === 0) && {
+          metadata: thread.metadata,
+        }),
+    });
   }
 }

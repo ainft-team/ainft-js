@@ -40,6 +40,7 @@ describe('Thread', () => {
         { content: 'hello', role: 'user' },
         { content: 'nice to meet you', role: 'user' },
       ],
+      metadata: { key: 'value' },
     });
 
     const thread = await ainft.ain.db
@@ -50,5 +51,27 @@ describe('Thread', () => {
     expect(txResult.result).toBeDefined();
     expect(thread).not.toBeNull();
     expect(Object.keys(thread.messages).length).toBe(2);
+    expect(thread.metadata).toEqual({ key: 'value' });
+  });
+
+  it('update: should update thread', async () => {
+    const txResult = await ainft.ai.chat.threads.update(threadId, {
+      config: {
+        objectId: objectId,
+        provider: 'openai',
+        api: 'assistants',
+      },
+      tokenId: tokenId,
+      metadata: { key1: 'value1', key2: 'value2' },
+    });
+
+    const thread = await ainft.ain.db
+      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}`)
+      .getValue();
+
+    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(txResult.result).toBeDefined();
+    expect(Object.keys(thread.messages).length).toBe(2);
+    expect(thread.metadata).toEqual({ key1: 'value1', key2: 'value2' });
   });
 });
