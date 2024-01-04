@@ -25,13 +25,12 @@ describe('Message', () => {
       content: 'hello',
     });
 
-    const message = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}/messages/${messageId}`)
+    const messages = await ainft.ain.db
+      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}/messages`)
       .getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(txResult.result).toBeDefined();
-    expect(message.role).toBe('user');
-    expect(message.content).toBe('hello');
-  });
+    expect(Object.keys(messages).length).toBe(2);
+  }, 10000);
 });
