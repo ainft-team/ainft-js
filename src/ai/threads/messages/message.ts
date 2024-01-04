@@ -144,6 +144,7 @@ export default class Messages {
       this.ain
     );
 
+    // TODO(jiyoung): update message.
     const message = <ThreadMessage>{
       id: 'msg_000000000000000000000001',
       thread_id: 'thread_000000000000000000000001',
@@ -196,6 +197,7 @@ export default class Messages {
       this.ain
     );
 
+    // TODO(jiyoung): get message.
     const message = <ThreadMessage>{
       id: 'msg_000000000000000000000001',
       thread_id: 'thread_000000000000000000000001',
