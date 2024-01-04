@@ -4,18 +4,23 @@ import Ainize from '@ainize-team/ainize-js';
 import Ainft721Object from '../../../ainft721Object';
 import {
   MessageCreateParams,
+  MessageCreateTransactionResult,
   MessageTransactionResult,
+  MessageUpdateParams,
   ThreadMessage,
 } from '../../../types';
 import {
   Ref,
   buildSetValueTransactionBody,
+  getValue,
   validateAiConfig,
   validateAndGetAiName,
   validateAndGetTokenAi,
+  validateMessage,
   validateObject,
   validateThread,
   validateToken,
+  validateTokenAi,
 } from '../../../util';
 
 export default class Messages {
@@ -38,7 +43,7 @@ export default class Messages {
       content,
       metadata,
     }: MessageCreateParams
-  ): Promise<MessageTransactionResult> {
+  ): Promise<MessageCreateTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
@@ -100,7 +105,7 @@ export default class Messages {
       },
     ];
 
-    const txBody = await this.getMessageCreateTxBody(
+    const txBody = this.getMessageCreateTxBody(
       appId,
       tokenId,
       aiName,
@@ -113,7 +118,56 @@ export default class Messages {
     return { ...txResult, messages };
   }
 
-  private async getMessageCreateTxBody(
+  async update(
+    threadId: string,
+    messageId: string,
+    { objectId, tokenId, provider, api, metadata }: MessageUpdateParams
+  ): Promise<MessageTransactionResult> {
+    const appId = Ainft721Object.getAppId(objectId);
+    const address = this.ain.signer.getAddress();
+
+    await validateObject(appId, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const aiName = validateAndGetAiName(provider, api);
+    await validateAiConfig(appId, aiName, this.ain);
+    await validateTokenAi(appId, tokenId, aiName, null, this.ain);
+
+    await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
+    await validateMessage(
+      appId,
+      tokenId,
+      aiName,
+      address,
+      threadId,
+      messageId,
+      this.ain
+    );
+
+    const message = <ThreadMessage>{
+      id: 'msg_000000000000000000000001',
+      thread_id: 'thread_000000000000000000000001',
+      role: 'user',
+      content: [{ type: 'text', text: 'hello' }],
+      assistant_id: null,
+      run_id: null,
+      metadata: metadata || {},
+      created_at: 0,
+    };
+
+    const txBody = await this.getMessageUpdateTxBody(
+      appId,
+      tokenId,
+      aiName,
+      address,
+      message
+    );
+
+    const txResult = await this.ain.sendTransaction(txBody);
+    return { ...txResult, message };
+  }
+
+  private getMessageCreateTxBody(
     appId: string,
     tokenId: string,
     aiName: string,
@@ -145,6 +199,31 @@ export default class Messages {
       .messages();
 
     return buildSetValueTransactionBody(messagesRef, data);
+  }
+
+  private async getMessageUpdateTxBody(
+    appId: string,
+    tokenId: string,
+    aiName: string,
+    address: string,
+    message: ThreadMessage
+  ) {
+    const messageRef = Ref.app(appId)
+      .token(tokenId)
+      .ai(aiName)
+      .history(address)
+      .thread(message.thread_id)
+      .message(message.id);
+
+    const prev = await getValue(messageRef, this.ain);
+
+    return buildSetValueTransactionBody(messageRef, {
+      ...prev,
+      ...(message.metadata &&
+        !(Object.keys(message.metadata).length === 0) && {
+          metadata: message.metadata,
+        }),
+    });
   }
 
   // private waitForRun(threadId: string, runId: string) {

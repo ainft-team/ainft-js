@@ -271,6 +271,27 @@ export const validateThread = async (
   }
 };
 
+export const validateMessage = async (
+  appId: string,
+  tokenId: string,
+  aiName: string,
+  address: string,
+  threadId: string,
+  messageId: string,
+  ain: Ain
+) => {
+  const messagePath = Ref.app(appId)
+    .token(tokenId)
+    .ai(aiName)
+    .history(address)
+    .thread(threadId)
+    .message(messageId);
+
+  if (!(await exists(messagePath, ain))) {
+    throw new Error('Message not found');
+  }
+};
+
 export const exists = async (path: string, ain: Ain): Promise<boolean> => {
   return !!(await ain.db.ref(path).getValue());
 };
