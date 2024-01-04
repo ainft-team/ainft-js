@@ -110,12 +110,19 @@ export const Ref = {
                           .ai(aiName)
                           .history(address)
                           .root()}/threads/${threadId}`,
+                      messages: () =>
+                        `${Ref.app(appId)
+                          .token(tokenId)
+                          .ai(aiName)
+                          .history(address)
+                          .root()}/threads/${threadId}/messages`,
                       message: (messageId: string) =>
                         `${Ref.app(appId)
                           .token(tokenId)
                           .ai(aiName)
                           .history(address)
-                          .thread(threadId)}/messages/${messageId}`,
+                          .thread(threadId)
+                          .root()}/messages/${messageId}`,
                     };
                   },
                 };
@@ -152,6 +159,7 @@ type HistoryRef = {
 
 type ThreadRef = {
   root: () => string;
+  messages: () => string;
   message: (messageId: string) => string;
 };
 

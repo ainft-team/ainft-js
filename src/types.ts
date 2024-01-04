@@ -1135,6 +1135,10 @@ export interface ThreadDeleteTransactionResult extends TransactionResult {
   delThread: ThreadDeleted;
 }
 
+export interface MessageTransactionResult extends TransactionResult {
+  messages: Array<ThreadMessage>;
+}
+
 interface ChatConfigureParamsBase {
   objectId: string;
 }
@@ -1224,10 +1228,23 @@ export interface Thread {
 
 export interface ThreadMessage {
   id: string;
-  content: string;
+  thread_id: string;
   role: 'user' | 'assistant';
+  content: Array<MessageContentText | MessageContentImageFile>;
+  assistant_id: string | null;
+  run_id: string | null;
   metadata: object | null;
   created_at: number;
+}
+
+export interface MessageContentText {
+  type: 'text';
+  text: string;
+}
+
+export interface MessageContentImageFile {
+  type: 'image_file';
+  image_file: string;
 }
 
 export interface ThreadDeleted {
@@ -1237,16 +1254,7 @@ export interface ThreadDeleted {
 
 interface ThreadCreateParamsBase {
   tokenId: string;
-  messages?: Array<ThreadCreateParams.Message>;
   metadata?: object | null;
-}
-
-export namespace ThreadCreateParams {
-  export interface Message {
-    content: string;
-    role: 'user';
-    metadata?: object | null;
-  }
 }
 
 export interface OpenAIThreadCreateParams extends ThreadCreateParamsBase {
@@ -1275,3 +1283,14 @@ export interface OpenAIThreadDeleteParams extends ThreadDeleteParamsBase {
 }
 
 export type ThreadDeleteParams = OpenAIThreadDeleteParams;
+
+interface MessageCreateParamsBase {
+  tokenId: string;
+  role: 'user';
+  content: string;
+  metadata?: object | null;
+}
+
+export interface OpenAIMessageCreateParams extends MessageCreateParamsBase, OpenAIChatConfigureParams {}
+
+export type MessageCreateParams = OpenAIMessageCreateParams;
