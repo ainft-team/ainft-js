@@ -52,6 +52,18 @@ describe('Message', () => {
     expect(message.created_at).toBe(0);
   });
 
+  it('list: should get message list', async () => {
+    const messages = await ainft.ai.chat.threads.messages.list(
+      threadId,
+      objectId,
+      'openai',
+      'assistants',
+      tokenId,
+    );
+
+    expect(messages.length).toBe(2);
+  });
+
   it('update: should update message', async () => {
     const txResult = await ainft.ai.chat.threads.messages.update(
       threadId,
