@@ -8,7 +8,6 @@ import {
   ThreadCreateParams,
   ThreadDeleteParams,
   ThreadDeleteTransactionResult,
-  ThreadMessage,
   ThreadTransactionResult,
   ThreadUpdateParams,
 } from '../../types';
@@ -18,10 +17,10 @@ import {
   validateAndGetAiName,
   validateObject,
   validateToken,
-  validateAndGetTokenAi,
-  Ref,
   validateThread,
   getValue,
+  validateTokenAi,
+  Ref,
 } from '../../util';
 
 export default class Threads {
@@ -48,7 +47,7 @@ export default class Threads {
 
     const aiName = validateAndGetAiName(config.provider, config.api);
     await validateAiConfig(appId, aiName, this.ain);
-    await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
+    await validateTokenAi(appId, tokenId, aiName, null, this.ain);
 
     // NOTE(jiyoung): mocked thread for test.
     const thread = <Thread>{
@@ -85,7 +84,7 @@ export default class Threads {
 
     const aiName = validateAndGetAiName(config.provider, config.api);
     await validateAiConfig(appId, aiName, this.ain);
-    await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
+    await validateTokenAi(appId, tokenId, aiName, null, this.ain);
 
     await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
 
@@ -125,7 +124,7 @@ export default class Threads {
 
     const aiName = validateAndGetAiName(config.provider, config.api);
     await validateAiConfig(appId, aiName, this.ain);
-    await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
+    await validateTokenAi(appId, tokenId, aiName, null, this.ain);
 
     await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
 
@@ -163,7 +162,7 @@ export default class Threads {
 
     const aiName = validateAndGetAiName(provider, api);
     await validateAiConfig(appId, aiName, this.ain);
-    await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
+    await validateTokenAi(appId, tokenId, aiName, null, this.ain);
 
     await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
 

@@ -40,7 +40,9 @@ describe('Thread', () => {
     });
 
     const thread = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}`)
+      .ref(
+        `/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}`
+      )
       .getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
@@ -76,7 +78,9 @@ describe('Thread', () => {
     });
 
     const thread = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}`)
+      .ref(
+        `/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}`
+      )
       .getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
@@ -95,7 +99,9 @@ describe('Thread', () => {
     });
 
     const thread = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}`)
+      .ref(
+        `/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}`
+      )
       .getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);

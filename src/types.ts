@@ -1136,6 +1136,10 @@ export interface ThreadDeleteTransactionResult extends TransactionResult {
 }
 
 export interface MessageTransactionResult extends TransactionResult {
+  message: ThreadMessage;
+}
+
+export interface MessageCreateTransactionResult extends TransactionResult {
   messages: Array<ThreadMessage>;
 }
 
@@ -1294,3 +1298,12 @@ interface MessageCreateParamsBase {
 export interface OpenAIMessageCreateParams extends MessageCreateParamsBase, OpenAIChatConfigureParams {}
 
 export type MessageCreateParams = OpenAIMessageCreateParams;
+
+interface MessageUpdateParamsBase {
+  tokenId: string;
+  metadata?: object | null;
+}
+
+export interface OpenAIMessageUpdateParams extends MessageUpdateParamsBase, OpenAIChatConfigureParams {}
+
+export type MessageUpdateParams = OpenAIMessageUpdateParams;

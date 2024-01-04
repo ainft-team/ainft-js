@@ -213,20 +213,29 @@ export const validateAiConfig = async (
   }
 };
 
-export const validateAndGetTokenAi = async (
+export const validateTokenAi = async (
   appId: string,
   tokenId: string,
   aiName: string,
   aiId: string | null,
   ain: Ain
 ) => {
+  const tokenAi = await validateAndGetTokenAi(appId, tokenId, aiName, ain);
+  if (aiId && tokenAi.id !== aiId) {
+    throw new Error(`Incorrect token AI(${tokenAi.object}) ID`);
+  }
+};
+
+export const validateAndGetTokenAi = async (
+  appId: string,
+  tokenId: string,
+  aiName: string,
+  ain: Ain
+) => {
   const tokenAiPath = Ref.app(appId).token(tokenId).ai(aiName).root();
   const tokenAi = await getValue(tokenAiPath, ain);
   if (!tokenAi) {
     throw new Error('Token AI not found');
-  }
-  if (aiId && tokenAi.id !== aiId) {
-    throw new Error(`Incorrect token AI(${tokenAi.object}) ID`);
   }
   return tokenAi;
 };
@@ -259,6 +268,27 @@ export const validateThread = async (
 
   if (!(await exists(threadPath, ain))) {
     throw new Error('Thread not found');
+  }
+};
+
+export const validateMessage = async (
+  appId: string,
+  tokenId: string,
+  aiName: string,
+  address: string,
+  threadId: string,
+  messageId: string,
+  ain: Ain
+) => {
+  const messagePath = Ref.app(appId)
+    .token(tokenId)
+    .ai(aiName)
+    .history(address)
+    .thread(threadId)
+    .message(messageId);
+
+  if (!(await exists(messagePath, ain))) {
+    throw new Error('Message not found');
   }
 };
 
