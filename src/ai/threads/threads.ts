@@ -38,7 +38,6 @@ export default class Threads {
   async create({
     config,
     tokenId,
-    messages,
     metadata,
   }: ThreadCreateParams): Promise<ThreadTransactionResult> {
     const appId = Ainft721Object.getAppId(config.objectId);
@@ -54,19 +53,6 @@ export default class Threads {
     // NOTE(jiyoung): mocked thread for test.
     const thread = <Thread>{
       id: 'thread_000000000000000000000001',
-      messages:
-        messages?.map<ThreadMessage>((el, i) => {
-          return {
-            id: 'msg_' + String(i + 1).padStart(24, '0'),
-            thread_id: 'thread_000000000000000000000001',
-            role: 'user',
-            content: [{ type: 'text', text: el.content }],
-            assistant_id: null,
-            run_id: null,
-            metadata: el.metadata || {},
-            created_at: 0,
-          };
-        }) || [],
       metadata: metadata || {},
       created_at: 0,
     };
@@ -199,17 +185,6 @@ export default class Threads {
     address: string,
     thread: Thread
   ) {
-    const messages: { [key: string]: object } = {};
-    thread.messages.forEach((msg) => {
-      messages[msg.id] = {
-        role: msg.role,
-        content:
-          msg.content[0].type === 'text'
-            ? msg.content[0].text
-            : msg.content[0].image_file,
-      };
-    });
-
     const threadRef = Ref.app(appId)
       .token(tokenId)
       .ai(aiName)
@@ -217,18 +192,13 @@ export default class Threads {
       .thread(thread.id)
       .root();
 
-    const value = {
-      ...(!(Object.keys(messages).length === 0) && { messages: messages }),
+    return buildSetValueTransactionBody(threadRef, {
+      messages: true,
       ...(thread.metadata &&
         !(Object.keys(thread.metadata).length === 0) && {
           metadata: thread.metadata,
         }),
-    };
-
-    return buildSetValueTransactionBody(
-      threadRef,
-      !(Object.keys(value).length === 0) ? value : true
-    );
+    });
   }
 
   private async getThreadUpdateTxBody(

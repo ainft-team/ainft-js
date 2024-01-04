@@ -1136,7 +1136,7 @@ export interface ThreadDeleteTransactionResult extends TransactionResult {
 }
 
 export interface MessageTransactionResult extends TransactionResult {
-  message: ThreadMessage;
+  messages: Array<ThreadMessage>;
 }
 
 interface ChatConfigureParamsBase {
@@ -1254,16 +1254,7 @@ export interface ThreadDeleted {
 
 interface ThreadCreateParamsBase {
   tokenId: string;
-  messages?: Array<ThreadCreateParams.Message>;
   metadata?: object | null;
-}
-
-export namespace ThreadCreateParams {
-  export interface Message {
-    content: string;
-    role: 'user';
-    metadata?: object | null;
-  }
 }
 
 export interface OpenAIThreadCreateParams extends ThreadCreateParamsBase {

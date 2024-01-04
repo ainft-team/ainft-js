@@ -47,59 +47,128 @@ export default class Messages {
 
     const aiName = validateAndGetAiName(provider, api);
     await validateAiConfig(appId, aiName, this.ain);
-    await validateAndGetTokenAi(appId, tokenId, aiName, null, this.ain);
+    const { id: aiId } = await validateAndGetTokenAi(
+      appId,
+      tokenId,
+      aiName,
+      null,
+      this.ain
+    );
 
     await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
 
-    const message = <ThreadMessage>{
-      id: 'msg_000000000000000000000001',
-      thread_id: 'thread_000000000000000000000001',
-      role: 'user',
-      content: [{ type: 'text', text: content }],
-      assistant_id: null,
-      run_id: null,
-      metadata: metadata || {},
-      created_at: 0,
-    };
+    // TODO(jiyoung): create message.
+    // const message = await this.openai.beta.threads.messages.create(
+    //   threadId,
+    //   { role: role, content: content }
+    // );
 
-    const txBody = this.getMessageCreateTxBody(
+    // TODO(jiyoung): create run.
+    // const run = await this.openai.beta.threads.runs.create(threadId, {
+    //   assistant_id: aiId,
+    // });
+
+    // TODO(jiyoung): retrieve run until run status is 'completed'.
+    // await this.waitForRun(threadId, run.id);
+
+    // TODO(jiyoung): retrieve message list.
+    // const messages = await this.openai.beta.threads.messages.list(threadId);
+    const messages: Array<ThreadMessage> = [
+      {
+        id: 'msg_000000000000000000000002',
+        thread_id: 'thread_000000000000000000000001',
+        role: 'assistant',
+        content: [
+          {
+            type: 'text',
+            text: 'I am an AI developed by OpenAI',
+          },
+        ],
+        assistant_id: 'asst_000000000000000000000001',
+        run_id: 'run_000000000000000000000001',
+        metadata: {},
+        created_at: 1,
+      },
+      {
+        id: 'msg_000000000000000000000001',
+        thread_id: 'thread_000000000000000000000001',
+        role: 'user',
+        content: [{ type: 'text', text: content }],
+        assistant_id: null,
+        run_id: null,
+        metadata: metadata || {},
+        created_at: 0,
+      },
+    ];
+
+    const txBody = await this.getMessageCreateTxBody(
       appId,
       tokenId,
       aiName,
       address,
-      message
+      threadId,
+      messages
     );
 
     const txResult = await this.ain.sendTransaction(txBody);
-    return { ...txResult, message };
+    return { ...txResult, messages };
   }
 
-  private getMessageCreateTxBody(
+  private async getMessageCreateTxBody(
     appId: string,
     tokenId: string,
     aiName: string,
     address: string,
-    message: ThreadMessage
+    threadId: string,
+    messages: Array<ThreadMessage>
   ) {
-    const content =
-      message.content[0].type === 'text'
-        ? message.content[0].text
-        : message.content[0].image_file;
+    const data: { [key: string]: object } = {};
 
-    const messageRef = Ref.app(appId)
+    messages.forEach((el) => {
+      data[el.id] = {
+        role: el.role,
+        content:
+          el.content[0].type === 'text'
+            ? el.content[0].text
+            : el.content[0].image_file,
+        ...(el.metadata &&
+          !(Object.keys(el.metadata).length === 0) && {
+            metadata: el.metadata,
+          }),
+      };
+    });
+
+    const messagesRef = Ref.app(appId)
       .token(tokenId)
       .ai(aiName)
       .history(address)
-      .thread(message.thread_id)
-      .message(message.id);
+      .thread(threadId)
+      .messages();
 
-    return buildSetValueTransactionBody(messageRef, {
-      role: message.role,
-      content: content,
-      ...(message.metadata &&
-        !(Object.keys(message.metadata).length === 0) && {
-          metadata: message.metadata,
-        }),
+    return buildSetValueTransactionBody(messagesRef, data);
+  }
+
+  private waitForRun(threadId: string, runId: string) {
+    return new Promise<void>((resolve, reject) => {
+      const interval = setInterval(async () => {
+        // TODO(jiyoung): replace with ainize.request() method.
+        const run = await this.openai.beta.threads.runs.retrieve(
+          threadId,
+          runId
+        );
+        if (run.status === 'completed') {
+          clearInterval(interval);
+          resolve();
+        }
+        if (
+          run.status === 'expired' ||
+          run.status === 'failed' ||
+          run.status === 'cancelled'
+        ) {
+          clearInterval(interval);
+          reject(new Error(`Run ${runId} is ${run.status}`));
+        }
+      }, 1000); // 1s
     });
   }
 }
