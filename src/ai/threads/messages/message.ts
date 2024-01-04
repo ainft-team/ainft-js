@@ -148,27 +148,27 @@ export default class Messages {
     return buildSetValueTransactionBody(messagesRef, data);
   }
 
-  private waitForRun(threadId: string, runId: string) {
-    return new Promise<void>((resolve, reject) => {
-      const interval = setInterval(async () => {
-        // TODO(jiyoung): replace with ainize.request() method.
-        const run = await this.openai.beta.threads.runs.retrieve(
-          threadId,
-          runId
-        );
-        if (run.status === 'completed') {
-          clearInterval(interval);
-          resolve();
-        }
-        if (
-          run.status === 'expired' ||
-          run.status === 'failed' ||
-          run.status === 'cancelled'
-        ) {
-          clearInterval(interval);
-          reject(new Error(`Run ${runId} is ${run.status}`));
-        }
-      }, 1000); // 1s
-    });
-  }
+  // private waitForRun(threadId: string, runId: string) {
+  //   return new Promise<void>((resolve, reject) => {
+  //     const interval = setInterval(async () => {
+  //       // TODO(jiyoung): replace with ainize.request() method.
+  //       const run = await this.openai.beta.threads.runs.retrieve(
+  //         threadId,
+  //         runId
+  //       );
+  //       if (run.status === 'completed') {
+  //         clearInterval(interval);
+  //         resolve();
+  //       }
+  //       if (
+  //         run.status === 'expired' ||
+  //         run.status === 'failed' ||
+  //         run.status === 'cancelled'
+  //       ) {
+  //         clearInterval(interval);
+  //         reject(new Error(`Run ${runId} is ${run.status}`));
+  //       }
+  //     }, 1000); // 1s
+  //   });
+  // }
 }
