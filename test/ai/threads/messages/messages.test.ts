@@ -33,4 +33,28 @@ describe('Message', () => {
     expect(txResult.result).toBeDefined();
     expect(Object.keys(messages).length).toBe(2);
   }, 10000);
+
+  it('update: should update message', async () => {
+    const txResult = await ainft.ai.chat.threads.messages.update(
+      threadId,
+      messageId,
+      {
+        objectId,
+        tokenId,
+        provider: 'openai',
+        api: 'assistants',
+        metadata: { key: 'value' },
+      }
+    );
+
+    const message = await ainft.ain.db
+      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}/messages/${messageId}`)
+      .getValue();
+
+    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(txResult.result).toBeDefined();
+    expect(message.role).toBe('user');
+    expect(message.content).toBe('hello');
+    expect(message.metadata).toEqual({ key: 'value' });
+  });
 });
