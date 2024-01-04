@@ -34,6 +34,24 @@ describe('Message', () => {
     expect(Object.keys(messages).length).toBe(2);
   }, 10000);
 
+  it('get: should get message', async () => {
+    const message = await ainft.ai.chat.threads.messages.get(
+      threadId,
+      messageId,
+      objectId,
+      'openai',
+      'assistants',
+      tokenId,
+    );
+
+    expect(message.id).toBe(messageId);
+    expect(message.thread_id).toBe(threadId);
+    expect(message.role).toBe('user');
+    expect(message.content).toEqual([{ type: 'text', text: 'hello' }]);
+    expect(message.metadata).toEqual({});
+    expect(message.created_at).toBe(0);
+  });
+
   it('update: should update message', async () => {
     const txResult = await ainft.ai.chat.threads.messages.update(
       threadId,
