@@ -167,6 +167,49 @@ export default class Messages {
     return { ...txResult, message };
   }
 
+  async get(
+    threadId: string,
+    messageId: string,
+    objectId: string,
+    provider: string,
+    api: string,
+    tokenId: string
+  ): Promise<ThreadMessage> {
+    const appId = Ainft721Object.getAppId(objectId);
+    const address = this.ain.signer.getAddress();
+
+    await validateObject(appId, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const aiName = validateAndGetAiName(provider, api);
+    await validateAiConfig(appId, aiName, this.ain);
+    await validateTokenAi(appId, tokenId, aiName, null, this.ain);
+
+    await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
+    await validateMessage(
+      appId,
+      tokenId,
+      aiName,
+      address,
+      threadId,
+      messageId,
+      this.ain
+    );
+
+    const message = <ThreadMessage>{
+      id: 'msg_000000000000000000000001',
+      thread_id: 'thread_000000000000000000000001',
+      role: 'user',
+      content: [{ type: 'text', text: 'hello' }],
+      assistant_id: null,
+      run_id: null,
+      metadata: {},
+      created_at: 0,
+    };
+
+    return message;
+  }
+
   private getMessageCreateTxBody(
     appId: string,
     tokenId: string,
