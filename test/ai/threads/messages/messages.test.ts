@@ -26,7 +26,9 @@ describe('Message', () => {
     });
 
     const messages = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}/messages`)
+      .ref(
+        `/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}/messages`
+      )
       .getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
@@ -41,7 +43,7 @@ describe('Message', () => {
       objectId,
       'openai',
       'assistants',
-      tokenId,
+      tokenId
     );
 
     expect(message.id).toBe(messageId);
@@ -58,7 +60,7 @@ describe('Message', () => {
       objectId,
       'openai',
       'assistants',
-      tokenId,
+      tokenId
     );
 
     expect(messages.length).toBe(2);
@@ -78,7 +80,9 @@ describe('Message', () => {
     );
 
     const message = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}/messages/${messageId}`)
+      .ref(
+        `/apps/${appId}/tokens/${tokenId}/ai/${aiName}/history/${address}/threads/${threadId}/messages/${messageId}`
+      )
       .getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
