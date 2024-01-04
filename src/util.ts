@@ -115,7 +115,7 @@ export const Ref = {
                           .token(tokenId)
                           .ai(aiName)
                           .history(address)
-                          .thread(threadId)}/messages/${messageId}`,
+                          .thread(threadId).root()}/messages/${messageId}`,
                     };
                   },
                 };

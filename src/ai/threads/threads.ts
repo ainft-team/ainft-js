@@ -2,6 +2,7 @@ import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 
 import Ainft721Object from '../../ainft721Object';
+import Messages from './messages/message';
 import {
   Thread,
   ThreadCreateParams,
@@ -26,10 +27,12 @@ import {
 export default class Threads {
   private ain: Ain;
   private ainize: Ainize;
+  messages: Messages;
 
   constructor(ain: Ain, ainize: Ainize) {
     this.ain = ain;
     this.ainize = ainize;
+    this.messages = new Messages(ain, ainize);
   }
 
   async create({
@@ -55,8 +58,11 @@ export default class Threads {
         messages?.map<ThreadMessage>((el, i) => {
           return {
             id: 'msg_' + String(i + 1).padStart(24, '0'),
-            content: el.content,
+            thread_id: 'thread_000000000000000000000001',
             role: 'user',
+            content: [{ type: 'text', text: el.content }],
+            assistant_id: null,
+            run_id: null,
             metadata: el.metadata || {},
             created_at: 0,
           };
@@ -195,7 +201,13 @@ export default class Threads {
   ) {
     const messages: { [key: string]: object } = {};
     thread.messages.forEach((msg) => {
-      messages[msg.id] = { content: msg.content, role: msg.role };
+      messages[msg.id] = {
+        role: msg.role,
+        content:
+          msg.content[0].type === 'text'
+            ? msg.content[0].text
+            : msg.content[0].image_file,
+      };
     });
 
     const threadRef = Ref.app(appId)
