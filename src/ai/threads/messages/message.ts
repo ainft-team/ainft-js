@@ -51,7 +51,6 @@ export default class Messages {
       appId,
       tokenId,
       aiName,
-      null,
       this.ain
     );
 
