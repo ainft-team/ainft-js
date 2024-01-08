@@ -4,7 +4,11 @@ import Ainize from '@ainize-team/ainize-js';
 import Ainft721Object from '../ainft721Object';
 import Assistants from './assistants/assistants';
 import Threads from './threads/threads';
-import { ChatConfigureParams, TransactionResult } from '../types';
+import {
+  ChatConfigureParams,
+  CreditDepositTransactionResult,
+  TransactionResult,
+} from '../types';
 import {
   buildSetValueTransactionBody,
   validateObject,
@@ -44,6 +48,26 @@ export default class ChatAi {
     const txBody = this.getChatConfigureTxBody(appId, aiName);
 
     return this.ain.sendTransaction(txBody);
+  }
+
+  async depositCredit(
+    provider: string,
+    api: string,
+    amount: number
+  ): Promise<CreditDepositTransactionResult> {
+    const address = this.ain.signer.getAddress();
+
+    const aiName = validateAndGetAiName(provider, api);
+    const aiService = await validateAndGetAiService(aiName, this.ainize);
+
+    const hash = await aiService.chargeCredit(amount);
+    const balance = await aiService.getCreditBalance();
+
+    return { tx_hash: hash, address, balance };
+  }
+
+  withdrawCredit(): never {
+    throw new Error('Not implemented');
   }
 
   private getChatConfigureTxBody(appId: string, aiName: string) {
