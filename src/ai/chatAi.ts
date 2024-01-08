@@ -16,6 +16,8 @@ import {
   validateAndGetAiName,
   validateAndGetAiService,
   Ref,
+  loginAiService,
+  logoutAiService,
 } from '../util';
 
 export default class ChatAi {
@@ -60,10 +62,14 @@ export default class ChatAi {
     const aiName = validateAndGetAiName(provider, api);
     const aiService = await validateAndGetAiService(aiName, this.ainize);
 
-    const hash = await aiService.chargeCredit(amount);
+    await loginAiService();
+
+    const txHash = await aiService.chargeCredit(amount);
     const balance = await aiService.getCreditBalance();
 
-    return { tx_hash: hash, address, balance };
+    await logoutAiService();
+
+    return { tx_hash: txHash, address, balance };
   }
 
   withdrawCredit(): never {

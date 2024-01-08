@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 import Nft from './nft';
 import Credit from './credit';
-import Auth from './auth';
+import AinizeAuth from './auth/ainizeAuth';
 import Discord from './discord';
 import Event from './event';
 import Store from './store';
