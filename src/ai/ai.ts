@@ -3,7 +3,7 @@ import Ainize from '@ainize-team/ainize-js';
 
 import ChatAi from './chatAi';
 
-export default class BaseAi {
+export default class Ai {
   private ain: Ain;
   private ainize: Ainize;
   chat: ChatAi;
