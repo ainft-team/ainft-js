@@ -8,6 +8,7 @@ import _ from 'lodash';
 
 import Nft from './nft';
 import Credit from './credit';
+import Auth from './auth/auth';
 import AinizeAuth from './auth/ainizeAuth';
 import Discord from './discord';
 import Event from './event';
@@ -60,7 +61,10 @@ export default class AinftJs {
 
     this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId);
     this.ainize = new Ainize(chainId);
+
     this.setPrivateKey(privateKey);
+    const ainizeAuth = AinizeAuth.getInstance();
+    ainizeAuth.init(this.ain, this.ainize);
 
     this.nft = new Nft(this.ain, this.baseUrl, '/nft');
     this.eth = new Eth(this.ain, this.baseUrl, '/nft');
