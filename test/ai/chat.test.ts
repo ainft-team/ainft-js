@@ -25,4 +25,16 @@ describe('Chat', () => {
     expect(ai.type).toBe('chat');
     expect(ai.url).toBe(`https://${aiName}.ainetwork.xyz`);
   });
+
+  it('credit: should deposit credit', async () => {
+    const txResult = await ainft.ai.chat.depositCredit(
+      'openai',
+      'assistants',
+      10
+    );
+
+    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(txResult.address).toBe('0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0');
+    expect(txResult.balance).toBe(10);
+  });
 });
