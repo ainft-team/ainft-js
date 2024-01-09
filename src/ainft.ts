@@ -17,7 +17,7 @@ import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
 import Eth from './eth';
-import Ai from './ai/ai';
+import ChatAi from './ai/chatAi';
 import {
   AINFT_SERVER_ENDPOINT,
   AIN_BLOCKCHAIN_CHAINID,
@@ -41,7 +41,7 @@ export default class AinftJs {
   public textToArt: TextToArt;
   public activity: Activity;
   public eth: Eth;
-  public ai: Ai;
+  public chatAi: ChatAi;
 
   constructor(
     privateKey: string,
@@ -76,7 +76,7 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
     this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
     this.activity = new Activity(this.ain, this.baseUrl, '/activity');
-    this.ai = new Ai(this.ain, this.ainize);
+    this.chatAi = new ChatAi(this.ain, this.ainize);
   }
 
   /**

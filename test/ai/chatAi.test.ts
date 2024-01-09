@@ -12,7 +12,7 @@ const aiName = 'ainize_test14';
 
 describe('Chat', () => {
   it('config: should configure chat ai', async () => {
-    const txResult = await ainft.ai.chat.config({
+    const txResult = await ainft.chatAi.config({
       objectId: objectId,
       provider: 'openai',
       api: 'assistants',
@@ -28,7 +28,7 @@ describe('Chat', () => {
 
   // TODO(jiyoung): function mocking.
   // it('credit: should deposit credit', async () => {
-  //   const txResult = await ainft.ai.chat.depositCredit(
+  //   const txResult = await ainft.chatAi.depositCredit(
   //     'openai',
   //     'assistants',
   //     10

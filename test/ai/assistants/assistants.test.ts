@@ -14,7 +14,7 @@ const assistantId = 'asst_000000000000000000000001';
 
 describe('Assistant', () => {
   it('create: should create assistant', async () => {
-    const txResult = await ainft.ai.chat.assistants.create({
+    const txResult = await ainft.chatAi.assistants.create({
       config: {
         objectId: objectId,
         provider: 'openai',
@@ -44,7 +44,7 @@ describe('Assistant', () => {
   });
 
   it('get: should get assistant', async () => {
-    const assistant = await ainft.ai.chat.assistants.get(
+    const assistant = await ainft.chatAi.assistants.get(
       assistantId,
       objectId,
       'openai',
@@ -61,7 +61,7 @@ describe('Assistant', () => {
   });
 
   it('update: should update assistant', async () => {
-    const txResult = await ainft.ai.chat.assistants.update(assistantId, {
+    const txResult = await ainft.chatAi.assistants.update(assistantId, {
       config: {
         objectId: objectId,
         provider: 'openai',
@@ -93,7 +93,7 @@ describe('Assistant', () => {
   });
 
   it('delete: should delete assistant', async () => {
-    const txResult = await ainft.ai.chat.assistants.delete(assistantId, {
+    const txResult = await ainft.chatAi.assistants.delete(assistantId, {
       config: {
         objectId: objectId,
         provider: 'openai',
