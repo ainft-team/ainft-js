@@ -4,6 +4,7 @@ import Ainize from '@ainize-team/ainize-js';
 import Ainft721Object from '../ainft721Object';
 import Assistants from './assistants/assistants';
 import Threads from './threads/threads';
+import AinizeAuth from '../auth/ainizeAuth';
 import {
   ChatConfigureParams,
   CreditDepositTransactionResult,
@@ -16,8 +17,6 @@ import {
   validateAndGetAiName,
   validateAndGetAiService,
   Ref,
-  loginAiService,
-  logoutAiService,
 } from '../util';
 
 export default class ChatAi {
@@ -62,12 +61,13 @@ export default class ChatAi {
     const aiName = validateAndGetAiName(provider, api);
     const aiService = await validateAndGetAiService(aiName, this.ainize);
 
-    await loginAiService();
+    const aiAuth = AinizeAuth.getInstance();
+    aiAuth.login(this.ain, this.ainize);
 
     const txHash = await aiService.chargeCredit(amount);
     const balance = await aiService.getCreditBalance();
 
-    await logoutAiService();
+    aiAuth.logout(this.ainize);
 
     return { tx_hash: txHash, address, balance };
   }

@@ -9,7 +9,6 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import { PROVIDER_API_AI_NAME_MAP, MIN_GAS_PRICE } from './constants';
 import { HttpMethod } from './types';
-import AinizeAuth from './auth/ainizeAuth';
 
 export const buildData = (
   method: HttpMethod,
@@ -300,13 +299,3 @@ export const exists = async (path: string, ain: Ain): Promise<boolean> => {
 export const getValue = async (path: string, ain: Ain): Promise<any> => {
   return ain.db.ref(path).getValue();
 };
-
-export const loginAiService = async () => {
-  const ainizeAuth = AinizeAuth.getInstance();
-  await ainizeAuth.login();
-}
-
-export const logoutAiService = async () => {
-  const ainizeAuth = AinizeAuth.getInstance();
-  await ainizeAuth.logout();
-}
