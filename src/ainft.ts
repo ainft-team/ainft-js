@@ -2,9 +2,13 @@ import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
+import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
+import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
+import _ from 'lodash';
+
 import Nft from './nft';
 import Credit from './credit';
-import Auth from './auth';
+import Auth from './auth/auth';
 import Discord from './discord';
 import Event from './event';
 import Store from './store';
@@ -12,11 +16,12 @@ import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
 import Eth from './eth';
-import BaseAi from './ai/baseAi';
-import { AINFT_SERVER_ENDPOINT, AIN_BLOCKCHAIN_CHAINID, AIN_BLOCKCHAIN_ENDPOINT } from './constants';
-import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
-import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
-import _ from 'lodash';
+import ChatAi from './ai/chatAi';
+import {
+  AINFT_SERVER_ENDPOINT,
+  AIN_BLOCKCHAIN_CHAINID,
+  AIN_BLOCKCHAIN_ENDPOINT,
+} from './constants';
 
 /**
  * A class that establishes a blockchain and ainft server connection and initializes other classes.
@@ -35,7 +40,7 @@ export default class AinftJs {
   public textToArt: TextToArt;
   public activity: Activity;
   public eth: Eth;
-  public ai: BaseAi;
+  public chatAi: ChatAi;
 
   constructor(
     privateKey: string,
@@ -67,7 +72,7 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
     this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
     this.activity = new Activity(this.ain, this.baseUrl, '/activity');
-    this.ai = new BaseAi(this.ain, this.ainize);
+    this.chatAi = new ChatAi(this.ain, this.ainize);
   }
 
   /**

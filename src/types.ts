@@ -1119,6 +1119,12 @@ export interface TransactionResult {
   result: Record<string, unknown>;
 }
 
+export interface CreditDepositTransactionResult
+  extends Omit<TransactionResult, 'result'> {
+  address: string;
+  balance: number;
+}
+
 export interface AssistantTransactionResult extends TransactionResult {
   assistant: Assistant;
 }

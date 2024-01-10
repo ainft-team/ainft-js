@@ -15,7 +15,7 @@ const threadId = 'thread_000000000000000000000001';
 
 describe('Thread', () => {
   beforeAll(async () => {
-    await ainft.ai.chat.assistants.create({
+    await ainft.chatAi.assistants.create({
       config: {
         objectId: objectId,
         provider: 'openai',
@@ -29,7 +29,7 @@ describe('Thread', () => {
   });
 
   it('create: should create thread', async () => {
-    const txResult = await ainft.ai.chat.threads.create({
+    const txResult = await ainft.chatAi.threads.create({
       config: {
         objectId: objectId,
         provider: 'openai',
@@ -52,7 +52,7 @@ describe('Thread', () => {
   });
 
   it('get: should get thread', async () => {
-    const thread = await ainft.ai.chat.threads.get(
+    const thread = await ainft.chatAi.threads.get(
       threadId,
       objectId,
       'openai',
@@ -67,7 +67,7 @@ describe('Thread', () => {
   });
 
   it('update: should update thread', async () => {
-    const txResult = await ainft.ai.chat.threads.update(threadId, {
+    const txResult = await ainft.chatAi.threads.update(threadId, {
       config: {
         objectId: objectId,
         provider: 'openai',
@@ -89,7 +89,7 @@ describe('Thread', () => {
   });
 
   it('delete: should delete thread', async () => {
-    const txResult = await ainft.ai.chat.threads.delete(threadId, {
+    const txResult = await ainft.chatAi.threads.delete(threadId, {
       config: {
         objectId: objectId,
         provider: 'openai',

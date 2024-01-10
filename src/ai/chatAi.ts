@@ -1,10 +1,16 @@
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
+import Service from '@ainize-team/ainize-js/dist/service';
 
 import Ainft721Object from '../ainft721Object';
 import Assistants from './assistants/assistants';
 import Threads from './threads/threads';
-import { ChatConfigureParams, TransactionResult } from '../types';
+import AinizeAuth from '../auth/ainizeAuth';
+import {
+  ChatConfigureParams,
+  CreditDepositTransactionResult,
+  TransactionResult,
+} from '../types';
 import {
   buildSetValueTransactionBody,
   validateObject,
@@ -12,6 +18,7 @@ import {
   validateAndGetAiName,
   validateAndGetAiService,
   Ref,
+  sleep,
 } from '../util';
 
 export default class ChatAi {
@@ -44,6 +51,62 @@ export default class ChatAi {
     const txBody = this.getChatConfigureTxBody(appId, aiName);
 
     return this.ain.sendTransaction(txBody);
+  }
+
+  async depositCredit(
+    provider: string,
+    api: string,
+    amount: number
+  ): Promise<CreditDepositTransactionResult> {
+    const address = this.ain.signer.getAddress();
+
+    const aiName = validateAndGetAiName(provider, api);
+    const aiService = await validateAndGetAiService(aiName, this.ainize);
+
+    // TODO(jiyoung): update login method to use signer. (if implemented)
+    await AinizeAuth.getInstance().login(this.ain, this.ainize);
+    const currentBalance = await aiService.getCreditBalance();
+    const txHash = await aiService.chargeCredit(amount);
+    const updatedBalance = await this.waitForCreditUpdate(
+      currentBalance + amount,
+      60000, // 1 min
+      aiService
+    );
+    await AinizeAuth.getInstance().logout(this.ainize);
+
+    return { tx_hash: txHash, address, balance: updatedBalance };
+  }
+
+  withdrawCredit(): never {
+    throw new Error('Not implemented');
+  }
+
+  async getCredit(provider: string, api: string): Promise<number> {
+    const aiName = validateAndGetAiName(provider, api);
+    const aiService = await validateAndGetAiService(aiName, this.ainize);
+
+    // TODO(jiyoung): update login method to use signer. (if implemented)
+    await AinizeAuth.getInstance().login(this.ain, this.ainize);
+    const balance = await aiService.getCreditBalance();
+    await AinizeAuth.getInstance().logout(this.ainize);
+
+    return balance;
+  }
+
+  private async waitForCreditUpdate(
+    expectedBalance: number,
+    timeout: number,
+    service: Service
+  ) {
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeout) {
+      const balance = await service.getCreditBalance();
+      if (balance === expectedBalance) {
+        return balance;
+      }
+      await sleep(5000); // 5 sec
+    }
+    throw new Error('AI credit update failed');
   }
 
   private getChatConfigureTxBody(appId: string, aiName: string) {

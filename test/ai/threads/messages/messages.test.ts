@@ -16,7 +16,7 @@ const messageId = 'msg_000000000000000000000001';
 
 describe('Message', () => {
   it('create: should create message', async () => {
-    const txResult = await ainft.ai.chat.threads.messages.create(threadId, {
+    const txResult = await ainft.chatAi.threads.messages.create(threadId, {
       objectId,
       tokenId,
       provider: 'openai',
@@ -37,7 +37,7 @@ describe('Message', () => {
   }, 10000);
 
   it('get: should get message', async () => {
-    const message = await ainft.ai.chat.threads.messages.get(
+    const message = await ainft.chatAi.threads.messages.get(
       threadId,
       messageId,
       objectId,
@@ -55,7 +55,7 @@ describe('Message', () => {
   });
 
   it('list: should get message list', async () => {
-    const messages = await ainft.ai.chat.threads.messages.list(
+    const messages = await ainft.chatAi.threads.messages.list(
       threadId,
       objectId,
       'openai',
@@ -67,7 +67,7 @@ describe('Message', () => {
   });
 
   it('update: should update message', async () => {
-    const txResult = await ainft.ai.chat.threads.messages.update(
+    const txResult = await ainft.chatAi.threads.messages.update(
       threadId,
       messageId,
       {

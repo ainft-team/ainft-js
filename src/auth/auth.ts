@@ -1,7 +1,7 @@
 import Reference from '@ainblockchain/ain-js/lib/ain-db/ref';
-import FactoryBase from './factoryBase';
-import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from './constants';
-import { HttpMethod, User } from './types';
+import FactoryBase from '../factoryBase';
+import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from '../constants';
+import { HttpMethod, User } from '../types';
 
 /**
  * This class supports creating AINFT factory app and users. \
@@ -15,21 +15,23 @@ export default class Auth extends FactoryBase {
    */
   async createApp(appname: string) {
     const address = await this.ain.signer.getAddress();
-    return this.ain.db.ref(`/manage_app/${appname}/create/${Date.now()}`).setValue({
-      value: {
-        admin: {
-          [address]: true,
-        },
-        service: {
-          staking: {
-            lockup_duration: APP_STAKING_LOCKUP_DURATION_MS,
+    return this.ain.db
+      .ref(`/manage_app/${appname}/create/${Date.now()}`)
+      .setValue({
+        value: {
+          admin: {
+            [address]: true,
+          },
+          service: {
+            staking: {
+              lockup_duration: APP_STAKING_LOCKUP_DURATION_MS,
+            },
           },
         },
-      },
-      address,
-      nonce: -1,
-      gas_price: MIN_GAS_PRICE,
-    });
+        address,
+        nonce: -1,
+        gas_price: MIN_GAS_PRICE,
+      });
   }
 
   /**
