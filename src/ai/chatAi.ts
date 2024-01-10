@@ -18,6 +18,7 @@ import {
   validateAndGetAiName,
   validateAndGetAiService,
   Ref,
+  sleep,
 } from '../util';
 
 export default class ChatAi {
@@ -68,7 +69,7 @@ export default class ChatAi {
     const txHash = await aiService.chargeCredit(amount);
     const updatedBalance = await this.waitForCreditUpdate(
       currentBalance + amount,
-      60 * 1000, // 1 min
+      60000, // 1 min
       aiService
     );
     await AinizeAuth.getInstance().logout(this.ainize);
@@ -103,7 +104,7 @@ export default class ChatAi {
       if (balance === expectedBalance) {
         return balance;
       }
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // 5 sec
+      await sleep(5000); // 5 sec
     }
     throw new Error('AI credit update failed');
   }
