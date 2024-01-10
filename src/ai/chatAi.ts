@@ -80,6 +80,18 @@ export default class ChatAi {
     throw new Error('Not implemented');
   }
 
+  async getCredit(provider: string, api: string): Promise<number> {
+    const aiName = validateAndGetAiName(provider, api);
+    const aiService = await validateAndGetAiService(aiName, this.ainize);
+
+    // TODO(jiyoung): update login method to use signer. (if implemented)
+    await AinizeAuth.getInstance().login(this.ain, this.ainize);
+    const balance = await aiService.getCreditBalance();
+    await AinizeAuth.getInstance().logout(this.ainize);
+
+    return balance;
+  }
+
   private async waitForBalanceUpdate(
     expectedBalance: number,
     timeout: number,
