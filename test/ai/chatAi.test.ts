@@ -26,8 +26,9 @@ describe('Chat', () => {
     expect(ai.url).toBe(`https://${aiName}.ainetwork.xyz`);
   });
 
-  // TODO(jiyoung): function mocking.
+  // NOTE(jiyoung): uncomment when the test is needed (actually transfer)
   // it('credit: should deposit credit', async () => {
+  //   const credit = await ainft.chatAi.getCredit('openai', 'assistants');
   //   const txResult = await ainft.chatAi.depositCredit(
   //     'openai',
   //     'assistants',
@@ -36,6 +37,7 @@ describe('Chat', () => {
 
   //   expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
   //   expect(txResult.address).toBe('0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0');
-  //   expect(txResult.balance).toBe(10);
-  // });
+  //   expect(txResult.balance).toBe(credit + 10);
+  // }, 
+  // 60 * 1000);
 });
