@@ -1,5 +1,6 @@
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
+import Service from '@ainize-team/ainize-js/dist/service';
 
 import Ainft721Object from '../ainft721Object';
 import Assistants from './assistants/assistants';
@@ -62,19 +63,37 @@ export default class ChatAi {
     const aiService = await validateAndGetAiService(aiName, this.ainize);
 
     // TODO(jiyoung): update login method to use signer. (if implemented)
-    const aiAuth = AinizeAuth.getInstance();
-    aiAuth.login(this.ain, this.ainize);
-
+    await AinizeAuth.getInstance().login(this.ain, this.ainize);
+    const currentBalance = await aiService.getCreditBalance();
     const txHash = await aiService.chargeCredit(amount);
-    const balance = await aiService.getCreditBalance();
+    const updatedBalance = await this.waitForBalanceUpdate(
+      currentBalance + amount,
+      60 * 1000, // 1 min
+      aiService
+    );
+    await AinizeAuth.getInstance().logout(this.ainize);
 
-    aiAuth.logout(this.ainize);
-
-    return { tx_hash: txHash, address, balance };
+    return { tx_hash: txHash, address, balance: updatedBalance };
   }
 
   withdrawCredit(): never {
     throw new Error('Not implemented');
+  }
+
+  private async waitForBalanceUpdate(
+    expectedBalance: number,
+    timeout: number,
+    service: Service
+  ) {
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeout) {
+      const balance = await service.getCreditBalance();
+      if (balance === expectedBalance) {
+        return balance;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // 5 sec
+    }
+    throw new Error('AI credit update failed');
   }
 
   private getChatConfigureTxBody(appId: string, aiName: string) {
