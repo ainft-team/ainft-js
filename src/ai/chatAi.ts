@@ -66,7 +66,7 @@ export default class ChatAi {
     await AinizeAuth.getInstance().login(this.ain, this.ainize);
     const currentBalance = await aiService.getCreditBalance();
     const txHash = await aiService.chargeCredit(amount);
-    const updatedBalance = await this.waitForBalanceUpdate(
+    const updatedBalance = await this.waitForCreditUpdate(
       currentBalance + amount,
       60 * 1000, // 1 min
       aiService
@@ -92,7 +92,7 @@ export default class ChatAi {
     return balance;
   }
 
-  private async waitForBalanceUpdate(
+  private async waitForCreditUpdate(
     expectedBalance: number,
     timeout: number,
     service: Service
