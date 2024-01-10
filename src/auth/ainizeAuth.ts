@@ -5,7 +5,7 @@ export default class AinizeAuth {
   private static instance: AinizeAuth;
   private ain: Ain | null = null;
   private ainize: Ainize | null = null;
-  private loggedIn: boolean = false;
+  private isLoggedIn: boolean = false;
 
   private constructor() {}
 
@@ -22,24 +22,24 @@ export default class AinizeAuth {
   }
 
   async login() {
-    if (!this.loggedIn) {
+    if (!this.isLoggedIn) {
       const privateKey = this.getPrivateKeyOrThrow();
       const ainize = this.getAinizeOrThrow();
       await ainize.login(privateKey);
-      this.loggedIn = true;
+      this.isLoggedIn = true;
     }
   }
 
   async logout() {
-    if (this.loggedIn) {
+    if (this.isLoggedIn) {
       const ainize = this.getAinizeOrThrow();
       await ainize.logout();
-      this.loggedIn = false;
+      this.isLoggedIn = false;
     }
   }
 
-  isLoggedIn() {
-    return this.loggedIn;
+  getIsLoggedIn() {
+    return this.isLoggedIn;
   }
 
   private getAinOrThrow() {

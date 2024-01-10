@@ -20,13 +20,13 @@ describe('Ainize Authentication', () => {
     const auth = AinizeAuth.getInstance();
     await auth.login();
 
-    expect(auth.isLoggedIn()).toBe(true);
+    expect(auth.getIsLoggedIn()).toBe(true);
   });
 
   it('should logout after initialization', async () => {
     const auth = AinizeAuth.getInstance();
     await auth.logout();
 
-    expect(auth.isLoggedIn()).toBe(false);
+    expect(auth.getIsLoggedIn()).toBe(false);
   });
 });
