@@ -61,6 +61,7 @@ export default class ChatAi {
     const aiName = validateAndGetAiName(provider, api);
     const aiService = await validateAndGetAiService(aiName, this.ainize);
 
+    // TODO(jiyoung): update login method to use signer. (if implemented)
     const aiAuth = AinizeAuth.getInstance();
     aiAuth.login(this.ain, this.ainize);
 
