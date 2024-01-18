@@ -13,8 +13,11 @@ import {
 import {
   ainizeLogin,
   ainizeLogout,
+  buildSetOp,
+  buildSetStateRuleOp,
   buildSetTransactionBody,
   buildSetValueOp,
+  buildSetWriteRuleOp,
   Ref,
   sleep,
   validateAndGetAiName,
@@ -103,12 +106,20 @@ export default class ChatAi {
 
   private buildTxBodyForConfigureChat(appId: string, aiName: string, address: string) {
     const ref = Ref.app(appId).ai(aiName);
-    const config = {
-      name: aiName,
-      type: 'chat',
-      url: `https://${aiName}.ainetwork.xyz`,
+    const value = { name: aiName, type: 'chat', url: `https://${aiName}.ainetwork.xyz` };
+    const rule = {
+      write: 'auth.addr === $user_addr',
+      state: { gc_max_siblings: 20, gc_num_siblings_deleted: 10 },
     };
-    const setValueOp = buildSetValueOp(ref, config);
-    return buildSetTransactionBody(setValueOp, address);
+
+    const path = `/apps/${appId}/tokens/$token_id/ai/$ai_name/history/$user_addr`;
+    const suffix = `threads/$thread_id/messages/$message_id`;
+
+    const setValueOp = buildSetValueOp(ref, value);
+    const setWriteRuleOp = buildSetWriteRuleOp(path, rule.write);
+    const setGCRuleOp = buildSetStateRuleOp(`${path}/${suffix}`, rule.state);
+    const setOp = buildSetOp([setValueOp, setWriteRuleOp, setGCRuleOp]);
+
+    return buildSetTransactionBody(setOp, address);
   }
 }
