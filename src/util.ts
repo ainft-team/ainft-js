@@ -4,6 +4,7 @@ import Ainize from '@ainize-team/ainize-js';
 import { SetOperation, SetMultiOperation, TransactionInput } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
+import AinizeAuth from './auth/ainizeAuth';
 import { PROVIDER_API_AI_NAME_MAP, MIN_GAS_PRICE } from './constants';
 import { HttpMethod } from './types';
 
@@ -295,4 +296,12 @@ export const exists = async (path: string, ain: Ain): Promise<boolean> => {
 
 export const getValue = async (path: string, ain: Ain): Promise<any> => {
   return ain.db.ref(path).getValue();
+};
+
+export const ainizeLogin = async (ain: Ain, ainize: Ainize) => {
+  return AinizeAuth.getInstance().login(ain, ainize);
+};
+
+export const ainizeLogout = async (ainize: Ainize) => {
+  return AinizeAuth.getInstance().logout(ainize);
 };

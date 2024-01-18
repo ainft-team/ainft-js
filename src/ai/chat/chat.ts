@@ -5,13 +5,14 @@ import Service from '@ainize-team/ainize-js/dist/service';
 import Ainft721Object from '../../ainft721Object';
 import Assistants from '../assistants/assistants';
 import Threads from '../threads/threads';
-import AinizeAuth from '../../auth/ainizeAuth';
 import {
   ChatConfigureParams,
   CreditDepositTransactionResult,
   TransactionResult,
 } from '../../types';
 import {
+  ainizeLogin,
+  ainizeLogout,
   buildSetTransactionBody,
   buildSetValueOp,
   Ref,
@@ -59,8 +60,8 @@ export default class ChatAi {
     const aiName = validateAndGetAiName(provider, api);
     const aiService = await validateAndGetAiService(aiName, this.ainize);
 
-    // TODO(jiyoung): use signer for login method if implemented.
-    await AinizeAuth.getInstance().login(this.ain, this.ainize);
+    await ainizeLogin(this.ain, this.ainize); // TODO(jiyoung): replace with signer.
+
     const currentBalance = await aiService.getCreditBalance();
     const txHash = await aiService.chargeCredit(amount);
     const updatedBalance = await this.waitForCreditUpdate(
@@ -68,21 +69,22 @@ export default class ChatAi {
       60 * 1000,
       aiService
     );
-    await AinizeAuth.getInstance().logout(this.ainize);
+
+    await ainizeLogout(this.ainize);
 
     return { tx_hash: txHash, address, balance: updatedBalance };
   }
 
-  // TODO(jiyoung): use types/interface.
+  // TODO(jiyoung): define interface for input parameters.
   async getCredit(provider: string, api: string): Promise<number> {
     const aiName = validateAndGetAiName(provider, api);
     const aiService = await validateAndGetAiService(aiName, this.ainize);
 
-    // TODO(jiyoung): split code block into method.
-    // TODO(jiyoung): use signer for login method if implemented.
-    await AinizeAuth.getInstance().login(this.ain, this.ainize);
+    await ainizeLogin(this.ain, this.ainize); // TODO(jiyoung): replace with signer.
+
     const balance = await aiService.getCreditBalance();
-    await AinizeAuth.getInstance().logout(this.ainize);
+
+    await ainizeLogout(this.ainize);
 
     return balance;
   }
