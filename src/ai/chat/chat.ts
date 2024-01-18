@@ -2,24 +2,25 @@ import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import Ainft721Object from '../ainft721Object';
-import Assistants from './assistants/assistants';
-import Threads from './threads/threads';
-import AinizeAuth from '../auth/ainizeAuth';
+import Ainft721Object from '../../ainft721Object';
+import Assistants from '../assistants/assistants';
+import Threads from '../threads/threads';
+import AinizeAuth from '../../auth/ainizeAuth';
 import {
   ChatConfigureParams,
   CreditDepositTransactionResult,
   TransactionResult,
-} from '../types';
+} from '../../types';
 import {
-  buildSetValueTransactionBody,
-  validateObject,
-  validateObjectOwnership,
-  validateAndGetAiName,
-  validateAndGetAiService,
+  buildSetTransactionBody,
+  buildSetValueOp,
   Ref,
   sleep,
-} from '../util';
+  validateAndGetAiName,
+  validateAndGetAiService,
+  validateObject,
+  validateObjectOwner,
+} from '../../util';
 
 export default class ChatAi {
   private ain: Ain;
@@ -34,22 +35,17 @@ export default class ChatAi {
     this.threads = new Threads(ain, ainize);
   }
 
-  async config({
-    objectId,
-    provider,
-    api,
-  }: ChatConfigureParams): Promise<TransactionResult> {
+  async configure({ objectId, provider, api }: ChatConfigureParams): Promise<TransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
     await validateObject(appId, this.ain);
-    await validateObjectOwnership(appId, address, this.ain);
+    await validateObjectOwner(appId, address, this.ain);
 
     const aiName = validateAndGetAiName(provider, api);
     await validateAndGetAiService(aiName, this.ainize);
 
-    const txBody = this.getChatConfigureTxBody(appId, aiName);
-
+    const txBody = this.buildTxBodyForConfigureChat(appId, aiName, address);
     return this.ain.sendTransaction(txBody);
   }
 
@@ -63,13 +59,13 @@ export default class ChatAi {
     const aiName = validateAndGetAiName(provider, api);
     const aiService = await validateAndGetAiService(aiName, this.ainize);
 
-    // TODO(jiyoung): update login method to use signer. (if implemented)
+    // TODO(jiyoung): use signer for login method if implemented.
     await AinizeAuth.getInstance().login(this.ain, this.ainize);
     const currentBalance = await aiService.getCreditBalance();
     const txHash = await aiService.chargeCredit(amount);
     const updatedBalance = await this.waitForCreditUpdate(
       currentBalance + amount,
-      60000, // 1 min
+      60 * 1000,
       aiService
     );
     await AinizeAuth.getInstance().logout(this.ainize);
@@ -77,15 +73,13 @@ export default class ChatAi {
     return { tx_hash: txHash, address, balance: updatedBalance };
   }
 
-  withdrawCredit(): never {
-    throw new Error('Not implemented');
-  }
-
+  // TODO(jiyoung): use types/interface.
   async getCredit(provider: string, api: string): Promise<number> {
     const aiName = validateAndGetAiName(provider, api);
     const aiService = await validateAndGetAiService(aiName, this.ainize);
 
-    // TODO(jiyoung): update login method to use signer. (if implemented)
+    // TODO(jiyoung): split code block into method.
+    // TODO(jiyoung): use signer for login method if implemented.
     await AinizeAuth.getInstance().login(this.ain, this.ainize);
     const balance = await aiService.getCreditBalance();
     await AinizeAuth.getInstance().logout(this.ainize);
@@ -93,28 +87,26 @@ export default class ChatAi {
     return balance;
   }
 
-  private async waitForCreditUpdate(
-    expectedBalance: number,
-    timeout: number,
-    service: Service
-  ) {
+  private async waitForCreditUpdate(expectedBalance: number, timeout: number, service: Service) {
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
       const balance = await service.getCreditBalance();
       if (balance === expectedBalance) {
         return balance;
       }
-      await sleep(5000); // 5 sec
+      await sleep(5 * 1000);
     }
-    throw new Error('AI credit update failed');
+    throw new Error('Credit update failed');
   }
 
-  private getChatConfigureTxBody(appId: string, aiName: string) {
-    const aiRef = Ref.app(appId).ai(aiName);
-    return buildSetValueTransactionBody(aiRef, {
+  private buildTxBodyForConfigureChat(appId: string, aiName: string, address: string) {
+    const ref = Ref.app(appId).ai(aiName);
+    const config = {
       name: aiName,
       type: 'chat',
       url: `https://${aiName}.ainetwork.xyz`,
-    });
+    };
+    const setValueOp = buildSetValueOp(ref, config);
+    return buildSetTransactionBody(setValueOp, address);
   }
 }

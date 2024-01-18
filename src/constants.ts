@@ -25,5 +25,5 @@ export const SUPPORTED_AINFT_STANDARDS = {
 
 export const PROVIDER_API_AI_NAME_MAP = new Map<string, string>([
   // TODO(jiyoung): update value after deployment of ainize service.
-  ['openai-assistants', 'ainize_test_eval4'],
+  ['openai-assistants', 'openai_ainize3'/*'ainize_test14'*/],
 ]);
