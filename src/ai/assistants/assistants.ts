@@ -11,10 +11,11 @@ import {
   AssistantUpdateParams,
 } from '../../types';
 import {
-  buildSetValueTransactionBody,
+  buildSetTransactionBody,
+  buildSetValueOp,
   validateAiConfig,
   validateObject,
-  validateObjectOwnership,
+  validateObjectOwner,
   validateToken,
   validateAndGetAiName,
   validateAndGetAiService,
@@ -44,7 +45,7 @@ export default class Assistants {
     const address = this.ain.signer.getAddress();
 
     await validateObject(appId, this.ain);
-    await validateObjectOwnership(appId, address, this.ain);
+    await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
     const aiName = validateAndGetAiName(config.provider, config.api);
@@ -65,35 +66,22 @@ export default class Assistants {
     // const ai = await validateAndGetAiService(aiName, this.ainize);
     // const response = await ai.request(<REQUEST_DATA>);
 
-    const txBody = this.getAssistantCreateTxBody(
-      appId,
-      tokenId,
-      aiName,
-      assistant
-    );
+    const txBody = this.buildTxBodyForCreateAssistant(assistant, appId, tokenId, aiName, address);
 
     // TODO(jiyoung): implement failure handling logic.
     const txResult = await this.ain.sendTransaction(txBody);
-    return { ...txResult, assistant: assistant };
+    return { ...txResult, assistant };
   }
 
   async update(
     assistantId: string,
-    {
-      config,
-      tokenId,
-      model,
-      name,
-      instructions,
-      description,
-      metadata,
-    }: AssistantUpdateParams
+    { config, tokenId, model, name, instructions, description, metadata }: AssistantUpdateParams
   ): Promise<AssistantTransactionResult> {
     const appId = Ainft721Object.getAppId(config.objectId);
     const address = this.ain.signer.getAddress();
 
     await validateObject(appId, this.ain);
-    await validateObjectOwnership(appId, address, this.ain);
+    await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
     const aiName = validateAndGetAiName(config.provider, config.api);
@@ -115,16 +103,11 @@ export default class Assistants {
     // const ai = await validateAndGetAiService(aiName, this.ainize);
     // const response = await ai.request(<REQUEST_DATA>);
 
-    const txBody = this.getAssistantUpdateTxBody(
-      appId,
-      tokenId,
-      aiName,
-      assistant
-    );
+    const txBody = this.buildTxBodyForUpdateAssistant(assistant, appId, tokenId, aiName, address);
 
     // TODO(jiyoung): implement failure handling logic.
     const txResult = await this.ain.sendTransaction(txBody);
-    return { ...txResult, assistant: assistant };
+    return { ...txResult, assistant };
   }
 
   async delete(
@@ -135,7 +118,7 @@ export default class Assistants {
     const address = this.ain.signer.getAddress();
 
     await validateObject(appId, this.ain);
-    await validateObjectOwnership(appId, address, this.ain);
+    await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
     const aiName = validateAndGetAiName(config.provider, config.api);
@@ -149,7 +132,7 @@ export default class Assistants {
     // const ai = await validateAndGetAiService(aiName, this.ainize);
     // const response = await ai.request(<REQUEST_DATA>);
 
-    const txBody = this.getAssistantDeleteTxBody(appId, tokenId, aiName);
+    const txBody = this.buildTxBodyForDeleteAssistant(appId, tokenId, aiName, address);
 
     const txResult = await this.ain.sendTransaction(txBody);
     return { ...txResult, delAssistant };
@@ -189,14 +172,15 @@ export default class Assistants {
     return assistant;
   }
 
-  private getAssistantCreateTxBody(
+  private buildTxBodyForCreateAssistant(
+    assistant: Assistant,
     appId: string,
     tokenId: string,
     aiName: string,
-    assistant: Assistant
+    address: string
   ) {
-    const tokenAiRef = Ref.app(appId).token(tokenId).ai(aiName).root();
-    return buildSetValueTransactionBody(tokenAiRef, {
+    const ref = Ref.app(appId).token(tokenId).ai(aiName).root();
+    const value = {
       id: assistant.id,
       object: 'assistant',
       config: {
@@ -209,17 +193,20 @@ export default class Assistants {
             metadata: assistant.metadata,
           }),
       },
-    });
+    };
+    const setValueOp = buildSetValueOp(ref, value);
+    return buildSetTransactionBody(setValueOp, address);
   }
 
-  private getAssistantUpdateTxBody(
+  private buildTxBodyForUpdateAssistant(
+    assistant: Assistant,
     appId: string,
     tokenId: string,
     aiName: string,
-    assistant: Assistant
+    address: string
   ) {
-    const tokenAiConfigRef = Ref.app(appId).token(tokenId).ai(aiName).config();
-    return buildSetValueTransactionBody(tokenAiConfigRef, {
+    const ref = Ref.app(appId).token(tokenId).ai(aiName).config();
+    const value = {
       model: assistant.model,
       name: assistant.name,
       instructions: assistant.instructions,
@@ -228,15 +215,19 @@ export default class Assistants {
         !(Object.keys(assistant.metadata).length === 0) && {
           metadata: assistant.metadata,
         }),
-    });
+    };
+    const setValueOp = buildSetValueOp(ref, value);
+    return buildSetTransactionBody(setValueOp, address);
   }
 
-  private getAssistantDeleteTxBody(
+  private buildTxBodyForDeleteAssistant(
     appId: string,
     tokenId: string,
-    aiName: string
+    aiName: string,
+    address: string
   ) {
-    const tokenAiRef = Ref.app(appId).token(tokenId).ai(aiName).root();
-    return buildSetValueTransactionBody(tokenAiRef, null);
+    const ref = Ref.app(appId).token(tokenId).ai(aiName).root();
+    const setValueOp = buildSetValueOp(ref, null);
+    return buildSetTransactionBody(setValueOp, address);
   }
 }

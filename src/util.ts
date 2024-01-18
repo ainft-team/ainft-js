@@ -1,10 +1,7 @@
 import stringify = require('fast-json-stable-stringify');
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
-import {
-  SetOperation,
-  TransactionInput,
-} from '@ainblockchain/ain-js/lib/types';
+import { SetOperation, SetMultiOperation, TransactionInput } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
 import { PROVIDER_API_AI_NAME_MAP, MIN_GAS_PRICE } from './constants';
@@ -35,23 +32,43 @@ export const buildData = (
   return _data;
 };
 
-export const buildSetValueTransactionBody = (ref: string, value: any) => {
-  return buildSetTransactionBody({
-    type: 'SET_VALUE',
-    ref: ref,
-    value: value,
-  });
-};
-
 export const buildSetTransactionBody = (
-  operation: SetOperation
+  operation: SetOperation | SetMultiOperation,
+  address: string
 ): TransactionInput => {
   return {
     operation: operation,
+    address,
     gas_price: MIN_GAS_PRICE,
     nonce: -1,
   };
 };
+
+export const buildSetValueOp = (ref: string, value: any): SetOperation => ({
+  type: 'SET_VALUE',
+  ref,
+  value,
+});
+
+export const buildSetWriteRuleOp = (ref: string, rule: any) => buildSetRuleOp(ref, { write: rule });
+
+export const buildSetStateRuleOp = (ref: string, rule: any) => buildSetRuleOp(ref, { state: rule });
+
+export const buildSetRuleOp = (ref: string, rule: { write?: any; state?: any }): SetOperation => ({
+  type: 'SET_RULE',
+  ref,
+  value: {
+    '.rule': {
+      ...(rule.write && { write: rule.write }),
+      ...(rule.state && { state: rule.state }),
+    },
+  },
+});
+
+export const buildSetOp = (opList: any[]): SetMultiOperation => ({
+  type: 'SET',
+  op_list: opList,
+});
 
 export const isJoiError = (error: any) => {
   return error.response?.data?.isJoiError === true;
@@ -91,17 +108,12 @@ export const Ref = {
           root: () => `${Ref.app(appId).root()}/tokens/${tokenId}`,
           ai: (aiName: string): TokenAiRef => {
             return {
-              root: () =>
-                `${Ref.app(appId).token(tokenId).root()}/ai/${aiName}`,
-              config: () =>
-                `${Ref.app(appId).token(tokenId).ai(aiName).root()}/config`,
+              root: () => `${Ref.app(appId).token(tokenId).root()}/ai/${aiName}`,
+              config: () => `${Ref.app(appId).token(tokenId).ai(aiName).root()}/config`,
               history: (address: string): HistoryRef => {
                 return {
                   root: () =>
-                    `${Ref.app(appId)
-                      .token(tokenId)
-                      .ai(aiName)
-                      .root()}/history/${address}`,
+                    `${Ref.app(appId).token(tokenId).ai(aiName).root()}/history/${address}`,
                   thread: (threadId: string): ThreadRef => {
                     return {
                       root: () =>
@@ -179,11 +191,7 @@ export const validateObject = async (appId: string, ain: Ain) => {
   }
 };
 
-export const validateObjectOwnership = async (
-  appId: string,
-  address: string,
-  ain: Ain
-) => {
+export const validateObjectOwner = async (appId: string, address: string, ain: Ain) => {
   const appPath = Ref.app(appId).root();
   const app = await getValue(appPath, ain);
   if (address !== app.owner) {
@@ -191,10 +199,7 @@ export const validateObjectOwnership = async (
   }
 };
 
-export const validateAndGetAiService = async (
-  aiName: string,
-  ainize: Ainize
-): Promise<Service> => {
+export const validateAndGetAiService = async (aiName: string, ainize: Ainize): Promise<Service> => {
   const service = await ainize.getService(aiName);
   if (!service.isRunning()) {
     throw new Error('AI service is not running');
@@ -202,11 +207,7 @@ export const validateAndGetAiService = async (
   return service;
 };
 
-export const validateAiConfig = async (
-  appId: string,
-  aiName: string,
-  ain: Ain
-) => {
+export const validateAiConfig = async (appId: string, aiName: string, ain: Ain) => {
   const aiPath = Ref.app(appId).ai(aiName);
   if (!(await exists(aiPath, ain))) {
     throw new Error('AI not configured');
@@ -240,11 +241,7 @@ export const validateAndGetTokenAi = async (
   return tokenAi;
 };
 
-export const validateToken = async (
-  appId: string,
-  tokenId: string,
-  ain: Ain
-) => {
+export const validateToken = async (appId: string, tokenId: string, ain: Ain) => {
   const tokenPath = Ref.app(appId).token(tokenId).root();
   if (!(await exists(tokenPath, ain))) {
     throw new Error('Token not found');

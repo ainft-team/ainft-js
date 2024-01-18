@@ -11,7 +11,8 @@ import {
 } from '../../../types';
 import {
   Ref,
-  buildSetValueTransactionBody,
+  buildSetTransactionBody,
+  buildSetValueOp,
   getValue,
   validateAiConfig,
   validateAndGetAiName,
@@ -34,15 +35,7 @@ export default class Messages {
 
   async create(
     threadId: string,
-    {
-      objectId,
-      tokenId,
-      provider,
-      api,
-      role,
-      content,
-      metadata,
-    }: MessageCreateParams
+    { objectId, tokenId, provider, api, role, content, metadata }: MessageCreateParams
   ): Promise<MessageCreateTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
@@ -52,12 +45,7 @@ export default class Messages {
 
     const aiName = validateAndGetAiName(provider, api);
     await validateAiConfig(appId, aiName, this.ain);
-    const { id: aiId } = await validateAndGetTokenAi(
-      appId,
-      tokenId,
-      aiName,
-      this.ain
-    );
+    const { id: aiId } = await validateAndGetTokenAi(appId, tokenId, aiName, this.ain);
 
     await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
 
@@ -105,13 +93,13 @@ export default class Messages {
       },
     ];
 
-    const txBody = this.getMessageCreateTxBody(
+    const txBody = this.buildTxBodyForCreateMessage(
+      threadId,
+      messages,
       appId,
       tokenId,
       aiName,
-      address,
-      threadId,
-      messages
+      address
     );
 
     const txResult = await this.ain.sendTransaction(txBody);
@@ -134,15 +122,7 @@ export default class Messages {
     await validateTokenAi(appId, tokenId, aiName, null, this.ain);
 
     await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
-    await validateMessage(
-      appId,
-      tokenId,
-      aiName,
-      address,
-      threadId,
-      messageId,
-      this.ain
-    );
+    await validateMessage(appId, tokenId, aiName, address, threadId, messageId, this.ain);
 
     // TODO(jiyoung): update message.
     const message = <ThreadMessage>{
@@ -156,13 +136,7 @@ export default class Messages {
       created_at: 0,
     };
 
-    const txBody = await this.getMessageUpdateTxBody(
-      appId,
-      tokenId,
-      aiName,
-      address,
-      message
-    );
+    const txBody = await this.buildTxBodyForUpdateMessage(message, appId, tokenId, aiName, address);
 
     const txResult = await this.ain.sendTransaction(txBody);
     return { ...txResult, message };
@@ -187,15 +161,7 @@ export default class Messages {
     await validateTokenAi(appId, tokenId, aiName, null, this.ain);
 
     await validateThread(appId, tokenId, aiName, address, threadId, this.ain);
-    await validateMessage(
-      appId,
-      tokenId,
-      aiName,
-      address,
-      threadId,
-      messageId,
-      this.ain
-    );
+    await validateMessage(appId, tokenId, aiName, address, threadId, messageId, this.ain);
 
     // TODO(jiyoung): get message.
     const message = <ThreadMessage>{
@@ -264,23 +230,26 @@ export default class Messages {
     return messages;
   }
 
-  private getMessageCreateTxBody(
+  private buildTxBodyForCreateMessage(
+    threadId: string,
+    messages: Array<ThreadMessage>,
     appId: string,
     tokenId: string,
     aiName: string,
-    address: string,
-    threadId: string,
-    messages: Array<ThreadMessage>
+    address: string
   ) {
-    const data: { [key: string]: object } = {};
+    const ref = Ref.app(appId)
+      .token(tokenId)
+      .ai(aiName)
+      .history(address)
+      .thread(threadId)
+      .messages();
+    const value: { [key: string]: object } = {};
 
     messages.forEach((el) => {
-      data[el.id] = {
+      value[el.id] = {
         role: el.role,
-        content:
-          el.content[0].type === 'text'
-            ? el.content[0].text
-            : el.content[0].image_file,
+        content: el.content[0].type === 'text' ? el.content[0].text : el.content[0].image_file,
         ...(el.metadata &&
           !(Object.keys(el.metadata).length === 0) && {
             metadata: el.metadata,
@@ -288,39 +257,35 @@ export default class Messages {
       };
     });
 
-    const messagesRef = Ref.app(appId)
-      .token(tokenId)
-      .ai(aiName)
-      .history(address)
-      .thread(threadId)
-      .messages();
-
-    return buildSetValueTransactionBody(messagesRef, data);
+    const setValueOp = buildSetValueOp(ref, value);
+    return buildSetTransactionBody(setValueOp, address);
   }
 
-  private async getMessageUpdateTxBody(
+  private async buildTxBodyForUpdateMessage(
+    message: ThreadMessage,
     appId: string,
     tokenId: string,
     aiName: string,
-    address: string,
-    message: ThreadMessage
+    address: string
   ) {
-    const messageRef = Ref.app(appId)
+    const ref = Ref.app(appId)
       .token(tokenId)
       .ai(aiName)
       .history(address)
       .thread(message.thread_id)
       .message(message.id);
 
-    const prev = await getValue(messageRef, this.ain);
-
-    return buildSetValueTransactionBody(messageRef, {
+    const prev = await getValue(ref, this.ain);
+    const value = {
       ...prev,
       ...(message.metadata &&
         !(Object.keys(message.metadata).length === 0) && {
           metadata: message.metadata,
         }),
-    });
+    };
+
+    const setValueOp = buildSetValueOp(ref, value);
+    return buildSetTransactionBody(setValueOp, address);
   }
 
   // private waitForRun(threadId: string, runId: string) {

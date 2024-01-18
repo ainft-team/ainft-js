@@ -12,7 +12,8 @@ import {
   ThreadUpdateParams,
 } from '../../types';
 import {
-  buildSetValueTransactionBody,
+  buildSetTransactionBody,
+  buildSetValueOp,
   validateAiConfig,
   validateAndGetAiName,
   validateObject,
@@ -60,13 +61,7 @@ export default class Threads {
     // const ai = await validateAndGetAiService(aiName, this.ainize);
     // const response = await ai.request(<REQUEST_DATA>);
 
-    const txBody = this.getThreadCreateTxBody(
-      appId,
-      tokenId,
-      aiName,
-      address,
-      thread
-    );
+    const txBody = this.buildTxBodyForCreateThread(thread, appId, tokenId, aiName, address);
 
     const txResult = await this.ain.sendTransaction(txBody);
     return { ...txResult, thread };
@@ -100,13 +95,7 @@ export default class Threads {
     // const ai = await validateAndGetAiService(aiName, this.ainize);
     // const response = await ai.request(<REQUEST_DATA>);
 
-    const txBody = await this.getThreadUpdateTxBody(
-      appId,
-      tokenId,
-      aiName,
-      address,
-      thread
-    );
+    const txBody = await this.buildTxBodyForUpdateThread(thread, appId, tokenId, aiName, address);
 
     const txResult = await this.ain.sendTransaction(txBody);
     return { ...txResult, thread };
@@ -135,13 +124,7 @@ export default class Threads {
     // const ai = await validateAndGetAiService(aiName, this.ainize);
     // const response = await ai.request(<REQUEST_DATA>);
 
-    const txBody = this.getThreadDeleteTxBody(
-      appId,
-      tokenId,
-      aiName,
-      address,
-      threadId
-    );
+    const txBody = this.buildTxBodyForDeleteThread(threadId, appId, tokenId, aiName, address);
 
     const txResult = await this.ain.sendTransaction(txBody);
     return { ...txResult, delThread };
@@ -177,68 +160,54 @@ export default class Threads {
     return thread;
   }
 
-  private getThreadCreateTxBody(
+  private buildTxBodyForCreateThread(
+    thread: Thread,
     appId: string,
     tokenId: string,
     aiName: string,
-    address: string,
-    thread: Thread
+    address: string
   ) {
-    const threadRef = Ref.app(appId)
-      .token(tokenId)
-      .ai(aiName)
-      .history(address)
-      .thread(thread.id)
-      .root();
-
-    return buildSetValueTransactionBody(threadRef, {
+    const ref = Ref.app(appId).token(tokenId).ai(aiName).history(address).thread(thread.id).root();
+    const value = {
       messages: true,
       ...(thread.metadata &&
         !(Object.keys(thread.metadata).length === 0) && {
           metadata: thread.metadata,
         }),
-    });
+    };
+    const setValueOp = buildSetValueOp(ref, value);
+    return buildSetTransactionBody(setValueOp, address);
   }
 
-  private async getThreadUpdateTxBody(
+  private async buildTxBodyForUpdateThread(
+    thread: Thread,
     appId: string,
     tokenId: string,
     aiName: string,
-    address: string,
-    thread: Thread
+    address: string
   ) {
-    const threadRef = Ref.app(appId)
-      .token(tokenId)
-      .ai(aiName)
-      .history(address)
-      .thread(thread.id)
-      .root();
-
-    const prev = await getValue(threadRef, this.ain);
-
-    return buildSetValueTransactionBody(threadRef, {
+    const ref = Ref.app(appId).token(tokenId).ai(aiName).history(address).thread(thread.id).root();
+    const prev = await getValue(ref, this.ain);
+    const value = {
       ...prev,
       ...(thread.metadata &&
         !(Object.keys(thread.metadata).length === 0) && {
           metadata: thread.metadata,
         }),
-    });
+    };
+    const setValueOp = buildSetValueOp(ref, value);
+    return buildSetTransactionBody(setValueOp, address);
   }
 
-  private getThreadDeleteTxBody(
+  private buildTxBodyForDeleteThread(
+    threadId: string,
     appId: string,
     tokenId: string,
     aiName: string,
-    address: string,
-    threadId: string
+    address: string
   ) {
-    const threadRef = Ref.app(appId)
-      .token(tokenId)
-      .ai(aiName)
-      .history(address)
-      .thread(threadId)
-      .root();
-
-    return buildSetValueTransactionBody(threadRef, null);
+    const ref = Ref.app(appId).token(tokenId).ai(aiName).history(address).thread(threadId).root();
+    const setValueOp = buildSetValueOp(ref, null);
+    return buildSetTransactionBody(setValueOp, address);
   }
 }
