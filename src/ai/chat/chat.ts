@@ -25,15 +25,15 @@ import {
 } from '../../util';
 
 export default class Chat extends BlockchainBase {
-  assistants: Assistants;
-  threads: Threads;
-  messages: Messages;
+  assistant: Assistants;
+  thread: Threads;
+  message: Messages;
 
   constructor(ain: Ain, ainize: Ainize) {
     super(ain, ainize);
-    this.assistants = new Assistants(ain, ainize);
-    this.threads = new Threads(ain, ainize);
-    this.messages = new Messages(ain, ainize);
+    this.assistant = new Assistants(ain, ainize);
+    this.thread = new Threads(ain, ainize);
+    this.message = new Messages(ain, ainize);
   }
 
   async configure(objectId: string, provider: ServiceProvider): Promise<TransactionResult> {

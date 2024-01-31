@@ -177,10 +177,6 @@ type ThreadRef = {
   message: (messageId: string) => string;
 };
 
-export const getAppIdFromObjectId = (objectId: string) => {
-  return Ainft721Object.getAppId(objectId);
-};
-
 export const validateObject = async (appId: string, ain: Ain) => {
   const appPath = Ref.app(appId).root();
   if (!(await exists(appPath, ain))) {
@@ -215,38 +211,42 @@ export const validateAndGetService = async (
   return service;
 };
 
-export const validateAiConfig = async (appId: string, aiName: string, ain: Ain) => {
-  const aiPath = Ref.app(appId).ai(aiName);
+export const validateServiceConfig = async (
+  appId: string,
+  serviceName: string,
+  ain: Ain
+) => {
+  const aiPath = Ref.app(appId).ai(serviceName);
   if (!(await exists(aiPath, ain))) {
-    throw new Error('AI not configured');
+    throw new Error('AI configuration not found, please call `ainft.chat.configure()` first.');
   }
 };
 
-export const validateTokenAi = async (
+export const validateAssistant = async (
   appId: string,
   tokenId: string,
-  aiName: string,
-  aiId: string | null,
+  serviceName: string,
+  assistantId: string | null,
   ain: Ain
 ) => {
-  const tokenAi = await validateAndGetTokenAi(appId, tokenId, aiName, ain);
-  if (aiId && tokenAi.id !== aiId) {
-    throw new Error(`Incorrect token AI(${tokenAi.object}) ID`);
+  const assistant = await validateAndGetAssistant(appId, tokenId, serviceName, ain);
+  if (assistantId && assistantId !== assistant.id) {
+    throw new Error(`Incorrect assistant ID`);
   }
 };
 
-export const validateAndGetTokenAi = async (
+export const validateAndGetAssistant = async (
   appId: string,
   tokenId: string,
-  aiName: string,
+  serviceName: string,
   ain: Ain
 ) => {
-  const tokenAiPath = Ref.app(appId).token(tokenId).ai(aiName).root();
-  const tokenAi = await getValue(tokenAiPath, ain);
-  if (!tokenAi) {
-    throw new Error('Token AI not found');
+  const assistantPath = Ref.app(appId).token(tokenId).ai(serviceName).root();
+  const assistant = await getValue(assistantPath, ain);
+  if (!assistant) {
+    throw new Error('Assistant not found');
   }
-  return tokenAi;
+  return assistant;
 };
 
 export const validateToken = async (appId: string, tokenId: string, ain: Ain) => {

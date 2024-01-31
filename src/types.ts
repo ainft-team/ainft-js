@@ -1114,6 +1114,49 @@ export interface SearchReponse {
   cursor?: string;
 }
 
+export enum AiType {
+  CHAT = 'chat',
+}
+
+export type ServiceProvider = string | 'openai';
+
+export enum OpenAIJobType {
+  CREATE_ASSISTANT = 'create_assistant',
+  RETRIEVE_ASSISTANT = 'retrieve_assistant',
+  MODIFY_ASSISTANT = 'modify_assistant',
+  DELETE_ASSISTANT = 'delete_assistant',
+  LIST_ASSISTANTS = 'list_assistants',
+  CREATE_THREAD = 'create_thread',
+  RETRIEVE_THREAD = 'retrieve_thread',
+  MODIFY_THREAD = 'modify_thread',
+  DELETE_THREAD = 'delete_thread',
+  CREATE_MESSAGE = 'create_message',
+  LIST_MESSAGES = 'list_messages',
+  RETRIEVE_MESSAGE = 'retrieve_message',
+  MODIFY_MESSAGE = 'modify_message',
+  CREATE_RUN = 'create_run',
+  LIST_RUNS = 'list_runs',
+  LIST_RUN_STEPS = 'list_run_steps',
+  RETRIEVE_RUN = 'retrieve_run',
+  RETRIEVE_RUN_STEP = 'retrieve_run_step',
+  MODIFY_RUN = 'modify_run',
+  CANCEL_RUN = 'cancel_run',
+}
+
+/**
+ * Name of the model to use. You can see the
+ * [OpenAI model overview](https://platform.openai.com/docs/models/overview)
+ * for description of them.
+ */
+export type OpenAIModel =
+  | 'gpt-4-1106-preview'
+  | 'gpt-4'
+  | 'gpt-4-32k'
+  | 'gpt-3.5-turbo-1106'
+  | 'gpt-3.5-turbo'
+  | 'gpt-3.5-turbo-16k'
+  | 'gpt-3.5-turbo-instruct';
+
 export interface TransactionResult {
   tx_hash: string;
   result: Record<string, unknown>;
@@ -1148,37 +1191,6 @@ export interface MessageCreateTransactionResult extends TransactionResult {
   messages: Array<ThreadMessage>;
 }
 
-export enum AiType {
-  CHAT = 'chat',
-}
-
-export type ServiceProvider = string | 'openai';
-
-interface ChatConfigureParamsBase {
-  objectId: string;
-}
-
-export interface OpenAIChatConfigureParams extends ChatConfigureParamsBase {
-  provider: 'openai';
-  api: 'assistants';
-}
-
-export type ChatConfigureParams = OpenAIChatConfigureParams;
-
-/**
- * Name of the model to use. You can see the
- * [OpenAI model overview](https://platform.openai.com/docs/models/overview)
- * for description of them.
- */
-export type OpenAIChatModel =
-  | 'gpt-4-1106-preview'
-  | 'gpt-4'
-  | 'gpt-4-32k'
-  | 'gpt-3.5-turbo-1106'
-  | 'gpt-3.5-turbo'
-  | 'gpt-3.5-turbo-16k'
-  | 'gpt-3.5-turbo-instruct';
-
 export interface Assistant {
   id: string;
   model: string;
@@ -1194,45 +1206,27 @@ export interface AssistantDeleted {
   deleted: boolean;
 }
 
-interface AssistantCreateParamsBase {
-  tokenId: string;
+export interface OpenAIAssistantCreateParams {
+  provider: 'openai';
+  model: OpenAIModel;
   name: string;
   instructions: string;
   description?: string | null;
   metadata?: object | null;
 }
 
-export interface OpenAIAssistantCreateParams extends AssistantCreateParamsBase {
-  config: OpenAIChatConfigureParams;
-  model: OpenAIChatModel;
-}
-
 export type AssistantCreateParams = OpenAIAssistantCreateParams;
 
-interface AssistantUpdateParamsBase {
-  tokenId: string;
+export interface OpenAIAssistantUpdateParams {
+  provider: 'openai',
+  model?: OpenAIModel;
   name?: string | null;
   instructions?: string | null;
   description?: string | null;
   metadata?: object | null;
 }
 
-export interface OpenAIAssistantUpdateParams extends AssistantUpdateParamsBase {
-  config: OpenAIChatConfigureParams;
-  model?: OpenAIChatModel;
-}
-
 export type AssistantUpdateParams = OpenAIAssistantUpdateParams;
-
-interface AssistantDeleteParamsBase {
-  tokenId: string;
-}
-
-export interface OpenAIAssistantDeleteParams extends AssistantDeleteParamsBase {
-  config: OpenAIChatConfigureParams;
-}
-
-export type AssistantDeleteParams = OpenAIAssistantDeleteParams;
 
 export interface Thread {
   id: string;
