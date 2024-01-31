@@ -109,15 +109,15 @@ export default class Chat extends BlockchainBase {
       url: `https://${serviceName}.ainetwork.xyz`,
     };
     const rule = {
-      write: 'auth.addr === $user_addr',
+      // write: 'auth.addr === $user_addr',
       // TODO(jiyoung): discuss whether to apply gc rule for messages.
       // state: { gc_max_siblings: 20, gc_num_siblings_deleted: 10 },
     };
 
     const setValueOp = buildSetValueOp(ref, value);
-    const setWriteRuleOp = buildSetWriteRuleOp(path, rule.write);
+    // const setWriteRuleOp = buildSetWriteRuleOp(path, rule.write);
     // const setGCRuleOp = buildSetStateRuleOp(`${path}/${subpath}`, rule.state);
-    const setOp = buildSetOp([setValueOp, setWriteRuleOp /*, setGCRuleOp*/]);
+    const setOp = buildSetOp([setValueOp, /*setWriteRuleOp, setGCRuleOp*/]);
 
     return buildSetTransactionBody(setOp, address);
   }

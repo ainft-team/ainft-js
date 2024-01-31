@@ -236,7 +236,7 @@ export default class Messages extends BlockchainBase {
   ) {
     return service.request({
       jobType: OpenAIJobType.CREATE_MESSAGE,
-      thread_id: threadId,
+      threadId,
       role,
       content,
       ...(metadata && { metadata }),
@@ -246,8 +246,8 @@ export default class Messages extends BlockchainBase {
   private createRun(threadId: string, assistantId: string, service: Service) {
     return service.request({
       jobType: OpenAIJobType.CREATE_RUN,
-      thread_id: threadId,
-      assistant_id: assistantId,
+      threadId,
+      assistantId,
     });
   }
 
@@ -256,8 +256,8 @@ export default class Messages extends BlockchainBase {
       const interval = setInterval(async () => {
         const run = await service.request({
           jobType: OpenAIJobType.RETRIEVE_RUN,
-          thread_id: threadId,
-          run_id: runId,
+          threadId,
+          runId,
         });
         if (run.status === 'completed') {
           clearInterval(interval);

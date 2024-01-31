@@ -11,15 +11,15 @@ jest.mock('../../../src/util', () => {
   };
 });
 
-const objectId = '0xC316C7C3eA586eD1Ac9615782D019A4FbD25884f';
-const appId = 'ainft721_0xc316c7c3ea586ed1ac9615782d019a4fbd25884f';
+const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
+const appId = 'ainft721_0x8a193528f6d406ce81ff5d9a55304337d0ed8de6';
 const serviceName = 'openai_ainize3';
 
 describe('chat', () => {
   jest.setTimeout(60 * 1000);
   let ainft: AinftJs;
 
-  beforeEach(() => {
+  beforeAll(() => {
     ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
       ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',

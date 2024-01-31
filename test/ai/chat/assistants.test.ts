@@ -1,14 +1,15 @@
-import AinftJs from '../../../src/ainft';
+import AinftJs, { AssistantCreateParams, AssistantUpdateParams } from '../../../src/ainft';
 
-const objectId = '0xC316C7C3eA586eD1Ac9615782D019A4FbD25884f';
-const appId = 'ainft721_0xc316c7c3ea586ed1ac9615782d019a4fbd25884f';
+const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
+const appId = 'ainft721_0x8a193528f6d406ce81ff5d9a55304337d0ed8de6';
 const tokenId = '1';
 const serviceName = 'openai_ainize3';
 
 describe('assistant', () => {
   let ainft: AinftJs;
+  let assistantId: string;
 
-  beforeEach(() => {
+  beforeAll(() => {
     ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
       ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
@@ -18,15 +19,20 @@ describe('assistant', () => {
 
   it('create: should create assistant', async () => {
     const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
-
-    const txResult = await ainft.chat.assistant.create(objectId, tokenId, {
+    const params = <AssistantCreateParams>{
       provider: 'openai',
       model: 'gpt-3.5-turbo',
       name: 'name',
       instructions: 'instructions',
       description: 'description',
+      // TODO(jiyoung): handle empty metadata in blockchain transaction.
+      // if metadata is not provided, OpenAI set default empty object.
+      // but empty object is not stored on blockchain, leading to transaction reversion.
       metadata: { key1: 'value1' },
-    });
+    };
+
+    const txResult = await ainft.chat.assistant.create(objectId, tokenId, params);
+    assistantId = txResult.assistant.id;
     const assistant = await ainft.ain.db.ref(ref).getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
@@ -40,9 +46,6 @@ describe('assistant', () => {
   });
 
   it('get: should get assistant', async () => {
-    const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/id`;
-    const assistantId = await ainft.ain.db.ref(ref).getValue();
-
     const assistant = await ainft.chat.assistant.get(assistantId, objectId, tokenId, 'openai');
 
     expect(assistant.id).toBe(assistantId);
@@ -55,16 +58,16 @@ describe('assistant', () => {
 
   it('update: should update assistant', async () => {
     const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
-    const assistantId = await ainft.ain.db.ref(`${ref}/id`).getValue();
-
-    const txResult = await ainft.chat.assistant.update(assistantId, objectId, tokenId, {
+    const params = <AssistantUpdateParams>{
       provider: 'openai',
       model: 'gpt-4',
       name: 'new_name',
       instructions: 'new_instructions',
       description: 'new_description',
       metadata: { key1: 'value1', key2: 'value2' },
-    });
+    };
+
+    const txResult = await ainft.chat.assistant.update(assistantId, objectId, tokenId, params);
     const assistant = await ainft.ain.db.ref(ref).getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
@@ -79,7 +82,6 @@ describe('assistant', () => {
 
   it('delete: should delete assistant', async () => {
     const ref = `apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
-    const assistantId = await ainft.ain.db.ref(`${ref}/id`).getValue();
 
     const txResult = await ainft.chat.assistant.delete(assistantId, objectId, tokenId, 'openai');
     const assistant = await ainft.ain.db.ref(ref).getValue();

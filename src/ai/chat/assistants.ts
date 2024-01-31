@@ -45,7 +45,14 @@ export default class Assistants extends BlockchainBase {
     await ainizeLogin(this.ain, this.ainize);
 
     const jobType = OpenAIJobType.CREATE_ASSISTANT;
-    const body = { jobType, model, name, instructions, description, metadata };
+    const body = {
+      jobType,
+      model,
+      name,
+      instructions,
+      ...(description && { description }),
+      ...(metadata && { metadata }),
+    };
     const assistant = await service.request(body);
 
     await ainizeLogout(this.ainize);
@@ -89,7 +96,7 @@ export default class Assistants extends BlockchainBase {
     const jobType = OpenAIJobType.MODIFY_ASSISTANT;
     const body = {
       jobType,
-      assistant_id: assistantId,
+      assistantId,
       ...(model && { model }),
       ...(name && { name }),
       ...(instructions && { instructions }),
@@ -139,7 +146,7 @@ export default class Assistants extends BlockchainBase {
     const jobType = OpenAIJobType.DELETE_ASSISTANT;
     const body = {
       jobType,
-      assistant_id: assistantId,
+      assistantId,
     };
     const delAssistant = await service.request(body);
 
@@ -174,10 +181,7 @@ export default class Assistants extends BlockchainBase {
     await ainizeLogin(this.ain, this.ainize);
 
     const jobType = OpenAIJobType.RETRIEVE_ASSISTANT;
-    const body = {
-      jobType,
-      assistant_id: assistantId,
-    };
+    const body = { jobType, assistantId };
     const assistant = await service.request(body);
 
     await ainizeLogout(this.ainize);
