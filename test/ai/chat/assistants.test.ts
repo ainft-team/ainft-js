@@ -6,6 +6,7 @@ const tokenId = '1';
 const serviceName = 'openai_ainize3';
 
 describe('assistant', () => {
+  jest.setTimeout(5 * 60 * 1000);
   let ainft: AinftJs;
   let assistantId: string;
 
