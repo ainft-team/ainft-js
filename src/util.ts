@@ -4,8 +4,9 @@ import Ainize from '@ainize-team/ainize-js';
 import { SetOperation, SetMultiOperation, TransactionInput } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
+import Ainft721Object from './ainft721Object';
 import AinizeAuth from './auth/ainizeAuth';
-import { PROVIDER_API_AI_NAME_MAP, MIN_GAS_PRICE } from './constants';
+import { PROVIDER_SERVICE_NAME_MAP, MIN_GAS_PRICE } from './constants';
 import { HttpMethod } from './types';
 
 export const buildData = (
@@ -176,13 +177,8 @@ type ThreadRef = {
   message: (messageId: string) => string;
 };
 
-export const validateAndGetAiName = (provider: string, api: string): string => {
-  const key = `${provider}-${api}`;
-  const aiName = PROVIDER_API_AI_NAME_MAP.get(key);
-  if (!aiName) {
-    throw new Error('AI service not supported');
-  }
-  return aiName;
+export const getAppIdFromObjectId = (objectId: string) => {
+  return Ainft721Object.getAppId(objectId);
 };
 
 export const validateObject = async (appId: string, ain: Ain) => {
@@ -200,10 +196,21 @@ export const validateObjectOwner = async (appId: string, address: string, ain: A
   }
 };
 
-export const validateAndGetAiService = async (aiName: string, ainize: Ainize): Promise<Service> => {
-  const service = await ainize.getService(aiName);
+export const validateAndGetServiceName = (provider: string): string => {
+  const serviceName = PROVIDER_SERVICE_NAME_MAP.get(provider);
+  if (!serviceName) {
+    throw new Error('Service is currently not supported');
+  }
+  return serviceName;
+};
+
+export const validateAndGetService = async (
+  serviceName: string,
+  ainize: Ainize
+): Promise<Service> => {
+  const service = await ainize.getService(serviceName);
   if (!service.isRunning()) {
-    throw new Error('AI service is not running');
+    throw new Error('Service is currently not running');
   }
   return service;
 };

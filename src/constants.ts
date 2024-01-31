@@ -23,7 +23,6 @@ export const SUPPORTED_AINFT_STANDARDS = {
   721: '721',
 }
 
-export const PROVIDER_API_AI_NAME_MAP = new Map<string, string>([
-  // TODO(jiyoung): update value after deployment of ainize service.
-  ['openai-assistants', 'openai_ainize3'/*'ainize_test14'*/],
+export const PROVIDER_SERVICE_NAME_MAP = new Map<string, string>([
+  ['openai', 'openai_ainize3']
 ]);

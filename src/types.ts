@@ -1119,8 +1119,7 @@ export interface TransactionResult {
   result: Record<string, unknown>;
 }
 
-export interface CreditDepositTransactionResult
-  extends Omit<TransactionResult, 'result'> {
+export interface CreditTransactionResult extends Omit<TransactionResult, 'result'> {
   address: string;
   balance: number;
 }
@@ -1148,6 +1147,12 @@ export interface MessageTransactionResult extends TransactionResult {
 export interface MessageCreateTransactionResult extends TransactionResult {
   messages: Array<ThreadMessage>;
 }
+
+export enum AiType {
+  CHAT = 'chat',
+}
+
+export type ServiceProvider = string | 'openai';
 
 interface ChatConfigureParamsBase {
   objectId: string;
