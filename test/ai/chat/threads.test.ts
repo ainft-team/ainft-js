@@ -7,6 +7,7 @@ const serviceName = 'openai_ainize3';
 const address = '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0';
 
 describe('thread', () => {
+  jest.setTimeout(60 * 1000);
   let ainft: AinftJs;
   let assistantId: string;
   let threadId: string;
