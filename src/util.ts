@@ -4,8 +4,7 @@ import Ainize from '@ainize-team/ainize-js';
 import { SetOperation, SetMultiOperation, TransactionInput } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import Ainft721Object from './ainft721Object';
-import AinizeAuth from './auth/ainizeAuth';
+import AinizeAuth from './common/ainize';
 import { PROVIDER_SERVICE_NAME_MAP, MIN_GAS_PRICE } from './constants';
 import { HttpMethod } from './types';
 
