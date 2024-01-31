@@ -1261,24 +1261,16 @@ export interface ThreadDeleted {
   deleted: boolean;
 }
 
-interface ThreadCreateParamsBase {
-  tokenId: string;
+export interface OpenAIThreadCreateParams {
+  provider: 'openai';
   metadata?: object | null;
-}
-
-export interface OpenAIThreadCreateParams extends ThreadCreateParamsBase {
-  config: OpenAIChatConfigureParams;
 }
 
 export type ThreadCreateParams = OpenAIThreadCreateParams;
 
-interface ThreadUpdateParamsBase {
-  tokenId: string;
+export interface OpenAIThreadUpdateParams {
+  provider: 'openai';
   metadata?: object | null;
-}
-
-export interface OpenAIThreadUpdateParams extends ThreadUpdateParamsBase {
-  config: OpenAIChatConfigureParams;
 }
 
 export type ThreadUpdateParams = OpenAIThreadUpdateParams;
