@@ -210,11 +210,7 @@ export const validateAndGetService = async (
   return service;
 };
 
-export const validateServiceConfig = async (
-  appId: string,
-  serviceName: string,
-  ain: Ain
-) => {
+export const validateServiceConfig = async (appId: string, serviceName: string, ain: Ain) => {
   const aiPath = Ref.app(appId).ai(serviceName);
   if (!(await exists(aiPath, ain))) {
     throw new Error('AI configuration not found, please call `ainft.chat.configure()` first.');
@@ -258,14 +254,14 @@ export const validateToken = async (appId: string, tokenId: string, ain: Ain) =>
 export const validateThread = async (
   appId: string,
   tokenId: string,
-  aiName: string,
+  serviceName: string,
   address: string,
   threadId: string,
   ain: Ain
 ) => {
   const threadPath = Ref.app(appId)
     .token(tokenId)
-    .ai(aiName)
+    .ai(serviceName)
     .history(address)
     .thread(threadId)
     .root();
@@ -278,7 +274,7 @@ export const validateThread = async (
 export const validateMessage = async (
   appId: string,
   tokenId: string,
-  aiName: string,
+  serviceName: string,
   address: string,
   threadId: string,
   messageId: string,
@@ -286,7 +282,7 @@ export const validateMessage = async (
 ) => {
   const messagePath = Ref.app(appId)
     .token(tokenId)
-    .ai(aiName)
+    .ai(serviceName)
     .history(address)
     .thread(threadId)
     .message(messageId);

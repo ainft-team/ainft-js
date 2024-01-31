@@ -45,7 +45,7 @@ export default class Threads extends BlockchainBase {
     await ainizeLogin(this.ain, this.ainize);
 
     const jobType = OpenAIJobType.CREATE_THREAD;
-    const body = { jobType, metadata };
+    const body = { jobType, ...(metadata && { metadata }) };
     const thread = await service.request(body);
 
     await ainizeLogout(this.ainize);
@@ -77,7 +77,7 @@ export default class Threads extends BlockchainBase {
     await ainizeLogin(this.ain, this.ainize);
 
     const jobType = OpenAIJobType.MODIFY_THREAD;
-    const body = { jobType, thread_id: threadId, metadata };
+    const body = { jobType, thread_id: threadId, ...(metadata && { metadata }) };
     const newThread = await service.request(body);
 
     await ainizeLogout(this.ainize);
@@ -165,8 +165,8 @@ export default class Threads extends BlockchainBase {
     serviceName: string,
     address: string
   ) {
-    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(thread.id).root();
-    const { metadata } = thread;
+    const { id, metadata } = thread;
+    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(id).root();
 
     const value = {
       messages: true,
@@ -183,9 +183,9 @@ export default class Threads extends BlockchainBase {
     serviceName: string,
     address: string
   ) {
-    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(thread.id).root();
+    const { id, metadata } = thread;
+    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(id).root();
     const prev = await getValue(ref, this.ain);
-    const { metadata } = thread;
 
     const value = {
       ...prev,

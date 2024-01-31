@@ -17,6 +17,8 @@ describe('assistant', () => {
   });
 
   it('create: should create assistant', async () => {
+    const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
+
     const txResult = await ainft.chat.assistant.create(objectId, tokenId, {
       provider: 'openai',
       model: 'gpt-3.5-turbo',
@@ -25,10 +27,7 @@ describe('assistant', () => {
       description: 'description',
       metadata: { key1: 'value1' },
     });
-
-    const assistant = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`)
-      .getValue();
+    const assistant = await ainft.ain.db.ref(ref).getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(txResult.result).toBeDefined();
@@ -41,12 +40,12 @@ describe('assistant', () => {
   });
 
   it('get: should get assistant', async () => {
-    const id = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/id`)
-      .getValue();
-    const assistant = await ainft.chat.assistant.get(id, objectId, tokenId, 'openai');
+    const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/id`;
+    const assistantId = await ainft.ain.db.ref(ref).getValue();
 
-    expect(assistant.id).toBe(id);
+    const assistant = await ainft.chat.assistant.get(assistantId, objectId, tokenId, 'openai');
+
+    expect(assistant.id).toBe(assistantId);
     expect(assistant.model).toBe('gpt-3.5-turbo');
     expect(assistant.name).toBe('name');
     expect(assistant.instructions).toBe('instructions');
@@ -55,10 +54,10 @@ describe('assistant', () => {
   });
 
   it('update: should update assistant', async () => {
-    const id = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/id`)
-      .getValue();
-    const txResult = await ainft.chat.assistant.update(id, objectId, tokenId, {
+    const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
+    const assistantId = await ainft.ain.db.ref(`${ref}/id`).getValue();
+
+    const txResult = await ainft.chat.assistant.update(assistantId, objectId, tokenId, {
       provider: 'openai',
       model: 'gpt-4',
       name: 'new_name',
@@ -66,14 +65,11 @@ describe('assistant', () => {
       description: 'new_description',
       metadata: { key1: 'value1', key2: 'value2' },
     });
-
-    const assistant = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`)
-      .getValue();
+    const assistant = await ainft.ain.db.ref(ref).getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(txResult.result).toBeDefined();
-    expect(assistant.id).toBe(id);
+    expect(assistant.id).toBe(assistantId);
     expect(assistant.config.model).toBe('gpt-4');
     expect(assistant.config.name).toBe('new_name');
     expect(assistant.config.instructions).toBe('new_instructions');
@@ -82,18 +78,15 @@ describe('assistant', () => {
   });
 
   it('delete: should delete assistant', async () => {
-    const id = await ainft.ain.db
-      .ref(`/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/id`)
-      .getValue();
-    const txResult = await ainft.chat.assistant.delete(id, objectId, tokenId, 'openai');
+    const ref = `apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
+    const assistantId = await ainft.ain.db.ref(`${ref}/id`).getValue();
 
-    const assistant = await ainft.ain.db
-      .ref(`apps/${appId}/tokens/${tokenId}/ai/${serviceName}`)
-      .getValue();
+    const txResult = await ainft.chat.assistant.delete(assistantId, objectId, tokenId, 'openai');
+    const assistant = await ainft.ain.db.ref(ref).getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(txResult.result).toBeDefined();
-    expect(txResult.delAssistant.id).toBe(id);
+    expect(txResult.delAssistant.id).toBe(assistantId);
     expect(txResult.delAssistant.deleted).toBe(true);
     expect(assistant).toBeNull();
   });

@@ -192,8 +192,8 @@ export default class Assistants extends BlockchainBase {
     serviceName: string,
     address: string
   ) {
-    const ref = Ref.app(appId).token(tokenId).ai(serviceName).root();
     const { id, model, name, instructions, description, metadata } = assistant;
+    const ref = Ref.app(appId).token(tokenId).ai(serviceName).root();
 
     const config = {
       model,
@@ -214,8 +214,8 @@ export default class Assistants extends BlockchainBase {
     serviceName: string,
     address: string
   ) {
-    const ref = Ref.app(appId).token(tokenId).ai(serviceName).config();
     const { model, name, instructions, description, metadata } = assistant;
+    const ref = Ref.app(appId).token(tokenId).ai(serviceName).config();
 
     const value = {
       model,

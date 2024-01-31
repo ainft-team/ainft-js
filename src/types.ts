@@ -1184,11 +1184,11 @@ export interface ThreadDeleteTransactionResult extends TransactionResult {
 }
 
 export interface MessageTransactionResult extends TransactionResult {
-  message: ThreadMessage;
+  message: Message;
 }
 
 export interface MessageCreateTransactionResult extends TransactionResult {
-  messages: Array<ThreadMessage>;
+  messages: Array<Message>;
 }
 
 export interface Assistant {
@@ -1230,12 +1230,12 @@ export type AssistantUpdateParams = OpenAIAssistantUpdateParams;
 
 export interface Thread {
   id: string;
-  messages: Array<ThreadMessage>;
+  messages: Array<Message>;
   metadata: object | null;
   created_at: number;
 }
 
-export interface ThreadMessage {
+export interface Message {
   id: string;
   thread_id: string;
   role: 'user' | 'assistant';
@@ -1275,32 +1275,18 @@ export interface OpenAIThreadUpdateParams {
 
 export type ThreadUpdateParams = OpenAIThreadUpdateParams;
 
-interface ThreadDeleteParamsBase {
-  tokenId: string;
-}
-
-export interface OpenAIThreadDeleteParams extends ThreadDeleteParamsBase {
-  config: OpenAIChatConfigureParams;
-}
-
-export type ThreadDeleteParams = OpenAIThreadDeleteParams;
-
-interface MessageCreateParamsBase {
-  tokenId: string;
+export interface OpenAIMessageCreateParams {
+  provider: 'openai';
   role: 'user';
   content: string;
   metadata?: object | null;
 }
 
-export interface OpenAIMessageCreateParams extends MessageCreateParamsBase, OpenAIChatConfigureParams {}
-
 export type MessageCreateParams = OpenAIMessageCreateParams;
 
-interface MessageUpdateParamsBase {
-  tokenId: string;
+export interface OpenAIMessageUpdateParams {
+  provider: 'openai';
   metadata?: object | null;
 }
-
-export interface OpenAIMessageUpdateParams extends MessageUpdateParamsBase, OpenAIChatConfigureParams {}
 
 export type MessageUpdateParams = OpenAIMessageUpdateParams;
