@@ -1,7 +1,7 @@
 import Reference from '@ainblockchain/ain-js/lib/ain-db/ref';
-import FactoryBase from '../factoryBase';
-import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from '../constants';
-import { HttpMethod, User } from '../types';
+import FactoryBase from './factoryBase';
+import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from './constants';
+import { HttpMethod, User } from './types';
 
 /**
  * This class supports creating AINFT factory app and users. \
@@ -15,23 +15,21 @@ export default class Auth extends FactoryBase {
    */
   async createApp(appname: string) {
     const address = await this.ain.signer.getAddress();
-    return this.ain.db
-      .ref(`/manage_app/${appname}/create/${Date.now()}`)
-      .setValue({
-        value: {
-          admin: {
-            [address]: true,
-          },
-          service: {
-            staking: {
-              lockup_duration: APP_STAKING_LOCKUP_DURATION_MS,
-            },
+    return this.ain.db.ref(`/manage_app/${appname}/create/${Date.now()}`).setValue({
+      value: {
+        admin: {
+          [address]: true,
+        },
+        service: {
+          staking: {
+            lockup_duration: APP_STAKING_LOCKUP_DURATION_MS,
           },
         },
-        address,
-        nonce: -1,
-        gas_price: MIN_GAS_PRICE,
-      });
+      },
+      address,
+      nonce: -1,
+      gas_price: MIN_GAS_PRICE,
+    });
   }
 
   /**
@@ -78,11 +76,7 @@ export default class Auth extends FactoryBase {
    * @param {string} ethAddress The ethereum address to add.
    * @returns
    */
-  addUserEthAddress(
-    appId: string,
-    userId: string,
-    ethAddress: string
-  ): Promise<User> {
+  addUserEthAddress(appId: string, userId: string, ethAddress: string): Promise<User> {
     const body = {
       appId,
       ethAddress,
@@ -98,11 +92,7 @@ export default class Auth extends FactoryBase {
    * @param {string} ethAddress The ethereum address to delete.
    * @returns
    */
-  removeUserEthAddress(
-    appId: string,
-    userId: string,
-    ethAddress: string
-  ): Promise<User> {
+  removeUserEthAddress(appId: string, userId: string, ethAddress: string): Promise<User> {
     const query = {
       appId,
       ethAddress,
@@ -207,11 +197,7 @@ export default class Auth extends FactoryBase {
    * @param {string} userId The ID of user.
    * @param {string} chain The symbol of chain.
    */
-  getUserDepositAddress(
-    appId: string,
-    userId: string,
-    chain: string
-  ): Promise<string> {
+  getUserDepositAddress(appId: string, userId: string, chain: string): Promise<string> {
     const body = {
       appId,
       chain,

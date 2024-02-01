@@ -1,13 +1,11 @@
 import stringify = require('fast-json-stable-stringify');
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
-import {
-  SetOperation,
-  TransactionInput,
-} from '@ainblockchain/ain-js/lib/types';
+import { SetOperation, SetMultiOperation, TransactionInput } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import { PROVIDER_API_AI_NAME_MAP, MIN_GAS_PRICE } from './constants';
+import AinizeAuth from './common/ainize';
+import { PROVIDER_SERVICE_NAME_MAP, MIN_GAS_PRICE } from './constants';
 import { HttpMethod } from './types';
 
 export const buildData = (
@@ -35,23 +33,43 @@ export const buildData = (
   return _data;
 };
 
-export const buildSetValueTransactionBody = (ref: string, value: any) => {
-  return buildSetTransactionBody({
-    type: 'SET_VALUE',
-    ref: ref,
-    value: value,
-  });
-};
-
 export const buildSetTransactionBody = (
-  operation: SetOperation
+  operation: SetOperation | SetMultiOperation,
+  address: string
 ): TransactionInput => {
   return {
     operation: operation,
+    address,
     gas_price: MIN_GAS_PRICE,
     nonce: -1,
   };
 };
+
+export const buildSetValueOp = (ref: string, value: any): SetOperation => ({
+  type: 'SET_VALUE',
+  ref,
+  value,
+});
+
+export const buildSetWriteRuleOp = (ref: string, rule: any) => buildSetRuleOp(ref, { write: rule });
+
+export const buildSetStateRuleOp = (ref: string, rule: any) => buildSetRuleOp(ref, { state: rule });
+
+export const buildSetRuleOp = (ref: string, rule: { write?: any; state?: any }): SetOperation => ({
+  type: 'SET_RULE',
+  ref,
+  value: {
+    '.rule': {
+      ...(rule.write && { write: rule.write }),
+      ...(rule.state && { state: rule.state }),
+    },
+  },
+});
+
+export const buildSetOp = (opList: any[]): SetMultiOperation => ({
+  type: 'SET',
+  op_list: opList,
+});
 
 export const isJoiError = (error: any) => {
   return error.response?.data?.isJoiError === true;
@@ -91,17 +109,12 @@ export const Ref = {
           root: () => `${Ref.app(appId).root()}/tokens/${tokenId}`,
           ai: (aiName: string): TokenAiRef => {
             return {
-              root: () =>
-                `${Ref.app(appId).token(tokenId).root()}/ai/${aiName}`,
-              config: () =>
-                `${Ref.app(appId).token(tokenId).ai(aiName).root()}/config`,
+              root: () => `${Ref.app(appId).token(tokenId).root()}/ai/${aiName}`,
+              config: () => `${Ref.app(appId).token(tokenId).ai(aiName).root()}/config`,
               history: (address: string): HistoryRef => {
                 return {
                   root: () =>
-                    `${Ref.app(appId)
-                      .token(tokenId)
-                      .ai(aiName)
-                      .root()}/history/${address}`,
+                    `${Ref.app(appId).token(tokenId).ai(aiName).root()}/history/${address}`,
                   thread: (threadId: string): ThreadRef => {
                     return {
                       root: () =>
@@ -163,15 +176,6 @@ type ThreadRef = {
   message: (messageId: string) => string;
 };
 
-export const validateAndGetAiName = (provider: string, api: string): string => {
-  const key = `${provider}-${api}`;
-  const aiName = PROVIDER_API_AI_NAME_MAP.get(key);
-  if (!aiName) {
-    throw new Error('AI service not supported');
-  }
-  return aiName;
-};
-
 export const validateObject = async (appId: string, ain: Ain) => {
   const appPath = Ref.app(appId).root();
   if (!(await exists(appPath, ain))) {
@@ -179,11 +183,7 @@ export const validateObject = async (appId: string, ain: Ain) => {
   }
 };
 
-export const validateObjectOwnership = async (
-  appId: string,
-  address: string,
-  ain: Ain
-) => {
+export const validateObjectOwner = async (appId: string, address: string, ain: Ain) => {
   const appPath = Ref.app(appId).root();
   const app = await getValue(appPath, ain);
   if (address !== app.owner) {
@@ -191,60 +191,60 @@ export const validateObjectOwnership = async (
   }
 };
 
-export const validateAndGetAiService = async (
-  aiName: string,
+export const validateAndGetServiceName = (provider: string): string => {
+  const serviceName = PROVIDER_SERVICE_NAME_MAP.get(provider);
+  if (!serviceName) {
+    throw new Error('Service is currently not supported');
+  }
+  return serviceName;
+};
+
+export const validateAndGetService = async (
+  serviceName: string,
   ainize: Ainize
 ): Promise<Service> => {
-  const service = await ainize.getService(aiName);
+  const service = await ainize.getService(serviceName);
   if (!service.isRunning()) {
-    throw new Error('AI service is not running');
+    throw new Error('Service is currently not running');
   }
   return service;
 };
 
-export const validateAiConfig = async (
-  appId: string,
-  aiName: string,
-  ain: Ain
-) => {
-  const aiPath = Ref.app(appId).ai(aiName);
+export const validateServiceConfig = async (appId: string, serviceName: string, ain: Ain) => {
+  const aiPath = Ref.app(appId).ai(serviceName);
   if (!(await exists(aiPath, ain))) {
-    throw new Error('AI not configured');
+    throw new Error('AI configuration not found, please call `ainft.chat.configure()` first.');
   }
 };
 
-export const validateTokenAi = async (
+export const validateAssistant = async (
   appId: string,
   tokenId: string,
-  aiName: string,
-  aiId: string | null,
+  serviceName: string,
+  assistantId: string | null,
   ain: Ain
 ) => {
-  const tokenAi = await validateAndGetTokenAi(appId, tokenId, aiName, ain);
-  if (aiId && tokenAi.id !== aiId) {
-    throw new Error(`Incorrect token AI(${tokenAi.object}) ID`);
+  const assistant = await validateAndGetAssistant(appId, tokenId, serviceName, ain);
+  if (assistantId && assistantId !== assistant.id) {
+    throw new Error(`Incorrect assistant ID`);
   }
 };
 
-export const validateAndGetTokenAi = async (
+export const validateAndGetAssistant = async (
   appId: string,
   tokenId: string,
-  aiName: string,
+  serviceName: string,
   ain: Ain
 ) => {
-  const tokenAiPath = Ref.app(appId).token(tokenId).ai(aiName).root();
-  const tokenAi = await getValue(tokenAiPath, ain);
-  if (!tokenAi) {
-    throw new Error('Token AI not found');
+  const assistantPath = Ref.app(appId).token(tokenId).ai(serviceName).root();
+  const assistant = await getValue(assistantPath, ain);
+  if (!assistant) {
+    throw new Error('Assistant not found');
   }
-  return tokenAi;
+  return assistant;
 };
 
-export const validateToken = async (
-  appId: string,
-  tokenId: string,
-  ain: Ain
-) => {
+export const validateToken = async (appId: string, tokenId: string, ain: Ain) => {
   const tokenPath = Ref.app(appId).token(tokenId).root();
   if (!(await exists(tokenPath, ain))) {
     throw new Error('Token not found');
@@ -254,14 +254,14 @@ export const validateToken = async (
 export const validateThread = async (
   appId: string,
   tokenId: string,
-  aiName: string,
+  serviceName: string,
   address: string,
   threadId: string,
   ain: Ain
 ) => {
   const threadPath = Ref.app(appId)
     .token(tokenId)
-    .ai(aiName)
+    .ai(serviceName)
     .history(address)
     .thread(threadId)
     .root();
@@ -274,7 +274,7 @@ export const validateThread = async (
 export const validateMessage = async (
   appId: string,
   tokenId: string,
-  aiName: string,
+  serviceName: string,
   address: string,
   threadId: string,
   messageId: string,
@@ -282,7 +282,7 @@ export const validateMessage = async (
 ) => {
   const messagePath = Ref.app(appId)
     .token(tokenId)
-    .ai(aiName)
+    .ai(serviceName)
     .history(address)
     .thread(threadId)
     .message(messageId);
@@ -298,4 +298,12 @@ export const exists = async (path: string, ain: Ain): Promise<boolean> => {
 
 export const getValue = async (path: string, ain: Ain): Promise<any> => {
   return ain.db.ref(path).getValue();
+};
+
+export const ainizeLogin = async (ain: Ain, ainize: Ainize) => {
+  return AinizeAuth.getInstance().login(ain, ainize);
+};
+
+export const ainizeLogout = async (ainize: Ainize) => {
+  return AinizeAuth.getInstance().logout(ainize);
 };

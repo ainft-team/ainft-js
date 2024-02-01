@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 import Nft from './nft';
 import Credit from './credit';
-import Auth from './auth/auth';
+import Auth from './auth';
 import Discord from './discord';
 import Event from './event';
 import Store from './store';
@@ -16,7 +16,7 @@ import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
 import Eth from './eth';
-import ChatAi from './ai/chatAi';
+import Chat from './ai/chat/chat';
 import {
   AINFT_SERVER_ENDPOINT,
   AIN_BLOCKCHAIN_CHAINID,
@@ -40,7 +40,7 @@ export default class AinftJs {
   public textToArt: TextToArt;
   public activity: Activity;
   public eth: Eth;
-  public chatAi: ChatAi;
+  public chat: Chat;
 
   constructor(
     privateKey: string,
@@ -72,7 +72,7 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
     this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
     this.activity = new Activity(this.ain, this.baseUrl, '/activity');
-    this.chatAi = new ChatAi(this.ain, this.ainize);
+    this.chat = new Chat(this.ain, this.ainize);
   }
 
   /**
