@@ -6,7 +6,7 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import AinizeAuth from './common/ainize';
 import { PROVIDER_SERVICE_NAME_MAP, MIN_GAS_PRICE } from './constants';
-import { HttpMethod } from './types';
+import { HttpMethod, JobType } from './types';
 
 export const buildData = (
   method: HttpMethod,
@@ -214,7 +214,7 @@ export const validateAndGetService = async (
   return service;
 };
 
-export const validateServiceConfig = async (appId: string, serviceName: string, ain: Ain) => {
+export const validateObjectServiceConfig = async (appId: string, serviceName: string, ain: Ain) => {
   const aiPath = Ref.app(appId).ai(serviceName);
   if (!(await exists(aiPath, ain))) {
     throw new Error('AI configuration not found, please call `ainft.chat.configure()` first.');

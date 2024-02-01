@@ -1118,13 +1118,7 @@ export enum AiType {
   CHAT = 'chat',
 }
 
-/**
- * Name of the service provider.
- */
-export type ServiceProvider = 'openai';
-
-
-export enum OpenAIJobType {
+export enum JobType {
   CREATE_ASSISTANT = 'create_assistant',
   LIST_ASSISTANTS = 'list_assistants',
   RETRIEVE_ASSISTANT = 'retrieve_assistant',
@@ -1149,6 +1143,11 @@ export enum OpenAIJobType {
   MODIFY_RUN = 'modify_run',
   CANCEL_RUN = 'cancel_run',
 }
+
+/**
+ * Name of the service provider.
+ */
+export type ServiceProvider = 'openai';
 
 /**
  * Name of the model to use. You can see the
