@@ -22,6 +22,7 @@ import {
   validateAndGetService,
   validateObject,
   validateObjectOwner,
+  validateService,
 } from '../../util';
 
 export default class Chat extends BlockchainBase {
@@ -44,7 +45,7 @@ export default class Chat extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateAndGetService(serviceName, this.ainize);
+    await validateService(serviceName, this.ainize);
 
     const txBody = this.buildTxBodyForConfigureChat(appId, serviceName, address);
     const result = await this.ain.sendTransaction(txBody);

@@ -199,6 +199,10 @@ export const validateAndGetServiceName = (provider: string): string => {
   return serviceName;
 };
 
+export const validateService = async (serviceName: string, ainize: Ainize): Promise<void> => {
+  await validateAndGetService(serviceName, ainize);
+};
+
 export const validateAndGetService = async (
   serviceName: string,
   ainize: Ainize
