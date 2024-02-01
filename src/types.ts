@@ -1118,22 +1118,29 @@ export enum AiType {
   CHAT = 'chat',
 }
 
-export type ServiceProvider = string | 'openai';
+/**
+ * Name of the service provider.
+ */
+export type ServiceProvider = 'openai';
+
 
 export enum OpenAIJobType {
   CREATE_ASSISTANT = 'create_assistant',
+  LIST_ASSISTANTS = 'list_assistants',
   RETRIEVE_ASSISTANT = 'retrieve_assistant',
   MODIFY_ASSISTANT = 'modify_assistant',
   DELETE_ASSISTANT = 'delete_assistant',
-  LIST_ASSISTANTS = 'list_assistants',
+
   CREATE_THREAD = 'create_thread',
   RETRIEVE_THREAD = 'retrieve_thread',
   MODIFY_THREAD = 'modify_thread',
   DELETE_THREAD = 'delete_thread',
+
   CREATE_MESSAGE = 'create_message',
   LIST_MESSAGES = 'list_messages',
   RETRIEVE_MESSAGE = 'retrieve_message',
   MODIFY_MESSAGE = 'modify_message',
+
   CREATE_RUN = 'create_run',
   LIST_RUNS = 'list_runs',
   LIST_RUN_STEPS = 'list_run_steps',
@@ -1157,11 +1164,17 @@ export type OpenAIModel =
   | 'gpt-3.5-turbo-16k'
   | 'gpt-3.5-turbo-instruct';
 
+/**
+ * Represents a transaction result.
+ */
 export interface TransactionResult {
   tx_hash: string;
   result: Record<string, unknown>;
 }
 
+/**
+ * Represents a credit transaction result.
+ */
 export interface CreditTransactionResult extends Omit<TransactionResult, 'result'> {
   address: string;
   balance: number;
