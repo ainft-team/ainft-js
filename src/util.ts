@@ -311,3 +311,20 @@ export const ainizeLogin = async (ain: Ain, ainize: Ainize) => {
 export const ainizeLogout = async (ainize: Ainize) => {
   return AinizeAuth.getInstance().logout(ainize);
 };
+
+export const sendRequestToService = async <T>(
+  jobType: JobType,
+  body: object,
+  service: Service,
+  ain: Ain,
+  ainize: Ainize
+): Promise<T> => {
+  try {
+    await ainizeLogin(ain, ainize);
+    const data = await service.request({ ...body, jobType });
+    await ainizeLogout(ainize);
+    return data as T;
+  } catch (error: any) {
+    throw new Error(`Ainize request failed: ${error.message}`);
+  }
+};
