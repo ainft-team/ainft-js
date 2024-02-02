@@ -1153,6 +1153,7 @@ export type ServiceProvider = 'openai';
  * Name of the model to use. You can see the
  * [OpenAI model overview](https://platform.openai.com/docs/models/overview)
  * for description of them.
+ * Please note that image-related models are currently not supported.
  */
 export type OpenAIModel =
   | 'gpt-4-1106-preview'
@@ -1179,10 +1180,16 @@ export interface CreditTransactionResult extends Omit<TransactionResult, 'result
   balance: number;
 }
 
+/**
+ * Represents an assistant transaction result.
+ */
 export interface AssistantTransactionResult extends TransactionResult {
   assistant: Assistant;
 }
 
+/**
+ * Represents an assistant deletion transaction result.
+ */
 export interface AssistantDeleteTransactionResult extends TransactionResult {
   delAssistant: AssistantDeleted;
 }
@@ -1204,41 +1211,63 @@ export interface MessageCreateTransactionResult extends TransactionResult {
 }
 
 export interface Assistant {
+  /** The identifier. */
   id: string;
+  /** The name of the model to use. */
   model: string;
+  /** The name of the assistant. */
   name: string;
+  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
   instructions: string;
+  /** The description of the assistant. The maximum length is 512 characters. */
   description: string | null;
+  /**
+   * The metadata of the assistant that can hold up to 16 key-value pairs,
+   * with each keys limited to 64 characters and each values limited to of 512 characters.
+   */
   metadata: object | null;
+  /** The UNIX timestamp in seconds. */
   created_at: number;
 }
 
 export interface AssistantDeleted {
+  /** The identifier. */
   id: string;
+  /** The delete flag of the assistant. */
   deleted: boolean;
 }
 
-export interface OpenAIAssistantCreateParams {
-  provider: 'openai';
+export interface AssistantCreateParams {
+  /** The name of the model to use. */
   model: OpenAIModel;
+  /** The name of the assistant. The maximum length is 256 characters. */
   name: string;
+  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
   instructions: string;
+  /** The description of the assistant. The maximum length is 512 characters. */
   description?: string | null;
+  /**
+   * The metadata of the assistant that can hold up to 16 key-value pairs,
+   * with each keys limited to 64 characters and each values limited to of 512 characters.
+   */
   metadata?: object | null;
 }
 
-export type AssistantCreateParams = OpenAIAssistantCreateParams;
-
-export interface OpenAIAssistantUpdateParams {
-  provider: 'openai',
+export interface AssistantUpdateParams {
+  /** The name of the model to use. */
   model?: OpenAIModel;
+  /** The name of the assistant. The maximum length is 256 characters. */
   name?: string | null;
+  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
   instructions?: string | null;
+  /** The description of the assistant. The maximum length is 512 characters. */
   description?: string | null;
+  /**
+   * The metadata of the assistant that can hold up to 16 key-value pairs,
+   * with each keys limited to 64 characters and each values limited to of 512 characters.
+   */
   metadata?: object | null;
 }
-
-export type AssistantUpdateParams = OpenAIAssistantUpdateParams;
 
 export interface Thread {
   id: string;

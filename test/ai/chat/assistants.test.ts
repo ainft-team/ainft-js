@@ -20,8 +20,7 @@ describe('assistant', () => {
 
   it('create: should create assistant', async () => {
     const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
-    const params = <AssistantCreateParams>{
-      provider: 'openai',
+    const body = <AssistantCreateParams>{
       model: 'gpt-3.5-turbo',
       name: 'name',
       instructions: 'instructions',
@@ -32,7 +31,7 @@ describe('assistant', () => {
       metadata: { key1: 'value1' },
     };
 
-    const txResult = await ainft.chat.assistant.create(objectId, tokenId, params);
+    const txResult = await ainft.chat.assistant.create(objectId, tokenId, 'openai', body);
     assistantId = txResult.assistant.id;
     const assistant = await ainft.ain.db.ref(ref).getValue();
 
@@ -59,7 +58,7 @@ describe('assistant', () => {
 
   it('update: should update assistant', async () => {
     const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
-    const params = <AssistantUpdateParams>{
+    const body = <AssistantUpdateParams>{
       provider: 'openai',
       model: 'gpt-4',
       name: 'new_name',
@@ -68,7 +67,7 @@ describe('assistant', () => {
       metadata: { key1: 'value1', key2: 'value2' },
     };
 
-    const txResult = await ainft.chat.assistant.update(assistantId, objectId, tokenId, params);
+    const txResult = await ainft.chat.assistant.update(assistantId, objectId, tokenId, 'openai', body);
     const assistant = await ainft.ain.db.ref(ref).getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
