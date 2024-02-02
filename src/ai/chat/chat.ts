@@ -26,8 +26,8 @@ import {
 } from '../../util';
 
 /**
- * This class allows you to configure chat functionality for an AINFT object,
- * and manage the required credits for its use.
+ * This class supports configuring chat functionality for an AINFT object,\
+ * and managing the required credits for its use.\
  * Do not create it directly; Get it from AinftJs instance.
  */
 export default class Chat extends BlockchainBase {
@@ -46,7 +46,7 @@ export default class Chat extends BlockchainBase {
    * Configures chat for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object to configure for chat.
    * @param {ServiceProvider} provider - The service provider.
-   * @returns {Promise<TransactionResult>} Returns a promise that resolves with the configuration transaction result.
+   * @returns {Promise<TransactionResult>} Returns a promise that resolves with the chat configuration transaction result.
    */
   async configure(objectId: string, provider: ServiceProvider): Promise<TransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
@@ -62,7 +62,7 @@ export default class Chat extends BlockchainBase {
     const result = await this.ain.sendTransaction(txBody);
 
     if (!isTransactionSuccess(result)) {
-      throw Error(`Transaction failed: ${JSON.stringify(result)}`);
+      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
 
     return result;
