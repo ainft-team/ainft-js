@@ -1114,7 +1114,7 @@ export interface SearchReponse {
   cursor?: string;
 }
 
-export enum AiType {
+export enum ServiceType {
   CHAT = 'chat',
 }
 
@@ -1173,6 +1173,13 @@ export interface TransactionResult {
 }
 
 /**
+ * Represents a service configuration transaction result.
+ */
+export interface ServiceConfigurationTransactionResult extends TransactionResult {
+  config: ServiceConfiguration;
+}
+
+/**
  * Represents a credit transaction result.
  */
 export interface CreditTransactionResult extends Omit<TransactionResult, 'result'> {
@@ -1220,6 +1227,15 @@ export interface MessageTransactionResult extends TransactionResult {
  */
 export interface MessageListTransactionResult extends TransactionResult {
   messages: Array<Message>;
+}
+
+export interface ServiceConfiguration {
+  /** The type of the service. */
+  type: ServiceType;
+  /** The name of the service. */
+  name: string;
+  /** The URL endpoint where the service is accessible. */
+  url: string;
 }
 
 export interface Assistant {
