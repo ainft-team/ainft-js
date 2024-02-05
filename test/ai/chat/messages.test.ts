@@ -13,31 +13,31 @@ describe('message', () => {
   let threadId: string;
   let messageId: string;
 
-  beforeAll(async () => {
-    ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
-      ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
-      ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
-      chainId: 0,
-    });
+  // beforeAll(async () => {
+  //   ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
+  //     ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
+  //     ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
+  //     chainId: 0,
+  //   });
 
-    const { assistant } = await ainft.chat.assistant.create(objectId, tokenId, 'openai', {
-      model: 'gpt-3.5-turbo',
-      name: 'name',
-      instructions: 'instructions',
-      metadata: { key1: 'value1' },
-    });
-    assistantId = assistant.id;
+  //   const { assistant } = await ainft.chat.assistant.create(objectId, tokenId, 'openai', {
+  //     model: 'gpt-3.5-turbo',
+  //     name: 'name',
+  //     instructions: 'instructions',
+  //     metadata: { key1: 'value1' },
+  //   });
+  //   assistantId = assistant.id;
 
-    const { thread } = await ainft.chat.thread.create(objectId, tokenId, 'openai', {
-      metadata: { key1: 'value1' },
-    });
-    threadId = thread.id;
-  });
+  //   const { thread } = await ainft.chat.thread.create(objectId, tokenId, 'openai', {
+  //     metadata: { key1: 'value1' },
+  //   });
+  //   threadId = thread.id;
+  // });
 
-  afterAll(async () => {
-    await ainft.chat.thread.delete(threadId, objectId, tokenId, 'openai');
-    await ainft.chat.assistant.delete(assistantId, objectId, tokenId, 'openai');
-  });
+  // afterAll(async () => {
+  //   await ainft.chat.thread.delete(threadId, objectId, tokenId, 'openai');
+  //   await ainft.chat.assistant.delete(assistantId, objectId, tokenId, 'openai');
+  // });
 
   it('create: should create message', async () => {
     // const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads/${threadId}/messages`;
