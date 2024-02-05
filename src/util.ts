@@ -71,6 +71,10 @@ export const buildSetOp = (opList: any[]): SetMultiOperation => ({
   op_list: opList,
 });
 
+export const sendTransaction = (txBody: any, ain: Ain) => {
+  return ain.sendTransaction(txBody);
+};
+
 export const isJoiError = (error: any) => {
   return error.response?.data?.isJoiError === true;
 };

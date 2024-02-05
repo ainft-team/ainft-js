@@ -20,6 +20,7 @@ import {
   isTransactionSuccess,
   Ref,
   sendRequestToService,
+  sendTransaction,
   validateAndGetAssistant,
   validateAndGetService,
   validateAndGetServiceName,
@@ -75,7 +76,7 @@ export default class Messages extends BlockchainBase {
     await ainizeLogout(this.ainize);
 
     const txBody = this.buildTxBodyForCreateMessage(threadId, messages, appId, tokenId, serviceName, address);
-    const result = await this.ain.sendTransaction(txBody);
+    const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
@@ -125,7 +126,7 @@ export default class Messages extends BlockchainBase {
     const message = await sendRequestToService<Message>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = await this.buildTxBodyForUpdateMessage(message, appId, tokenId, serviceName, address);
-    const txResult = await this.ain.sendTransaction(txBody);
+    const txResult = await sendTransaction(txBody, this.ain);
 
     return { ...txResult, message };
   }

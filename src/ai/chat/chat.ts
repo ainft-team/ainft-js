@@ -23,6 +23,7 @@ import {
   validateObject,
   validateObjectOwner,
   validateService,
+  sendTransaction,
 } from '../../util';
 
 /**
@@ -59,7 +60,7 @@ export default class Chat extends BlockchainBase {
     await validateService(serviceName, this.ainize);
 
     const txBody = this.buildTxBodyForConfigureChat(appId, serviceName, address);
-    const result = await this.ain.sendTransaction(txBody);
+    const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
