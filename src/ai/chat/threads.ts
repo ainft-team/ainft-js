@@ -1,35 +1,49 @@
 import Ainft721Object from '../../ainft721Object';
 import BlockchainBase from '../../blockchainBase';
 import {
-  OpenAIJobType,
+  JobType,
   ServiceProvider,
   Thread,
   ThreadCreateParams,
   ThreadDeleteTransactionResult,
+  ThreadDeleted,
   ThreadTransactionResult,
   ThreadUpdateParams,
 } from '../../types';
 import {
-  ainizeLogin,
-  ainizeLogout,
   buildSetTransactionBody,
   buildSetValueOp,
   getValue,
+  isTransactionSuccess,
   Ref,
+  sendRequestToService,
   validateAndGetService,
   validateAndGetServiceName,
   validateAssistant,
   validateObject,
-  validateServiceConfig,
+  validateObjectServiceConfig,
   validateThread,
   validateToken,
 } from '../../util';
 
+/**
+ * This class supports create threads that assistant can interact with.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
 export default class Threads extends BlockchainBase {
+  /**
+   * Create a thread.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string} tokenId - The ID of AINFT token.
+   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ThreadCreateParams} ThreadCreateParams - The parameters to create thread.
+   * @returns Returns a promise that resolves with both the transaction result and the created thread.
+   */
   async create(
     objectId: string,
     tokenId: string,
-    { provider, metadata }: ThreadCreateParams
+    provider: ServiceProvider,
+    { metadata }: ThreadCreateParams
   ): Promise<ThreadTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
@@ -38,29 +52,41 @@ export default class Threads extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateServiceConfig(appId, serviceName, this.ain);
+    await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
-    await ainizeLogin(this.ain, this.ainize);
+    const jobType = JobType.CREATE_THREAD;
+    const body = { ...(metadata && { metadata }) };
 
-    const jobType = OpenAIJobType.CREATE_THREAD;
-    const body = { jobType, ...(metadata && { metadata }) };
-    const thread = await service.request(body);
-
-    await ainizeLogout(this.ainize);
+    const thread = await sendRequestToService<Thread>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForCreateThread(thread, appId, tokenId, serviceName, address);
-    const txResult = await this.ain.sendTransaction(txBody);
+    const result = await this.ain.sendTransaction(txBody);
 
-    return { ...txResult, thread };
+    if (!isTransactionSuccess(result)) {
+      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
+    }
+
+    return { ...result, thread };
   }
 
+  /**
+   * Updates a thread.
+   * @param {string} threadId - The ID of thread.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string} tokenId - The ID of AINFT token.
+   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ThreadUpdateParams} ThreadUpdateParams - The parameters to update thread.
+   * @returns Returns a promise that resolves with both the transaction result and the updated thread.
+   */
   async update(
     threadId: string,
     objectId: string,
     tokenId: string,
-    { provider, metadata }: ThreadUpdateParams
+    provider: ServiceProvider,
+    { metadata }: ThreadUpdateParams
   ): Promise<ThreadTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
@@ -69,31 +95,37 @@ export default class Threads extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateServiceConfig(appId, serviceName, this.ain);
+    await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
-    await ainizeLogin(this.ain, this.ainize);
+    const jobType = JobType.MODIFY_THREAD;
+    const body = { threadId, ...(metadata && { metadata }) };
 
-    const jobType = OpenAIJobType.MODIFY_THREAD;
-    const body = { jobType, threadId, ...(metadata && { metadata }) };
-    const newThread = await service.request(body);
-
-    await ainizeLogout(this.ainize);
+    const thread = await sendRequestToService<Thread>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = await this.buildTxBodyForUpdateThread(
-      newThread,
+      thread,
       appId,
       tokenId,
       serviceName,
       address
     );
-    const txResult = await this.ain.sendTransaction(txBody);
+    const result = await this.ain.sendTransaction(txBody);
 
-    return { ...txResult, thread: newThread };
+    return { ...result, thread };
   }
 
+  /**
+   * Deletes a thread.
+   * @param {string} threadId - The ID of thread.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string} tokenId - The ID of AINFT token.
+   * @param {ServiceProvider} provider - The service provider to use.
+   * @returns Returns a promise that resolves with both the transaction result and the deleted thread.
+   */
   async delete(
     threadId: string,
     objectId: string,
@@ -107,25 +139,35 @@ export default class Threads extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateServiceConfig(appId, serviceName, this.ain);
+    await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
-    await ainizeLogin(this.ain, this.ainize);
+    const jobType = JobType.DELETE_THREAD;
+    const body = { threadId };
 
-    const jobType = OpenAIJobType.DELETE_THREAD;
-    const body = { jobType, threadId };
-    const delThread = await service.request(body);
-
-    await ainizeLogout(this.ainize);
+    const delThread = await sendRequestToService<ThreadDeleted>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForDeleteThread(threadId, appId, tokenId, serviceName, address);
-    const txResult = await this.ain.sendTransaction(txBody);
+    const result = await this.ain.sendTransaction(txBody);
 
-    return { ...txResult, delThread };
+    if (!isTransactionSuccess(result)) {
+      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
+    }
+
+    return { ...result, delThread };
   }
 
+  /**
+   * Retrieves a thread.
+   * @param {string} threadId - The ID of thread.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string} tokenId - The ID of AINFT token.
+   * @param {ServiceProvider} provider - The service provider to use.
+   * @returns Returns a promise that resolves with the thread.
+   */
   async get(
     threadId: string,
     objectId: string,
@@ -139,19 +181,16 @@ export default class Threads extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateServiceConfig(appId, serviceName, this.ain);
+    await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
-    await ainizeLogin(this.ain, this.ainize);
+    const jobType = JobType.RETRIEVE_THREAD;
+    const body = { threadId };
 
-    const jobType = OpenAIJobType.RETRIEVE_THREAD;
-    const body = { jobType, threadId };
-    const thread = await service.request(body);
-    console.log(JSON.stringify(thread));
-
-    await ainizeLogout(this.ainize);
+    const thread = await sendRequestToService<Thread>(jobType, body, service, this.ain, this.ainize);
 
     return thread;
   }
@@ -167,8 +206,8 @@ export default class Threads extends BlockchainBase {
     const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(id).root();
 
     const value = {
-      messages: true,
       ...(metadata && Object.keys(metadata).length && { metadata }),
+      messages: true,
     };
 
     return buildSetTransactionBody(buildSetValueOp(ref, value), address);
@@ -200,12 +239,7 @@ export default class Threads extends BlockchainBase {
     serviceName: string,
     address: string
   ) {
-    const ref = Ref.app(appId)
-      .token(tokenId)
-      .ai(serviceName)
-      .history(address)
-      .thread(threadId)
-      .root();
+    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(threadId).root();
 
     return buildSetTransactionBody(buildSetValueOp(ref, null), address);
   }

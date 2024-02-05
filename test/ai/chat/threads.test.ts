@@ -7,7 +7,7 @@ const serviceName = 'openai_ainize3';
 const address = '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0';
 
 describe('thread', () => {
-  jest.setTimeout(5 * 60 * 1000);
+  jest.setTimeout(300000); // 5min
   let ainft: AinftJs;
   let assistantId: string;
   let threadId: string;
@@ -19,16 +19,13 @@ describe('thread', () => {
       chainId: 0,
     });
 
-    const {
-      assistant: { id },
-    } = await ainft.chat.assistant.create(objectId, tokenId, {
-      provider: 'openai',
+    const { assistant } = await ainft.chat.assistant.create(objectId, tokenId, 'openai', {
       model: 'gpt-3.5-turbo',
       name: 'name',
       instructions: 'instructions',
       metadata: { key1: 'value1' },
     });
-    assistantId = id;
+    assistantId = assistant.id;
   });
 
   afterAll(async () => {
@@ -37,12 +34,11 @@ describe('thread', () => {
 
   it('create: should create thread', async () => {
     const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads`;
-    const params = <ThreadCreateParams>{
-      provider: 'openai',
+    const body = {
       metadata: { key1: 'value1' },
     };
 
-    const txResult = await ainft.chat.thread.create(objectId, tokenId, params);
+    const txResult = await ainft.chat.thread.create(objectId, tokenId, 'openai', body);
     threadId = txResult.thread.id;
     const thread = await ainft.ain.db.ref(`${ref}/${threadId}`).getValue();
 
@@ -61,16 +57,16 @@ describe('thread', () => {
 
   it('update: should update thread', async () => {
     const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads/${threadId}`;
-    const params = <ThreadUpdateParams>{
-      provider: 'openai',
+    const body = {
       metadata: { key1: 'value1', key2: 'value2' },
     };
 
-    const txResult = await ainft.chat.thread.update(threadId, objectId, tokenId, params);
+    const txResult = await ainft.chat.thread.update(threadId, objectId, tokenId, 'openai', body);
     const thread = await ainft.ain.db.ref(ref).getValue();
 
     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(txResult.result).toBeDefined();
+    expect(thread).not.toBeNull();
     expect(thread.metadata).toEqual({ key1: 'value1', key2: 'value2' });
   });
 

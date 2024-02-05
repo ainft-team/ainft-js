@@ -1194,10 +1194,16 @@ export interface AssistantDeleteTransactionResult extends TransactionResult {
   delAssistant: AssistantDeleted;
 }
 
+/**
+ * Represents a thread transaction result.
+ */
 export interface ThreadTransactionResult extends TransactionResult {
   thread: Thread;
 }
 
+/**
+ * Represents a thread deletion transaction result.
+ */
 export interface ThreadDeleteTransactionResult extends TransactionResult {
   delThread: ThreadDeleted;
 }
@@ -1270,10 +1276,38 @@ export interface AssistantUpdateParams {
 }
 
 export interface Thread {
+  /** The identifier. */
   id: string;
-  messages: Array<Message>;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata: object | null;
+  /** The UNIX timestamp in seconds. */
   created_at: number;
+}
+
+export interface ThreadDeleted {
+  /** The identifier. */
+  id: string;
+  /** The delete flag. */
+  deleted: boolean;
+}
+
+export interface ThreadCreateParams {
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
+}
+
+export interface ThreadUpdateParams {
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
 }
 
 export interface Message {
