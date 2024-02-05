@@ -6,7 +6,7 @@ const tokenId = '1';
 const serviceName = 'openai_ainize3';
 
 describe('assistant', () => {
-  jest.setTimeout(5 * 60 * 1000);
+  jest.setTimeout(300000); // 5min
   let ainft: AinftJs;
   let assistantId: string;
 
@@ -20,7 +20,7 @@ describe('assistant', () => {
 
   it('create: should create assistant', async () => {
     const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
-    const body = <AssistantCreateParams>{
+    const body: AssistantCreateParams = {
       model: 'gpt-3.5-turbo',
       name: 'name',
       instructions: 'instructions',
@@ -58,8 +58,7 @@ describe('assistant', () => {
 
   it('update: should update assistant', async () => {
     const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
-    const body = <AssistantUpdateParams>{
-      provider: 'openai',
+    const body: AssistantUpdateParams = {
       model: 'gpt-4',
       name: 'new_name',
       instructions: 'new_instructions',

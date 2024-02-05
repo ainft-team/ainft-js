@@ -1222,8 +1222,8 @@ export interface Assistant {
   /** The description of the assistant. The maximum length is 512 characters. */
   description: string | null;
   /**
-   * The metadata of the assistant that can hold up to 16 key-value pairs,
-   * with each keys limited to 64 characters and each values limited to of 512 characters.
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
    */
   metadata: object | null;
   /** The UNIX timestamp in seconds. */
@@ -1233,7 +1233,7 @@ export interface Assistant {
 export interface AssistantDeleted {
   /** The identifier. */
   id: string;
-  /** The delete flag of the assistant. */
+  /** The delete flag. */
   deleted: boolean;
 }
 
@@ -1247,8 +1247,8 @@ export interface AssistantCreateParams {
   /** The description of the assistant. The maximum length is 512 characters. */
   description?: string | null;
   /**
-   * The metadata of the assistant that can hold up to 16 key-value pairs,
-   * with each keys limited to 64 characters and each values limited to of 512 characters.
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
    */
   metadata?: object | null;
 }
@@ -1263,8 +1263,8 @@ export interface AssistantUpdateParams {
   /** The description of the assistant. The maximum length is 512 characters. */
   description?: string | null;
   /**
-   * The metadata of the assistant that can hold up to 16 key-value pairs,
-   * with each keys limited to 64 characters and each values limited to of 512 characters.
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
    */
   metadata?: object | null;
 }

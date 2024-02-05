@@ -36,7 +36,7 @@ export default class Assistants extends BlockchainBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {ServiceProvider} provider - The service provider to use.
    * @param {AssistantCreateParams} AssistantCreateParams - The parameters to create assistant.
-   * @returns Returns a promise that resolves with the assistant creation transaction result.
+   * @returns Returns a promise that resolves with both the transaction result and the created assistant.
    */
   async create(
     objectId: string,
@@ -53,6 +53,7 @@ export default class Assistants extends BlockchainBase {
 
     const serviceName = validateAndGetServiceName(provider);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.CREATE_ASSISTANT;
@@ -64,32 +65,26 @@ export default class Assistants extends BlockchainBase {
       ...(metadata && { metadata }),
     };
 
-    const data = await sendRequestToService<Assistant>(
-      jobType,
-      body,
-      service,
-      this.ain,
-      this.ainize
-    );
+    const assistant = await sendRequestToService<Assistant>(jobType, body, service, this.ain, this.ainize);
 
-    const txBody = this.buildTxBodyForCreateAssistant(data, appId, tokenId, serviceName, address);
+    const txBody = this.buildTxBodyForCreateAssistant(assistant, appId, tokenId, serviceName, address);
     const result = await this.ain.sendTransaction(txBody);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
 
-    return { ...result, assistant: data };
+    return { ...result, assistant };
   }
 
   /**
    * Updates an assistant.
-   * @param {string} assistantId - The ID of Assistant.
+   * @param {string} assistantId - The ID of assistant.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {ServiceProvider} provider - The service provider to use.
    * @param {AssistantUpdateParams} AssistantUpdateParams - The parameters to update assistant.
-   * @returns Returns a promise that resolves with the assistant update transaction result.
+   * @returns Returns a promise that resolves with both the transaction result and the updated assistant.
    */
   async update(
     assistantId: string,
@@ -108,6 +103,7 @@ export default class Assistants extends BlockchainBase {
     const serviceName = validateAndGetServiceName(provider);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.MODIFY_ASSISTANT;
@@ -120,31 +116,25 @@ export default class Assistants extends BlockchainBase {
       ...(metadata && { metadata }),
     };
 
-    const data = await sendRequestToService<Assistant>(
-      jobType,
-      body,
-      service,
-      this.ain,
-      this.ainize
-    );
+    const assistant = await sendRequestToService<Assistant>(jobType, body, service, this.ain, this.ainize);
 
-    const txBody = this.buildTxBodyForUpdateAssistant(data, appId, tokenId, serviceName, address);
+    const txBody = this.buildTxBodyForUpdateAssistant(assistant, appId, tokenId, serviceName, address);
     const result = await this.ain.sendTransaction(txBody);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
 
-    return { ...result, assistant: data };
+    return { ...result, assistant };
   }
 
   /**
    * Deletes an assistant.
-   * @param {string} assistantId - The ID of Assistant.
+   * @param {string} assistantId - The ID of assistant.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {ServiceProvider} provider - The service provider to use.
-   * @returns Returns a promise that resolves with the assistant deletion transaction result.
+   * @returns Returns a promise that resolves with both the transaction result and the deleted assistant.
    */
   async delete(
     assistantId: string,
@@ -162,18 +152,13 @@ export default class Assistants extends BlockchainBase {
     const serviceName = validateAndGetServiceName(provider);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.DELETE_ASSISTANT;
     const body = { assistantId };
 
-    const data = await sendRequestToService<AssistantDeleted>(
-      jobType,
-      body,
-      service,
-      this.ain,
-      this.ainize
-    );
+    const delAssistant = await sendRequestToService<AssistantDeleted>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForDeleteAssistant(appId, tokenId, serviceName, address);
     const result = await this.ain.sendTransaction(txBody);
@@ -182,12 +167,12 @@ export default class Assistants extends BlockchainBase {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
 
-    return { ...result, delAssistant: data };
+    return { ...result, delAssistant };
   }
 
   /**
    * Retrieves an assistant.
-   * @param {string} assistantId - The ID of Assistant.
+   * @param {string} assistantId - The ID of assistant.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {ServiceProvider} provider - The service provider to use.
@@ -207,20 +192,15 @@ export default class Assistants extends BlockchainBase {
     const serviceName = validateAndGetServiceName(provider);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.RETRIEVE_ASSISTANT;
     const body = { assistantId };
 
-    const data = await sendRequestToService<Assistant>(
-      jobType,
-      body,
-      service,
-      this.ain,
-      this.ainize
-    );
+    const assistant = await sendRequestToService<Assistant>(jobType, body, service, this.ain, this.ainize);
 
-    return data;
+    return assistant;
   }
 
   private buildTxBodyForCreateAssistant(

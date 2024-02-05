@@ -217,7 +217,7 @@ export const validateAndGetService = async (
 export const validateObjectServiceConfig = async (appId: string, serviceName: string, ain: Ain) => {
   const aiPath = Ref.app(appId).ai(serviceName);
   if (!(await exists(aiPath, ain))) {
-    throw new Error('AI configuration not found, please call `ainft.chat.configure()` first.');
+    throw new Error('Service configuration not found. Please call `ainft.chat.configure()` first.');
   }
 };
 
