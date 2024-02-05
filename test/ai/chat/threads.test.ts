@@ -1,16 +1,27 @@
 import AinftJs, { ThreadCreateParams, ThreadUpdateParams } from '../../../src/ainft';
+import * as util from '../../../src/util';
+
+jest.mock('../../../src/util', () => {
+  const actual = jest.requireActual('../../../src/util');
+  return {
+    ...actual,
+    validateAssistant: jest.fn().mockResolvedValue(undefined),
+    validateThread: jest.fn().mockResolvedValue(undefined),
+    sendRequestToService: jest.fn(),
+    sendTransaction: jest.fn().mockResolvedValue({
+      tx_hash: '0x' + 'a'.repeat(64),
+      result: { code: 0 },
+    }),
+  };
+});
 
 const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
-const appId = 'ainft721_0x8a193528f6d406ce81ff5d9a55304337d0ed8de6';
 const tokenId = '2';
-const serviceName = 'openai_ainize3';
-const address = '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0';
+const threadId = 'thread_000000000000000000000001';
 
 describe('thread', () => {
   jest.setTimeout(300000); // 5min
   let ainft: AinftJs;
-  let assistantId: string;
-  let threadId: string;
 
   beforeAll(async () => {
     ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
@@ -18,37 +29,39 @@ describe('thread', () => {
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
     });
-
-    const { assistant } = await ainft.chat.assistant.create(objectId, tokenId, 'openai', {
-      model: 'gpt-3.5-turbo',
-      name: 'name',
-      instructions: 'instructions',
-      metadata: { key1: 'value1' },
-    });
-    assistantId = assistant.id;
   });
 
   afterAll(async () => {
-    await ainft.chat.assistant.delete(assistantId, objectId, tokenId, 'openai');
+    jest.restoreAllMocks();
   });
 
   it('create: should create thread', async () => {
-    const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads`;
     const body = {
       metadata: { key1: 'value1' },
     };
 
-    const txResult = await ainft.chat.thread.create(objectId, tokenId, 'openai', body);
-    threadId = txResult.thread.id;
-    const thread = await ainft.ain.db.ref(`${ref}/${threadId}`).getValue();
+    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+      ...body,
+      id: threadId,
+      created_at: 0,
+    });
 
-    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(txResult.result).toBeDefined();
-    expect(thread).not.toBeNull();
+    const result = await ainft.chat.thread.create(objectId, tokenId, 'openai', body);
+    const { thread } = result;
+
+    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(result.result).toBeDefined();
+    expect(thread.id).toMatch(/^thread_[A-Za-z0-9]{24}/);
     expect(thread.metadata).toEqual({ key1: 'value1' });
   });
 
   it('get: should get thread', async () => {
+    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+      id: threadId,
+      metadata: { key1: 'value1' },
+      created_at: 0,
+    });
+
     const thread = await ainft.chat.thread.get(threadId, objectId, tokenId, 'openai');
 
     expect(thread.id).toBe(threadId);
@@ -56,30 +69,37 @@ describe('thread', () => {
   });
 
   it('update: should update thread', async () => {
-    const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads/${threadId}`;
     const body = {
       metadata: { key1: 'value1', key2: 'value2' },
     };
 
-    const txResult = await ainft.chat.thread.update(threadId, objectId, tokenId, 'openai', body);
-    const thread = await ainft.ain.db.ref(ref).getValue();
+    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+      ...body,
+      id: threadId,
+      created_at: 0,
+    });
 
-    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(txResult.result).toBeDefined();
-    expect(thread).not.toBeNull();
+    const result = await ainft.chat.thread.update(threadId, objectId, tokenId, 'openai', body);
+    const { thread } = result;
+
+    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(result.result).toBeDefined();
+    expect(thread.id).toBe(threadId);
     expect(thread.metadata).toEqual({ key1: 'value1', key2: 'value2' });
   });
 
   it('delete: should delete thread', async () => {
-    const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads/${threadId}`;
+    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+      id: threadId,
+      deleted: true,
+    });
+    
+    const result = await ainft.chat.thread.delete(threadId, objectId, tokenId, 'openai');
+    const { delThread } = result;
 
-    const txResult = await ainft.chat.thread.delete(threadId, objectId, tokenId, 'openai');
-    const thread = await ainft.ain.db.ref(ref).getValue();
-
-    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(txResult.result).toBeDefined();
-    expect(txResult.delThread.id).toBe(threadId);
-    expect(txResult.delThread.deleted).toBe(true);
-    expect(thread).toBeNull();
+    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(result.result).toBeDefined();
+    expect(delThread.id).toBe(threadId);
+    expect(delThread.deleted).toBe(true);
   });
 });

@@ -7,7 +7,13 @@ import BlockchainBase from '../../blockchainBase';
 import Assistants from './assistants';
 import Threads from './threads';
 import Messages from './messages';
-import { AiType, ServiceProvider, CreditTransactionResult, TransactionResult } from '../../types';
+import {
+  ServiceType,
+  ServiceProvider,
+  CreditTransactionResult,
+  ServiceConfigurationTransactionResult,
+  ServiceConfiguration,
+} from '../../types';
 import {
   ainizeLogin,
   ainizeLogout,
@@ -23,6 +29,7 @@ import {
   validateObject,
   validateObjectOwner,
   validateService,
+  sendTransaction,
 } from '../../util';
 
 /**
@@ -46,9 +53,12 @@ export default class Chat extends BlockchainBase {
    * Configures chat for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object to configure for chat.
    * @param {ServiceProvider} provider - The service provider.
-   * @returns {Promise<TransactionResult>} Returns a promise that resolves with the chat configuration transaction result.
+   * @returns {Promise<ServiceConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the service configuration.
    */
-  async configure(objectId: string, provider: ServiceProvider): Promise<TransactionResult> {
+  async configure(
+    objectId: string,
+    provider: ServiceProvider
+  ): Promise<ServiceConfigurationTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
@@ -58,14 +68,21 @@ export default class Chat extends BlockchainBase {
     const serviceName = validateAndGetServiceName(provider);
     await validateService(serviceName, this.ainize);
 
-    const txBody = this.buildTxBodyForConfigureChat(appId, serviceName, address);
-    const result = await this.ain.sendTransaction(txBody);
+    const config = {
+      type: ServiceType.CHAT,
+      name: serviceName,
+      // TODO(jiyoung): fetch information from ainize.
+      url: `https://${serviceName}.ainetwork.xyz`,
+    };
+
+    const txBody = this.buildTxBodyForConfigureChat(config, appId, serviceName, address);
+    const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
 
-    return result;
+    return { ...result, config };
   }
 
   /**
@@ -96,7 +113,7 @@ export default class Chat extends BlockchainBase {
    * @param {ServiceProvider} provider - The service provider to check the credit.
    * @returns {Promise<number>} Returns a promise that resolves with the current credit balance.
    */
-  async getCredit(provider: ServiceProvider): Promise<number> {    
+  async getCredit(provider: ServiceProvider): Promise<number> {
     const serviceName = validateAndGetServiceName(provider);
     const service = await validateAndGetService(serviceName, this.ainize);
 
@@ -121,17 +138,16 @@ export default class Chat extends BlockchainBase {
     throw new Error(`Credit update timed out. Please check the transaction on Insight using this hash: ${txHash}`);
   }
 
-  private buildTxBodyForConfigureChat(appId: string, serviceName: string, address: string) {
+  private buildTxBodyForConfigureChat(
+    config: ServiceConfiguration,
+    appId: string,
+    serviceName: string,
+    address: string
+  ) {
     const ref = Ref.app(appId).ai(serviceName);
     const path = `/apps/${appId}/tokens/$token_id/ai/$ai_name/history/$user_addr`;
     const subpath = 'threads/$thread_id/messages/$message_id';
 
-    const value = {
-      name: serviceName,
-      type: AiType.CHAT,
-      // TODO(jiyoung): fetch information from ainize.
-      url: `https://${serviceName}.ainetwork.xyz`,
-    };
     const rule = {
       // TODO(jiyoung): fix minting issue after setting write rule.
       // write: 'auth.addr === $user_addr',
@@ -139,7 +155,7 @@ export default class Chat extends BlockchainBase {
       // state: { gc_max_siblings: 20, gc_num_siblings_deleted: 10 },
     };
 
-    const setValueOp = buildSetValueOp(ref, value);
+    const setValueOp = buildSetValueOp(ref, config);
     // const setWriteRuleOp = buildSetWriteRuleOp(path, rule.write);
     // const setGCRuleOp = buildSetStateRuleOp(`${path}/${subpath}`, rule.state);
     const setOp = buildSetOp([setValueOp, /*setWriteRuleOp, setGCRuleOp*/]);
