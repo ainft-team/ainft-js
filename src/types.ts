@@ -1118,22 +1118,23 @@ export enum AiType {
   CHAT = 'chat',
 }
 
-export type ServiceProvider = string | 'openai';
-
-export enum OpenAIJobType {
+export enum JobType {
   CREATE_ASSISTANT = 'create_assistant',
+  LIST_ASSISTANTS = 'list_assistants',
   RETRIEVE_ASSISTANT = 'retrieve_assistant',
   MODIFY_ASSISTANT = 'modify_assistant',
   DELETE_ASSISTANT = 'delete_assistant',
-  LIST_ASSISTANTS = 'list_assistants',
+
   CREATE_THREAD = 'create_thread',
   RETRIEVE_THREAD = 'retrieve_thread',
   MODIFY_THREAD = 'modify_thread',
   DELETE_THREAD = 'delete_thread',
+
   CREATE_MESSAGE = 'create_message',
   LIST_MESSAGES = 'list_messages',
   RETRIEVE_MESSAGE = 'retrieve_message',
   MODIFY_MESSAGE = 'modify_message',
+
   CREATE_RUN = 'create_run',
   LIST_RUNS = 'list_runs',
   LIST_RUN_STEPS = 'list_run_steps',
@@ -1144,9 +1145,15 @@ export enum OpenAIJobType {
 }
 
 /**
+ * Name of the service provider.
+ */
+export type ServiceProvider = 'openai';
+
+/**
  * Name of the model to use. You can see the
  * [OpenAI model overview](https://platform.openai.com/docs/models/overview)
  * for description of them.
+ * Please note that image-related models are currently not supported.
  */
 export type OpenAIModel =
   | 'gpt-4-1106-preview'
@@ -1157,92 +1164,177 @@ export type OpenAIModel =
   | 'gpt-3.5-turbo-16k'
   | 'gpt-3.5-turbo-instruct';
 
+/**
+ * Represents a transaction result.
+ */
 export interface TransactionResult {
   tx_hash: string;
   result: Record<string, unknown>;
 }
 
+/**
+ * Represents a credit transaction result.
+ */
 export interface CreditTransactionResult extends Omit<TransactionResult, 'result'> {
   address: string;
   balance: number;
 }
 
+/**
+ * Represents an assistant transaction result.
+ */
 export interface AssistantTransactionResult extends TransactionResult {
   assistant: Assistant;
 }
 
+/**
+ * Represents an assistant deletion transaction result.
+ */
 export interface AssistantDeleteTransactionResult extends TransactionResult {
   delAssistant: AssistantDeleted;
 }
 
+/**
+ * Represents a thread transaction result.
+ */
 export interface ThreadTransactionResult extends TransactionResult {
   thread: Thread;
 }
 
+/**
+ * Represents a thread deletion transaction result.
+ */
 export interface ThreadDeleteTransactionResult extends TransactionResult {
   delThread: ThreadDeleted;
 }
 
+/**
+ * Represents transaction result for a single message.
+ */
 export interface MessageTransactionResult extends TransactionResult {
   message: Message;
 }
 
-export interface MessageCreateTransactionResult extends TransactionResult {
+/**
+ * Represents transaction result for a list of messages.
+ */
+export interface MessageListTransactionResult extends TransactionResult {
   messages: Array<Message>;
 }
 
 export interface Assistant {
+  /** The identifier. */
   id: string;
+  /** The name of the model to use. */
   model: string;
+  /** The name of the assistant. */
   name: string;
+  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
   instructions: string;
+  /** The description of the assistant. The maximum length is 512 characters. */
   description: string | null;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata: object | null;
+  /** The UNIX timestamp in seconds. */
   created_at: number;
 }
 
 export interface AssistantDeleted {
+  /** The identifier. */
   id: string;
+  /** The delete flag. */
   deleted: boolean;
 }
 
-export interface OpenAIAssistantCreateParams {
-  provider: 'openai';
+export interface AssistantCreateParams {
+  /** The name of the model to use. */
   model: OpenAIModel;
+  /** The name of the assistant. The maximum length is 256 characters. */
   name: string;
+  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
   instructions: string;
+  /** The description of the assistant. The maximum length is 512 characters. */
   description?: string | null;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata?: object | null;
 }
 
-export type AssistantCreateParams = OpenAIAssistantCreateParams;
-
-export interface OpenAIAssistantUpdateParams {
-  provider: 'openai',
+export interface AssistantUpdateParams {
+  /** The name of the model to use. */
   model?: OpenAIModel;
+  /** The name of the assistant. The maximum length is 256 characters. */
   name?: string | null;
+  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
   instructions?: string | null;
+  /** The description of the assistant. The maximum length is 512 characters. */
   description?: string | null;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata?: object | null;
 }
-
-export type AssistantUpdateParams = OpenAIAssistantUpdateParams;
 
 export interface Thread {
+  /** The identifier. */
   id: string;
-  messages: Array<Message>;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata: object | null;
+  /** The UNIX timestamp in seconds. */
   created_at: number;
 }
 
-export interface Message {
+export interface ThreadDeleted {
+  /** The identifier. */
   id: string;
+  /** The delete flag. */
+  deleted: boolean;
+}
+
+export interface ThreadCreateParams {
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
+}
+
+export interface ThreadUpdateParams {
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
+}
+
+export interface Message {
+  /** The identifier. */
+  id: string;
+  /** The ID of thread that message belongs to. */
   thread_id: string;
+  /** The entity that produced the message. One of `user` or `assistant`. */
   role: 'user' | 'assistant';
+  /** The message content includes text and/or images in an array. */
   content: Array<MessageContentText | MessageContentImageFile>;
+  /** If applicable, the ID of the assistant that authored this message. */
   assistant_id: string | null;
+  /** If applicable, the ID of the run associated with the authoring of this message. */
   run_id: string | null;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata: object | null;
+  /** The UNIX timestamp in seconds. */
   created_at: number;
 }
 
@@ -1256,37 +1348,22 @@ export interface MessageContentImageFile {
   image_file: string;
 }
 
-export interface ThreadDeleted {
-  id: string;
-  deleted: boolean;
-}
-
-export interface OpenAIThreadCreateParams {
-  provider: 'openai';
-  metadata?: object | null;
-}
-
-export type ThreadCreateParams = OpenAIThreadCreateParams;
-
-export interface OpenAIThreadUpdateParams {
-  provider: 'openai';
-  metadata?: object | null;
-}
-
-export type ThreadUpdateParams = OpenAIThreadUpdateParams;
-
-export interface OpenAIMessageCreateParams {
-  provider: 'openai';
+export interface MessageCreateParams {
+  /** The role of the entity creating the message, currently only `user` is supported. */
   role: 'user';
+  /** The content of the message. */
   content: string;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata?: object | null;
 }
 
-export type MessageCreateParams = OpenAIMessageCreateParams;
-
-export interface OpenAIMessageUpdateParams {
-  provider: 'openai';
+export interface MessageUpdateParams {
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata?: object | null;
 }
-
-export type MessageUpdateParams = OpenAIMessageUpdateParams;

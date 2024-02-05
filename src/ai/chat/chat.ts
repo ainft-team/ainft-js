@@ -22,8 +22,14 @@ import {
   validateAndGetService,
   validateObject,
   validateObjectOwner,
+  validateService,
 } from '../../util';
 
+/**
+ * This class supports configuring chat functionality for an AINFT object,\
+ * and managing the required credits for its use.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
 export default class Chat extends BlockchainBase {
   assistant: Assistants;
   thread: Threads;
@@ -36,6 +42,12 @@ export default class Chat extends BlockchainBase {
     this.message = new Messages(ain, ainize);
   }
 
+  /**
+   * Configures chat for an AINFT object.
+   * @param {string} objectId - The ID of the AINFT object to configure for chat.
+   * @param {ServiceProvider} provider - The service provider.
+   * @returns {Promise<TransactionResult>} Returns a promise that resolves with the chat configuration transaction result.
+   */
   async configure(objectId: string, provider: ServiceProvider): Promise<TransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
@@ -44,18 +56,24 @@ export default class Chat extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateAndGetService(serviceName, this.ainize);
+    await validateService(serviceName, this.ainize);
 
     const txBody = this.buildTxBodyForConfigureChat(appId, serviceName, address);
     const result = await this.ain.sendTransaction(txBody);
 
     if (!isTransactionSuccess(result)) {
-      throw Error(`Transaction failed: ${JSON.stringify(result)}`);
+      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
 
     return result;
   }
 
+  /**
+   * Deposits a credits for a service provider.
+   * @param {ServiceProvider} provider - The service provider for which credits are deposited.
+   * @param {number} amount - The amount of credits to deposit.
+   * @returns {Promise<CreditTransactionResult>} Returns a promise that resolves with the deposit transaction details (hash, address, and updated credit balance).
+   */
   async depositCredit(provider: ServiceProvider, amount: number): Promise<CreditTransactionResult> {
     const address = this.ain.signer.getAddress();
 
@@ -66,14 +84,19 @@ export default class Chat extends BlockchainBase {
 
     const currentCredit = await service.getCreditBalance();
     const txHash = await service.chargeCredit(amount);
-    const updatedCredit = await this.waitForUpdate(currentCredit + amount, 60 * 1000, service); // 1min
+    const updatedCredit = await this.waitForUpdate(currentCredit + amount, 60000, txHash, service); // 1min
 
     await ainizeLogout(this.ainize);
 
     return { tx_hash: txHash, address, balance: updatedCredit };
   }
 
-  async getCredit(provider: ServiceProvider): Promise<number> {
+  /**
+   * Get the current credit for a service provider.
+   * @param {ServiceProvider} provider - The service provider to check the credit.
+   * @returns {Promise<number>} Returns a promise that resolves with the current credit balance.
+   */
+  async getCredit(provider: ServiceProvider): Promise<number> {    
     const serviceName = validateAndGetServiceName(provider);
     const service = await validateAndGetService(serviceName, this.ainize);
 
@@ -86,16 +109,16 @@ export default class Chat extends BlockchainBase {
     return credit;
   }
 
-  private async waitForUpdate(expected: number, timeout: number, service: Service) {
+  private async waitForUpdate(expected: number, timeout: number, txHash: string, service: Service) {
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
       const credit = await service.getCreditBalance();
       if (credit === expected) {
         return expected;
       }
-      await sleep(1 * 1000); // 1sec
+      await sleep(1000); // 1sec
     }
-    throw new Error('Credit update failed due to timeout');
+    throw new Error(`Credit update timed out. Please check the transaction on Insight using this hash: ${txHash}`);
   }
 
   private buildTxBodyForConfigureChat(appId: string, serviceName: string, address: string) {
@@ -106,9 +129,11 @@ export default class Chat extends BlockchainBase {
     const value = {
       name: serviceName,
       type: AiType.CHAT,
+      // TODO(jiyoung): fetch information from ainize.
       url: `https://${serviceName}.ainetwork.xyz`,
     };
     const rule = {
+      // TODO(jiyoung): fix minting issue after setting write rule.
       // write: 'auth.addr === $user_addr',
       // TODO(jiyoung): discuss whether to apply gc rule for messages.
       // state: { gc_max_siblings: 20, gc_num_siblings_deleted: 10 },

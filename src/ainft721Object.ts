@@ -3,7 +3,6 @@ import FactoryBase from "./factoryBase";
 import { HttpMethod } from "./types";
 import Ain from "@ainblockchain/ain-js";
 
-// TODO(jiyoung): standardize naming for clarity (e.g. 'ainft', 'nft', 'ainft721Object', 'ainftObject')
 /**
  * The class of AINFT 721 object.
  */

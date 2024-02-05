@@ -6,7 +6,7 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import AinizeAuth from './common/ainize';
 import { PROVIDER_SERVICE_NAME_MAP, MIN_GAS_PRICE } from './constants';
-import { HttpMethod } from './types';
+import { HttpMethod, JobType } from './types';
 
 export const buildData = (
   method: HttpMethod,
@@ -199,6 +199,10 @@ export const validateAndGetServiceName = (provider: string): string => {
   return serviceName;
 };
 
+export const validateService = async (serviceName: string, ainize: Ainize): Promise<void> => {
+  await validateAndGetService(serviceName, ainize);
+};
+
 export const validateAndGetService = async (
   serviceName: string,
   ainize: Ainize
@@ -210,10 +214,10 @@ export const validateAndGetService = async (
   return service;
 };
 
-export const validateServiceConfig = async (appId: string, serviceName: string, ain: Ain) => {
+export const validateObjectServiceConfig = async (appId: string, serviceName: string, ain: Ain) => {
   const aiPath = Ref.app(appId).ai(serviceName);
   if (!(await exists(aiPath, ain))) {
-    throw new Error('AI configuration not found, please call `ainft.chat.configure()` first.');
+    throw new Error('Service configuration not found. Please call `ainft.chat.configure()` first.');
   }
 };
 
@@ -306,4 +310,21 @@ export const ainizeLogin = async (ain: Ain, ainize: Ainize) => {
 
 export const ainizeLogout = async (ainize: Ainize) => {
   return AinizeAuth.getInstance().logout(ainize);
+};
+
+export const sendRequestToService = async <T>(
+  jobType: JobType,
+  body: object,
+  service: Service,
+  ain: Ain,
+  ainize: Ainize
+): Promise<T> => {
+  try {
+    await ainizeLogin(ain, ainize);
+    const data = await service.request({ ...body, jobType });
+    await ainizeLogout(ainize);
+    return data as T;
+  } catch (error: any) {
+    throw new Error(`Ainize request failed: ${error.message}`);
+  }
 };

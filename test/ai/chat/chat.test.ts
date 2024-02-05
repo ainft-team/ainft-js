@@ -16,7 +16,7 @@ const appId = 'ainft721_0x8a193528f6d406ce81ff5d9a55304337d0ed8de6';
 const serviceName = 'openai_ainize3';
 
 describe('chat', () => {
-  jest.setTimeout(60 * 1000);
+  jest.setTimeout(60000); // 1min
   let ainft: AinftJs;
 
   beforeAll(() => {
