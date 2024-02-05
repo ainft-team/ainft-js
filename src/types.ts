@@ -1208,11 +1208,17 @@ export interface ThreadDeleteTransactionResult extends TransactionResult {
   delThread: ThreadDeleted;
 }
 
+/**
+ * Represents transaction result for a single message.
+ */
 export interface MessageTransactionResult extends TransactionResult {
   message: Message;
 }
 
-export interface MessageCreateTransactionResult extends TransactionResult {
+/**
+ * Represents transaction result for a list of messages.
+ */
+export interface MessageListTransactionResult extends TransactionResult {
   messages: Array<Message>;
 }
 
@@ -1311,13 +1317,24 @@ export interface ThreadUpdateParams {
 }
 
 export interface Message {
+  /** The identifier. */
   id: string;
+  /** The ID of thread that message belongs to. */
   thread_id: string;
+  /** The entity that produced the message. One of `user` or `assistant`. */
   role: 'user' | 'assistant';
+  /** The message content includes text and/or images in an array. */
   content: Array<MessageContentText | MessageContentImageFile>;
+  /** If applicable, the ID of the assistant that authored this message. */
   assistant_id: string | null;
+  /** If applicable, the ID of the run associated with the authoring of this message. */
   run_id: string | null;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata: object | null;
+  /** The UNIX timestamp in seconds. */
   created_at: number;
 }
 
@@ -1331,37 +1348,22 @@ export interface MessageContentImageFile {
   image_file: string;
 }
 
-export interface ThreadDeleted {
-  id: string;
-  deleted: boolean;
-}
-
-export interface OpenAIThreadCreateParams {
-  provider: 'openai';
-  metadata?: object | null;
-}
-
-export type ThreadCreateParams = OpenAIThreadCreateParams;
-
-export interface OpenAIThreadUpdateParams {
-  provider: 'openai';
-  metadata?: object | null;
-}
-
-export type ThreadUpdateParams = OpenAIThreadUpdateParams;
-
-export interface OpenAIMessageCreateParams {
-  provider: 'openai';
+export interface MessageCreateParams {
+  /** The role of the entity creating the message, currently only `user` is supported. */
   role: 'user';
+  /** The content of the message. */
   content: string;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata?: object | null;
 }
 
-export type MessageCreateParams = OpenAIMessageCreateParams;
-
-export interface OpenAIMessageUpdateParams {
-  provider: 'openai';
+export interface MessageUpdateParams {
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
   metadata?: object | null;
 }
-
-export type MessageUpdateParams = OpenAIMessageUpdateParams;

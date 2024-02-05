@@ -1,4 +1,4 @@
-import AinftJs, { MessageCreateParams } from '../../../src/ainft';
+import AinftJs, { MessageCreateParams, MessageUpdateParams } from '../../../src/ainft';
 
 const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
 const appId = 'ainft721_0x8a193528f6d406ce81ff5d9a55304337d0ed8de6';
@@ -7,7 +7,7 @@ const serviceName = 'openai_ainize3';
 const address = '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0';
 
 describe('message', () => {
-  jest.setTimeout(5 * 60 * 1000);
+  jest.setTimeout(600000); // 10min
   let ainft: AinftJs;
   let assistantId: string;
   let threadId: string;
@@ -20,8 +20,7 @@ describe('message', () => {
       chainId: 0,
     });
 
-    const { assistant } = await ainft.chat.assistant.create(objectId, tokenId, {
-      provider: 'openai',
+    const { assistant } = await ainft.chat.assistant.create(objectId, tokenId, 'openai', {
       model: 'gpt-3.5-turbo',
       name: 'name',
       instructions: 'instructions',
@@ -29,8 +28,7 @@ describe('message', () => {
     });
     assistantId = assistant.id;
 
-    const { thread } = await ainft.chat.thread.create(objectId, tokenId, {
-      provider: 'openai',
+    const { thread } = await ainft.chat.thread.create(objectId, tokenId, 'openai', {
       metadata: { key1: 'value1' },
     });
     threadId = thread.id;
@@ -43,13 +41,12 @@ describe('message', () => {
 
   it('create: should create message', async () => {
     // const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads/${threadId}/messages`;
-    // const params = <MessageCreateParams>{
-    //   provider: 'openai',
+    // const body: MessageCreateParams = {
     //   role: 'user',
     //   content: 'hello',
     // };
 
-    // const txResult = await ainft.chat.message.create(threadId, objectId, tokenId, params);
+    // const txResult = await ainft.chat.message.create(threadId, objectId, tokenId, 'openai', body);
     // const messages = await ainft.ain.db.ref(ref).getValue();
 
     // expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
@@ -75,11 +72,11 @@ describe('message', () => {
 
   // it('update: should update message', async () => {
   //   const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads/${threadId}/messages/${messageId}`;
-  //   const txResult = await ainft.chat.message.update(messageId, threadId, objectId, tokenId, {
-  //     provider: 'openai',
+  //   const body: MessageUpdateParams = {
   //     metadata: { key1: 'value1' },
-  //   });
+  //   };
 
+  //   const txResult = await ainft.chat.message.update(messageId, threadId, objectId, tokenId, 'openai', body);
   //   const message = await ainft.ain.db.ref(ref).getValue();
 
   //   expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);

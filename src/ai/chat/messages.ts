@@ -3,12 +3,12 @@ import Service from '@ainize-team/ainize-js/dist/service';
 import Ainft721Object from '../../ainft721Object';
 import BlockchainBase from '../../blockchainBase';
 import {
+  Message,
   MessageCreateParams,
-  MessageCreateTransactionResult,
+  MessageListTransactionResult,
   MessageTransactionResult,
   MessageUpdateParams,
-  OpenAIJobType,
-  Message,
+  JobType,
   ServiceProvider,
 } from '../../types';
 import {
@@ -17,25 +17,41 @@ import {
   buildSetTransactionBody,
   buildSetValueOp,
   getValue,
+  isTransactionSuccess,
   Ref,
+  sendRequestToService,
   validateAndGetAssistant,
   validateAndGetService,
   validateAndGetServiceName,
   validateAssistant,
   validateMessage,
   validateObject,
-  validateServiceConfig,
+  validateObjectServiceConfig,
   validateThread,
   validateToken,
 } from '../../util';
 
+/**
+ * This class supports create messages within threads.\
+ * Do not create it directly; Get it from AinftJs instance.
+ */
 export default class Messages extends BlockchainBase {
+  /**
+   * Create a message.
+   * @param {string} threadId - The ID of thread.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string} tokenId - The ID of AINFT token.
+   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {MessageCreateParams} MessageCreateParams - The parameters to create message.
+   * @returns Returns a promise that resolves with both the transaction result and a list including the new message.
+   */
   async create(
     threadId: string,
     objectId: string,
     tokenId: string,
-    { provider, role, content, metadata }: MessageCreateParams
-  ): Promise<MessageCreateTransactionResult> {
+    provider: ServiceProvider,
+    { role, content, metadata }: MessageCreateParams
+  ): Promise<MessageListTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
@@ -43,39 +59,47 @@ export default class Messages extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateServiceConfig(appId, serviceName, this.ain);
-    const { id } = await validateAndGetAssistant(appId, tokenId, serviceName, this.ain);
+    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    const { id: assistantId } = await validateAndGetAssistant(appId, tokenId, serviceName, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
     await ainizeLogin(this.ain, this.ainize);
 
     const message = await this.createMessage(threadId, role, content, service, metadata);
-    const run = await this.createRun(threadId, id, service);
+    const run = await this.createRun(threadId, assistantId, service);
     await this.waitForRun(threadId, run.id, service);
     const messages = await this.listMessages(threadId, service);
 
     await ainizeLogout(this.ainize);
 
-    const txBody = this.buildTxBodyForCreateMessage(
-      threadId,
-      messages,
-      appId,
-      tokenId,
-      serviceName,
-      address
-    );
-    const txResult = await this.ain.sendTransaction(txBody);
+    const txBody = this.buildTxBodyForCreateMessage(threadId, messages, appId, tokenId, serviceName, address);
+    const result = await this.ain.sendTransaction(txBody);
 
-    return { ...txResult, messages };
+    if (!isTransactionSuccess(result)) {
+      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
+    }
+
+    return { ...result, messages };
   }
 
+  /**
+   * Updates a thread.
+   * @param {string} messageId - The ID of message.
+   * @param {string} threadId - The ID of thread.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string} tokenId - The ID of AINFT token.
+   * @param {ServiceProvider} provider - The service provider to use.
+   * @returns Returns a promise that resolves with both the transaction result and the updated message.
+   */
   async update(
     messageId: string,
     threadId: string,
     objectId: string,
     tokenId: string,
-    { provider, metadata }: MessageUpdateParams
+    provider: ServiceProvider,
+    { metadata }: MessageUpdateParams
   ): Promise<MessageTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
@@ -84,37 +108,37 @@ export default class Messages extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateServiceConfig(appId, serviceName, this.ain);
+    await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
     await validateMessage(appId, tokenId, serviceName, address, threadId, messageId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
-    await ainizeLogin(this.ain, this.ainize);
-
-    const jobType = OpenAIJobType.MODIFY_MESSAGE;
+    const jobType = JobType.MODIFY_MESSAGE;
     const body = {
-      jobType,
-      thread_id: threadId,
-      message_id: messageId,
+      threadId,
+      messageId,
       ...(metadata && { metadata }),
     };
-    const newMessage = await service.request(body);
 
-    await ainizeLogout(this.ainize);
+    const message = await sendRequestToService<Message>(jobType, body, service, this.ain, this.ainize);
 
-    const txBody = await this.buildTxBodyForUpdateMessage(
-      newMessage,
-      appId,
-      tokenId,
-      serviceName,
-      address
-    );
+    const txBody = await this.buildTxBodyForUpdateMessage(message, appId, tokenId, serviceName, address);
     const txResult = await this.ain.sendTransaction(txBody);
 
-    return { ...txResult, message: newMessage };
+    return { ...txResult, message };
   }
 
+  /**
+   * Retrieves a message.
+   * @param {string} messageId - The ID of message.
+   * @param {string} threadId - The ID of thread.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string} tokenId - The ID of AINFT token.
+   * @param {ServiceProvider} provider - The service provider to use.
+   * @returns Returns a promise that resolves with the message.
+   */
   async get(
     messageId: string,
     threadId: string,
@@ -129,23 +153,29 @@ export default class Messages extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateServiceConfig(appId, serviceName, this.ain);
+    await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
     await validateMessage(appId, tokenId, serviceName, address, threadId, messageId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
-    await ainizeLogin(this.ain, this.ainize);
+    const jobType = JobType.RETRIEVE_MESSAGE;
+    const body = { jobType, threadId, messageId };
 
-    const jobType = OpenAIJobType.RETRIEVE_MESSAGE;
-    const body = { jobType, thread_id: threadId, message_id: messageId };
-    const message = await service.request(body);
-
-    await ainizeLogout(this.ainize);
+    const message = await sendRequestToService<Message>(jobType, body, service, this.ain, this.ainize);
 
     return message;
   }
 
+  /**
+   * Retrieves a list of messages.
+   * @param {string} threadId - The ID of thread.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string} tokenId - The ID of AINFT token.
+   * @param {ServiceProvider} provider - The service provider to use.
+   * @returns Returns a promise that resolves with the list of messages.
+   */
   async list(
     threadId: string,
     objectId: string,
@@ -159,18 +189,69 @@ export default class Messages extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = validateAndGetServiceName(provider);
-    await validateServiceConfig(appId, serviceName, this.ain);
+    await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
+
     const service = await validateAndGetService(serviceName, this.ainize);
 
-    await ainizeLogin(this.ain, this.ainize);
+    const jobType = JobType.LIST_MESSAGES;
+    const body = { threadId };
 
-    const messages = await this.listMessages(threadId, service);
-
-    await ainizeLogout(this.ainize);
+    const messages = await sendRequestToService<Array<Message>>(jobType, body, service, this.ain, this.ainize);
 
     return messages;
+  }
+
+  private createMessage(
+    threadId: string,
+    role: 'user',
+    content: string,
+    service: Service,
+    metadata?: object | null
+  ) {
+    return service.request({
+      jobType: JobType.CREATE_MESSAGE,
+      threadId,
+      role,
+      content,
+      ...(metadata && { metadata }),
+    });
+  }
+
+  private createRun(threadId: string, assistantId: string, service: Service) {
+    return service.request({
+      jobType: JobType.CREATE_RUN,
+      threadId,
+      assistantId,
+    });
+  }
+
+  private waitForRun(threadId: string, runId: string, service: Service) {
+    return new Promise<void>((resolve, reject) => {
+      const interval = setInterval(async () => {
+        const run = await service.request({
+          jobType: JobType.RETRIEVE_RUN,
+          threadId,
+          runId,
+        });
+        if (run.status === 'completed') {
+          clearInterval(interval);
+          resolve();
+        }
+        if (run.status === 'expired' || run.status === 'failed' || run.status === 'cancelled') {
+          clearInterval(interval);
+          reject(new Error(`Run ${runId} is ${run.status}`));
+        }
+      }, 1000); // 1sec
+    });
+  }
+
+  private listMessages(threadId: string, service: Service) {
+    return service.request({
+      jobType: JobType.LIST_MESSAGES,
+      threadId,
+    });
   }
 
   private buildTxBodyForCreateMessage(
@@ -194,7 +275,7 @@ export default class Messages extends BlockchainBase {
         role: el.role,
         content: el.content[0].type === 'text' ? el.content[0].text : el.content[0].image_file,
         ...(el.metadata &&
-          !(Object.keys(el.metadata).length === 0) && {
+          Object.keys(el.metadata).length && {
             metadata: el.metadata,
           }),
       };
@@ -207,16 +288,11 @@ export default class Messages extends BlockchainBase {
     message: Message,
     appId: string,
     tokenId: string,
-    aiName: string,
+    serviceName: string,
     address: string
   ) {
     const { id, thread_id, metadata } = message;
-    const ref = Ref.app(appId)
-      .token(tokenId)
-      .ai(aiName)
-      .history(address)
-      .thread(thread_id)
-      .message(id);
+    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(thread_id).message(id);
     const prev = await getValue(ref, this.ain);
 
     const value = {
@@ -225,56 +301,5 @@ export default class Messages extends BlockchainBase {
     };
 
     return buildSetTransactionBody(buildSetValueOp(ref, value), address);
-  }
-
-  private createMessage(
-    threadId: string,
-    role: 'user',
-    content: string,
-    service: Service,
-    metadata?: object | null
-  ) {
-    return service.request({
-      jobType: OpenAIJobType.CREATE_MESSAGE,
-      threadId,
-      role,
-      content,
-      ...(metadata && { metadata }),
-    });
-  }
-
-  private createRun(threadId: string, assistantId: string, service: Service) {
-    return service.request({
-      jobType: OpenAIJobType.CREATE_RUN,
-      threadId,
-      assistantId,
-    });
-  }
-
-  private waitForRun(threadId: string, runId: string, service: Service) {
-    return new Promise<void>((resolve, reject) => {
-      const interval = setInterval(async () => {
-        const run = await service.request({
-          jobType: OpenAIJobType.RETRIEVE_RUN,
-          threadId,
-          runId,
-        });
-        if (run.status === 'completed') {
-          clearInterval(interval);
-          resolve();
-        }
-        if (run.status === 'expired' || run.status === 'failed' || run.status === 'cancelled') {
-          clearInterval(interval);
-          reject(new Error(`Run ${runId} is ${run.status}`));
-        }
-      }, 1000); // 1sec
-    });
-  }
-
-  private listMessages(threadId: string, service: Service) {
-    return service.request({
-      jobType: OpenAIJobType.LIST_MESSAGES,
-      thread_id: threadId,
-    });
   }
 }
