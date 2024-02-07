@@ -6,12 +6,13 @@ const tokenId = '3';
 const serviceName = 'openai_ainize3';
 const address = '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0';
 
+// NOTE(jiyoung): comment out until mocking for tests.
 describe('message', () => {
-  jest.setTimeout(600000); // 10min
-  let ainft: AinftJs;
-  let assistantId: string;
-  let threadId: string;
-  let messageId: string;
+  // jest.setTimeout(600000); // 10min
+  // let ainft: AinftJs;
+  // let assistantId: string;
+  // let threadId: string;
+  // let messageId: string;
 
   // beforeAll(async () => {
   //   ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
