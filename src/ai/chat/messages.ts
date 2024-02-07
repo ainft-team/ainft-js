@@ -5,11 +5,13 @@ import BlockchainBase from '../../blockchainBase';
 import {
   Message,
   MessageCreateParams,
-  MessageListTransactionResult,
+  MessagesTransactionResult,
+  MessageMap,
   MessageTransactionResult,
   MessageUpdateParams,
   JobType,
   ServiceProvider,
+  Page,
 } from '../../types';
 import {
   ainizeLogin,
@@ -52,7 +54,7 @@ export default class Messages extends BlockchainBase {
     tokenId: string,
     provider: ServiceProvider,
     { role, content, metadata }: MessageCreateParams
-  ): Promise<MessageListTransactionResult> {
+  ): Promise<MessagesTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
@@ -71,18 +73,19 @@ export default class Messages extends BlockchainBase {
     const message = await this.createMessage(threadId, role, content, service, metadata);
     const run = await this.createRun(threadId, assistantId, service);
     await this.waitForRun(threadId, run.id, service);
-    const messages = await this.listMessages(threadId, service);
+    // TODO(jiyoung): if 'has_more=true', use cursor to fetch more data.
+    const { data, has_more } = await this.listMessages(threadId, service);
 
     await ainizeLogout(this.ainize);
 
-    const txBody = this.buildTxBodyForCreateMessage(threadId, messages, appId, tokenId, serviceName, address);
+    const txBody = this.buildTxBodyForCreateMessage(threadId, data, appId, tokenId, serviceName, address);
     const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
 
-    return { ...result, messages };
+    return { ...result, messages: data };
   }
 
   /**
@@ -182,7 +185,7 @@ export default class Messages extends BlockchainBase {
     objectId: string,
     tokenId: string,
     provider: ServiceProvider
-  ): Promise<Array<Message>> {
+  ): Promise<MessageMap> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
@@ -199,9 +202,9 @@ export default class Messages extends BlockchainBase {
     const jobType = JobType.LIST_MESSAGES;
     const body = { threadId };
 
-    const messages = await sendRequestToService<Array<Message>>(jobType, body, service, this.ain, this.ainize);
+    const { data } = await sendRequestToService<Page<MessageMap>>(jobType, body, service, this.ain, this.ainize);
 
-    return messages;
+    return data;
   }
 
   private createMessage(
@@ -257,7 +260,7 @@ export default class Messages extends BlockchainBase {
 
   private buildTxBodyForCreateMessage(
     threadId: string,
-    messages: Array<Message>,
+    messages: MessageMap,
     appId: string,
     tokenId: string,
     serviceName: string,
@@ -271,14 +274,13 @@ export default class Messages extends BlockchainBase {
       .messages();
     const value: { [key: string]: object } = {};
 
-    messages.forEach((el) => {
-      value[el.id] = {
-        role: el.role,
-        content: el.content[0].type === 'text' ? el.content[0].text : el.content[0].image_file,
-        ...(el.metadata &&
-          Object.keys(el.metadata).length && {
-            metadata: el.metadata,
-          }),
+    Object.keys(messages).forEach((key) => {
+      const { id, created_at, role, content, metadata } = messages[key];
+      value[`${created_at}`] = {
+        id,
+        role,
+        ...(content && Object.keys(content).length && { content }),
+        ...(metadata && Object.keys(metadata).length && { metadata }),
       };
     });
 
@@ -293,7 +295,19 @@ export default class Messages extends BlockchainBase {
     address: string
   ) {
     const { id, thread_id, metadata } = message;
-    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(thread_id).message(id);
+    const messagesPath = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(thread_id).messages();
+    const messages: MessageMap = await getValue(messagesPath, this.ain);
+
+    // TODO(jiyoung): optimize inefficient loop.
+    let timestamp: string | undefined;
+    for (const key in messages) {
+      if (messages[key].id === id) {
+        timestamp = key;
+        break;
+      }
+    }
+
+    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(thread_id).message(timestamp!);
     const prev = await getValue(ref, this.ain);
 
     const value = {
