@@ -23,6 +23,7 @@ import {
   validateObjectServiceConfig,
   validateToken,
   sendRequestToService,
+  sendTransaction,
 } from '../../util';
 
 /**
@@ -68,7 +69,7 @@ export default class Assistants extends BlockchainBase {
     const assistant = await sendRequestToService<Assistant>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForCreateAssistant(assistant, appId, tokenId, serviceName, address);
-    const result = await this.ain.sendTransaction(txBody);
+    const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
@@ -119,7 +120,7 @@ export default class Assistants extends BlockchainBase {
     const assistant = await sendRequestToService<Assistant>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForUpdateAssistant(assistant, appId, tokenId, serviceName, address);
-    const result = await this.ain.sendTransaction(txBody);
+    const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
@@ -161,7 +162,7 @@ export default class Assistants extends BlockchainBase {
     const delAssistant = await sendRequestToService<AssistantDeleted>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForDeleteAssistant(appId, tokenId, serviceName, address);
-    const result = await this.ain.sendTransaction(txBody);
+    const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);

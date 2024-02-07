@@ -17,6 +17,7 @@ import {
   isTransactionSuccess,
   Ref,
   sendRequestToService,
+  sendTransaction,
   validateAndGetService,
   validateAndGetServiceName,
   validateAssistant,
@@ -63,7 +64,7 @@ export default class Threads extends BlockchainBase {
     const thread = await sendRequestToService<Thread>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForCreateThread(thread, appId, tokenId, serviceName, address);
-    const result = await this.ain.sendTransaction(txBody);
+    const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
@@ -113,7 +114,7 @@ export default class Threads extends BlockchainBase {
       serviceName,
       address
     );
-    const result = await this.ain.sendTransaction(txBody);
+    const result = await sendTransaction(txBody, this.ain);
 
     return { ...result, thread };
   }
@@ -151,7 +152,7 @@ export default class Threads extends BlockchainBase {
     const delThread = await sendRequestToService<ThreadDeleted>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForDeleteThread(threadId, appId, tokenId, serviceName, address);
-    const result = await this.ain.sendTransaction(txBody);
+    const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);

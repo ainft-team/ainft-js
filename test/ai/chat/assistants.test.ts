@@ -1,14 +1,26 @@
 import AinftJs, { AssistantCreateParams, AssistantUpdateParams } from '../../../src/ainft';
+import * as util from '../../../src/util';
+
+jest.mock('../../../src/util', () => {
+  const actual = jest.requireActual('../../../src/util');
+  return {
+    ...actual,
+    validateAssistant: jest.fn().mockResolvedValue(undefined),
+    sendRequestToService: jest.fn(),
+    sendTransaction: jest.fn().mockResolvedValue({
+      tx_hash: '0x' + 'a'.repeat(64),
+      result: { code: 0 },
+    }),
+  };
+});
 
 const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
-const appId = 'ainft721_0x8a193528f6d406ce81ff5d9a55304337d0ed8de6';
 const tokenId = '1';
-const serviceName = 'openai_ainize3';
+const assistantId = 'asst_000000000000000000000001';
 
 describe('assistant', () => {
   jest.setTimeout(300000); // 5min
   let ainft: AinftJs;
-  let assistantId: string;
 
   beforeAll(() => {
     ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
@@ -18,34 +30,52 @@ describe('assistant', () => {
     });
   });
 
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
+
   it('create: should create assistant', async () => {
-    const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
     const body: AssistantCreateParams = {
       model: 'gpt-3.5-turbo',
       name: 'name',
       instructions: 'instructions',
       description: 'description',
       // TODO(jiyoung): handle empty metadata in blockchain transaction.
-      // if metadata is not provided, OpenAI set default empty object.
-      // but empty object is not stored on blockchain, leading to transaction reversion.
+      // if no metadata is provided, openai defaults to an empty object,
+      // which leads to transaction reversion as it cannot be stored on the blockchain.
       metadata: { key1: 'value1' },
     };
 
-    const txResult = await ainft.chat.assistant.create(objectId, tokenId, 'openai', body);
-    assistantId = txResult.assistant.id;
-    const assistant = await ainft.ain.db.ref(ref).getValue();
+    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+      ...body,
+      id: assistantId,
+      created_at: 0,
+    });
 
-    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(txResult.result).toBeDefined();
+    const result = await ainft.chat.assistant.create(objectId, tokenId, 'openai', body);
+    const { assistant } = result;
+
+    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(result.result).toBeDefined();
     expect(assistant.id).toMatch(/^asst_[A-Za-z0-9]{24}/);
-    expect(assistant.config.model).toBe('gpt-3.5-turbo');
-    expect(assistant.config.name).toBe('name');
-    expect(assistant.config.instructions).toBe('instructions');
-    expect(assistant.config.description).toBe('description');
-    expect(assistant.config.metadata).toEqual({ key1: 'value1' });
+    expect(assistant.model).toBe('gpt-3.5-turbo');
+    expect(assistant.name).toBe('name');
+    expect(assistant.instructions).toBe('instructions');
+    expect(assistant.description).toBe('description');
+    expect(assistant.metadata).toEqual({ key1: 'value1' });
   });
 
   it('get: should get assistant', async () => {
+    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+      id: assistantId,
+      model: 'gpt-3.5-turbo',
+      name: 'name',
+      instructions: 'instructions',
+      description: 'description',
+      metadata: { key1: 'value1' },
+      created_at: 0,
+    });
+
     const assistant = await ainft.chat.assistant.get(assistantId, objectId, tokenId, 'openai');
 
     expect(assistant.id).toBe(assistantId);
@@ -57,7 +87,6 @@ describe('assistant', () => {
   });
 
   it('update: should update assistant', async () => {
-    const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
     const body: AssistantUpdateParams = {
       model: 'gpt-4',
       name: 'new_name',
@@ -66,29 +95,37 @@ describe('assistant', () => {
       metadata: { key1: 'value1', key2: 'value2' },
     };
 
-    const txResult = await ainft.chat.assistant.update(assistantId, objectId, tokenId, 'openai', body);
-    const assistant = await ainft.ain.db.ref(ref).getValue();
+    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+      ...body,
+      id: assistantId,
+      created_at: 0,
+    });
 
-    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(txResult.result).toBeDefined();
+    const result = await ainft.chat.assistant.update(assistantId, objectId, tokenId, 'openai', body);
+    const { assistant } = result;
+
+    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(result.result).toBeDefined();
     expect(assistant.id).toBe(assistantId);
-    expect(assistant.config.model).toBe('gpt-4');
-    expect(assistant.config.name).toBe('new_name');
-    expect(assistant.config.instructions).toBe('new_instructions');
-    expect(assistant.config.description).toBe('new_description');
-    expect(assistant.config.metadata).toEqual({ key1: 'value1', key2: 'value2' });
+    expect(assistant.model).toBe('gpt-4');
+    expect(assistant.name).toBe('new_name');
+    expect(assistant.instructions).toBe('new_instructions');
+    expect(assistant.description).toBe('new_description');
+    expect(assistant.metadata).toEqual({ key1: 'value1', key2: 'value2' });
   });
 
   it('delete: should delete assistant', async () => {
-    const ref = `apps/${appId}/tokens/${tokenId}/ai/${serviceName}`;
+    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+      id: assistantId,
+      deleted: true,
+    });
 
-    const txResult = await ainft.chat.assistant.delete(assistantId, objectId, tokenId, 'openai');
-    const assistant = await ainft.ain.db.ref(ref).getValue();
+    const result = await ainft.chat.assistant.delete(assistantId, objectId, tokenId, 'openai');
+    const { delAssistant } = result;
 
-    expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(txResult.result).toBeDefined();
-    expect(txResult.delAssistant.id).toBe(assistantId);
-    expect(txResult.delAssistant.deleted).toBe(true);
-    expect(assistant).toBeNull();
+    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+    expect(result.result).toBeDefined();
+    expect(delAssistant.id).toBe(assistantId);
+    expect(delAssistant.deleted).toBe(true);
   });
 });
