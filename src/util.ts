@@ -6,7 +6,7 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import AinizeAuth from './common/ainize';
 import { PROVIDER_SERVICE_NAME_MAP, MIN_GAS_PRICE } from './constants';
-import { HttpMethod, JobType } from './types';
+import { HttpMethod, JobType, MessageMap } from './types';
 
 export const buildData = (
   method: HttpMethod,
@@ -288,16 +288,20 @@ export const validateMessage = async (
   messageId: string,
   ain: Ain
 ) => {
-  const messagePath = Ref.app(appId)
+  const messagesPath = Ref.app(appId)
     .token(tokenId)
     .ai(serviceName)
     .history(address)
     .thread(threadId)
-    .message(messageId);
-
-  if (!(await exists(messagePath, ain))) {
-    throw new Error('Message not found');
+    .messages();
+  const messages: MessageMap = await getValue(messagesPath, ain);
+  // TODO(jiyoung): optimize inefficient loop.
+  for (const key in messages) {
+    if (messages[key].id === messageId) {
+      return;
+    }
   }
+  throw new Error('Message not found');
 };
 
 export const exists = async (path: string, ain: Ain): Promise<boolean> => {

@@ -1223,10 +1223,10 @@ export interface MessageTransactionResult extends TransactionResult {
 }
 
 /**
- * Represents transaction result for a list of messages.
+ * Represents transaction result for a multiple messages.
  */
-export interface MessageListTransactionResult extends TransactionResult {
-  messages: Array<Message>;
+export interface MessagesTransactionResult extends TransactionResult {
+  messages: MessageMap;
 }
 
 export interface ServiceConfiguration {
@@ -1339,8 +1339,8 @@ export interface Message {
   thread_id: string;
   /** The entity that produced the message. One of `user` or `assistant`. */
   role: 'user' | 'assistant';
-  /** The message content includes text and/or images in an array. */
-  content: Array<MessageContentText | MessageContentImageFile>;
+  /** The message content includes text in an object. */
+  content: { [key: string]: MessageContentText };
   /** If applicable, the ID of the assistant that authored this message. */
   assistant_id: string | null;
   /** If applicable, the ID of the run associated with the authoring of this message. */
@@ -1356,12 +1356,22 @@ export interface Message {
 
 export interface MessageContentText {
   type: 'text';
-  text: string;
+  text: Text;
 }
 
-export interface MessageContentImageFile {
-  type: 'image_file';
-  image_file: string;
+export interface Text {
+  value: string;
+}
+
+export interface MessageMap {
+  [key: string]: Message;
+}
+
+export interface Page<T> {
+  data: T;
+  first_id: string;
+  last_id: string;
+  has_more: boolean;
 }
 
 export interface MessageCreateParams {
