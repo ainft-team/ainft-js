@@ -13,6 +13,7 @@ describe('message', () => {
   // let assistantId: string;
   // let threadId: string;
   // let messageId: string;
+  // let messageKey: number;
 
   // beforeAll(async () => {
   //   ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
@@ -46,44 +47,44 @@ describe('message', () => {
     //   role: 'user',
     //   content: 'hello',
     // };
-
     // const txResult = await ainft.chat.message.create(threadId, objectId, tokenId, 'openai', body);
+    // ({ id: messageId, created_at: messageKey } = txResult.messages[1]);
     // const messages = await ainft.ain.db.ref(ref).getValue();
-
     // expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     // expect(txResult.result).toBeDefined();
     // expect(Object.keys(messages).length).toBe(2);
   });
 
-  // it('get: should get message', async () => {
-  //   const message = await ainft.chat.message.get(messageId, threadId, objectId, tokenId, 'openai');
+  //   it('get: should get message', async () => {
+  //     const message = await ainft.chat.message.get(messageId, threadId, objectId, tokenId, 'openai');
 
-  //   expect(message.id).toBe(messageId);
-  //   expect(message.thread_id).toBe(threadId);
-  //   expect(message.role).toBe('user');
-  //   expect(message.content).toEqual([{ type: 'text', text: 'hello' }]);
-  //   expect(message.metadata).toEqual({});
-  // });
+  //     expect(message.id).toBe(messageId);
+  //     expect(message.thread_id).toBe(threadId);
+  //     expect(message.role).toBe('user');
+  //     expect(message.content).toEqual({ '0': { type: 'text', text: { value: 'hello' } } });
+  //   });
 
-  // it('list: should get message list', async () => {
-  //   const messages = await ainft.chat.message.list(threadId, objectId, tokenId, 'openai');
+  //   it('list: should get message list', async () => {
+  //     const messages = await ainft.chat.message.list(threadId, objectId, tokenId, 'openai');
 
-  //   expect(messages.length).toBe(2);
-  // });
+  //     expect(Object.keys(messages).length).toBe(2);
+  //   });
 
-  // it('update: should update message', async () => {
-  //   const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads/${threadId}/messages/${messageId}`;
-  //   const body: MessageUpdateParams = {
-  //     metadata: { key1: 'value1' },
-  //   };
+  //   it('update: should update message', async () => {
+  //     const ref = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/${address}/threads/${threadId}/messages/${messageKey}`;
+  //     const body: MessageUpdateParams = {
+  //       metadata: { key1: 'value1' },
+  //     };
 
-  //   const txResult = await ainft.chat.message.update(messageId, threadId, objectId, tokenId, 'openai', body);
-  //   const message = await ainft.ain.db.ref(ref).getValue();
+  //     const txResult = await ainft.chat.message.update(messageId, threadId, objectId, tokenId, 'openai', body
+  // );
+  //     const message = await ainft.ain.db.ref(ref).getValue();
 
-  //   expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-  //   expect(txResult.result).toBeDefined();
-  //   expect(message.role).toBe('user');
-  //   expect(message.content).toBe('hello');
-  //   expect(message.metadata).toEqual({ key1: 'value1' });
-  // });
+  //     expect(txResult.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+  //     expect(txResult.result).toBeDefined();
+  //     expect(message.id).toBe(messageId);
+  //     expect(message.role).toBe('user');
+  //     expect(message.content).toEqual({ '0': { type: 'text', text: { value: 'hello' } } });
+  //     expect(message.metadata).toEqual({ key1: 'value1' });
+  //   });
 });
