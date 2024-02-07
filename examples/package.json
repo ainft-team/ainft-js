@@ -1,9 +1,9 @@
 {
-  "name": "tutorials",
+  "name": "ainft-examples",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@ainft-team/ainft-js": "1.0.0-beta.9"
+    "@ainft-team/ainft-js": "1.0.0"
   }
 }
