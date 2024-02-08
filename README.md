@@ -80,14 +80,14 @@ Introducing the main API functions that can be used in the `ainftToken` module.
 
 
 ## AINFT tutorial
-You can view the [tutorial document](https://docs.ainetwork.ai/ainfts/developer-reference/ainft-tutorial) at the following link. and You can also look at scripts created for tutorials in the [tutorial directory](https://github.com/ainft-team/ainft-js/tree/main/tutorials).
+You can view the [tutorial document](https://docs.ainetwork.ai/ainfts/developer-reference/ainft-tutorial) at the following link. and You can also look at scripts created for tutorials in the [tutorial directory](https://github.com/ainft-team/ainft-js/tree/main/examples).
 
 Tutorial scripts
-- [createAinftObject](https://github.com/ainft-team/ainft-js/blob/master/tutorials/createAinftObject.js)
-- [mintAinft](https://github.com/ainft-team/ainft-js/blob/master/tutorials/mintAinft.js)
-- [transferAinft](https://github.com/ainft-team/ainft-js/blob/master/tutorials/transferAinft.js)
-- [retrieveAinft](https://github.com/ainft-team/ainft-js/blob/master/tutorials/retrieveAinft.js)
-- [searchAinft](https://github.com/ainft-team/ainft-js/blob/master/tutorials/searchAinft.js)
+- [createAinftObject](https://github.com/ainft-team/ainft-js/blob/master/examples/nft/createAinftObject.js)
+- [mintAinft](https://github.com/ainft-team/ainft-js/blob/master/examples/nft/mintNft.js)
+- [transferAinft](https://github.com/ainft-team/ainft-js/blob/master/examples/nft/transferNft.js)
+- [retrieveAinft](https://github.com/ainft-team/ainft-js/blob/master/examples/nft/retrieve.js)
+- [searchAinft](https://github.com/ainft-team/ainft-js/blob/master/examples/nft/search.js)
 
 ## API Documentation
 API documentation is available at https://ainft-team.github.io/ainft-js.
