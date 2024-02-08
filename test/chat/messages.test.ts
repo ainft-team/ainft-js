@@ -3,17 +3,7 @@ import AinftJs, { MessageCreateParams } from '../../src/ainft';
 jest.mock('../../src/util', () => {
   const actual = jest.requireActual('../../src/util');
 
-  const mockRequest = jest.fn((...params) => {
-    let jobType = '';
-
-    if (typeof params[0] === 'string') {
-      [jobType] = params;
-    } else if (typeof params[0] === 'object' && params[0] !== null) {
-      jobType = params[0].jobType;
-    } else {
-      throw new Error('invalid parameter');
-    }
-
+  const mockRequest = jest.fn((jobType) => {
     switch (jobType) {
       case 'create_message':
         return Promise.resolve({});
@@ -113,13 +103,17 @@ jest.mock('../../src/util', () => {
     }
   });
 
+  const mockAinizeRequest = jest.fn(({ jobType }) => {
+    return mockRequest(jobType);
+  });
+
   return {
     ...actual,
     validateAndGetAssistant: jest.fn().mockResolvedValue({ id: '1' }),
     validateThread: jest.fn().mockResolvedValue(undefined),
     validateMessage: jest.fn().mockResolvedValue(undefined),
     validateAndGetService: jest.fn().mockResolvedValue({
-      request: mockRequest,
+      request: mockAinizeRequest,
     }),
     sendRequestToService: mockRequest,
     sendTransaction: jest.fn().mockResolvedValue({
@@ -191,7 +185,14 @@ describe('message', () => {
       metadata: { key1: 'value1', key2: 'value2' },
     };
 
-    const result = await ainft.chat.message.update(messageId, threadId, objectId, tokenId, 'openai', body);
+    const result = await ainft.chat.message.update(
+      messageId,
+      threadId,
+      objectId,
+      tokenId,
+      'openai',
+      body
+    );
     const { message } = result;
 
     expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
