@@ -1,8 +1,8 @@
-import AinftJs, { ThreadCreateParams, ThreadUpdateParams } from '../../../src/ainft';
-import * as util from '../../../src/util';
+import AinftJs from '../../src/ainft';
+import * as util from '../../src/util';
 
-jest.mock('../../../src/util', () => {
-  const actual = jest.requireActual('../../../src/util');
+jest.mock('../../src/util', () => {
+  const actual = jest.requireActual('../../src/util');
   return {
     ...actual,
     validateAssistant: jest.fn().mockResolvedValue(undefined),
@@ -16,11 +16,11 @@ jest.mock('../../../src/util', () => {
 });
 
 const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
-const tokenId = '2';
+const tokenId = '1';
 const threadId = 'thread_000000000000000000000001';
 
 describe('thread', () => {
-  jest.setTimeout(300000); // 5min
+  jest.setTimeout(60000); // 1min
   let ainft: AinftJs;
 
   beforeAll(async () => {

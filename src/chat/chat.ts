@@ -2,8 +2,8 @@ import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import Ainft721Object from '../../ainft721Object';
-import BlockchainBase from '../../blockchainBase';
+import Ainft721Object from '../ainft721Object';
+import BlockchainBase from '../blockchainBase';
 import Assistants from './assistants';
 import Threads from './threads';
 import Messages from './messages';
@@ -13,7 +13,7 @@ import {
   CreditTransactionResult,
   ServiceConfigurationTransactionResult,
   ServiceConfiguration,
-} from '../../types';
+} from '../types';
 import {
   ainizeLogin,
   ainizeLogout,
@@ -30,7 +30,7 @@ import {
   validateObjectOwner,
   validateService,
   sendTransaction,
-} from '../../util';
+} from '../util';
 
 /**
  * This class supports configuring chat functionality for an AINFT object,\
@@ -135,7 +135,9 @@ export default class Chat extends BlockchainBase {
       }
       await sleep(1000); // 1sec
     }
-    throw new Error(`Credit update timed out. Please check the transaction on Insight using this hash: ${txHash}`);
+    throw new Error(
+      `Credit update timed out. Please check the transaction on Insight using this hash: ${txHash}`
+    );
   }
 
   private buildTxBodyForConfigureChat(
@@ -158,7 +160,7 @@ export default class Chat extends BlockchainBase {
     const setValueOp = buildSetValueOp(ref, config);
     // const setWriteRuleOp = buildSetWriteRuleOp(path, rule.write);
     // const setGCRuleOp = buildSetStateRuleOp(`${path}/${subpath}`, rule.state);
-    const setOp = buildSetOp([setValueOp, /*setWriteRuleOp, setGCRuleOp*/]);
+    const setOp = buildSetOp([setValueOp /*setWriteRuleOp, setGCRuleOp*/]);
 
     return buildSetTransactionBody(setOp, address);
   }

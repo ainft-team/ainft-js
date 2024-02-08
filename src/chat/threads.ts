@@ -1,5 +1,5 @@
-import Ainft721Object from '../../ainft721Object';
-import BlockchainBase from '../../blockchainBase';
+import Ainft721Object from '../ainft721Object';
+import BlockchainBase from '../blockchainBase';
 import {
   JobType,
   ServiceProvider,
@@ -9,7 +9,7 @@ import {
   ThreadDeleted,
   ThreadTransactionResult,
   ThreadUpdateParams,
-} from '../../types';
+} from '../types';
 import {
   buildSetTransactionBody,
   buildSetValueOp,
@@ -25,7 +25,7 @@ import {
   validateObjectServiceConfig,
   validateThread,
   validateToken,
-} from '../../util';
+} from '../util';
 
 /**
  * This class supports create threads that assistant can interact with.\
@@ -61,7 +61,13 @@ export default class Threads extends BlockchainBase {
     const jobType = JobType.CREATE_THREAD;
     const body = { ...(metadata && { metadata }) };
 
-    const thread = await sendRequestToService<Thread>(jobType, body, service, this.ain, this.ainize);
+    const thread = await sendRequestToService<Thread>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
     const txBody = this.buildTxBodyForCreateThread(thread, appId, tokenId, serviceName, address);
     const result = await sendTransaction(txBody, this.ain);
@@ -105,7 +111,13 @@ export default class Threads extends BlockchainBase {
     const jobType = JobType.MODIFY_THREAD;
     const body = { threadId, ...(metadata && { metadata }) };
 
-    const thread = await sendRequestToService<Thread>(jobType, body, service, this.ain, this.ainize);
+    const thread = await sendRequestToService<Thread>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
     const txBody = await this.buildTxBodyForUpdateThread(
       thread,
@@ -149,7 +161,13 @@ export default class Threads extends BlockchainBase {
     const jobType = JobType.DELETE_THREAD;
     const body = { threadId };
 
-    const delThread = await sendRequestToService<ThreadDeleted>(jobType, body, service, this.ain, this.ainize);
+    const delThread = await sendRequestToService<ThreadDeleted>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
     const txBody = this.buildTxBodyForDeleteThread(threadId, appId, tokenId, serviceName, address);
     const result = await sendTransaction(txBody, this.ain);
@@ -191,7 +209,13 @@ export default class Threads extends BlockchainBase {
     const jobType = JobType.RETRIEVE_THREAD;
     const body = { threadId };
 
-    const thread = await sendRequestToService<Thread>(jobType, body, service, this.ain, this.ainize);
+    const thread = await sendRequestToService<Thread>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
     return thread;
   }
@@ -240,7 +264,12 @@ export default class Threads extends BlockchainBase {
     serviceName: string,
     address: string
   ) {
-    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(threadId).root();
+    const ref = Ref.app(appId)
+      .token(tokenId)
+      .ai(serviceName)
+      .history(address)
+      .thread(threadId)
+      .root();
 
     return buildSetTransactionBody(buildSetValueOp(ref, null), address);
   }

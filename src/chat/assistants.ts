@@ -1,5 +1,5 @@
-import Ainft721Object from '../../ainft721Object';
-import BlockchainBase from '../../blockchainBase';
+import Ainft721Object from '../ainft721Object';
+import BlockchainBase from '../blockchainBase';
 import {
   Assistant,
   AssistantCreateParams,
@@ -9,7 +9,7 @@ import {
   AssistantUpdateParams,
   JobType,
   ServiceProvider,
-} from '../../types';
+} from '../types';
 import {
   buildSetTransactionBody,
   buildSetValueOp,
@@ -24,7 +24,7 @@ import {
   validateToken,
   sendRequestToService,
   sendTransaction,
-} from '../../util';
+} from '../util';
 
 /**
  * This class supports building assistants that enables conversation with LLM models.\
@@ -66,9 +66,21 @@ export default class Assistants extends BlockchainBase {
       ...(metadata && { metadata }),
     };
 
-    const assistant = await sendRequestToService<Assistant>(jobType, body, service, this.ain, this.ainize);
+    const assistant = await sendRequestToService<Assistant>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
-    const txBody = this.buildTxBodyForCreateAssistant(assistant, appId, tokenId, serviceName, address);
+    const txBody = this.buildTxBodyForCreateAssistant(
+      assistant,
+      appId,
+      tokenId,
+      serviceName,
+      address
+    );
     const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
@@ -117,9 +129,21 @@ export default class Assistants extends BlockchainBase {
       ...(metadata && { metadata }),
     };
 
-    const assistant = await sendRequestToService<Assistant>(jobType, body, service, this.ain, this.ainize);
+    const assistant = await sendRequestToService<Assistant>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
-    const txBody = this.buildTxBodyForUpdateAssistant(assistant, appId, tokenId, serviceName, address);
+    const txBody = this.buildTxBodyForUpdateAssistant(
+      assistant,
+      appId,
+      tokenId,
+      serviceName,
+      address
+    );
     const result = await sendTransaction(txBody, this.ain);
 
     if (!isTransactionSuccess(result)) {
@@ -159,7 +183,13 @@ export default class Assistants extends BlockchainBase {
     const jobType = JobType.DELETE_ASSISTANT;
     const body = { assistantId };
 
-    const delAssistant = await sendRequestToService<AssistantDeleted>(jobType, body, service, this.ain, this.ainize);
+    const delAssistant = await sendRequestToService<AssistantDeleted>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
     const txBody = this.buildTxBodyForDeleteAssistant(appId, tokenId, serviceName, address);
     const result = await sendTransaction(txBody, this.ain);
@@ -199,7 +229,13 @@ export default class Assistants extends BlockchainBase {
     const jobType = JobType.RETRIEVE_ASSISTANT;
     const body = { assistantId };
 
-    const assistant = await sendRequestToService<Assistant>(jobType, body, service, this.ain, this.ainize);
+    const assistant = await sendRequestToService<Assistant>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
     return assistant;
   }
