@@ -63,12 +63,7 @@ export default class Messages extends BlockchainBase {
 
     const serviceName = validateAndGetServiceName(provider);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
-    const { id: assistantId } = await validateAndGetAssistant(
-      appId,
-      tokenId,
-      serviceName,
-      this.ain
-    );
+    const { id } = await validateAndGetAssistant(appId, tokenId, serviceName, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
 
     const service = await validateAndGetService(serviceName, this.ainize);
@@ -76,10 +71,11 @@ export default class Messages extends BlockchainBase {
     await ainizeLogin(this.ain, this.ainize);
 
     const message = await this.createMessage(threadId, role, content, service, metadata);
-    const run = await this.createRun(threadId, assistantId, service);
+    const run = await this.createRun(threadId, id, service);
     await this.waitForRun(threadId, run.id, service);
     // TODO(jiyoung): if 'has_more=true', use cursor to fetch more data.
-    const { data, has_more } = await this.listMessages(threadId, service);
+    const list = await this.listMessages(threadId, service);
+    const { data, has_more } = list;
 
     await ainizeLogout(this.ainize);
 
@@ -270,7 +266,7 @@ export default class Messages extends BlockchainBase {
           clearInterval(interval);
           reject(new Error(`Run ${runId} is ${run.status}`));
         }
-      }, 1000); // 1sec
+      }, 2000); // 2sec
     });
   }
 
