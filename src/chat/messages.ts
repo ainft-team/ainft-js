@@ -1,18 +1,18 @@
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import Ainft721Object from '../../ainft721Object';
-import BlockchainBase from '../../blockchainBase';
+import Ainft721Object from '../ainft721Object';
+import BlockchainBase from '../blockchainBase';
 import {
+  JobType,
   Message,
   MessageCreateParams,
   MessagesTransactionResult,
   MessageMap,
   MessageTransactionResult,
   MessageUpdateParams,
-  JobType,
-  ServiceProvider,
   Page,
-} from '../../types';
+  ServiceProvider,
+} from '../types';
 import {
   ainizeLogin,
   ainizeLogout,
@@ -32,7 +32,7 @@ import {
   validateObjectServiceConfig,
   validateThread,
   validateToken,
-} from '../../util';
+} from '../util';
 
 /**
  * This class supports create messages within threads.\
@@ -63,7 +63,12 @@ export default class Messages extends BlockchainBase {
 
     const serviceName = validateAndGetServiceName(provider);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
-    const { id: assistantId } = await validateAndGetAssistant(appId, tokenId, serviceName, this.ain);
+    const { id: assistantId } = await validateAndGetAssistant(
+      appId,
+      tokenId,
+      serviceName,
+      this.ain
+    );
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
 
     const service = await validateAndGetService(serviceName, this.ainize);
@@ -126,9 +131,21 @@ export default class Messages extends BlockchainBase {
       ...(metadata && { metadata }),
     };
 
-    const message = await sendRequestToService<Message>(jobType, body, service, this.ain, this.ainize);
+    const message = await sendRequestToService<Message>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
-    const txBody = await this.buildTxBodyForUpdateMessage(message, appId, tokenId, serviceName, address);
+    const txBody = await this.buildTxBodyForUpdateMessage(
+      message,
+      appId,
+      tokenId,
+      serviceName,
+      address
+    );
     const txResult = await sendTransaction(txBody, this.ain);
 
     return { ...txResult, message };
@@ -167,7 +184,13 @@ export default class Messages extends BlockchainBase {
     const jobType = JobType.RETRIEVE_MESSAGE;
     const body = { jobType, threadId, messageId };
 
-    const message = await sendRequestToService<Message>(jobType, body, service, this.ain, this.ainize);
+    const message = await sendRequestToService<Message>(
+      jobType,
+      body,
+      service,
+      this.ain,
+      this.ainize
+    );
 
     return message;
   }

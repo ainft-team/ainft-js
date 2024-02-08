@@ -1,7 +1,7 @@
-import AinftJs from '../../../src/ainft';
+import AinftJs from '../../src/ainft';
 
-jest.mock('../../../src/util', () => {
-  const actual = jest.requireActual('../../../src/util');
+jest.mock('../../src/util', () => {
+  const actual = jest.requireActual('../../src/util');
   return {
     ...actual,
     validateAndGetService: jest.fn().mockResolvedValue({

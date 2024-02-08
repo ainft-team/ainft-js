@@ -1,4 +1,4 @@
-import AinftJs, { MessageCreateParams, MessageUpdateParams } from '../../../src/ainft';
+import AinftJs, { MessageCreateParams, MessageUpdateParams } from '../../src/ainft';
 
 const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
 const appId = 'ainft721_0x8a193528f6d406ce81ff5d9a55304337d0ed8de6';

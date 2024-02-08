@@ -16,7 +16,7 @@ import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
 import Eth from './eth';
-import Chat from './ai/chat/chat';
+import Chat from './chat/chat';
 import {
   AINFT_SERVER_ENDPOINT,
   AIN_BLOCKCHAIN_CHAINID,
