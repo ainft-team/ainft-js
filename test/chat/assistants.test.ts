@@ -19,7 +19,7 @@ const tokenId = '1';
 const assistantId = 'asst_000000000000000000000001';
 
 describe('assistant', () => {
-  jest.setTimeout(300000); // 5min
+  jest.setTimeout(60000); // 1min
   let ainft: AinftJs;
 
   beforeAll(() => {
