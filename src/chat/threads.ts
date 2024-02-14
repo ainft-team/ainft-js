@@ -59,7 +59,7 @@ export default class Threads extends BlockchainBase {
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.CREATE_THREAD;
-    const body = { ...(metadata && { metadata }) };
+    const body = { ...(metadata && Object.keys(metadata).length && { metadata }) };
 
     const thread = await sendRequestToService<Thread>(
       jobType,
@@ -109,7 +109,7 @@ export default class Threads extends BlockchainBase {
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.MODIFY_THREAD;
-    const body = { threadId, ...(metadata && { metadata }) };
+    const body = { threadId, ...(metadata && Object.keys(metadata).length && { metadata }) };
 
     const thread = await sendRequestToService<Thread>(
       jobType,

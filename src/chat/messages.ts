@@ -124,7 +124,7 @@ export default class Messages extends BlockchainBase {
     const body = {
       threadId,
       messageId,
-      ...(metadata && { metadata }),
+      ...(metadata && Object.keys(metadata).length && { metadata }),
     };
 
     const message = await sendRequestToService<Message>(
@@ -238,7 +238,7 @@ export default class Messages extends BlockchainBase {
       threadId,
       role,
       content,
-      ...(metadata && { metadata }),
+      ...(metadata && Object.keys(metadata).length && { metadata }),
     });
   }
 

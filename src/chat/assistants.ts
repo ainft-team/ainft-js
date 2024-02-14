@@ -126,7 +126,7 @@ export default class Assistants extends BlockchainBase {
       ...(name && { name }),
       ...(instructions && { instructions }),
       ...(description && { description }),
-      ...(metadata && { metadata }),
+      ...(metadata && Object.keys(metadata).length && { metadata }),
     };
 
     const assistant = await sendRequestToService<Assistant>(
