@@ -1,5 +1,6 @@
-const AinftJs = require('@ainblockchain/ain-js').default;
+const AinftJs = require('@ainft-team/ainft-js').default;
 
+const privateKey = '<your private key>';
 // Use 'dev' or 'prod' api server.
 const stage = '<your stage>';
 // Use 'testnet' or 'mainnet' blockchain network.
@@ -10,11 +11,6 @@ const objectId = '<your object id>';
 const appId = '<your app id>';
 const tokenId = '<your token id>';
 
-const privateKey = process.env['PRIVATE_KEY'];
-if (!privateKey) {
-  throw new Error('The PRIVATE_KEY environment variable is missing.');
-}
-
 const ainft = new AinftJs(privateKey, {
   ainftServerEndpoint: `https://ainft-api${stage === 'dev' ? '-dev' : ''}.ainetwork.ai`,
   ainBlockchainEndpoint: `https://${network}-api.ainetwork.ai`,
@@ -22,7 +18,7 @@ const ainft = new AinftJs(privateKey, {
 });
 
 async function main() {
-  console.log('Creating assistant');
+  console.log('Creating assistant...\n');
 
   const { assistant, tx_hash } = await ainft.chat.assistant.create(objectId, tokenId, 'openai', {
     model: 'gpt-3.5-turbo',
@@ -33,8 +29,8 @@ async function main() {
   });
 
   console.log(`Created assistant with ID: ${assistant.id}`);
-  console.log(`assistant data: ${JSON.stringify(assistant, null, 2)}`);
-  console.log(`transaction hash: ${tx_hash}`);
+  console.log(`Assistant data: ${JSON.stringify(assistant, null, 2)}`);
+  console.log(`Transaction hash: ${tx_hash}`);
   console.log(
     `View more details at: https://${
       network === 'testnet' ? 'testnet-' : ''

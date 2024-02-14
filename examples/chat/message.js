@@ -1,5 +1,6 @@
-const AinftJs = require('@ainblockchain/ain-js').default;
+const AinftJs = require('@ainft-team/ainft-js').default;
 
+const privateKey = '<your private key>';
 // Use 'dev' or 'prod' api server.
 const stage = '<your stage>';
 // Use 'testnet' or 'mainnet' blockchain network.
@@ -10,11 +11,6 @@ const objectId = '<your object id>';
 const appId = '<your app id>';
 const tokenId = '<your token id>';
 
-const privateKey = process.env['PRIVATE_KEY'];
-if (!privateKey) {
-  throw new Error('The PRIVATE_KEY environment variable is missing.');
-}
-
 const ainft = new AinftJs(privateKey, {
   ainftServerEndpoint: `https://ainft-api${stage === 'dev' ? '-dev' : ''}.ainetwork.ai`,
   ainBlockchainEndpoint: `https://${network}-api.ainetwork.ai`,
@@ -22,15 +18,15 @@ const ainft = new AinftJs(privateKey, {
 });
 
 async function main() {
-  console.log('Creating thread');
+  console.log('Creating thread...\n');
 
   const { thread, tx_hash: txHash1 } = await ainft.chat.thread.create(objectId, tokenId, 'openai', {
     metadata: {},
   });
 
   console.log(`Created thread with ID: ${thread.id}`);
-  console.log(`thread data: ${JSON.stringify(thread, null, 2)}`);
-  console.log(`transaction hash: ${txHash1}`);
+  console.log(`Thread data: ${JSON.stringify(thread, null, 2)}`);
+  console.log(`Transaction hash: ${txHash1}`);
   console.log(
     `View more details at: https://${
       network === 'testnet' ? 'testnet-' : ''
