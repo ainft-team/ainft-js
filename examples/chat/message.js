@@ -37,15 +37,15 @@ async function main() {
 
   console.log('Creating message');
 
-  const { messages, tx_hash } = await ainft.chat.message.create(objectId, tokenId, 'openai', {
+  const { messages, tx_hash } = await ainft.chat.message.create(thread.id, objectId, tokenId, 'openai', {
     role: 'user',
     content: '<your content>',
     metadata: {},
   });
 
   console.log(`Created new message with reply:`);
-  console.log(`messages data: ${JSON.stringify(messages, null, 2)}`);
-  console.log(`transaction hash: ${tx_hash}`);
+  console.log(`Messages data: ${JSON.stringify(messages, null, 2)}`);
+  console.log(`Transaction hash: ${tx_hash}`);
   console.log(
     `View more details at: https://${
       network === 'testnet' ? 'testnet-' : ''
