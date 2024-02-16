@@ -1,46 +1,44 @@
-const AinftJs = require('@ainft-team/ainft-js').default;
-
-const privateKey = '<your private key>';
-// Use 'dev' or 'prod' api server.
-const stage = '<your stage>';
-// Use 'testnet' or 'mainnet' blockchain network.
-const network = '<your network>';
-// To run this example, you must own an ainft object; create one if you don't.
+// To run this example, you must own an ainft object and token; create one if you don't.
 // https://docs.ainetwork.ai/ainfts/developer-reference/ainft-tutorial/create-ainft-object-and-mint
-const objectId = '<your object id>';
-const appId = '<your app id>';
-const tokenId = '<your token id>';
+
+const AinftJs = require('@ainft-team/ainft-js').default;
+const config = require('../config.json');
+
+['privateKey', 'objectId', 'appId', 'tokenId'].forEach((key) => {
+  if (!config[key]?.trim()) {
+    throw new Error(`${key} is missing or empty in config.json`);
+  }
+});
+
+const { privateKey, objectId, appId, tokenId } = config; // TODO(user): set these in config.json
+const params = { 
+  model: 'gpt-4', // TODO(user): update this
+  name: 'QuickSupport', // TODO(user): update this
+  instructions: 'Answer tech support questions.', // TODO(user): update this
+  description: 'A chatbot for quick tech-related queries.', // TODO(user): update this
+  metadata: { topic: 'Tech', language: 'en' }, // TODO(user): update this
+};
 
 const ainft = new AinftJs(privateKey, {
-  ainftServerEndpoint: `https://ainft-api${stage === 'dev' ? '-dev' : ''}.ainetwork.ai`,
-  ainBlockchainEndpoint: `https://${network}-api.ainetwork.ai`,
-  chainId: network === 'testnet' ? 0 : 1,
+  ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
+  ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
+  chainId: 0,
 });
 
 async function main() {
-  console.log('Creating assistant...\n');
+  try {
+    console.log('Creating assistant...\n');
 
-  const { assistant, tx_hash } = await ainft.chat.assistant.create(objectId, tokenId, 'openai', {
-    model: 'gpt-3.5-turbo',
-    name: '<your name>',
-    instructions: '<your instructions>',
-    description: '<your description>',
-    metadata: {},
-  });
+    const { assistant, tx_hash } = await ainft.chat.assistant.create(objectId, tokenId, 'openai', params);
 
-  console.log(`Created assistant with ID: ${assistant.id}`);
-  console.log(`Assistant data: ${JSON.stringify(assistant, null, 2)}`);
-  console.log(`Transaction hash: ${tx_hash}`);
-  console.log(
-    `View more details at: https://${
-      network === 'testnet' ? 'testnet-' : ''
-    }insight.ainetwork.ai/database/values/apps/${appId}/tokens/${tokenId}/ai`
-  );
-
-  console.log('-----');
+    console.log(`\nSuccessfully created assistant with ID: ${assistant.id}`);
+    console.log(`assistant: ${JSON.stringify(assistant, null, 2)}`);
+    console.log(`txHash: ${tx_hash}`);
+    console.log(`View more details at: https://testnet-insight.ainetwork.ai/database/values/apps/${appId}/tokens/${tokenId}/ai`);
+  } catch (error) {
+    console.error('Failed to create assistant: ', error.message);
+    process.exit(1);
+  }
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main();

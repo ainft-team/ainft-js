@@ -1,5 +1,3 @@
-// To run this example you must create a thread (see examples/chat/thread.js)
-
 const AinftJs = require('@ainft-team/ainft-js').default;
 const config = require('../config.json');
 
@@ -10,12 +8,6 @@ const config = require('../config.json');
 });
 
 const { privateKey, objectId, appId, tokenId } = config; // TODO(user): set these in config.json
-const threadId = '<YOUR_THREAD_ID>'; // TODO(user): update this
-const params = {
-  role: 'user',
-  content: 'What is your name?', // TODO(user): update this
-  metadata: { language: 'en' }, // TODO(user): update this
-};
 
 const ainft = new AinftJs(privateKey, {
   ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
@@ -25,17 +17,17 @@ const ainft = new AinftJs(privateKey, {
 
 async function main() {
   try {
-    console.log('Creating message...\n');
+    console.log('Creating thread...\n');
 
-    const { messages, tx_hash } = await ainft.chat.message.create(threadId, objectId, tokenId, 'openai', params);
+    const { thread, tx_hash } = await ainft.chat.thread.create(objectId, tokenId, 'openai', {});
 
-    console.log(`\nSuccessfully created new message with reply:`);
-    console.log(`messages: ${JSON.stringify(messages, null, 2)}`);
+    console.log(`\nSuccessfully created thread with ID: ${thread.id}`);
+    console.log(`thread: ${JSON.stringify(thread, null, 2)}`);
     console.log(`txHash: ${tx_hash}`);
-    // TODO(jiyoung): update service name in path
+    // TODO(jiyoung): update service name in path 
     console.log(`View more details at: https://testnet-insight.ainetwork.ai/database/values/apps/${appId}/tokens/${tokenId}/ai/openai_ainize3/history`);
   } catch (error) {
-    console.error('Failed to create message: ', error.message);
+    console.error('Failed to create thread: ', error.message);
     process.exit(1);
   }
 }

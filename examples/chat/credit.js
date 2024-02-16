@@ -1,37 +1,46 @@
 const AinftJs = require('@ainft-team/ainft-js').default;
+const config = require('../config.json');
 
-const privateKey = '<your private key>';
-// Use 'dev' or 'prod' api server.
-const stage = '<your stage>';
-// Use 'testnet' or 'mainnet' blockchain network.
-const network = '<your network>';
+if (!config.privateKey?.trim()) {
+  throw new Error('privateKey is missing or empty in config.json');
+}
+
+const { privateKey } = config;
 
 const ainft = new AinftJs(privateKey, {
-  ainftServerEndpoint: `https://ainft-api${stage === 'dev' ? '-dev' : ''}.ainetwork.ai`,
-  ainBlockchainEndpoint: `https://${network}-api.ainetwork.ai`,
-  chainId: network === 'testnet' ? 0 : 1,
+  ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
+  ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
+  chainId: 0,
 });
 
 async function main() {
-  console.log('Depositing credit...\n');
+  try {
+    console.log('Depositing credit...\n');
 
-  // Use the [faucet](https://faucet.ainetwork.ai) to get test AIN for testnet.
-  const { tx_hash, address, balance } = await ainft.chat.depositCredit('openai', 10);
+    // TODO(user): get testnet AIN from [faucet](https://faucet.ainetwork.ai)
+    const { tx_hash, address, balance } = await ainft.chat.depositCredit('openai', 10);
 
-  console.log(`Deposited credit for chatting!`);
-  console.log(`Address: ${address}`);
-  console.log(`Balance: ${balance}`);
-  console.log(`Transaction hash: ${tx_hash}`);
-  console.log(
-    `View more details at: https://${
-      network === 'testnet' ? 'testnet-' : ''
-    }insight.ainetwork.ai/transactions/${tx_hash}`
-  );
+    console.log(`\nSuccessfully deposited credit for chatting!`);
+    console.log(`address: ${address}`);
+    console.log(`balance: ${balance}`);
+    console.log(`txHash: ${tx_hash}`);
+    console.log(`View more details at: https://testnet-insight.ainetwork.ai/transactions/${tx_hash}`);
+  } catch (error) {
+    console.error('Failed to deposit credit: ', error.message);
+    process.exit(1);
+  }
 
-  console.log('-----');
+  try {
+    console.log('\nChecking credit...\n');
+
+    const balance = await ainft.chat.getCredit('openai');
+
+    console.log(`\nSuccessfully checked credit!`);
+    console.log(`balance: ${balance}`);
+  } catch (error) {
+    console.error('Failed to check credit:', error.message);
+    process.exit(2);
+  }
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main();
