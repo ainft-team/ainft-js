@@ -1,22 +1,34 @@
 const AinftJs = require('@ainft-team/ainft-js').default;
+const config = require('../config.json');
 
-const myPrivateKey = 'YOUR_PRIVATE_KEY';
-const config = { 
-  ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
-  ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai'
+if (!config.privateKey?.trim()) {
+  throw new Error('privateKey is missing or empty in config.json');
 }
-const ainftJs = new AinftJs(myPrivateKey, config);
 
-const name = 'YOUR_AINFT_OBJECT_NAME';
-const symbol = 'YOUR_AINFT_OBJECT_SYMBOL';
+const { privateKey } = config; // TODO(user): set this in config.json
+const name = 'MyObject'; // TODO(user): update this
+const symbol = 'MYOBJ'; // TODO(user): update this
 
-ainftJs.nft.create(name, symbol)
-  .then((result) => {
-    const { ainftObject, txHash } = result;
-    console.log(txHash);
-    console.log(ainftObject.id);
-    console.log(ainftObject.appId);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+const ainft = new AinftJs(privateKey, {
+  ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
+  ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
+});
+
+async function main() {
+  try {
+    console.log('Creating ainft object...\n');
+
+    const { ainftObject, txHash } = await ainft.nft.create(name, symbol);
+
+    console.log(`Successfully created ainft object!`);
+    console.log(`objectId: ${ainftObject.id}`);
+    console.log(`appId: ${ainftObject.appId}`);
+    console.log(`txHash: ${txHash}`);
+    console.log(`View more details at: https://testnet-insight.ainetwork.ai/database/values/apps/${ainftObject.appId}`);
+  } catch (error) {
+    console.error('Failed to create ainft object: ', error.message);
+    process.exit(1);
+  }
+}
+
+main();
