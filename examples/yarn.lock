@@ -71,10 +71,10 @@
     uuid "^3.3.3"
     varuint-bitcoin "^1.1.0"
 
-"@ainft-team/ainft-js@1.1.0-beta.6":
-  version "1.1.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@ainft-team/ainft-js/-/ainft-js-1.1.0-beta.6.tgz#a104922722f49f87414afedc1bfacc33f775c61d"
-  integrity sha512-YXAy1CgRRmawPnZW6vPHYN96SQOXf3UmlUVllXqxLq06EojPaNNMMQUfoc77XA9x9Q4fj+IiZnnOSKqB/ns9PQ==
+"@ainft-team/ainft-js@1.1.0-beta.7":
+  version "1.1.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@ainft-team/ainft-js/-/ainft-js-1.1.0-beta.7.tgz#05e52037ad86a782f9be9880ec7cabd6c8c6084f"
+  integrity sha512-rCLTQuAVt/cPe802WJVhQOagiqJtKrnA5a+iF6uja0zZj1bzTxlTXRPanIZxi6560c6+Oxb9oVexCFUwDG2CrA==
   dependencies:
     "@ainblockchain/ain-js" "^1.6.0"
     "@ainblockchain/ain-util" "^1.1.9"
