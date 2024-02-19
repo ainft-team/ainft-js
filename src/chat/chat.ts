@@ -147,21 +147,7 @@ export default class Chat extends BlockchainBase {
     address: string
   ) {
     const ref = Ref.app(appId).ai(serviceName);
-    const path = `/apps/${appId}/tokens/$token_id/ai/$ai_name/history/$user_addr`;
-    const subpath = 'threads/$thread_id/messages/$message_id';
 
-    const rule = {
-      // TODO(jiyoung): fix minting issue after setting write rule.
-      // write: 'auth.addr === $user_addr',
-      // TODO(jiyoung): discuss whether to apply gc rule for messages.
-      // state: { gc_max_siblings: 20, gc_num_siblings_deleted: 10 },
-    };
-
-    const setValueOp = buildSetValueOp(ref, config);
-    // const setWriteRuleOp = buildSetWriteRuleOp(path, rule.write);
-    // const setGCRuleOp = buildSetStateRuleOp(`${path}/${subpath}`, rule.state);
-    const setOp = buildSetOp([setValueOp /*setWriteRuleOp, setGCRuleOp*/]);
-
-    return buildSetTransactionBody(setOp, address);
+    return buildSetTransactionBody(buildSetValueOp(ref, config), address);
   }
 }

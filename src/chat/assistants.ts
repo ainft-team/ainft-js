@@ -25,6 +25,8 @@ import {
   validateToken,
   sendRequestToService,
   sendTransaction,
+  buildSetWriteRuleOp,
+  buildSetOp,
 } from '../util';
 
 /**
@@ -256,6 +258,8 @@ export default class Assistants extends BlockchainBase {
   ) {
     const { id, model, name, instructions, description, metadata } = assistant;
     const ref = Ref.app(appId).token(tokenId).ai(serviceName).root();
+    const path = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/$user_addr`;
+    const subpath = 'threads/$thread_id/messages/$message_id';
 
     const config = {
       model,
@@ -266,7 +270,19 @@ export default class Assistants extends BlockchainBase {
     };
     const value = { id, config, history: true };
 
-    return buildSetTransactionBody(buildSetValueOp(ref, value), address);
+    const rule = {
+      // TODO(jiyoung): fix minting issue after setting write rule.
+      write: 'auth.addr === $user_addr',
+      // TODO(jiyoung): discuss whether to apply gc rule for messages.
+      // state: { gc_max_siblings: 20, gc_num_siblings_deleted: 10 },
+    };
+
+    const setValueOp = buildSetValueOp(ref, value);
+    const setWriteRuleOp = buildSetWriteRuleOp(path, rule.write);
+    // const setGCRuleOp = buildSetStateRuleOp(`${path}/${subpath}`, rule.state);
+    const setOp = buildSetOp([setValueOp, setWriteRuleOp, /*setGCRuleOp*/]);
+
+    return buildSetTransactionBody(setOp, address);
   }
 
   private buildTxBodyForUpdateAssistant(
