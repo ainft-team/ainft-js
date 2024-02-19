@@ -13,6 +13,7 @@ import {
 import {
   buildSetTransactionBody,
   buildSetValueOp,
+  getValue,
   isTransactionSuccess,
   Ref,
   validateAndGetServiceName,
@@ -54,6 +55,12 @@ export default class Assistants extends BlockchainBase {
 
     const serviceName = validateAndGetServiceName(provider);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
+
+    const path = Ref.app(appId).token(tokenId).ai(serviceName).root();
+    const exists = await getValue(path, this.ain);
+    if (exists) {
+      throw new Error('Assistant already exists');
+    }
 
     const service = await validateAndGetService(serviceName, this.ainize);
 
