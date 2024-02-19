@@ -4,6 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@ainft-team/ainft-js": "1.1.0-beta.7"
+    "@ainft-team/ainft-js": "1.1.0-beta.8"
   }
 }
