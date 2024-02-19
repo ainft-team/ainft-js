@@ -13,7 +13,7 @@ const { privateKey, objectId, appId, tokenId } = config; // TODO(user): set thes
 const threadId = '<YOUR_THREAD_ID>'; // TODO(user): update this
 const params = {
   role: 'user',
-  content: 'What is your name?', // TODO(user): update this
+  content: 'What is git?', // TODO(user): update this
   metadata: { language: 'en' }, // TODO(user): update this
 };
 
