@@ -329,8 +329,22 @@ export const sendRequestToService = async <T>(
 ): Promise<T> => {
   try {
     await ainizeLogin(ain, ainize);
+
+    // TODO(jiyoung): check status to identify failure (if implemented)
     const data = await service.request({ ...body, jobType });
+    if (data) {
+      if (typeof data === 'string') {
+        if (data.includes('Failed to send transaction')) {
+          throw new Error(data);
+        }
+        if (data.includes('Request failed with status code')) {
+          throw new Error(data);
+        }
+      }
+    }
+
     await ainizeLogout(ainize);
+
     return data as T;
   } catch (error: any) {
     throw new Error(`Ainize request failed: ${error.message}`);
