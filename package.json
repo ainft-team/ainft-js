@@ -2,7 +2,7 @@
   "name": "@ainft-team/ainft-js",
   "main": "dist/ainft.js",
   "types": "dist/ainft.d.ts",
-  "version": "1.1.0-beta.5",
+  "version": "1.1.0-beta.6",
   "engines": {
     "node": ">=16"
   },
