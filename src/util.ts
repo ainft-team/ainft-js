@@ -195,12 +195,17 @@ export const validateObjectOwner = async (appId: string, address: string, ain: A
   }
 };
 
-export const validateAndGetServiceName = (provider: string): string => {
+export const validateAndGetServiceName = async (
+  provider: string,
+  ainize: Ainize
+): Promise<string> => {
   const serviceName = PROVIDER_SERVICE_NAME_MAP.get(provider);
-  if (!serviceName) {
-    throw new Error('Service is currently not supported');
-  }
-  return serviceName;
+  if (serviceName) return serviceName;
+
+  const service = await ainize.getService(provider);
+  if (!service) throw new Error(`Unknown service name: ${provider}`);
+
+  return provider;
 };
 
 export const validateService = async (serviceName: string, ainize: Ainize): Promise<void> => {

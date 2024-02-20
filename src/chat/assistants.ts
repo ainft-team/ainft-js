@@ -55,7 +55,7 @@ export default class Assistants extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
 
     const path = Ref.app(appId).token(tokenId).ai(serviceName).root();
@@ -122,7 +122,7 @@ export default class Assistants extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
@@ -183,7 +183,7 @@ export default class Assistants extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
@@ -229,7 +229,7 @@ export default class Assistants extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 

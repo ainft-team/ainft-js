@@ -52,7 +52,7 @@ export default class Threads extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
 
@@ -101,7 +101,7 @@ export default class Threads extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
@@ -151,7 +151,7 @@ export default class Threads extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
@@ -199,7 +199,7 @@ export default class Threads extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
