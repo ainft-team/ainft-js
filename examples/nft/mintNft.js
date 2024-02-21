@@ -1,24 +1,36 @@
 const AinftJs = require('@ainft-team/ainft-js').default;
+const config = require('../config.json');
 
-const myPrivateKey = 'YOUR_PRIVATE_KEY';
-const config = {
+['privateKey', 'objectId'].forEach((key) => {
+  if (!config[key]?.trim()) {
+    throw new Error(`${key} is missing or empty in config.json`);
+  }
+});
+
+const { privateKey, objectId } = config; // TODO(user): set these in config.json
+const to = '0x...'; // TODO(user): update this with recipient's ain address
+const tokenId = '1'; // TODO(user): update this as string to unique integer
+
+const ainftJs = new AinftJs(privateKey, {
   ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
   ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
-}
-const ainftJs = new AinftJs(myPrivateKey, config);
+});
 
-const ainftObjectId = 'YOUR_AINFT_OBJECT_ID';
-const to = 'RECEIVER_ADDRESS';
-const tokenId = 'TOKEN_ID';
-
-const main = async () => {
+async function main() {
   try {
-    const ainftObject = await ainftJs.nft.get(ainftObjectId);
-    const result = await ainftObject.mint(to, tokenId);
-    console.log(result);  
+    console.log('Minting ainft token...\n');
+
+    const ainftObject = await ainftJs.nft.get(objectId);
+    const { tx_hash } = await ainftObject.mint(to, tokenId);
+
+    console.log(`Successfully minted ainft token!`);
+    console.log(`tokenId: ${tokenId}`);
+    console.log(`txHash: ${tx_hash}`);
+    console.log(`View more details at: https://testnet-insight.ainetwork.ai/database/values/apps/${ainftObject.appId}/tokens/${tokenId}`);
   } catch (error) {
-    console.log(error);
-  } 
+    console.error('Failed to mint ainft token: ', error.message);
+    process.exit(1);
+  }
 }
 
 main();

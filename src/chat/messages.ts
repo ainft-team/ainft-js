@@ -61,7 +61,7 @@ export default class Messages extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     const { id } = await validateAndGetAssistant(appId, tokenId, serviceName, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
@@ -112,7 +112,7 @@ export default class Messages extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
@@ -124,7 +124,7 @@ export default class Messages extends BlockchainBase {
     const body = {
       threadId,
       messageId,
-      ...(metadata && { metadata }),
+      ...(metadata && Object.keys(metadata).length && { metadata }),
     };
 
     const message = await sendRequestToService<Message>(
@@ -169,7 +169,7 @@ export default class Messages extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
@@ -211,7 +211,7 @@ export default class Messages extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
@@ -238,7 +238,7 @@ export default class Messages extends BlockchainBase {
       threadId,
       role,
       content,
-      ...(metadata && { metadata }),
+      ...(metadata && Object.keys(metadata).length && { metadata }),
     });
   }
 

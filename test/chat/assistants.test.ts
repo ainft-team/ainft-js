@@ -5,6 +5,7 @@ jest.mock('../../src/util', () => {
   const actual = jest.requireActual('../../src/util');
   return {
     ...actual,
+    getValue: jest.fn(),
     validateAssistant: jest.fn().mockResolvedValue(undefined),
     sendRequestToService: jest.fn(),
     sendTransaction: jest.fn().mockResolvedValue({
@@ -45,6 +46,8 @@ describe('assistant', () => {
       // which leads to transaction reversion as it cannot be stored on the blockchain.
       metadata: { key1: 'value1' },
     };
+
+    (util.getValue as jest.Mock).mockResolvedValue(undefined);
 
     (util.sendRequestToService as jest.Mock).mockResolvedValue({
       ...body,

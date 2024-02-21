@@ -1147,7 +1147,7 @@ export enum JobType {
 /**
  * Name of the service provider.
  */
-export type ServiceProvider = 'openai';
+export type ServiceProvider = string | 'openai';
 
 /**
  * Name of the model to use. You can see the

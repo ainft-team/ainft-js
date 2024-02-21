@@ -2,7 +2,7 @@
   "name": "@ainft-team/ainft-js",
   "main": "dist/ainft.js",
   "types": "dist/ainft.d.ts",
-  "version": "1.0.0",
+  "version": "1.1.0-beta.8",
   "engines": {
     "node": ">=16"
   },
@@ -27,6 +27,7 @@
   "author": "AINFT Team",
   "license": "MIT",
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/form-data": "^2.5.0",
     "@types/jest": "^27.4.1",
     "jest": "^29.7.0",
@@ -40,7 +41,7 @@
   "dependencies": {
     "@ainblockchain/ain-js": "^1.6.0",
     "@ainblockchain/ain-util": "^1.1.9",
-    "@ainize-team/ainize-js": "^1.0.4",
+    "@ainize-team/ainize-js": "1.0.4",
     "@types/lodash": "^4.14.200",
     "axios": "^0.26.1",
     "fast-json-stable-stringify": "^2.1.0",

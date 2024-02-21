@@ -13,6 +13,7 @@ import {
 import {
   buildSetTransactionBody,
   buildSetValueOp,
+  getValue,
   isTransactionSuccess,
   Ref,
   validateAndGetServiceName,
@@ -24,6 +25,9 @@ import {
   validateToken,
   sendRequestToService,
   sendTransaction,
+  buildSetWriteRuleOp,
+  buildSetOp,
+  buildSetStateRuleOp,
 } from '../util';
 
 /**
@@ -52,8 +56,14 @@ export default class Assistants extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
+
+    const path = Ref.app(appId).token(tokenId).ai(serviceName).root();
+    const exists = await getValue(path, this.ain);
+    if (exists) {
+      throw new Error('Assistant already exists');
+    }
 
     const service = await validateAndGetService(serviceName, this.ainize);
 
@@ -63,7 +73,7 @@ export default class Assistants extends BlockchainBase {
       name,
       instructions,
       ...(description && { description }),
-      ...(metadata && { metadata }),
+      ...(metadata && Object.keys(metadata).length && { metadata }),
     };
 
     const assistant = await sendRequestToService<Assistant>(
@@ -113,7 +123,7 @@ export default class Assistants extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
@@ -126,7 +136,7 @@ export default class Assistants extends BlockchainBase {
       ...(name && { name }),
       ...(instructions && { instructions }),
       ...(description && { description }),
-      ...(metadata && { metadata }),
+      ...(metadata && Object.keys(metadata).length && { metadata }),
     };
 
     const assistant = await sendRequestToService<Assistant>(
@@ -174,7 +184,7 @@ export default class Assistants extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
@@ -220,7 +230,7 @@ export default class Assistants extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = validateAndGetServiceName(provider);
+    const serviceName = await validateAndGetServiceName(provider, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
@@ -249,6 +259,8 @@ export default class Assistants extends BlockchainBase {
   ) {
     const { id, model, name, instructions, description, metadata } = assistant;
     const ref = Ref.app(appId).token(tokenId).ai(serviceName).root();
+    const path = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/$user_addr`;
+    const subpath = 'threads/$thread_id/messages/$message_id';
 
     const config = {
       model,
@@ -259,7 +271,17 @@ export default class Assistants extends BlockchainBase {
     };
     const value = { id, config, history: true };
 
-    return buildSetTransactionBody(buildSetValueOp(ref, value), address);
+    const rule = {
+      write: 'auth.addr === $user_addr',
+      state: { gc_max_siblings: 15, gc_num_siblings_deleted: 10 },
+    };
+
+    const setValueOp = buildSetValueOp(ref, value);
+    const setWriteRuleOp = buildSetWriteRuleOp(path, rule.write);
+    const setGCRuleOp = buildSetStateRuleOp(`${path}/${subpath}`, rule.state);
+    const setOp = buildSetOp([setValueOp, setWriteRuleOp, setGCRuleOp]);
+
+    return buildSetTransactionBody(setOp, address);
   }
 
   private buildTxBodyForUpdateAssistant(
