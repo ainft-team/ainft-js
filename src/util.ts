@@ -325,6 +325,7 @@ export const ainizeLogout = async (ainize: Ainize) => {
   return AinizeAuth.getInstance().logout(ainize);
 };
 
+// TODO(jiyoung): add client-side timeout for response delay.
 export const sendRequestToService = async <T>(
   jobType: JobType,
   body: object,
