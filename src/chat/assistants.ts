@@ -272,7 +272,6 @@ export default class Assistants extends BlockchainBase {
     const value = { id, config, history: true };
 
     const rule = {
-      // TODO(jiyoung): fix minting issue after setting write rule.
       write: 'auth.addr === $user_addr',
       state: { gc_max_siblings: 15, gc_num_siblings_deleted: 10 },
     };
