@@ -5,7 +5,7 @@ import { SetOperation, SetMultiOperation, TransactionInput } from '@ainblockchai
 import Service from '@ainize-team/ainize-js/dist/service';
 
 import AinizeAuth from './common/ainize';
-import { PROVIDER_SERVICE_NAME_MAP, MIN_GAS_PRICE } from './constants';
+import { SERVICE_NAME_MAP, MIN_GAS_PRICE } from './constants';
 import { HttpMethod, JobType, MessageMap } from './types';
 
 export const buildData = (
@@ -195,17 +195,12 @@ export const validateObjectOwner = async (appId: string, address: string, ain: A
   }
 };
 
-export const validateAndGetServiceName = async (
-  provider: string,
-  ainize: Ainize
-): Promise<string> => {
-  const serviceName = PROVIDER_SERVICE_NAME_MAP.get(provider);
+export const validateAndGetServiceName = async (name: string, ainize: Ainize): Promise<string> => {
+  const serviceName = SERVICE_NAME_MAP.get(name);
   if (serviceName) return serviceName;
-
-  const service = await ainize.getService(provider);
-  if (!service) throw new Error(`Unknown service name: ${provider}`);
-
-  return provider;
+  const service = await ainize.getService(name);
+  if (!service) throw new Error(`Unknown service name: ${name}`);
+  return name;
 };
 
 export const validateService = async (serviceName: string, ainize: Ainize): Promise<void> => {

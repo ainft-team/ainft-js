@@ -9,7 +9,7 @@ import Threads from './threads';
 import Messages from './messages';
 import {
   ServiceType,
-  ServiceProvider,
+  ServiceNickname,
   CreditTransactionResult,
   ServiceConfigurationTransactionResult,
   ServiceConfiguration,
@@ -52,12 +52,12 @@ export default class Chat extends BlockchainBase {
   /**
    * Configures chat for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object to configure for chat.
-   * @param {ServiceProvider} provider - The service provider.
+   * @param {ServiceNickname} nickname - The service nickname.
    * @returns {Promise<ServiceConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the service configuration.
    */
   async configure(
     objectId: string,
-    provider: ServiceProvider
+    nickname: ServiceNickname
   ): Promise<ServiceConfigurationTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
@@ -65,7 +65,7 @@ export default class Chat extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateObjectOwner(appId, address, this.ain);
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     await validateService(serviceName, this.ainize);
 
     const config = {
@@ -86,15 +86,15 @@ export default class Chat extends BlockchainBase {
   }
 
   /**
-   * Deposits a credits for a service provider.
-   * @param {ServiceProvider} provider - The service provider for which credits are deposited.
+   * Deposits a credits for a service.
+   * @param {ServiceNickname} nickname - The service nickname for which credits are deposited.
    * @param {number} amount - The amount of credits to deposit.
    * @returns {Promise<CreditTransactionResult>} Returns a promise that resolves with the deposit transaction details (hash, address, and updated credit balance).
    */
-  async depositCredit(provider: ServiceProvider, amount: number): Promise<CreditTransactionResult> {
+  async depositCredit(nickname: ServiceNickname, amount: number): Promise<CreditTransactionResult> {
     const address = this.ain.signer.getAddress();
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     const service = await validateAndGetService(serviceName, this.ainize);
 
     await ainizeLogin(this.ain, this.ainize);
@@ -109,12 +109,12 @@ export default class Chat extends BlockchainBase {
   }
 
   /**
-   * Get the current credit for a service provider.
-   * @param {ServiceProvider} provider - The service provider to check the credit.
+   * Get the current credit for a service.
+   * @param {ServiceNickname} nickname - The service to check the credit.
    * @returns {Promise<number>} Returns a promise that resolves with the current credit balance.
    */
-  async getCredit(provider: ServiceProvider): Promise<number> {
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+  async getCredit(nickname: ServiceNickname): Promise<number> {
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     const service = await validateAndGetService(serviceName, this.ainize);
 
     await ainizeLogin(this.ain, this.ainize);

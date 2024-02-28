@@ -8,7 +8,7 @@ import {
   AssistantTransactionResult,
   AssistantUpdateParams,
   JobType,
-  ServiceProvider,
+  ServiceNickname,
 } from '../types';
 import {
   buildSetTransactionBody,
@@ -39,14 +39,14 @@ export default class Assistants extends BlockchainBase {
    * Create an assistant with a model and instructions.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ServiceNickname} nickname - The service nickname to use.
    * @param {AssistantCreateParams} AssistantCreateParams - The parameters to create assistant.
    * @returns Returns a promise that resolves with both the transaction result and the created assistant.
    */
   async create(
     objectId: string,
     tokenId: string,
-    provider: ServiceProvider,
+    nickname: ServiceNickname,
     { model, name, instructions, description, metadata }: AssistantCreateParams
   ): Promise<AssistantTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
@@ -56,7 +56,7 @@ export default class Assistants extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
 
     const path = Ref.app(appId).token(tokenId).ai(serviceName).root();
@@ -105,7 +105,7 @@ export default class Assistants extends BlockchainBase {
    * @param {string} assistantId - The ID of assistant.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ServiceNickname} nickname - The service nickname to use.
    * @param {AssistantUpdateParams} AssistantUpdateParams - The parameters to update assistant.
    * @returns Returns a promise that resolves with both the transaction result and the updated assistant.
    */
@@ -113,7 +113,7 @@ export default class Assistants extends BlockchainBase {
     assistantId: string,
     objectId: string,
     tokenId: string,
-    provider: ServiceProvider,
+    nickname: ServiceNickname,
     { model, name, instructions, description, metadata }: AssistantUpdateParams
   ): Promise<AssistantTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
@@ -123,7 +123,7 @@ export default class Assistants extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
@@ -168,14 +168,14 @@ export default class Assistants extends BlockchainBase {
    * @param {string} assistantId - The ID of assistant.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ServiceNickname} nickname - The service nickname to use.
    * @returns Returns a promise that resolves with both the transaction result and the deleted assistant.
    */
   async delete(
     assistantId: string,
     objectId: string,
     tokenId: string,
-    provider: ServiceProvider
+    nickname: ServiceNickname
   ): Promise<AssistantDeleteTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
@@ -184,7 +184,7 @@ export default class Assistants extends BlockchainBase {
     await validateObjectOwner(appId, address, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
@@ -216,21 +216,21 @@ export default class Assistants extends BlockchainBase {
    * @param {string} assistantId - The ID of assistant.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ServiceNickname} nickname - The service nickname to use.
    * @returns Returns a promise that resolves with the assistant.
    */
   async get(
     assistantId: string,
     objectId: string,
     tokenId: string,
-    provider: ServiceProvider
+    nickname: ServiceNickname
   ): Promise<Assistant> {
     const appId = Ainft721Object.getAppId(objectId);
 
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
