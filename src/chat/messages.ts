@@ -11,7 +11,7 @@ import {
   MessageTransactionResult,
   MessageUpdateParams,
   Page,
-  ServiceProvider,
+  ServiceNickname,
 } from '../types';
 import {
   ainizeLogin,
@@ -44,7 +44,7 @@ export default class Messages extends BlockchainBase {
    * @param {string} threadId - The ID of thread.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ServiceNickname} nickname - The service nickname to use.
    * @param {MessageCreateParams} MessageCreateParams - The parameters to create message.
    * @returns Returns a promise that resolves with both the transaction result and a list including the new message.
    */
@@ -52,7 +52,7 @@ export default class Messages extends BlockchainBase {
     threadId: string,
     objectId: string,
     tokenId: string,
-    provider: ServiceProvider,
+    nickname: ServiceNickname,
     { role, content, metadata }: MessageCreateParams
   ): Promise<MessagesTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
@@ -61,7 +61,7 @@ export default class Messages extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     const { id } = await validateAndGetAssistant(appId, tokenId, serviceName, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
@@ -95,7 +95,7 @@ export default class Messages extends BlockchainBase {
    * @param {string} threadId - The ID of thread.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ServiceNickname} nickname - The service nickname to use.
    * @returns Returns a promise that resolves with both the transaction result and the updated message.
    */
   async update(
@@ -103,7 +103,7 @@ export default class Messages extends BlockchainBase {
     threadId: string,
     objectId: string,
     tokenId: string,
-    provider: ServiceProvider,
+    nickname: ServiceNickname,
     { metadata }: MessageUpdateParams
   ): Promise<MessageTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
@@ -112,7 +112,7 @@ export default class Messages extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
@@ -153,7 +153,7 @@ export default class Messages extends BlockchainBase {
    * @param {string} threadId - The ID of thread.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ServiceNickname} nickname - The service nickname to use.
    * @returns Returns a promise that resolves with the message.
    */
   async get(
@@ -161,7 +161,7 @@ export default class Messages extends BlockchainBase {
     threadId: string,
     objectId: string,
     tokenId: string,
-    provider: ServiceProvider
+    nickname: ServiceNickname
   ): Promise<Message> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
@@ -169,7 +169,7 @@ export default class Messages extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
@@ -196,14 +196,14 @@ export default class Messages extends BlockchainBase {
    * @param {string} threadId - The ID of thread.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceProvider} provider - The service provider to use.
+   * @param {ServiceNickname} nickname - The service nickname to use.
    * @returns Returns a promise that resolves with the list of messages.
    */
   async list(
     threadId: string,
     objectId: string,
     tokenId: string,
-    provider: ServiceProvider
+    nickname: ServiceNickname
   ): Promise<MessageMap> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
@@ -211,7 +211,7 @@ export default class Messages extends BlockchainBase {
     await validateObject(appId, this.ain);
     await validateToken(appId, tokenId, this.ain);
 
-    const serviceName = await validateAndGetServiceName(provider, this.ainize);
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     await validateObjectServiceConfig(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
