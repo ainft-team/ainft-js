@@ -33,7 +33,7 @@ async function main() {
     console.log(`messages: ${JSON.stringify(messages, null, 2)}`);
     console.log(`txHash: ${tx_hash}`);
     // TODO(jiyoung): update service name in path
-    console.log(`View more details at: https://testnet-insight.ainetwork.ai/database/values/apps/${appId}/tokens/${tokenId}/ai/openai_ainize3/history`);
+    console.log(`View more details at: https://testnet-insight.ainetwork.ai/database/values/apps/${appId}/tokens/${tokenId}/ai/ainize_openai/history`);
   } catch (error) {
     console.error('Failed to create message: ', error.message);
     process.exit(1);

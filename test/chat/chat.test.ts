@@ -20,7 +20,7 @@ jest.mock('../../src/util', () => {
 });
 
 const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
-const serviceName = 'openai_ainize3';
+const serviceName = 'ainize_openai';
 
 describe('chat', () => {
   jest.setTimeout(60000); // 1min

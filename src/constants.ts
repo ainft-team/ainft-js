@@ -24,5 +24,5 @@ export const SUPPORTED_AINFT_STANDARDS = {
 }
 
 export const SERVICE_NAME_MAP = new Map<string, string>([
-  ['openai', 'openai_ainize3']
+  ['openai', 'ainize_openai']
 ]);
