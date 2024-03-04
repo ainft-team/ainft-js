@@ -7,8 +7,8 @@ jest.mock('../../src/util', () => {
     validateAndGetService: jest.fn().mockResolvedValue({
       getCreditBalance: jest
         .fn()
-        .mockResolvedValueOnce(0)
-        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null)
         .mockResolvedValue(10),
       chargeCredit: jest.fn().mockResolvedValue('0x' + 'a'.repeat(64)),
     }),
@@ -51,7 +51,7 @@ describe('chat', () => {
   it('credit: should get credit', async () => {
     const credit = await ainft.chat.getCredit('openai');
 
-    expect(credit).toBe(0);
+    expect(credit).toBe(null);
   });
 
   it('credit: should deposit credit', async () => {

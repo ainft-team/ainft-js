@@ -107,7 +107,7 @@ export default class Chat extends BlockchainBase {
   /**
    * Get the current credit for a service.
    * @param {ServiceNickname} nickname - The service to check the credit.
-   * @returns {Promise<number>} Returns a promise that resolves with the current credit balance.
+   * @returns {Promise<number|null>} Returns a promise that resolves with the current credit balance.
    */
   async getCredit(nickname: ServiceNickname): Promise<number> {
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
