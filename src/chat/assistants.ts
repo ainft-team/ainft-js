@@ -270,10 +270,12 @@ export default class Assistants extends BlockchainBase {
       ...(metadata && Object.keys(metadata).length && { metadata }),
     };
     const value = { id, config, history: true };
-
     const rule = {
-      write: 'auth.addr === $user_addr',
-      state: { gc_max_siblings: 15, gc_num_siblings_deleted: 10 },
+      write: `auth.addr === $user_addr || util.isAppAdmin('${appId}', auth.addr, getValue) === true`,
+      state: {
+        gc_max_siblings: MESSAGE_GC_MAX_SIBLINGS,
+        gc_num_siblings_deleted: MESSAGE_GC_NUM_SIBLINGS_DELETED,
+      },
     };
 
     const setValueOp = buildSetValueOp(ref, value);
@@ -312,7 +314,14 @@ export default class Assistants extends BlockchainBase {
     address: string
   ) {
     const ref = Ref.app(appId).token(tokenId).ai(serviceName).root();
+    const path = `/apps/${appId}/tokens/${tokenId}/ai/${serviceName}/history/$user_addr`;
+    const subpath = 'threads/$thread_id/messages/$message_id';
 
-    return buildSetTransactionBody(buildSetValueOp(ref, null), address);
+    const unsetGCRuleOp = buildSetStateRuleOp(`${path}/${subpath}`, null);
+    const unsetWriteRuleOp = buildSetWriteRuleOp(path, null);
+    const unsetValueOp = buildSetValueOp(ref, null);
+    const unsetOp = buildSetOp([unsetGCRuleOp, unsetWriteRuleOp, unsetValueOp]);
+
+    return buildSetTransactionBody(unsetOp, address);
   }
 }

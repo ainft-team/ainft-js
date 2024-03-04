@@ -60,8 +60,8 @@ export const buildSetRuleOp = (ref: string, rule: { write?: any; state?: any }):
   ref,
   value: {
     '.rule': {
-      ...(rule.write && { write: rule.write }),
-      ...(rule.state && { state: rule.state }),
+      write: rule.write,
+      state: rule.state,
     },
   },
 });

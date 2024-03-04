@@ -26,3 +26,6 @@ export const SUPPORTED_AINFT_STANDARDS = {
 export const SERVICE_NAME_MAP = new Map<string, string>([
   ['openai', 'ainize_openai']
 ]);
+
+export const MESSAGE_GC_MAX_SIBLINGS = 15;
+export const MESSAGE_GC_NUM_SIBLINGS_DELETED = 10;
