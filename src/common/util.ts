@@ -344,26 +344,23 @@ export const sendAinizeRequest = async <T>(
   ain: Ain,
   ainize: Ainize
 ): Promise<T> => {
+  let timeout: NodeJS.Timeout | null = null;
   try {
     await ainizeLogin(ain, ainize);
-
-    // TODO(jiyoung): check status to identify failure (if implemented)
-    const data = await service.request({ ...body, jobType });
-    if (data) {
-      if (typeof data === 'string') {
-        if (data.includes('Failed to send transaction')) {
-          throw new Error(data);
-        }
-        if (data.includes('Request failed with status code')) {
-          throw new Error(data);
-        }
-      }
+    const timeoutPromise = new Promise(
+      (_, reject) => (timeout = setTimeout(() => reject(new Error('timeout')), 60000)) // 1min
+    );
+    const response = await Promise.race([service.request({ ...body, jobType }), timeoutPromise]);
+    if (response.status === 'FAIL') {
+      throw new Error(JSON.stringify(response.data));
     }
-
-    await ainizeLogout(ainize);
-
-    return data as T;
+    return response.data as T;
   } catch (error: any) {
-    throw new Error(`Ainize request failed: ${error.message}`);
+    throw new Error(`Ainize service request failed: ${error.message}`);
+  } finally {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    await ainizeLogout(ainize);
   }
 };
