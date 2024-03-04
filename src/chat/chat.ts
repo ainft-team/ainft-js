@@ -11,8 +11,8 @@ import {
   ServiceType,
   ServiceNickname,
   CreditTransactionResult,
-  ServiceConfigurationTransactionResult,
-  ServiceConfiguration,
+  ChatConfigurationTransactionResult,
+  ChatConfiguration,
 } from '../types';
 import {
   ainizeLogin,
@@ -51,12 +51,12 @@ export default class Chat extends BlockchainBase {
    * Configures chat for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object to configure for chat.
    * @param {ServiceNickname} nickname - The service nickname.
-   * @returns {Promise<ServiceConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the service configuration.
+   * @returns {Promise<ChatConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the chat configuration.
    */
   async configure(
     objectId: string,
     nickname: ServiceNickname
-  ): Promise<ServiceConfigurationTransactionResult> {
+  ): Promise<ChatConfigurationTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
@@ -135,7 +135,7 @@ export default class Chat extends BlockchainBase {
   }
 
   private buildTxBodyForConfigureChat(
-    config: ServiceConfiguration,
+    config: ChatConfiguration,
     appId: string,
     serviceName: string,
     address: string
