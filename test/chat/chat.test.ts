@@ -46,7 +46,6 @@ describe('chat', () => {
     expect(result.result).toBeDefined();
     expect(config.name).toBe(serviceName);
     expect(config.type).toBe('chat');
-    expect(config.url).toBe(`https://${serviceName}.ainetwork.xyz`);
   });
 
   it('credit: should get credit', async () => {

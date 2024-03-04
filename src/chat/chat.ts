@@ -17,10 +17,8 @@ import {
 import {
   ainizeLogin,
   ainizeLogout,
-  buildSetOp,
   buildSetTransactionBody,
   buildSetValueOp,
-  buildSetWriteRuleOp,
   isTransactionSuccess,
   Ref,
   sleep,
@@ -71,8 +69,6 @@ export default class Chat extends BlockchainBase {
     const config = {
       type: ServiceType.CHAT,
       name: serviceName,
-      // TODO(jiyoung): fetch information from ainize.
-      url: `https://${serviceName}.ainetwork.xyz`,
     };
 
     const txBody = this.buildTxBodyForConfigureChat(config, appId, serviceName, address);
@@ -135,9 +131,7 @@ export default class Chat extends BlockchainBase {
       }
       await sleep(1000); // 1sec
     }
-    throw new Error(
-      `Credit update timed out. Please check the transaction on Insight using this hash: ${txHash}`
-    );
+    throw new Error(`Credit update timed out. Please check the transaction on insight: ${txHash}`);
   }
 
   private buildTxBodyForConfigureChat(

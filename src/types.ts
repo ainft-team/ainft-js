@@ -1234,8 +1234,6 @@ export interface ServiceConfiguration {
   type: ServiceType;
   /** The name of the service. */
   name: string;
-  /** The URL endpoint where the service is accessible. */
-  url: string;
 }
 
 export interface Assistant {
