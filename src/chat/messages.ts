@@ -32,7 +32,7 @@ import {
   validateObjectServiceConfig,
   validateThread,
   validateToken,
-} from '../util';
+} from '../common/util';
 
 /**
  * This class supports create messages within threads.\

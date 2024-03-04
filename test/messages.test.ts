@@ -1,4 +1,4 @@
-import AinftJs, { MessageCreateParams } from '../../src/ainft';
+import AinftJs, { MessageCreateParams } from '../src/ainft';
 
 jest.mock('../../src/util', () => {
   const actual = jest.requireActual('../../src/util');

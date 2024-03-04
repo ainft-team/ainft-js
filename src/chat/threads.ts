@@ -25,7 +25,7 @@ import {
   validateObjectServiceConfig,
   validateThread,
   validateToken,
-} from '../util';
+} from '../common/util';
 
 /**
  * This class supports create threads that assistant can interact with.\

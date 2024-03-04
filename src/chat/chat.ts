@@ -28,7 +28,7 @@ import {
   validateObjectOwner,
   validateService,
   sendTransaction,
-} from '../util';
+} from '../common/util';
 
 /**
  * This class supports configuring chat functionality for an AINFT object,\

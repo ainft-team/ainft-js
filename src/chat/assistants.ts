@@ -28,7 +28,7 @@ import {
   buildSetWriteRuleOp,
   buildSetOp,
   buildSetStateRuleOp,
-} from '../util';
+} from '../common/util';
 
 /**
  * This class supports building assistants that enables conversation with LLM models.\

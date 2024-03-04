@@ -1,5 +1,5 @@
-import AinftJs from '../../src/ainft';
-import * as util from '../../src/util';
+import AinftJs from '../src/ainft';
+import * as util from '../src/common/util';
 
 jest.mock('../../src/util', () => {
   const actual = jest.requireActual('../../src/util');
@@ -93,7 +93,7 @@ describe('thread', () => {
       id: threadId,
       deleted: true,
     });
-    
+
     const result = await ainft.chat.thread.delete(threadId, objectId, tokenId, 'openai');
     const { delThread } = result;
 

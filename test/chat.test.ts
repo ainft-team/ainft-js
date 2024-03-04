@@ -1,5 +1,5 @@
-import AinftJs from '../../src/ainft';
-import { test_object_id, test_service_name } from '../test_data';
+import AinftJs from '../src/ainft';
+import { test_object_id, test_service_name } from './test_data';
 
 jest.mock('../../src/util', () => {
   const util = jest.requireActual('../../src/util');

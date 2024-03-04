@@ -1,5 +1,5 @@
-import AinftJs, { AssistantCreateParams, AssistantUpdateParams } from '../../src/ainft';
-import * as util from '../../src/util';
+import AinftJs, { AssistantCreateParams, AssistantUpdateParams } from '../src/ainft';
+import * as util from '../src/common/util';
 
 jest.mock('../../src/util', () => {
   const actual = jest.requireActual('../../src/util');
@@ -104,7 +104,13 @@ describe('assistant', () => {
       created_at: 0,
     });
 
-    const result = await ainft.chat.assistant.update(assistantId, objectId, tokenId, 'openai', body);
+    const result = await ainft.chat.assistant.update(
+      assistantId,
+      objectId,
+      tokenId,
+      'openai',
+      body
+    );
     const { assistant } = result;
 
     expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
