@@ -1,4 +1,5 @@
 import AinftJs from '../../src/ainft';
+import { test_object_id, test_service_name } from '../test_data';
 
 jest.mock('../../src/util', () => {
   const util = jest.requireActual('../../src/util');
@@ -21,15 +22,16 @@ jest.mock('../../src/util', () => {
   };
 });
 
-const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
-const serviceName = 'ainize_openai';
+const TEST_PK = 'f0a2599e5629d4e67266169ea9ad1999f86995418391175af6d66005c1e1d96c';
+const TEST_ADDR = '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0';
+
+jest.setTimeout(60000); // 1min
 
 describe('chat', () => {
-  jest.setTimeout(60000); // 1min
   let ainft: AinftJs;
 
   beforeAll(() => {
-    ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
+    ainft = new AinftJs(TEST_PK, {
       ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
@@ -40,27 +42,24 @@ describe('chat', () => {
     jest.restoreAllMocks();
   });
 
-  it('config: should configure chat for ainft object', async () => {
-    const result = await ainft.chat.configure(objectId, 'openai');
+  it('should configure chat', async () => {
+    const result = await ainft.chat.configure(test_object_id, 'openai');
     const { config } = result;
-
     expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
     expect(result.result).toBeDefined();
-    expect(config.name).toBe(serviceName);
+    expect(config.name).toBe(test_service_name);
     expect(config.type).toBe('chat');
   });
 
-  it('credit: should get credit', async () => {
+  it('should get credit', async () => {
     const credit = await ainft.chat.getCredit('openai');
-
     expect(credit).toBe(null);
   });
 
-  it('credit: should deposit credit', async () => {
+  it('should deposit credit', async () => {
     const result = await ainft.chat.depositCredit('openai', 10);
-
     expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(result.address).toBe('0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0');
+    expect(result.address).toBe(TEST_ADDR);
     expect(result.balance).toBe(10);
   });
 });
