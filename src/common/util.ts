@@ -218,7 +218,11 @@ export const validateAndGetService = async (
   return service;
 };
 
-export const validateObjectServiceConfig = async (appId: string, serviceName: string, ain: Ain) => {
+export const validateServiceConfiguration = async (
+  appId: string,
+  serviceName: string,
+  ain: Ain
+) => {
   const aiPath = Ref.app(appId).ai(serviceName);
   if (!(await exists(aiPath, ain))) {
     throw new Error('Service configuration not found. Please call `ainft.chat.configure()` first.');
@@ -250,6 +254,19 @@ export const validateAndGetAssistant = async (
     throw new Error('Assistant not found');
   }
   return assistant;
+};
+
+export const validateAssistantNotExists = async (
+  appId: string,
+  tokenId: string,
+  serviceName: string,
+  ain: Ain
+) => {
+  const assistantPath = Ref.app(appId).token(tokenId).ai(serviceName).root();
+  const exists = await getValue(assistantPath, ain);
+  if (exists) {
+    throw new Error('Assistant already exists');
+  }
 };
 
 export const validateToken = async (appId: string, tokenId: string, ain: Ain) => {
@@ -320,8 +337,7 @@ export const ainizeLogout = async (ainize: Ainize) => {
   return AinizeAuth.getInstance().logout(ainize);
 };
 
-// TODO(jiyoung): add client-side timeout for response delay.
-export const sendRequestToService = async <T>(
+export const sendAinizeRequest = async <T>(
   jobType: JobType,
   body: object,
   service: Service,

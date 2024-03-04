@@ -16,13 +16,13 @@ import {
   getValue,
   isTransactionSuccess,
   Ref,
-  sendRequestToService,
+  sendAinizeRequest,
   sendTransaction,
   validateAndGetService,
   validateAndGetServiceName,
   validateAssistant,
   validateObject,
-  validateObjectServiceConfig,
+  validateServiceConfiguration,
   validateThread,
   validateToken,
 } from '../common/util';
@@ -53,21 +53,14 @@ export default class Threads extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
 
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.CREATE_THREAD;
     const body = { ...(metadata && Object.keys(metadata).length && { metadata }) };
-
-    const thread = await sendRequestToService<Thread>(
-      jobType,
-      body,
-      service,
-      this.ain,
-      this.ainize
-    );
+    const thread = await sendAinizeRequest<Thread>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForCreateThread(thread, appId, tokenId, serviceName, address);
     const result = await sendTransaction(txBody, this.ain);
@@ -102,7 +95,7 @@ export default class Threads extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
 
@@ -110,14 +103,7 @@ export default class Threads extends BlockchainBase {
 
     const jobType = JobType.MODIFY_THREAD;
     const body = { threadId, ...(metadata && Object.keys(metadata).length && { metadata }) };
-
-    const thread = await sendRequestToService<Thread>(
-      jobType,
-      body,
-      service,
-      this.ain,
-      this.ainize
-    );
+    const thread = await sendAinizeRequest<Thread>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = await this.buildTxBodyForUpdateThread(
       thread,
@@ -152,7 +138,7 @@ export default class Threads extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
 
@@ -161,7 +147,7 @@ export default class Threads extends BlockchainBase {
     const jobType = JobType.DELETE_THREAD;
     const body = { threadId };
 
-    const delThread = await sendRequestToService<ThreadDeleted>(
+    const delThread = await sendAinizeRequest<ThreadDeleted>(
       jobType,
       body,
       service,
@@ -200,7 +186,7 @@ export default class Threads extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
 
@@ -208,14 +194,7 @@ export default class Threads extends BlockchainBase {
 
     const jobType = JobType.RETRIEVE_THREAD;
     const body = { threadId };
-
-    const thread = await sendRequestToService<Thread>(
-      jobType,
-      body,
-      service,
-      this.ain,
-      this.ainize
-    );
+    const thread = await sendAinizeRequest<Thread>(jobType, body, service, this.ain, this.ainize);
 
     return thread;
   }

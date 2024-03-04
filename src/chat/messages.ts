@@ -21,7 +21,7 @@ import {
   getValue,
   isTransactionSuccess,
   Ref,
-  sendRequestToService,
+  sendAinizeRequest,
   sendTransaction,
   validateAndGetAssistant,
   validateAndGetService,
@@ -29,7 +29,7 @@ import {
   validateAssistant,
   validateMessage,
   validateObject,
-  validateObjectServiceConfig,
+  validateServiceConfiguration,
   validateThread,
   validateToken,
 } from '../common/util';
@@ -62,7 +62,7 @@ export default class Messages extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     const { id } = await validateAndGetAssistant(appId, tokenId, serviceName, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
 
@@ -113,7 +113,7 @@ export default class Messages extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
     await validateMessage(appId, tokenId, serviceName, address, threadId, messageId, this.ain);
@@ -127,7 +127,7 @@ export default class Messages extends BlockchainBase {
       ...(metadata && Object.keys(metadata).length && { metadata }),
     };
 
-    const message = await sendRequestToService<Message>(
+    const message = await sendAinizeRequest<Message>(
       jobType,
       body,
       service,
@@ -170,7 +170,7 @@ export default class Messages extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
     await validateMessage(appId, tokenId, serviceName, address, threadId, messageId, this.ain);
@@ -180,7 +180,7 @@ export default class Messages extends BlockchainBase {
     const jobType = JobType.RETRIEVE_MESSAGE;
     const body = { jobType, threadId, messageId };
 
-    const message = await sendRequestToService<Message>(
+    const message = await sendAinizeRequest<Message>(
       jobType,
       body,
       service,
@@ -212,7 +212,7 @@ export default class Messages extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, null, this.ain);
     await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
 
@@ -221,7 +221,7 @@ export default class Messages extends BlockchainBase {
     const jobType = JobType.LIST_MESSAGES;
     const body = { threadId };
 
-    const { data } = await sendRequestToService<Page<MessageMap>>(jobType, body, service, this.ain, this.ainize);
+    const { data } = await sendAinizeRequest<Page<MessageMap>>(jobType, body, service, this.ain, this.ainize);
 
     return data;
   }

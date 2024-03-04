@@ -7,7 +7,7 @@ jest.mock('../../src/util', () => {
     ...actual,
     validateAssistant: jest.fn().mockResolvedValue(undefined),
     validateThread: jest.fn().mockResolvedValue(undefined),
-    sendRequestToService: jest.fn(),
+    sendAinizeRequest: jest.fn(),
     sendTransaction: jest.fn().mockResolvedValue({
       tx_hash: '0x' + 'a'.repeat(64),
       result: { code: 0 },
@@ -40,7 +40,7 @@ describe('thread', () => {
       metadata: { key1: 'value1' },
     };
 
-    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+    (util.sendAinizeRequest as jest.Mock).mockResolvedValue({
       ...body,
       id: threadId,
       created_at: 0,
@@ -56,7 +56,7 @@ describe('thread', () => {
   });
 
   it('get: should get thread', async () => {
-    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+    (util.sendAinizeRequest as jest.Mock).mockResolvedValue({
       id: threadId,
       metadata: { key1: 'value1' },
       created_at: 0,
@@ -73,7 +73,7 @@ describe('thread', () => {
       metadata: { key1: 'value1', key2: 'value2' },
     };
 
-    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+    (util.sendAinizeRequest as jest.Mock).mockResolvedValue({
       ...body,
       id: threadId,
       created_at: 0,
@@ -89,7 +89,7 @@ describe('thread', () => {
   });
 
   it('delete: should delete thread', async () => {
-    (util.sendRequestToService as jest.Mock).mockResolvedValue({
+    (util.sendAinizeRequest as jest.Mock).mockResolvedValue({
       id: threadId,
       deleted: true,
     });

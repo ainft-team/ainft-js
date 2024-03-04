@@ -13,22 +13,23 @@ import {
 import {
   buildSetTransactionBody,
   buildSetValueOp,
-  getValue,
   isTransactionSuccess,
   Ref,
   validateAndGetServiceName,
   validateAndGetService,
   validateAssistant,
+  validateAssistantNotExists,
   validateObject,
   validateObjectOwner,
-  validateObjectServiceConfig,
+  validateServiceConfiguration,
   validateToken,
-  sendRequestToService,
+  sendAinizeRequest,
   sendTransaction,
   buildSetWriteRuleOp,
   buildSetOp,
   buildSetStateRuleOp,
 } from '../common/util';
+import { MESSAGE_GC_MAX_SIBLINGS, MESSAGE_GC_NUM_SIBLINGS_DELETED } from '../constants';
 
 /**
  * This class supports building assistants that enables conversation with LLM models.\
@@ -57,13 +58,8 @@ export default class Assistants extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
-
-    const path = Ref.app(appId).token(tokenId).ai(serviceName).root();
-    const exists = await getValue(path, this.ain);
-    if (exists) {
-      throw new Error('Assistant already exists');
-    }
+    await validateServiceConfiguration(appId, serviceName, this.ain);
+    await validateAssistantNotExists(appId, tokenId, serviceName, this.ain);
 
     const service = await validateAndGetService(serviceName, this.ainize);
 
@@ -73,10 +69,9 @@ export default class Assistants extends BlockchainBase {
       name,
       instructions,
       ...(description && { description }),
-      ...(metadata && Object.keys(metadata).length && { metadata }),
+      ...(metadata && Object.keys(metadata).length > 0 && { metadata }),
     };
-
-    const assistant = await sendRequestToService<Assistant>(
+    const assistant = await sendAinizeRequest<Assistant>(
       jobType,
       body,
       service,
@@ -92,7 +87,6 @@ export default class Assistants extends BlockchainBase {
       address
     );
     const result = await sendTransaction(txBody, this.ain);
-
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
@@ -124,7 +118,7 @@ export default class Assistants extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
     const service = await validateAndGetService(serviceName, this.ainize);
@@ -136,10 +130,9 @@ export default class Assistants extends BlockchainBase {
       ...(name && { name }),
       ...(instructions && { instructions }),
       ...(description && { description }),
-      ...(metadata && Object.keys(metadata).length && { metadata }),
+      ...(metadata && Object.keys(metadata).length > 0 && { metadata }),
     };
-
-    const assistant = await sendRequestToService<Assistant>(
+    const assistant = await sendAinizeRequest<Assistant>(
       jobType,
       body,
       service,
@@ -155,7 +148,6 @@ export default class Assistants extends BlockchainBase {
       address
     );
     const result = await sendTransaction(txBody, this.ain);
-
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
@@ -185,15 +177,14 @@ export default class Assistants extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.DELETE_ASSISTANT;
     const body = { assistantId };
-
-    const delAssistant = await sendRequestToService<AssistantDeleted>(
+    const delAssistant = await sendAinizeRequest<AssistantDeleted>(
       jobType,
       body,
       service,
@@ -203,7 +194,6 @@ export default class Assistants extends BlockchainBase {
 
     const txBody = this.buildTxBodyForDeleteAssistant(appId, tokenId, serviceName, address);
     const result = await sendTransaction(txBody, this.ain);
-
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
@@ -231,15 +221,14 @@ export default class Assistants extends BlockchainBase {
     await validateToken(appId, tokenId, this.ain);
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateObjectServiceConfig(appId, serviceName, this.ain);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
     await validateAssistant(appId, tokenId, serviceName, assistantId, this.ain);
 
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.RETRIEVE_ASSISTANT;
     const body = { assistantId };
-
-    const assistant = await sendRequestToService<Assistant>(
+    const assistant = await sendAinizeRequest<Assistant>(
       jobType,
       body,
       service,
@@ -267,7 +256,7 @@ export default class Assistants extends BlockchainBase {
       name,
       instructions,
       ...(description && { description }),
-      ...(metadata && Object.keys(metadata).length && { metadata }),
+      ...(metadata && Object.keys(metadata).length > 0 && { metadata }),
     };
     const value = { id, config, history: true };
     const rule = {
@@ -301,7 +290,7 @@ export default class Assistants extends BlockchainBase {
       name,
       instructions,
       ...(description && { description }),
-      ...(metadata && Object.keys(metadata).length && { metadata }),
+      ...(metadata && Object.keys(metadata).length > 0 && { metadata }),
     };
 
     return buildSetTransactionBody(buildSetValueOp(ref, value), address);

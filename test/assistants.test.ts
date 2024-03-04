@@ -7,7 +7,8 @@ jest.mock('../../src/util', () => {
     ...actual,
     getValue: jest.fn(),
     validateAssistant: jest.fn().mockResolvedValue(undefined),
-    sendRequestToService: jest.fn(),
+    validateAssistantNotExists: jest.fn().mockResolvedValue(undefined),
+    sendAinizeRequest: mockRequest,
     sendTransaction: jest.fn().mockResolvedValue({
       tx_hash: '0x' + 'a'.repeat(64),
       result: { code: 0 },

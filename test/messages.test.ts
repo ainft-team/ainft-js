@@ -115,7 +115,7 @@ jest.mock('../../src/util', () => {
     validateAndGetService: jest.fn().mockResolvedValue({
       request: mockAinizeRequest,
     }),
-    sendRequestToService: mockRequest,
+    sendAinizeRequest: mockRequest,
     sendTransaction: jest.fn().mockResolvedValue({
       tx_hash: '0x' + 'a'.repeat(64),
       result: { code: 0 },
