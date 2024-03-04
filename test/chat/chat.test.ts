@@ -1,9 +1,11 @@
 import AinftJs from '../../src/ainft';
 
 jest.mock('../../src/util', () => {
-  const actual = jest.requireActual('../../src/util');
+  const util = jest.requireActual('../../src/util');
   return {
-    ...actual,
+    ...util,
+    ainizeLogin: jest.fn().mockResolvedValue(undefined),
+    ainizeLogout: jest.fn().mockResolvedValue(undefined),
     validateAndGetService: jest.fn().mockResolvedValue({
       getCreditBalance: jest
         .fn()
