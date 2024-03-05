@@ -1,11 +1,35 @@
-import AinftJs, { AssistantCreateParams, AssistantUpdateParams } from '../src/ainft';
-import * as util from '../src/common/util';
+import AinftJs from '../src/ainft';
+import { AssistantCreateParams, AssistantUpdateParams } from '../src/types';
+import { test_private_key, test_object_id, test_token_id, test_assistant_id } from './test_data';
 
-jest.mock('../../src/util', () => {
-  const actual = jest.requireActual('../../src/util');
+jest.mock('../src/common/util', () => {
+  const mockRequest = jest.fn((jobType, body) => {
+    switch (jobType) {
+      case 'create_assistant':
+      case 'modify_assistant':
+        return { ...body, id: test_assistant_id, created_at: 0 };
+      case 'retrieve_assistant':
+        return {
+          id: test_assistant_id,
+          model: 'gpt-3.5-turbo',
+          name: 'name',
+          instructions: 'instructions',
+          description: 'description',
+          metadata: { key1: 'value1' },
+          created_at: 0,
+        };
+      case 'delete_assistant':
+        return {
+          id: test_assistant_id,
+          deleted: true,
+        };
+      default:
+        return null;
+    }
+  });
+  const util = jest.requireActual('../src/common/util');
   return {
-    ...actual,
-    getValue: jest.fn(),
+    ...util,
     validateAssistant: jest.fn().mockResolvedValue(undefined),
     validateAssistantNotExists: jest.fn().mockResolvedValue(undefined),
     sendAinizeRequest: mockRequest,
@@ -16,16 +40,16 @@ jest.mock('../../src/util', () => {
   };
 });
 
-const objectId = '0x8A193528F6d406Ce81Ff5D9a55304337d0ed8DE6';
-const tokenId = '1';
-const assistantId = 'asst_000000000000000000000001';
+const TX_PATTERN = /^0x([A-Fa-f0-9]{64})$/;
+const ASST_PATTERN = /^asst_([A-Za-z0-9]{24})$/;
+
+jest.setTimeout(60000);
 
 describe('assistant', () => {
-  jest.setTimeout(60000); // 1min
   let ainft: AinftJs;
 
   beforeAll(() => {
-    ainft = new AinftJs(process.env['PRIVATE_KEY']!, {
+    ainft = new AinftJs(test_private_key, {
       ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
@@ -36,32 +60,36 @@ describe('assistant', () => {
     jest.restoreAllMocks();
   });
 
-  it('create: should create assistant', async () => {
+  it('should create assistant', async () => {
     const body: AssistantCreateParams = {
       model: 'gpt-3.5-turbo',
       name: 'name',
       instructions: 'instructions',
       description: 'description',
-      // TODO(jiyoung): handle empty metadata in blockchain transaction.
-      // if no metadata is provided, openai defaults to an empty object,
-      // which leads to transaction reversion as it cannot be stored on the blockchain.
       metadata: { key1: 'value1' },
     };
 
-    (util.getValue as jest.Mock).mockResolvedValue(undefined);
+    const res = await ainft.chat.assistant.create(test_object_id, test_token_id, 'openai', body);
 
-    (util.sendRequestToService as jest.Mock).mockResolvedValue({
-      ...body,
-      id: assistantId,
-      created_at: 0,
-    });
+    expect(res.tx_hash).toMatch(TX_PATTERN);
+    expect(res.result).toBeDefined();
+    expect(res.assistant.id).toMatch(ASST_PATTERN);
+    expect(res.assistant.model).toBe('gpt-3.5-turbo');
+    expect(res.assistant.name).toBe('name');
+    expect(res.assistant.instructions).toBe('instructions');
+    expect(res.assistant.description).toBe('description');
+    expect(res.assistant.metadata).toEqual({ key1: 'value1' });
+  });
 
-    const result = await ainft.chat.assistant.create(objectId, tokenId, 'openai', body);
-    const { assistant } = result;
+  it('should get assistant', async () => {
+    const assistant = await ainft.chat.assistant.get(
+      test_assistant_id,
+      test_object_id,
+      test_token_id,
+      'openai'
+    );
 
-    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(result.result).toBeDefined();
-    expect(assistant.id).toMatch(/^asst_[A-Za-z0-9]{24}/);
+    expect(assistant.id).toBe(test_assistant_id);
     expect(assistant.model).toBe('gpt-3.5-turbo');
     expect(assistant.name).toBe('name');
     expect(assistant.instructions).toBe('instructions');
@@ -69,28 +97,7 @@ describe('assistant', () => {
     expect(assistant.metadata).toEqual({ key1: 'value1' });
   });
 
-  it('get: should get assistant', async () => {
-    (util.sendRequestToService as jest.Mock).mockResolvedValue({
-      id: assistantId,
-      model: 'gpt-3.5-turbo',
-      name: 'name',
-      instructions: 'instructions',
-      description: 'description',
-      metadata: { key1: 'value1' },
-      created_at: 0,
-    });
-
-    const assistant = await ainft.chat.assistant.get(assistantId, objectId, tokenId, 'openai');
-
-    expect(assistant.id).toBe(assistantId);
-    expect(assistant.model).toBe('gpt-3.5-turbo');
-    expect(assistant.name).toBe('name');
-    expect(assistant.instructions).toBe('instructions');
-    expect(assistant.description).toBe('description');
-    expect(assistant.metadata).toEqual({ key1: 'value1' });
-  });
-
-  it('update: should update assistant', async () => {
+  it('should update assistant', async () => {
     const body: AssistantUpdateParams = {
       model: 'gpt-4',
       name: 'new_name',
@@ -99,43 +106,35 @@ describe('assistant', () => {
       metadata: { key1: 'value1', key2: 'value2' },
     };
 
-    (util.sendRequestToService as jest.Mock).mockResolvedValue({
-      ...body,
-      id: assistantId,
-      created_at: 0,
-    });
-
-    const result = await ainft.chat.assistant.update(
-      assistantId,
-      objectId,
-      tokenId,
+    const res = await ainft.chat.assistant.update(
+      test_assistant_id,
+      test_object_id,
+      test_token_id,
       'openai',
       body
     );
-    const { assistant } = result;
 
-    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(result.result).toBeDefined();
-    expect(assistant.id).toBe(assistantId);
-    expect(assistant.model).toBe('gpt-4');
-    expect(assistant.name).toBe('new_name');
-    expect(assistant.instructions).toBe('new_instructions');
-    expect(assistant.description).toBe('new_description');
-    expect(assistant.metadata).toEqual({ key1: 'value1', key2: 'value2' });
+    expect(res.tx_hash).toMatch(TX_PATTERN);
+    expect(res.result).toBeDefined();
+    expect(res.assistant.id).toBe(test_assistant_id);
+    expect(res.assistant.model).toBe('gpt-4');
+    expect(res.assistant.name).toBe('new_name');
+    expect(res.assistant.instructions).toBe('new_instructions');
+    expect(res.assistant.description).toBe('new_description');
+    expect(res.assistant.metadata).toEqual({ key1: 'value1', key2: 'value2' });
   });
 
-  it('delete: should delete assistant', async () => {
-    (util.sendRequestToService as jest.Mock).mockResolvedValue({
-      id: assistantId,
-      deleted: true,
-    });
+  it('should delete assistant', async () => {
+    const res = await ainft.chat.assistant.delete(
+      test_assistant_id,
+      test_object_id,
+      test_token_id,
+      'openai'
+    );
 
-    const result = await ainft.chat.assistant.delete(assistantId, objectId, tokenId, 'openai');
-    const { delAssistant } = result;
-
-    expect(result.tx_hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
-    expect(result.result).toBeDefined();
-    expect(delAssistant.id).toBe(assistantId);
-    expect(delAssistant.deleted).toBe(true);
+    expect(res.tx_hash).toMatch(TX_PATTERN);
+    expect(res.result).toBeDefined();
+    expect(res.delAssistant.id).toBe(test_assistant_id);
+    expect(res.delAssistant.deleted).toBe(true);
   });
 });
