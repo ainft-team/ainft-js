@@ -1173,10 +1173,10 @@ export interface TransactionResult {
 }
 
 /**
- * Represents a service configuration transaction result.
+ * Represents a chat configuration transaction result.
  */
-export interface ServiceConfigurationTransactionResult extends TransactionResult {
-  config: ServiceConfiguration;
+export interface ChatConfigurationTransactionResult extends TransactionResult {
+  config: ChatConfiguration;
 }
 
 /**
@@ -1229,13 +1229,11 @@ export interface MessagesTransactionResult extends TransactionResult {
   messages: MessageMap;
 }
 
-export interface ServiceConfiguration {
+export interface ChatConfiguration {
   /** The type of the service. */
   type: ServiceType;
   /** The name of the service. */
   name: string;
-  /** The URL endpoint where the service is accessible. */
-  url: string;
 }
 
 export interface Assistant {

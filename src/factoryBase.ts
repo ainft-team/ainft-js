@@ -2,7 +2,7 @@ import Ain from "@ainblockchain/ain-js";
 import stringify = require("fast-json-stable-stringify");
 import axios, { AxiosRequestHeaders } from "axios";
 import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types";
-import { buildData, isJoiError, sleep } from "./util";
+import { buildData, isJoiError, sleep } from "./common/util";
 import FormData from "form-data";
 
 /** 

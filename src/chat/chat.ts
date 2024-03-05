@@ -11,16 +11,14 @@ import {
   ServiceType,
   ServiceNickname,
   CreditTransactionResult,
-  ServiceConfigurationTransactionResult,
-  ServiceConfiguration,
+  ChatConfigurationTransactionResult,
+  ChatConfiguration,
 } from '../types';
 import {
   ainizeLogin,
   ainizeLogout,
-  buildSetOp,
   buildSetTransactionBody,
   buildSetValueOp,
-  buildSetWriteRuleOp,
   isTransactionSuccess,
   Ref,
   sleep,
@@ -30,7 +28,7 @@ import {
   validateObjectOwner,
   validateService,
   sendTransaction,
-} from '../util';
+} from '../common/util';
 
 /**
  * This class supports configuring chat functionality for an AINFT object,\
@@ -53,12 +51,12 @@ export default class Chat extends BlockchainBase {
    * Configures chat for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object to configure for chat.
    * @param {ServiceNickname} nickname - The service nickname.
-   * @returns {Promise<ServiceConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the service configuration.
+   * @returns {Promise<ChatConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the chat configuration.
    */
   async configure(
     objectId: string,
     nickname: ServiceNickname
-  ): Promise<ServiceConfigurationTransactionResult> {
+  ): Promise<ChatConfigurationTransactionResult> {
     const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
@@ -71,8 +69,6 @@ export default class Chat extends BlockchainBase {
     const config = {
       type: ServiceType.CHAT,
       name: serviceName,
-      // TODO(jiyoung): fetch information from ainize.
-      url: `https://${serviceName}.ainetwork.xyz`,
     };
 
     const txBody = this.buildTxBodyForConfigureChat(config, appId, serviceName, address);
@@ -111,7 +107,7 @@ export default class Chat extends BlockchainBase {
   /**
    * Get the current credit for a service.
    * @param {ServiceNickname} nickname - The service to check the credit.
-   * @returns {Promise<number>} Returns a promise that resolves with the current credit balance.
+   * @returns {Promise<number|null>} Returns a promise that resolves with the current credit balance.
    */
   async getCredit(nickname: ServiceNickname): Promise<number> {
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
@@ -135,13 +131,11 @@ export default class Chat extends BlockchainBase {
       }
       await sleep(1000); // 1sec
     }
-    throw new Error(
-      `Credit update timed out. Please check the transaction on Insight using this hash: ${txHash}`
-    );
+    throw new Error(`Credit update timed out. Please check the transaction on insight: ${txHash}`);
   }
 
   private buildTxBodyForConfigureChat(
-    config: ServiceConfiguration,
+    config: ChatConfiguration,
     appId: string,
     serviceName: string,
     address: string

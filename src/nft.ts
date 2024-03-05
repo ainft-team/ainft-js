@@ -10,7 +10,7 @@ import {
 } from './types';
 import Ainft721Object from './ainft721Object';
 import stringify from 'fast-json-stable-stringify';
-import { isTransactionSuccess } from './util';
+import { isTransactionSuccess } from './common/util';
 
 /**
  * This class supports creating AINFT object, searching AINFTs and things about NFTs.\

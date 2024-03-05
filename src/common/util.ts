@@ -4,9 +4,9 @@ import Ainize from '@ainize-team/ainize-js';
 import { SetOperation, SetMultiOperation, TransactionInput } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import AinizeAuth from './common/ainize';
-import { SERVICE_NAME_MAP, MIN_GAS_PRICE } from './constants';
-import { HttpMethod, JobType, MessageMap } from './types';
+import AinizeAuth from './ainizeUtil';
+import { SERVICE_NAME_MAP, MIN_GAS_PRICE } from '../constants';
+import { HttpMethod, JobType, MessageMap } from '../types';
 
 export const buildData = (
   method: HttpMethod,
@@ -60,8 +60,8 @@ export const buildSetRuleOp = (ref: string, rule: { write?: any; state?: any }):
   ref,
   value: {
     '.rule': {
-      ...(rule.write && { write: rule.write }),
-      ...(rule.state && { state: rule.state }),
+      write: rule.write,
+      state: rule.state,
     },
   },
 });
@@ -218,7 +218,11 @@ export const validateAndGetService = async (
   return service;
 };
 
-export const validateObjectServiceConfig = async (appId: string, serviceName: string, ain: Ain) => {
+export const validateServiceConfiguration = async (
+  appId: string,
+  serviceName: string,
+  ain: Ain
+) => {
   const aiPath = Ref.app(appId).ai(serviceName);
   if (!(await exists(aiPath, ain))) {
     throw new Error('Service configuration not found. Please call `ainft.chat.configure()` first.');
@@ -250,6 +254,19 @@ export const validateAndGetAssistant = async (
     throw new Error('Assistant not found');
   }
   return assistant;
+};
+
+export const validateAssistantNotExists = async (
+  appId: string,
+  tokenId: string,
+  serviceName: string,
+  ain: Ain
+) => {
+  const assistantPath = Ref.app(appId).token(tokenId).ai(serviceName).root();
+  const exists = await getValue(assistantPath, ain);
+  if (exists) {
+    throw new Error('Assistant already exists');
+  }
 };
 
 export const validateToken = async (appId: string, tokenId: string, ain: Ain) => {
@@ -320,34 +337,30 @@ export const ainizeLogout = async (ainize: Ainize) => {
   return AinizeAuth.getInstance().logout(ainize);
 };
 
-// TODO(jiyoung): add client-side timeout for response delay.
-export const sendRequestToService = async <T>(
+export const sendAinizeRequest = async <T>(
   jobType: JobType,
   body: object,
   service: Service,
   ain: Ain,
   ainize: Ainize
 ): Promise<T> => {
+  let timeout: NodeJS.Timeout | null = null;
   try {
     await ainizeLogin(ain, ainize);
-
-    // TODO(jiyoung): check status to identify failure (if implemented)
-    const data = await service.request({ ...body, jobType });
-    if (data) {
-      if (typeof data === 'string') {
-        if (data.includes('Failed to send transaction')) {
-          throw new Error(data);
-        }
-        if (data.includes('Request failed with status code')) {
-          throw new Error(data);
-        }
-      }
+    const timeoutPromise = new Promise(
+      (_, reject) => (timeout = setTimeout(() => reject(new Error('timeout')), 60000)) // 1min
+    );
+    const response = await Promise.race([service.request({ ...body, jobType }), timeoutPromise]);
+    if (response.status === 'FAIL') {
+      throw new Error(JSON.stringify(response.data));
     }
-
-    await ainizeLogout(ainize);
-
-    return data as T;
+    return response.data as T;
   } catch (error: any) {
-    throw new Error(`Ainize request failed: ${error.message}`);
+    throw new Error(`Ainize service request failed: ${error.message}`);
+  } finally {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    await ainizeLogout(ainize);
   }
 };
