@@ -59,12 +59,11 @@ export default class Threads extends BlockchainBase {
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.CREATE_THREAD;
-    const body = { ...(metadata && Object.keys(metadata).length && { metadata }) };
+    const body = { ...(metadata && Object.keys(metadata).length > 0 && { metadata }) };
     const thread = await sendAinizeRequest<Thread>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = this.buildTxBodyForCreateThread(thread, appId, tokenId, serviceName, address);
     const result = await sendTransaction(txBody, this.ain);
-
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
@@ -102,7 +101,7 @@ export default class Threads extends BlockchainBase {
     const service = await validateAndGetService(serviceName, this.ainize);
 
     const jobType = JobType.MODIFY_THREAD;
-    const body = { threadId, ...(metadata && Object.keys(metadata).length && { metadata }) };
+    const body = { threadId, ...(metadata && Object.keys(metadata).length > 0 && { metadata }) };
     const thread = await sendAinizeRequest<Thread>(jobType, body, service, this.ain, this.ainize);
 
     const txBody = await this.buildTxBodyForUpdateThread(
@@ -113,6 +112,9 @@ export default class Threads extends BlockchainBase {
       address
     );
     const result = await sendTransaction(txBody, this.ain);
+    if (!isTransactionSuccess(result)) {
+      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
+    }
 
     return { ...result, thread };
   }
@@ -146,7 +148,6 @@ export default class Threads extends BlockchainBase {
 
     const jobType = JobType.DELETE_THREAD;
     const body = { threadId };
-
     const delThread = await sendAinizeRequest<ThreadDeleted>(
       jobType,
       body,
@@ -157,7 +158,6 @@ export default class Threads extends BlockchainBase {
 
     const txBody = this.buildTxBodyForDeleteThread(threadId, appId, tokenId, serviceName, address);
     const result = await sendTransaction(txBody, this.ain);
-
     if (!isTransactionSuccess(result)) {
       throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
     }
@@ -210,7 +210,7 @@ export default class Threads extends BlockchainBase {
     const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(id).root();
 
     const value = {
-      ...(metadata && Object.keys(metadata).length && { metadata }),
+      ...(metadata && Object.keys(metadata).length > 0 && { metadata }),
       messages: true,
     };
 
@@ -230,7 +230,7 @@ export default class Threads extends BlockchainBase {
 
     const value = {
       ...prev,
-      ...(metadata && Object.keys(metadata) && { metadata }),
+      ...(metadata && Object.keys(metadata).length > 0 && { metadata }),
     };
 
     return buildSetTransactionBody(buildSetValueOp(ref, value), address);
