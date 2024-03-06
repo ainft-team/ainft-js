@@ -22,3 +22,10 @@ export const APP_STAKING_LOCKUP_DURATION_MS = 30 * 1000 // 30 seconds
 export const SUPPORTED_AINFT_STANDARDS = {
   721: '721',
 }
+
+export const SERVICE_NAME_MAP = new Map<string, string>([
+  ['openai', 'ainize_openai']
+]);
+
+export const MESSAGE_GC_MAX_SIBLINGS = 15;
+export const MESSAGE_GC_NUM_SIBLINGS_DELETED = 10;

@@ -76,11 +76,7 @@ export default class Auth extends FactoryBase {
    * @param {string} ethAddress The ethereum address to add.
    * @returns
    */
-  addUserEthAddress(
-    appId: string,
-    userId: string,
-    ethAddress: string
-  ): Promise<User> {
+  addUserEthAddress(appId: string, userId: string, ethAddress: string): Promise<User> {
     const body = {
       appId,
       ethAddress,
@@ -96,11 +92,7 @@ export default class Auth extends FactoryBase {
    * @param {string} ethAddress The ethereum address to delete.
    * @returns
    */
-  removeUserEthAddress(
-    appId: string,
-    userId: string,
-    ethAddress: string
-  ): Promise<User> {
+  removeUserEthAddress(appId: string, userId: string, ethAddress: string): Promise<User> {
     const query = {
       appId,
       ethAddress,
@@ -205,11 +197,7 @@ export default class Auth extends FactoryBase {
    * @param {string} userId The ID of user.
    * @param {string} chain The symbol of chain.
    */
-  getUserDepositAddress(
-    appId: string,
-    userId: string,
-    chain: string
-  ): Promise<string> {
+  getUserDepositAddress(appId: string, userId: string, chain: string): Promise<string> {
     const body = {
       appId,
       chain,

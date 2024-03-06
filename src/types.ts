@@ -22,6 +22,7 @@ export enum TaskTypeCategory {
   NFT_GAME = 'NFT_GAME',
   DISCORD_INVITE = 'DISCORD_INVITE',
   DISCORD_INVITE_FIRST_CHAT = 'DISCORD_INVITE_FIRST_CHAT',
+  DRESSUP_TWITTER_MINING = 'DRESSUP_TWITTER_MINING'
 }
 
 export enum NftActivityType {
@@ -538,7 +539,7 @@ export interface User {
   ethAddresses?: {
     [ethAddress: string]: boolean,
   },
-};
+  };
 
 export interface RewardOptions {
   /** If the reward has not been confirmed, you can enter the amount of reward. */
@@ -1111,4 +1112,282 @@ export interface AinftTokenSearchResponse extends SearchReponse {
 export interface SearchReponse {
   isFinal: boolean;
   cursor?: string;
+}
+
+export enum ServiceType {
+  CHAT = 'chat',
+}
+
+export enum JobType {
+  CREATE_ASSISTANT = 'create_assistant',
+  LIST_ASSISTANTS = 'list_assistants',
+  RETRIEVE_ASSISTANT = 'retrieve_assistant',
+  MODIFY_ASSISTANT = 'modify_assistant',
+  DELETE_ASSISTANT = 'delete_assistant',
+
+  CREATE_THREAD = 'create_thread',
+  RETRIEVE_THREAD = 'retrieve_thread',
+  MODIFY_THREAD = 'modify_thread',
+  DELETE_THREAD = 'delete_thread',
+
+  CREATE_MESSAGE = 'create_message',
+  LIST_MESSAGES = 'list_messages',
+  RETRIEVE_MESSAGE = 'retrieve_message',
+  MODIFY_MESSAGE = 'modify_message',
+
+  CREATE_RUN = 'create_run',
+  LIST_RUNS = 'list_runs',
+  LIST_RUN_STEPS = 'list_run_steps',
+  RETRIEVE_RUN = 'retrieve_run',
+  RETRIEVE_RUN_STEP = 'retrieve_run_step',
+  MODIFY_RUN = 'modify_run',
+  CANCEL_RUN = 'cancel_run',
+}
+
+/**
+ * Nickname of the service.
+ */
+export type ServiceNickname = string | 'openai';
+
+/**
+ * Name of the model to use. You can see the
+ * [OpenAI model overview](https://platform.openai.com/docs/models/overview)
+ * for description of them.
+ * Please note that image-related models are currently not supported.
+ */
+export type OpenAIModel =
+  | 'gpt-4-1106-preview'
+  | 'gpt-4'
+  | 'gpt-4-32k'
+  | 'gpt-3.5-turbo-1106'
+  | 'gpt-3.5-turbo'
+  | 'gpt-3.5-turbo-16k'
+  | 'gpt-3.5-turbo-instruct';
+
+/**
+ * Represents a transaction result.
+ */
+export interface TransactionResult {
+  tx_hash: string;
+  result: Record<string, unknown>;
+}
+
+/**
+ * Represents a chat configuration transaction result.
+ */
+export interface ChatConfigurationTransactionResult extends TransactionResult {
+  config: ChatConfiguration;
+}
+
+/**
+ * Represents a credit transaction result.
+ */
+export interface CreditTransactionResult extends Omit<TransactionResult, 'result'> {
+  address: string;
+  balance: number;
+}
+
+/**
+ * Represents an assistant transaction result.
+ */
+export interface AssistantTransactionResult extends TransactionResult {
+  assistant: Assistant;
+}
+
+/**
+ * Represents an assistant deletion transaction result.
+ */
+export interface AssistantDeleteTransactionResult extends TransactionResult {
+  delAssistant: AssistantDeleted;
+}
+
+/**
+ * Represents a thread transaction result.
+ */
+export interface ThreadTransactionResult extends TransactionResult {
+  thread: Thread;
+}
+
+/**
+ * Represents a thread deletion transaction result.
+ */
+export interface ThreadDeleteTransactionResult extends TransactionResult {
+  delThread: ThreadDeleted;
+}
+
+/**
+ * Represents transaction result for a single message.
+ */
+export interface MessageTransactionResult extends TransactionResult {
+  message: Message;
+}
+
+/**
+ * Represents transaction result for a multiple messages.
+ */
+export interface MessagesTransactionResult extends TransactionResult {
+  messages: MessageMap;
+}
+
+export interface ChatConfiguration {
+  /** The type of the service. */
+  type: ServiceType;
+  /** The name of the service. */
+  name: string;
+}
+
+export interface Assistant {
+  /** The identifier. */
+  id: string;
+  /** The name of the model to use. */
+  model: string;
+  /** The name of the assistant. */
+  name: string;
+  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
+  instructions: string;
+  /** The description of the assistant. The maximum length is 512 characters. */
+  description: string | null;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata: object | null;
+  /** The UNIX timestamp in seconds. */
+  created_at: number;
+}
+
+export interface AssistantDeleted {
+  /** The identifier. */
+  id: string;
+  /** The delete flag. */
+  deleted: boolean;
+}
+
+export interface AssistantCreateParams {
+  /** The name of the model to use. */
+  model: OpenAIModel;
+  /** The name of the assistant. The maximum length is 256 characters. */
+  name: string;
+  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
+  instructions: string;
+  /** The description of the assistant. The maximum length is 512 characters. */
+  description?: string | null;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
+}
+
+export interface AssistantUpdateParams {
+  /** The name of the model to use. */
+  model?: OpenAIModel;
+  /** The name of the assistant. The maximum length is 256 characters. */
+  name?: string | null;
+  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
+  instructions?: string | null;
+  /** The description of the assistant. The maximum length is 512 characters. */
+  description?: string | null;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
+}
+
+export interface Thread {
+  /** The identifier. */
+  id: string;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata: object | null;
+  /** The UNIX timestamp in seconds. */
+  created_at: number;
+}
+
+export interface ThreadDeleted {
+  /** The identifier. */
+  id: string;
+  /** The delete flag. */
+  deleted: boolean;
+}
+
+export interface ThreadCreateParams {
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
+}
+
+export interface ThreadUpdateParams {
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
+}
+
+export interface Message {
+  /** The identifier. */
+  id: string;
+  /** The ID of thread that message belongs to. */
+  thread_id: string;
+  /** The entity that produced the message. One of `user` or `assistant`. */
+  role: 'user' | 'assistant';
+  /** The message content includes text in an object. */
+  content: { [key: string]: MessageContentText };
+  /** If applicable, the ID of the assistant that authored this message. */
+  assistant_id: string | null;
+  /** If applicable, the ID of the run associated with the authoring of this message. */
+  run_id: string | null;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata: object | null;
+  /** The UNIX timestamp in seconds. */
+  created_at: number;
+}
+
+export interface MessageContentText {
+  type: 'text';
+  text: Text;
+}
+
+export interface Text {
+  value: string;
+}
+
+export interface MessageMap {
+  [key: string]: Message;
+}
+
+export interface Page<T> {
+  data: T;
+  first_id: string;
+  last_id: string;
+  has_more: boolean;
+}
+
+export interface MessageCreateParams {
+  /** The role of the entity creating the message, currently only `user` is supported. */
+  role: 'user';
+  /** The content of the message. */
+  content: string;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
+}
+
+export interface MessageUpdateParams {
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata?: object | null;
 }
