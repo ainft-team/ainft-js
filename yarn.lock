@@ -3553,10 +3553,10 @@ typedoc-plugin-rename-defaults@^0.6.4:
   resolved "https://registry.yarnpkg.com/typedoc-plugin-rename-defaults/-/typedoc-plugin-rename-defaults-0.6.4.tgz#8019bbfdbb4616682a0af8ecf1e8f42d053d4a40"
   integrity sha512-0rAeNttAfu6ixbi1yu6d+DqNZN8SfRivj2QbnZ4zVa+5HcCPcmQrlR6WHjNzdDfpkGytiiqPTtRD6pAfW/yACg==
 
-typedoc-theme-hierarchy@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/typedoc-theme-hierarchy/-/typedoc-theme-hierarchy-3.0.0.tgz#7c371d577723e7c9e10f7f80d3ff51147ead9975"
-  integrity sha512-f8zWRVYJ6hAIyUorTNnUtrzGo4BMApC7d2PSaUR9OG9gLUaNZTosB9EkfIsWxj7nyqG909kobeVxTa20FU9f/g==
+typedoc-theme-hierarchy@^1.3.5:
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/typedoc-theme-hierarchy/-/typedoc-theme-hierarchy-1.3.8.tgz#a5d64e1f59cf86ae80e67fcd48c66c1102f8f5fe"
+  integrity sha512-K0L6Vg/eetZ9K3q2iEWhsX99Od/VT8BaIzHnwJS/IdNMOWiJyPxt0UGGvBB+pUK0NT2seEwlFPeZozgw3im1Tw==
   dependencies:
     fs-extra "^10.0.0"
 
