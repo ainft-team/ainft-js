@@ -2,8 +2,10 @@ import Ainft721Object from '../ainft721Object';
 import BlockchainBase from '../blockchainBase';
 import {
   JobType,
+  PageParams,
   ServiceNickname,
   Thread,
+  ThreadCreateAndSendParams,
   ThreadCreateParams,
   ThreadDeleteTransactionResult,
   ThreadDeleted,
@@ -197,6 +199,93 @@ export default class Threads extends BlockchainBase {
     const thread = await sendAinizeRequest<Thread>(jobType, body, service, this.ain, this.ainize);
 
     return thread;
+  }
+
+  async list(
+    objectId: string,
+    tokenId: string,
+    nickname: ServiceNickname,
+    { offset, limit, order }: PageParams
+  ) {
+    const appId = Ainft721Object.getAppId(objectId);
+    const address = this.ain.signer.getAddress();
+
+    await validateObject(appId, this.ain);
+    await validateToken(appId, tokenId, this.ain);
+
+    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
+    await validateServiceConfiguration(appId, serviceName, this.ain);
+    await validateAssistant(appId, tokenId, serviceName, null, this.ain);
+
+    return {
+      total: 2,
+      items: [
+        {
+          id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
+          metadata: { title: '도와드릴까요?' },
+          created_at: 1711962854, // metadata
+          updated_at: 1711962854, // metadata
+        },
+        {
+          id: 'thread_mmzBrZeM5vllqEceRttvu1xk',
+          metadata: { title: '영문번역' },
+          created_at: 1711961028, // metadata
+          updated_at: 1711961028, // metadata
+        },
+      ],
+    };
+  }
+
+  async createAndSend(
+    objectId: string,
+    tokenId: string,
+    nickname: ServiceNickname,
+    { thread, message }: ThreadCreateAndSendParams
+  ) {
+    return {
+      tx_hash: '0x' + 'a'.repeat(64),
+      result: { code: 0 },
+      thread: {
+        id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
+        metadata: { title: '도와드릴까요?' },
+        created_at: 1711962854, // metadata
+        updated_at: 1711962854, // metadata
+      },
+      messages: {
+        '0': {
+          id: 'msg_Fay6rXAtGqBADFhukBzeZtjN',
+          created_at: 1711967047,
+          thread_id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
+          role: 'user',
+          content: {
+            '0': {
+              type: 'text',
+              text: {
+                value: '안녕하세요',
+              },
+            },
+          },
+          assistant_id: null,
+          run_id: null,
+        },
+        '1': {
+          id: 'msg_17BndvyTHP5i99QM1Ha4okaV',
+          created_at: 1711967047,
+          thread_id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
+          role: 'assistant',
+          content: {
+            '0': {
+              type: 'text',
+              text: {
+                value: '안녕하세요! 무엇을 도와드릴까요?',
+              },
+            },
+          },
+          assistant_id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
+          run_id: 'run_l0eBpAdMOtj8uAwrkAMKWg4l',
+        },
+      },
+    };
   }
 
   private buildTxBodyForCreateThread(

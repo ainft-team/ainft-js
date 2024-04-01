@@ -8,6 +8,7 @@ import {
   AssistantTransactionResult,
   AssistantUpdateParams,
   JobType,
+  PageParams,
   ServiceNickname,
 } from '../types';
 import {
@@ -237,6 +238,68 @@ export default class Assistants extends BlockchainBase {
     );
 
     return assistant;
+  }
+
+  async list(
+    objectId: string,
+    tokenId: string,
+    nickname: ServiceNickname,
+    { offset, limit, order }: PageParams
+  ) {
+    return {
+      total: 2,
+      items: [
+        {
+          id: 'asst_CswXI1p9YGKr32Ks2ENPb5VL',
+          model: 'gpt-4',
+          name: 'AINA-EBAJYJF111',
+          instructions: '',
+          description: 'OpenAI의 가장 강력한 모델입니다.',
+          metadata: {
+            image: 'https://picsum.photos/id/2/200/200',
+          },
+          created_at: 1711969423,
+        },
+        {
+          id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
+          model: 'gpt-3.5-turbo',
+          name: 'AINA-TKAJYJF1C5',
+          instructions: '',
+          description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
+          metadata: {
+            image: 'https://picsum.photos/id/1/200/200',
+          },
+          created_at: 1704034800,
+        },
+      ],
+    };
+  }
+
+  async mintAndCreate(
+    to: string,
+    nickname: ServiceNickname,
+    { model, name, instructions, description, metadata }: AssistantCreateParams
+  ) {
+    return {
+      tx_hash: '0x' + 'a'.repeat(64),
+      result: { code: 0 },
+      token: {
+        id: '1',
+        objectId: '0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401',
+        owner: '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0',
+      },
+      assistant: {
+        id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
+        model: 'gpt-3.5-turbo',
+        name: 'AINA-TKAJYJF1C5',
+        instructions: '',
+        description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
+        metadata: {
+          image: 'https://picsum.photos/id/1/200/200',
+        },
+        created_at: 1704034800,
+      },
+    };
   }
 
   private buildTxBodyForCreateAssistant(

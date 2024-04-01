@@ -1322,6 +1322,11 @@ export interface ThreadCreateParams {
   metadata?: object | null;
 }
 
+export interface ThreadCreateAndSendParams {
+  thread?: ThreadCreateParams;
+  message?: MessageCreateParams;
+}
+
 export interface ThreadUpdateParams {
   /**
    * The metadata can contain up to 16 pairs,
@@ -1363,6 +1368,12 @@ export interface Text {
 
 export interface MessageMap {
   [key: string]: Message;
+}
+
+export interface PageParams {
+  offset: number;
+  limit: number;
+  order: 'asc' | 'desc';
 }
 
 export interface Page<T> {
