@@ -1,5 +1,5 @@
 import AinftJs from '../src/ainft';
-import { test_private_key, test_address, test_object_id, test_service_name } from './test_data';
+import { privateKey, address, objectId, serviceName } from './test_data';
 
 jest.mock('../src/common/util', () => {
   const util = jest.requireActual('../src/common/util');
@@ -30,7 +30,7 @@ describe('chat', () => {
   let ainft: AinftJs;
 
   beforeAll(() => {
-    ainft = new AinftJs(test_private_key, {
+    ainft = new AinftJs(privateKey, {
       ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
@@ -42,11 +42,11 @@ describe('chat', () => {
   });
 
   it('should configure chat', async () => {
-    const res = await ainft.chat.configure(test_object_id, 'openai');
+    const res = await ainft.chat.configure(objectId, 'openai');
 
     expect(res.tx_hash).toMatch(TX_PATTERN);
     expect(res.result).toBeDefined();
-    expect(res.config.name).toBe(test_service_name);
+    expect(res.config.name).toBe(serviceName);
     expect(res.config.type).toBe('chat');
   });
 
@@ -60,7 +60,7 @@ describe('chat', () => {
     const res = await ainft.chat.depositCredit('openai', 10);
 
     expect(res.tx_hash).toMatch(TX_PATTERN);
-    expect(res.address).toBe(test_address);
+    expect(res.address).toBe(address);
     expect(res.balance).toBe(10);
   });
 });

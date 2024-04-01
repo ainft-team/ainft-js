@@ -1,12 +1,6 @@
 import AinftJs from '../src/ainft';
 import { MessageCreateParams } from '../src/types';
-import {
-  test_message_id,
-  test_object_id,
-  test_private_key,
-  test_thread_id,
-  test_token_id,
-} from './test_data';
+import { messageId, objectId, privateKey, threadId, tokenId } from './test_data';
 
 jest.mock('../src/common/util', () => {
   const mockRequest = jest.fn((jobType) => {
@@ -150,7 +144,7 @@ describe('message', () => {
   let ainft: AinftJs;
 
   beforeAll(async () => {
-    ainft = new AinftJs(test_private_key, {
+    ainft = new AinftJs(privateKey, {
       ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
@@ -168,47 +162,30 @@ describe('message', () => {
       metadata: { key1: 'value1' },
     };
 
-    const res = await ainft.chat.message.create(
-      test_thread_id,
-      test_object_id,
-      test_token_id,
-      'openai',
-      body
-    );
+    const res = await ainft.chat.message.create(threadId, objectId, tokenId, 'openai', body);
 
     expect(res.tx_hash).toMatch(TX_PATTERN);
     expect(res.result).toBeDefined();
     expect(Object.keys(res.messages).length).toBe(2);
     expect(res.messages[1].id).toMatch(MSG_PATTERN);
-    expect(res.messages[1].thread_id).toBe(test_thread_id);
+    expect(res.messages[1].thread_id).toBe(threadId);
     expect(res.messages[1].role).toBe('user');
     expect(res.messages[1].content[0].text.value).toBe('Hello world!');
     expect(res.messages[1].metadata).toEqual({ key1: 'value1' });
   });
 
   it('should get message', async () => {
-    const message = await ainft.chat.message.get(
-      test_message_id,
-      test_thread_id,
-      test_object_id,
-      test_token_id,
-      'openai'
-    );
+    const message = await ainft.chat.message.get(messageId, threadId, objectId, tokenId, 'openai');
 
-    expect(message.id).toBe(test_message_id);
-    expect(message.thread_id).toBe(test_thread_id);
+    expect(message.id).toBe(messageId);
+    expect(message.thread_id).toBe(threadId);
     expect(message.role).toBe('user');
     expect(message.content[0].text.value).toBe('Hello world!');
     expect(message.metadata).toEqual({ key1: 'value1' });
   });
 
   it('should get message list', async () => {
-    const messages = await ainft.chat.message.list(
-      test_thread_id,
-      test_object_id,
-      test_token_id,
-      'openai'
-    );
+    const messages = await ainft.chat.message.list(threadId, objectId, tokenId, 'openai');
 
     expect(Object.keys(messages).length).toBe(2);
   });
@@ -217,17 +194,17 @@ describe('message', () => {
     const body = { metadata: { key1: 'value1', key2: 'value2' } };
 
     const res = await ainft.chat.message.update(
-      test_message_id,
-      test_thread_id,
-      test_object_id,
-      test_token_id,
+      messageId,
+      threadId,
+      objectId,
+      tokenId,
       'openai',
       body
     );
 
     expect(res.tx_hash).toMatch(TX_PATTERN);
     expect(res.result).toBeDefined();
-    expect(res.message.id).toBe(test_message_id);
+    expect(res.message.id).toBe(messageId);
     expect(res.message.role).toBe('user');
     expect(res.message.content[0].text.value).toEqual('Hello world!');
     expect(res.message.metadata).toEqual({ key1: 'value1', key2: 'value2' });

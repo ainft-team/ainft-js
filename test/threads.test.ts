@@ -1,5 +1,5 @@
 import AinftJs from '../src/ainft';
-import { test_private_key, test_object_id, test_token_id, test_thread_id } from './test_data';
+import { privateKey, objectId, tokenId, threadId } from './test_data';
 
 jest.mock('../src/common/util', () => {
   const mockRequest = jest.fn((jobType, body) => {
@@ -8,18 +8,18 @@ jest.mock('../src/common/util', () => {
       case 'modify_thread':
         return {
           ...body,
-          id: test_thread_id,
+          id: threadId,
           created_at: 0,
         };
       case 'retrieve_thread':
         return {
-          id: test_thread_id,
+          id: threadId,
           metadata: { key1: 'value1' },
           created_at: 0,
         };
       case 'delete_thread':
         return {
-          id: test_thread_id,
+          id: threadId,
           deleted: true,
         };
       default:
@@ -48,7 +48,7 @@ describe('thread', () => {
   let ainft: AinftJs;
 
   beforeAll(async () => {
-    ainft = new AinftJs(test_private_key, {
+    ainft = new AinftJs(privateKey, {
       ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
@@ -62,7 +62,7 @@ describe('thread', () => {
   it('should create thread', async () => {
     const body = { metadata: { key1: 'value1' } };
 
-    const res = await ainft.chat.thread.create(test_object_id, test_token_id, 'openai', body);
+    const res = await ainft.chat.thread.create(objectId, tokenId, 'openai', body);
 
     expect(res.tx_hash).toMatch(TX_PATTERN);
     expect(res.result).toBeDefined();
@@ -71,45 +71,45 @@ describe('thread', () => {
   });
 
   it('should get thread', async () => {
-    const thread = await ainft.chat.thread.get(
-      test_thread_id,
-      test_object_id,
-      test_token_id,
-      'openai'
-    );
+    const thread = await ainft.chat.thread.get(threadId, objectId, tokenId, 'openai');
 
-    expect(thread.id).toBe(test_thread_id);
+    expect(thread.id).toBe(threadId);
     expect(thread.metadata).toEqual({ key1: 'value1' });
+  });
+
+  it('should get thread list', async () => {
+    const result = await ainft.chat.thread.list(objectId, tokenId, 'openai', {
+      offset: 0,
+      limit: 20,
+      order: 'desc',
+    });
+    console.log(JSON.stringify(result, null, 4));
   });
 
   it('should update thread', async () => {
     const body = { metadata: { key1: 'value1', key2: 'value2' } };
 
-    const res = await ainft.chat.thread.update(
-      test_thread_id,
-      test_object_id,
-      test_token_id,
-      'openai',
-      body
-    );
+    const res = await ainft.chat.thread.update(threadId, objectId, tokenId, 'openai', body);
 
     expect(res.tx_hash).toMatch(TX_PATTERN);
     expect(res.result).toBeDefined();
-    expect(res.thread.id).toBe(test_thread_id);
+    expect(res.thread.id).toBe(threadId);
     expect(res.thread.metadata).toEqual({ key1: 'value1', key2: 'value2' });
   });
 
   it('should delete thread', async () => {
-    const res = await ainft.chat.thread.delete(
-      test_thread_id,
-      test_object_id,
-      test_token_id,
-      'openai'
-    );
+    const res = await ainft.chat.thread.delete(threadId, objectId, tokenId, 'openai');
 
     expect(res.tx_hash).toMatch(TX_PATTERN);
     expect(res.result).toBeDefined();
-    expect(res.delThread.id).toBe(test_thread_id);
+    expect(res.delThread.id).toBe(threadId);
     expect(res.delThread.deleted).toBe(true);
+  });
+
+  it('should create thread and send message', async () => {
+    const result = await ainft.chat.thread.createAndSend(objectId, tokenId, 'openai', {
+      message: { role: 'user', content: '안녕하세요' },
+    });
+    console.log(JSON.stringify(result, null, 4));
   });
 });
