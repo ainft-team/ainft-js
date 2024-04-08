@@ -20,8 +20,12 @@ export default class AinizeAuth {
 
   async login(ain: Ain, ainize: Ainize) {
     if (!this.isLoggedIn) {
-      const privateKey = ain.wallet.defaultAccount?.private_key!;
-      await ainize.login(privateKey);
+      const privateKey = ain.wallet.defaultAccount?.private_key;
+      if (!privateKey) {
+        await ainize.loginWithSigner();
+      } else {
+        await ainize.login(privateKey);
+      }
       this._isLoggedIn = true;
     }
   }

@@ -43,7 +43,8 @@ export default class AinftJs {
   public chat: Chat;
 
   constructor(
-    privateKey: string,
+    privateKey?: string | null,
+    signer?: Signer | null,
     config?: {
       ainftServerEndpoint?: string,
       ainBlockchainEndpoint?: string,
@@ -60,7 +61,14 @@ export default class AinftJs {
 
     this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId);
     this.ainize = new Ainize(chainId);
-    this.setPrivateKey(privateKey);
+
+    if (privateKey) {
+      this.setPrivateKey(privateKey);
+    } else if (signer) {
+      this.setSigner(signer);
+    } else {
+      throw new Error('You must use either a private key or a signer.');
+    }
 
     this.nft = new Nft(this.ain, this.baseUrl, '/nft');
     this.eth = new Eth(this.ain, this.baseUrl, '/nft');
