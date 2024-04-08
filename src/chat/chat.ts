@@ -83,10 +83,12 @@ export default class Chat extends BlockchainBase {
 
   /**
    * Deposits a credits for a service.
+   * Please note that deposit is temporarily disabled until withdrawal is ready.
    * @param {ServiceNickname} nickname - The service nickname for which credits are deposited.
    * @param {number} amount - The amount of credits to deposit.
    * @returns {Promise<CreditTransactionResult>} Returns a promise that resolves with the deposit transaction details (hash, address, and updated credit balance).
    */
+  /**
   async depositCredit(nickname: ServiceNickname, amount: number): Promise<CreditTransactionResult> {
     const address = this.ain.signer.getAddress();
 
@@ -103,6 +105,7 @@ export default class Chat extends BlockchainBase {
 
     return { tx_hash: txHash, address, balance: updatedCredit };
   }
+  /*
 
   /**
    * Get the current credit for a service.

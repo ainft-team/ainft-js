@@ -56,11 +56,14 @@ describe('chat', () => {
     expect(credit).toBe(null);
   });
 
+  // NOTE(jiyoung): deposit is temporarily disabled until withdrawal is ready.
+  /**
   it('should deposit credit', async () => {
-    const res = await ainft.chat.depositCredit('openai', 10);
+    const result = await ainft.chat.depositCredit('openai', 10);
 
-    expect(res.tx_hash).toMatch(TX_PATTERN);
-    expect(res.address).toBe(address);
-    expect(res.balance).toBe(10);
+    expect(result.tx_hash).toMatch(TX_HASH_REGEX);
+    expect(result.address).toBe(address);
+    expect(result.balance).toBe(10);
   });
+  */
 });
