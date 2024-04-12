@@ -27,13 +27,13 @@ import {
   validateServiceConfiguration,
   validateThread,
   validateToken,
-} from '../common/util';
+} from '../utils/util';
 
 /**
  * This class supports create threads that assistant can interact with.\
  * Do not create it directly; Get it from AinftJs instance.
  */
-export default class Threads extends BlockchainBase {
+export class Threads extends BlockchainBase {
   /**
    * Create a thread.
    * @param {string} objectId - The ID of AINFT object.

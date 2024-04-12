@@ -4,7 +4,7 @@ import Ainize from '@ainize-team/ainize-js';
 import { SetOperation, SetMultiOperation, TransactionInput } from '@ainblockchain/ain-js/lib/types';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import AinizeAuth from './ainizeUtil';
+import AinizeAuth from './ainize';
 import { SERVICE_NAME_MAP, MIN_GAS_PRICE } from '../constants';
 import { HttpMethod, JobType, MessageMap } from '../types';
 

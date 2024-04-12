@@ -29,14 +29,14 @@ import {
   buildSetWriteRuleOp,
   buildSetOp,
   buildSetStateRuleOp,
-} from '../common/util';
+} from '../utils/util';
 import { MESSAGE_GC_MAX_SIBLINGS, MESSAGE_GC_NUM_SIBLINGS_DELETED } from '../constants';
 
 /**
  * This class supports building assistants that enables conversation with LLM models.\
  * Do not create it directly; Get it from AinftJs instance.
  */
-export default class Assistants extends BlockchainBase {
+export class Assistants extends BlockchainBase {
   /**
    * Create an assistant with a model and instructions.
    * @param {string} objectId - The ID of AINFT object.

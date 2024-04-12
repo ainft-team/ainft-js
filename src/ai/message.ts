@@ -32,13 +32,13 @@ import {
   validateServiceConfiguration,
   validateThread,
   validateToken,
-} from '../common/util';
+} from '../utils/util';
 
 /**
  * This class supports create messages within threads.\
  * Do not create it directly; Get it from AinftJs instance.
  */
-export default class Messages extends BlockchainBase {
+export class Messages extends BlockchainBase {
   /**
    * Create a message.
    * @param {string} threadId - The ID of thread.

@@ -4,9 +4,9 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import Ainft721Object from '../ainft721Object';
 import BlockchainBase from '../blockchainBase';
-import Assistants from './assistants';
-import Threads from './threads';
-import Messages from './messages';
+import { Assistants } from './assistant';
+import { Threads } from './thread';
+import { Messages } from './message';
 import {
   ServiceType,
   ServiceNickname,
@@ -28,14 +28,14 @@ import {
   validateObjectOwner,
   validateService,
   sendTransaction,
-} from '../common/util';
+} from '../utils/util';
 
 /**
  * This class supports configuring chat functionality for an AINFT object,\
  * and managing the required credits for its use.\
  * Do not create it directly; Get it from AinftJs instance.
  */
-export default class Chat extends BlockchainBase {
+export class Chat extends BlockchainBase {
   assistant: Assistants;
   thread: Threads;
   message: Messages;

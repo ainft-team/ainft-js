@@ -1,8 +1,8 @@
-import AinftJs from '../src/ainft';
-import { MessageCreateParams } from '../src/types';
-import { messageId, objectId, privateKey, threadId, tokenId } from './test_data';
+import AinftJs from '../../src/ainft';
+import { MessageCreateParams } from '../../src/types';
+import { messageId, objectId, privateKey, threadId, tokenId } from '../test_data';
 
-jest.mock('../src/common/util', () => {
+jest.mock('../src/utils/util', () => {
   const mockRequest = jest.fn((jobType) => {
     switch (jobType) {
       case 'create_message':
@@ -117,7 +117,7 @@ jest.mock('../src/common/util', () => {
         return null;
     }
   });
-  const util = jest.requireActual('../src/common/util');
+  const util = jest.requireActual('../src/utils/util');
   return {
     ...util,
     validateAndGetAssistant: jest.fn().mockResolvedValue({ id: '1' }),

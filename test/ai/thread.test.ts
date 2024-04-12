@@ -1,7 +1,7 @@
-import AinftJs from '../src/ainft';
-import { privateKey, objectId, tokenId, threadId } from './test_data';
+import AinftJs from '../../src/ainft';
+import { privateKey, objectId, tokenId, threadId } from '../test_data';
 
-jest.mock('../src/common/util', () => {
+jest.mock('../src/utils/util', () => {
   const mockRequest = jest.fn((jobType, body) => {
     switch (jobType) {
       case 'create_thread':
@@ -26,7 +26,7 @@ jest.mock('../src/common/util', () => {
         return null;
     }
   });
-  const util = jest.requireActual('../src/common/util');
+  const util = jest.requireActual('../src/utils/util');
   return {
     ...util,
     validateAssistant: jest.fn().mockResolvedValue(undefined),

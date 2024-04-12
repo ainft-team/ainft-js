@@ -1,8 +1,8 @@
-import AinftJs from '../src/ainft';
-import { privateKey, address, objectId, serviceName } from './test_data';
+import AinftJs from '../../src/ainft';
+import { privateKey, address, objectId, serviceName } from '../test_data';
 
-jest.mock('../src/common/util', () => {
-  const util = jest.requireActual('../src/common/util');
+jest.mock('../src/utils/util', () => {
+  const util = jest.requireActual('../src/utils/util');
   return {
     ...util,
     ainizeLogin: jest.fn().mockResolvedValue(undefined),
