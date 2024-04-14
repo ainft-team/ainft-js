@@ -1,5 +1,5 @@
-import Ainft721Object from '../ainft721Object';
-import BlockchainBase from '../blockchainBase';
+import FactoryBase from '../factoryBase';
+import AinftObject from '../ainft721Object';
 import {
   Assistant,
   AssistantCreateParams,
@@ -36,7 +36,7 @@ import { MESSAGE_GC_MAX_SIBLINGS, MESSAGE_GC_NUM_SIBLINGS_DELETED } from '../con
  * This class supports building assistants that enables conversation with LLM models.\
  * Do not create it directly; Get it from AinftJs instance.
  */
-export class Assistants extends BlockchainBase {
+export class Assistants extends FactoryBase {
   /**
    * Create an assistant with a model and instructions.
    * @param {string} objectId - The ID of AINFT object.

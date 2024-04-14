@@ -1,5 +1,5 @@
+import FactoryBase from '../factoryBase';
 import Ainft721Object from '../ainft721Object';
-import BlockchainBase from '../blockchainBase';
 import {
   JobType,
   PageParams,
@@ -33,7 +33,7 @@ import {
  * This class supports create threads that assistant can interact with.\
  * Do not create it directly; Get it from AinftJs instance.
  */
-export class Threads extends BlockchainBase {
+export class Threads extends FactoryBase {
   /**
    * Create a thread.
    * @param {string} objectId - The ID of AINFT object.

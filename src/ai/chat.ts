@@ -1,12 +1,7 @@
-import Ain from '@ainblockchain/ain-js';
-import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
 
+import FactoryBase from '../factoryBase';
 import Ainft721Object from '../ainft721Object';
-import BlockchainBase from '../blockchainBase';
-import { Assistants } from './assistant';
-import { Threads } from './thread';
-import { Messages } from './message';
 import {
   ServiceType,
   ServiceNickname,
@@ -35,18 +30,7 @@ import {
  * and managing the required credits for its use.\
  * Do not create it directly; Get it from AinftJs instance.
  */
-export class Chat extends BlockchainBase {
-  assistant: Assistants;
-  thread: Threads;
-  message: Messages;
-
-  constructor(ain: Ain, ainize: Ainize) {
-    super(ain, ainize);
-    this.assistant = new Assistants(ain, ainize);
-    this.thread = new Threads(ain, ainize);
-    this.message = new Messages(ain, ainize);
-  }
-
+export class Chat extends FactoryBase {
   /**
    * Configures chat for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object to configure for chat.

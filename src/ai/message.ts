@@ -1,7 +1,7 @@
 import Service from '@ainize-team/ainize-js/dist/service';
 
+import FactoryBase from '../factoryBase';
 import Ainft721Object from '../ainft721Object';
-import BlockchainBase from '../blockchainBase';
 import {
   JobType,
   Message,
@@ -38,7 +38,7 @@ import {
  * This class supports create messages within threads.\
  * Do not create it directly; Get it from AinftJs instance.
  */
-export class Messages extends BlockchainBase {
+export class Messages extends FactoryBase {
   /**
    * Create a message.
    * @param {string} threadId - The ID of thread.
