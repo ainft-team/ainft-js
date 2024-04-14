@@ -18,7 +18,7 @@ import Eth from './eth';
 import { Chat, Assistants, Threads, Messages } from './ai';
 import {
   AINFT_SERVER_ENDPOINT,
-  AIN_BLOCKCHAIN_CHAINID,
+  AIN_BLOCKCHAIN_CHAIN_ID,
   AIN_BLOCKCHAIN_ENDPOINT,
 } from './constants';
 import { setEnv } from './utils/env';
