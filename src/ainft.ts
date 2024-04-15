@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
-import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
@@ -16,19 +15,19 @@ import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
 import Eth from './eth';
-import Chat from './chat/chat';
+import { Chat, Assistants, Threads, Messages } from './ai';
 import {
   AINFT_SERVER_ENDPOINT,
-  AIN_BLOCKCHAIN_CHAINID,
+  AIN_BLOCKCHAIN_CHAIN_ID,
   AIN_BLOCKCHAIN_ENDPOINT,
 } from './constants';
+import { setEnv } from './utils/env';
 
 /**
  * A class that establishes a blockchain and ainft server connection and initializes other classes.
  */
 export default class AinftJs {
   private baseUrl: string;
-  private ainize: Ainize;
   public nft: Nft;
   public credit: Credit;
   public auth: Auth;
@@ -41,6 +40,9 @@ export default class AinftJs {
   public activity: Activity;
   public eth: Eth;
   public chat: Chat;
+  public assistant: Assistants;
+  public thread: Threads;
+  public message: Messages;
 
   constructor(
     privateKey: string,
@@ -52,14 +54,14 @@ export default class AinftJs {
   ) {
     this.baseUrl = _.get(config, 'ainftServerEndpoint') || AINFT_SERVER_ENDPOINT['prod'];
     const stage = this.getStage(this.baseUrl);
-    const chainId = _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAINID[stage];
+    setEnv(stage);
 
+    const chainId = _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAIN_ID[stage];
     if (!(chainId === 0 || chainId === 1)) {
       throw new Error(`Invalid chain ID: ${chainId}`);
     }
 
     this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId);
-    this.ainize = new Ainize(chainId);
     this.setPrivateKey(privateKey);
 
     this.nft = new Nft(this.ain, this.baseUrl, '/nft');
@@ -72,7 +74,10 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
     this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
     this.activity = new Activity(this.ain, this.baseUrl, '/activity');
-    this.chat = new Chat(this.ain, this.ainize);
+    this.chat = new Chat(this.ain, this.baseUrl);
+    this.assistant = new Assistants(this.ain, this.baseUrl);
+    this.thread = new Threads(this.ain, this.baseUrl);
+    this.message = new Messages(this.ain, this.baseUrl);
   }
 
   /**

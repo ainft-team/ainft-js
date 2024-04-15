@@ -1,92 +1,60 @@
-import Ain from '@ainblockchain/ain-js';
-import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import Ainft721Object from '../ainft721Object';
-import BlockchainBase from '../blockchainBase';
-import Assistants from './assistants';
-import Threads from './threads';
-import Messages from './messages';
+import FactoryBase from '../factoryBase';
+import AinftObject from '../ainft721Object';
+import { AinizeService } from '../ainize';
 import {
   ServiceType,
-  ServiceNickname,
   CreditTransactionResult,
   ChatConfigurationTransactionResult,
   ChatConfiguration,
+  ServiceNickname,
 } from '../types';
-import {
-  ainizeLogin,
-  ainizeLogout,
-  buildSetTransactionBody,
-  buildSetValueOp,
-  isTransactionSuccess,
-  Ref,
-  sleep,
-  validateAndGetServiceName,
-  validateAndGetService,
-  validateObject,
-  validateObjectOwner,
-  validateService,
-  sendTransaction,
-} from '../common/util';
+import { buildSetTxBody, buildSetValueOp, sleep, sendTx } from '../utils/util';
+import { Path } from '../utils/path';
+import { validateObject, validateObjectOwner } from '../utils/validator';
 
 /**
  * This class supports configuring chat functionality for an AINFT object,\
  * and managing the required credits for its use.\
  * Do not create it directly; Get it from AinftJs instance.
  */
-export default class Chat extends BlockchainBase {
-  assistant: Assistants;
-  thread: Threads;
-  message: Messages;
-
-  constructor(ain: Ain, ainize: Ainize) {
-    super(ain, ainize);
-    this.assistant = new Assistants(ain, ainize);
-    this.thread = new Threads(ain, ainize);
-    this.message = new Messages(ain, ainize);
-  }
+export class Chat extends FactoryBase {
+  private ainize: AinizeService = AinizeService.getInstance();
 
   /**
    * Configures chat for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object to configure for chat.
-   * @param {ServiceNickname} nickname - The service nickname.
+   * @param {string} nickname - The nickname of Ainize service.
    * @returns {Promise<ChatConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the chat configuration.
    */
-  async configure(
-    objectId: string,
-    nickname: ServiceNickname
-  ): Promise<ChatConfigurationTransactionResult> {
-    const appId = Ainft721Object.getAppId(objectId);
+  async configure(objectId: string, nickname: string): Promise<ChatConfigurationTransactionResult> {
     const address = this.ain.signer.getAddress();
 
-    await validateObject(appId, this.ain);
-    await validateObjectOwner(appId, address, this.ain);
+    await validateObject(this.ain, objectId);
+    await validateObjectOwner(this.ain, objectId, address);
 
-    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateService(serviceName, this.ainize);
+    await this.ainize.getServer(nickname);
 
     const config = {
       type: ServiceType.CHAT,
-      name: serviceName,
+      name: nickname,
     };
 
-    const txBody = this.buildTxBodyForConfigureChat(config, appId, serviceName, address);
-    const result = await sendTransaction(txBody, this.ain);
-
-    if (!isTransactionSuccess(result)) {
-      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
-    }
+    const txBody = this.buildTxBodyForConfigureChat(config, objectId, nickname, address);
+    const result = await sendTx(this.ain, txBody);
 
     return { ...result, config };
   }
 
   /**
    * Deposits a credits for a service.
+   * Please note that deposit is disabled until withdrawal is ready.
    * @param {ServiceNickname} nickname - The service nickname for which credits are deposited.
    * @param {number} amount - The amount of credits to deposit.
    * @returns {Promise<CreditTransactionResult>} Returns a promise that resolves with the deposit transaction details (hash, address, and updated credit balance).
    */
+  /*
   async depositCredit(nickname: ServiceNickname, amount: number): Promise<CreditTransactionResult> {
     const address = this.ain.signer.getAddress();
 
@@ -103,22 +71,18 @@ export default class Chat extends BlockchainBase {
 
     return { tx_hash: txHash, address, balance: updatedCredit };
   }
+  */
 
   /**
    * Get the current credit for a service.
-   * @param {ServiceNickname} nickname - The service to check the credit.
+   * @param {string} nickname - The nickname of Ainize service.
    * @returns {Promise<number|null>} Returns a promise that resolves with the current credit balance.
    */
-  async getCredit(nickname: ServiceNickname): Promise<number> {
-    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    const service = await validateAndGetService(serviceName, this.ainize);
-
-    await ainizeLogin(this.ain, this.ainize);
-
-    const credit = await service.getCreditBalance();
-
-    await ainizeLogout(this.ainize);
-
+  async getCredit(nickname: string): Promise<number> {
+    const server = await this.ainize.getServer(nickname);
+    await this.ainize.login(this.ain);
+    const credit = await server.getCreditBalance();
+    await this.ainize.logout();
     return credit;
   }
 
@@ -136,12 +100,12 @@ export default class Chat extends BlockchainBase {
 
   private buildTxBodyForConfigureChat(
     config: ChatConfiguration,
-    appId: string,
+    objectId: string,
     serviceName: string,
     address: string
   ) {
-    const ref = Ref.app(appId).ai(serviceName);
-
-    return buildSetTransactionBody(buildSetValueOp(ref, config), address);
+    const appId = AinftObject.getAppId(objectId);
+    const ref = Path.app(appId).ai(serviceName).value();
+    return buildSetTxBody(buildSetValueOp(ref, config), address);
   }
 }

@@ -165,7 +165,7 @@ export default class Ainft721Object extends FactoryBase {
    * Gets app ID by AINFT object ID.
    * @param id 
    */
-  static getAppId(id: string): string {
-    return `ainft721_${id.toLowerCase()}`;
+  static getAppId(objectId: string): string {
+    return `ainft721_${objectId.toLowerCase()}`;
   }
 }

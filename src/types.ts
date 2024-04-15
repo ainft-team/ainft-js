@@ -849,6 +849,7 @@ export type NftToken = {
   tokenURI: string,
   metadata: NftMetadata,
   isBurnt: boolean,
+  [key: string]: any;
 };
 
 export type NftTokens = {
@@ -1088,7 +1089,7 @@ export interface getTxbodyAddAiHistoryParams {
   userAddress: string;
 }
 
-export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {};
+export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {}
 
 export interface AinftObjectSearchResponse extends SearchReponse {
   ainftObjects: {
@@ -1118,34 +1119,8 @@ export enum ServiceType {
   CHAT = 'chat',
 }
 
-export enum JobType {
-  CREATE_ASSISTANT = 'create_assistant',
-  LIST_ASSISTANTS = 'list_assistants',
-  RETRIEVE_ASSISTANT = 'retrieve_assistant',
-  MODIFY_ASSISTANT = 'modify_assistant',
-  DELETE_ASSISTANT = 'delete_assistant',
-
-  CREATE_THREAD = 'create_thread',
-  RETRIEVE_THREAD = 'retrieve_thread',
-  MODIFY_THREAD = 'modify_thread',
-  DELETE_THREAD = 'delete_thread',
-
-  CREATE_MESSAGE = 'create_message',
-  LIST_MESSAGES = 'list_messages',
-  RETRIEVE_MESSAGE = 'retrieve_message',
-  MODIFY_MESSAGE = 'modify_message',
-
-  CREATE_RUN = 'create_run',
-  LIST_RUNS = 'list_runs',
-  LIST_RUN_STEPS = 'list_run_steps',
-  RETRIEVE_RUN = 'retrieve_run',
-  RETRIEVE_RUN_STEP = 'retrieve_run_step',
-  MODIFY_RUN = 'modify_run',
-  CANCEL_RUN = 'cancel_run',
-}
-
 /**
- * Nickname of the service.
+ * @deprecated Nickname of the service.
  */
 export type ServiceNickname = string | 'openai';
 
@@ -1155,21 +1130,17 @@ export type ServiceNickname = string | 'openai';
  * for description of them.
  * Please note that image-related models are currently not supported.
  */
-export type OpenAIModel =
-  | 'gpt-4-1106-preview'
+export type Model =
+  | 'gpt-4-turbo'
   | 'gpt-4'
-  | 'gpt-4-32k'
-  | 'gpt-3.5-turbo-1106'
-  | 'gpt-3.5-turbo'
-  | 'gpt-3.5-turbo-16k'
-  | 'gpt-3.5-turbo-instruct';
+  | 'gpt-3.5-turbo';
 
 /**
  * Represents a transaction result.
  */
 export interface TransactionResult {
-  tx_hash: string;
-  result: Record<string, unknown>;
+  tx_hash?: string | null;
+  result?: Record<string, unknown> | null;
 }
 
 /**
@@ -1256,6 +1227,16 @@ export interface Assistant {
   created_at: number;
 }
 
+export interface AssistantMinted {
+  /** The ID of AINFT token. */
+  tokenId: string;
+  /** The ID of AINFT object. */
+  objectId: string;
+  /** The owner address of AINFT token. */
+  owner: string;
+  assistant: Assistant;
+}
+
 export interface AssistantDeleted {
   /** The identifier. */
   id: string;
@@ -1265,7 +1246,7 @@ export interface AssistantDeleted {
 
 export interface AssistantCreateParams {
   /** The name of the model to use. */
-  model: OpenAIModel;
+  model: Model;
   /** The name of the assistant. The maximum length is 256 characters. */
   name: string;
   /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
@@ -1281,7 +1262,7 @@ export interface AssistantCreateParams {
 
 export interface AssistantUpdateParams {
   /** The name of the model to use. */
-  model?: OpenAIModel;
+  model?: Model;
   /** The name of the assistant. The maximum length is 256 characters. */
   name?: string | null;
   /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
@@ -1322,7 +1303,7 @@ export interface ThreadCreateParams {
   metadata?: object | null;
 }
 
-export interface ThreadCreateAndSendParams {
+export interface ThreadCreateAndRunParams {
   thread?: ThreadCreateParams;
   message?: MessageCreateParams;
 }
@@ -1370,10 +1351,10 @@ export interface MessageMap {
   [key: string]: Message;
 }
 
-export interface PageParams {
-  offset: number;
-  limit: number;
-  order: 'asc' | 'desc';
+export interface QueryParams {
+  limit?: number;
+  offset?: number;
+  order?: 'asc' | 'desc';
 }
 
 export interface Page<T> {
@@ -1402,3 +1383,5 @@ export interface MessageUpdateParams {
    */
   metadata?: object | null;
 }
+
+export type EnvType = 'dev' | 'prod';
