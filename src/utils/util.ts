@@ -99,7 +99,7 @@ export function serializeEndpoint(endpoint: string) {
   return endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint;
 }
 
-export const exists = async (path: string, ain: Ain): Promise<boolean> => {
+export const valueExists = async (path: string, ain: Ain): Promise<boolean> => {
   return !!(await ain.db.ref(path).getValue());
 };
 
