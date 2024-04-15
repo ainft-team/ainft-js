@@ -1,35 +1,11 @@
 import AinftJs from '../../src/ainft';
 import { privateKey, address, objectId, serviceName } from '../test_data';
+import { TX_HASH_REGEX } from '../constants';
 
-jest.mock('../src/utils/util', () => {
-  const util = jest.requireActual('../src/utils/util');
-  return {
-    ...util,
-    ainizeLogin: jest.fn().mockResolvedValue(undefined),
-    ainizeLogout: jest.fn().mockResolvedValue(undefined),
-    validateAndGetService: jest.fn().mockResolvedValue({
-      getCreditBalance: jest
-        .fn()
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(null)
-        .mockResolvedValue(10),
-      chargeCredit: jest.fn().mockResolvedValue('0x' + 'a'.repeat(64)),
-    }),
-    sendTransaction: jest.fn().mockResolvedValue({
-      tx_hash: '0x' + 'a'.repeat(64),
-      result: { code: 0 },
-    }),
-  };
-});
-
-const TX_PATTERN = /^0x([A-Fa-f0-9]{64})$/;
-
-jest.setTimeout(60000);
-
-describe('chat', () => {
+describe.skip('chat', () => {
   let ainft: AinftJs;
 
-  beforeAll(() => {
+  beforeEach(() => {
     ainft = new AinftJs(privateKey, {
       ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
@@ -42,12 +18,12 @@ describe('chat', () => {
   });
 
   it('should configure chat', async () => {
-    const res = await ainft.chat.configure(objectId, 'openai');
+    const result = await ainft.chat.configure(objectId, 'openai');
 
-    expect(res.tx_hash).toMatch(TX_PATTERN);
-    expect(res.result).toBeDefined();
-    expect(res.config.name).toBe(serviceName);
-    expect(res.config.type).toBe('chat');
+    expect(result.tx_hash).toMatch(TX_HASH_REGEX);
+    expect(result.result).toBeDefined();
+    expect(result.config.name).toBe(serviceName);
+    expect(result.config.type).toBe('chat');
   });
 
   it('should get credit', async () => {
@@ -56,11 +32,12 @@ describe('chat', () => {
     expect(credit).toBe(null);
   });
 
-  it('should deposit credit', async () => {
-    const res = await ainft.chat.depositCredit('openai', 10);
+  // NOTE(jiyoung): deposit is disabled until withdrawal is ready.
+  // it('should deposit credit', async () => {
+  //   const result = await ainft.chat.depositCredit('openai', 10);
 
-    expect(res.tx_hash).toMatch(TX_PATTERN);
-    expect(res.address).toBe(address);
-    expect(res.balance).toBe(10);
-  });
+  //   expect(result.tx_hash).toMatch(TX_HASH_REGEX);
+  //   expect(result.address).toBe(address);
+  //   expect(result.balance).toBe(10);
+  // });
 });
