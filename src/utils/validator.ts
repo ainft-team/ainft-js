@@ -31,6 +31,12 @@ export const validateServerConfigurationForObject = async (
   }
 };
 
+export const validateObjectOwner = async (ain: Ain, objectId: string, address: string) => {
+  if (!isObjectOwner(ain, objectId, address)) {
+    throw new Error(`${address} is not object owner`);
+  }
+};
+
 export const validateToken = async (ain: Ain, objectId: string, tokenId: string) => {
   const appId = AinftObject.getAppId(objectId);
   const tokenPath = Path.app(appId).token(tokenId).value();
@@ -51,7 +57,7 @@ export const validateAssistant = async (
   ain: Ain,
   objectId: string,
   tokenId: string,
-  assistantId: string | null
+  assistantId?: string
 ) => {
   const appId = AinftObject.getAppId(objectId);
   const assistantPath = Path.app(appId).token(tokenId).ai().value();
@@ -66,11 +72,12 @@ export const validateAssistant = async (
 
 export const validateThread = async (
   ain: Ain,
-  appId: string,
+  objectId: string,
   tokenId: string,
   address: string,
   threadId: string
 ) => {
+  const appId = AinftObject.getAppId(objectId);
   const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).value();
   if (!(await exists(threadPath, ain))) {
     throw new Error('Thread not found');
@@ -79,19 +86,14 @@ export const validateThread = async (
 
 export const validateMessage = async (
   ain: Ain,
-  appId: string,
+  objectId: string,
   tokenId: string,
   address: string,
   threadId: string,
   messageId: string
 ) => {
-  const messagesPath = Path.app(appId)
-    .token(tokenId)
-    .ai()
-    .history(address)
-    .thread(threadId)
-    .messages()
-    .value();
+  const appId = AinftObject.getAppId(objectId);
+  const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
   const messages: MessageMap = await getValue(messagesPath, ain);
   // TODO(jiyoung): optimize inefficient loop.
   for (const key in messages) {

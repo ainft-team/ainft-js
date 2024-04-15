@@ -1,255 +1,241 @@
+import _ from 'lodash';
+
 import FactoryBase from '../factoryBase';
-import Ainft721Object from '../ainft721Object';
+import AinftObject from '../ainft721Object';
+import { AinizeService, OperationType } from '../ainize';
 import {
-  JobType,
-  PageParams,
-  ServiceNickname,
+  QueryParams,
   Thread,
-  ThreadCreateAndSendParams,
+  ThreadCreateAndRunParams,
   ThreadCreateParams,
   ThreadDeleteTransactionResult,
   ThreadDeleted,
   ThreadTransactionResult,
   ThreadUpdateParams,
 } from '../types';
+import { buildSetTxBody, buildSetValueOp, getValue, sendTx } from '../utils/util';
+import { Path } from '../utils/path';
 import {
-  buildSetTransactionBody,
-  buildSetValueOp,
-  getValue,
-  isTransactionSuccess,
-  Ref,
-  sendAinizeRequest,
-  sendTransaction,
-  validateAndGetService,
-  validateAndGetServiceName,
   validateAssistant,
   validateObject,
-  validateServiceConfiguration,
+  validateServerConfigurationForObject,
   validateThread,
   validateToken,
-} from '../utils/util';
+} from '../utils/validator';
 
 /**
  * This class supports create threads that assistant can interact with.\
  * Do not create it directly; Get it from AinftJs instance.
  */
 export class Threads extends FactoryBase {
+  private ainize: AinizeService = AinizeService.getInstance();
+
   /**
    * Create a thread.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceNickname} nickname - The service nickname to use.
    * @param {ThreadCreateParams} ThreadCreateParams - The parameters to create thread.
    * @returns Returns a promise that resolves with both the transaction result and the created thread.
    */
   async create(
     objectId: string,
     tokenId: string,
-    nickname: ServiceNickname,
     { metadata }: ThreadCreateParams
   ): Promise<ThreadTransactionResult> {
-    const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
-    await validateObject(appId, this.ain);
-    await validateToken(appId, tokenId, this.ain);
+    await validateObject(this.ain, objectId);
+    await validateToken(this.ain, objectId, tokenId);
+    await validateAssistant(this.ain, objectId, tokenId);
 
-    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateServiceConfiguration(appId, serviceName, this.ain);
-    await validateAssistant(appId, tokenId, serviceName, null, this.ain);
+    const serverName = this.ainize.getServerName();
+    await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
-    const service = await validateAndGetService(serviceName, this.ainize);
+    const opType = OperationType.CREATE_THREAD;
+    const body = {
+      ...(metadata && !_.isEmpty(metadata) && { metadata }),
+    };
 
-    const jobType = JobType.CREATE_THREAD;
-    const body = { ...(metadata && Object.keys(metadata).length > 0 && { metadata }) };
-    const thread = await sendAinizeRequest<Thread>(jobType, body, service, this.ain, this.ainize);
+    const { data } = await this.ainize.requestWithAuth<Thread>(this.ain, {
+      serverName,
+      opType,
+      data: body,
+    });
 
-    const txBody = this.buildTxBodyForCreateThread(thread, appId, tokenId, serviceName, address);
-    const result = await sendTransaction(txBody, this.ain);
-    if (!isTransactionSuccess(result)) {
-      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
-    }
+    const txBody = this.buildTxBodyForCreateThread(data, objectId, tokenId, address);
+    const result = await sendTx(this.ain, txBody);
 
-    return { ...result, thread };
+    return { ...result, thread: data };
   }
 
   /**
    * Updates a thread.
-   * @param {string} threadId - The ID of thread.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceNickname} nickname - The service nickname to use.
+   * @param {string} threadId - The ID of thread.
    * @param {ThreadUpdateParams} ThreadUpdateParams - The parameters to update thread.
    * @returns Returns a promise that resolves with both the transaction result and the updated thread.
    */
   async update(
-    threadId: string,
     objectId: string,
     tokenId: string,
-    nickname: ServiceNickname,
+    threadId: string,
     { metadata }: ThreadUpdateParams
   ): Promise<ThreadTransactionResult> {
-    const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
-    await validateObject(appId, this.ain);
-    await validateToken(appId, tokenId, this.ain);
+    await validateObject(this.ain, objectId);
+    await validateToken(this.ain, objectId, tokenId);
+    await validateAssistant(this.ain, objectId, tokenId);
+    await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateServiceConfiguration(appId, serviceName, this.ain);
-    await validateAssistant(appId, tokenId, serviceName, null, this.ain);
-    await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
+    const serverName = this.ainize.getServerName();
+    await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
-    const service = await validateAndGetService(serviceName, this.ainize);
+    const opType = OperationType.MODIFY_THREAD;
+    const body = {
+      threadId,
+      ...(metadata && !_.isEmpty(metadata) && { metadata }),
+    };
 
-    const jobType = JobType.MODIFY_THREAD;
-    const body = { threadId, ...(metadata && Object.keys(metadata).length > 0 && { metadata }) };
-    const thread = await sendAinizeRequest<Thread>(jobType, body, service, this.ain, this.ainize);
+    const { data } = await this.ainize.requestWithAuth<Thread>(this.ain, {
+      serverName,
+      opType,
+      data: body,
+    });
 
-    const txBody = await this.buildTxBodyForUpdateThread(
-      thread,
-      appId,
-      tokenId,
-      serviceName,
-      address
-    );
-    const result = await sendTransaction(txBody, this.ain);
-    if (!isTransactionSuccess(result)) {
-      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
-    }
+    const txBody = await this.buildTxBodyForUpdateThread(data, objectId, tokenId, address);
+    const result = await sendTx(this.ain, txBody);
 
-    return { ...result, thread };
+    return { ...result, thread: data };
   }
 
   /**
    * Deletes a thread.
-   * @param {string} threadId - The ID of thread.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceNickname} nickname - The service nickname to use.
+   * @param {string} threadId - The ID of thread.
    * @returns Returns a promise that resolves with both the transaction result and the deleted thread.
    */
   async delete(
-    threadId: string,
     objectId: string,
     tokenId: string,
-    nickname: ServiceNickname
+    threadId: string
   ): Promise<ThreadDeleteTransactionResult> {
-    const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
-    await validateObject(appId, this.ain);
-    await validateToken(appId, tokenId, this.ain);
+    await validateObject(this.ain, objectId);
+    await validateToken(this.ain, objectId, tokenId);
+    await validateAssistant(this.ain, objectId, tokenId);
+    await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateServiceConfiguration(appId, serviceName, this.ain);
-    await validateAssistant(appId, tokenId, serviceName, null, this.ain);
-    await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
+    const serverName = this.ainize.getServerName();
+    await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
-    const service = await validateAndGetService(serviceName, this.ainize);
-
-    const jobType = JobType.DELETE_THREAD;
+    const opType = OperationType.DELETE_THREAD;
     const body = { threadId };
-    const delThread = await sendAinizeRequest<ThreadDeleted>(
-      jobType,
-      body,
-      service,
-      this.ain,
-      this.ainize
-    );
 
-    const txBody = this.buildTxBodyForDeleteThread(threadId, appId, tokenId, serviceName, address);
-    const result = await sendTransaction(txBody, this.ain);
-    if (!isTransactionSuccess(result)) {
-      throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
-    }
+    const { data } = await this.ainize.requestWithAuth<ThreadDeleted>(this.ain, {
+      serverName,
+      opType,
+      data: body,
+    });
 
-    return { ...result, delThread };
+    const txBody = this.buildTxBodyForDeleteThread(threadId, objectId, tokenId, address);
+    const result = await sendTx(this.ain, txBody);
+
+    return { ...result, delThread: data };
   }
 
   /**
    * Retrieves a thread.
-   * @param {string} threadId - The ID of thread.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
-   * @param {ServiceNickname} nickname - The service nickname to use.
+   * @param {string} threadId - The ID of thread.
    * @returns Returns a promise that resolves with the thread.
    */
-  async get(
-    threadId: string,
-    objectId: string,
-    tokenId: string,
-    nickname: ServiceNickname
-  ): Promise<Thread> {
-    const appId = Ainft721Object.getAppId(objectId);
+  async get(objectId: string, tokenId: string, threadId: string): Promise<Thread> {
     const address = this.ain.signer.getAddress();
 
-    await validateObject(appId, this.ain);
-    await validateToken(appId, tokenId, this.ain);
+    await validateObject(this.ain, objectId);
+    await validateToken(this.ain, objectId, tokenId);
+    await validateAssistant(this.ain, objectId, tokenId);
+    await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateServiceConfiguration(appId, serviceName, this.ain);
-    await validateAssistant(appId, tokenId, serviceName, null, this.ain);
-    await validateThread(appId, tokenId, serviceName, address, threadId, this.ain);
+    const serverName = this.ainize.getServerName();
+    await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
-    const service = await validateAndGetService(serviceName, this.ainize);
-
-    const jobType = JobType.RETRIEVE_THREAD;
+    const opType = OperationType.RETRIEVE_THREAD;
     const body = { threadId };
-    const thread = await sendAinizeRequest<Thread>(jobType, body, service, this.ain, this.ainize);
 
-    return thread;
+    const { data } = await this.ainize.requestWithAuth<Thread>(this.ain, {
+      serverName,
+      opType,
+      data: body,
+    });
+
+    return data;
   }
 
   async list(
     objectId: string,
     tokenId: string,
-    nickname: ServiceNickname,
-    { offset, limit, order }: PageParams
+    { limit = 20, offset = 0, order = 'desc' }: QueryParams
   ) {
-    const appId = Ainft721Object.getAppId(objectId);
+    const appId = AinftObject.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
-    await validateObject(appId, this.ain);
-    await validateToken(appId, tokenId, this.ain);
+    await validateObject(this.ain, objectId);
+    await validateToken(this.ain, objectId, tokenId);
+    await validateAssistant(this.ain, objectId, tokenId);
 
-    const serviceName = await validateAndGetServiceName(nickname, this.ainize);
-    await validateServiceConfiguration(appId, serviceName, this.ain);
-    await validateAssistant(appId, tokenId, serviceName, null, this.ain);
+    const serverName = this.ainize.getServerName();
+    await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     return {
       total: 2,
       items: [
         {
           id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
-          metadata: { title: '도와드릴까요?' },
-          created_at: 1711962854, // metadata
-          updated_at: 1711962854, // metadata
+          title: '도와드릴까요?',
+          metadata: {},
+          created_at: 1711962854,
         },
         {
           id: 'thread_mmzBrZeM5vllqEceRttvu1xk',
-          metadata: { title: '영문번역' },
-          created_at: 1711961028, // metadata
-          updated_at: 1711961028, // metadata
+          title: '영문번역',
+          metadata: {},
+          created_at: 1711961028,
         },
       ],
     };
   }
 
-  async createAndSend(
+  async createAndRun(
     objectId: string,
     tokenId: string,
-    nickname: ServiceNickname,
-    { thread, message }: ThreadCreateAndSendParams
+    { thread, message }: ThreadCreateAndRunParams
   ) {
+    const address = this.ain.signer.getAddress();
+
+    await validateObject(this.ain, objectId);
+    await validateToken(this.ain, objectId, tokenId);
+    await validateAssistant(this.ain, objectId, tokenId);
+
+    const serverName = this.ainize.getServerName();
+    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+
+    // TODO(jiyoung): request and send transaction.
+    // ...
+
     return {
       tx_hash: '0x' + 'a'.repeat(64),
       result: { code: 0 },
       thread: {
         id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
-        metadata: { title: '도와드릴까요?' },
-        created_at: 1711962854, // metadata
-        updated_at: 1711962854, // metadata
+        title: '도와드릴까요?',
+        metadata: {},
+        created_at: 1711962854,
       },
       messages: {
         '0': {
@@ -289,56 +275,50 @@ export class Threads extends FactoryBase {
   }
 
   private buildTxBodyForCreateThread(
-    thread: Thread,
-    appId: string,
+    { id, metadata, created_at }: Thread,
+    objectId: string,
     tokenId: string,
-    serviceName: string,
     address: string
   ) {
-    const { id, metadata } = thread;
-    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(id).root();
-
+    const appId = AinftObject.getAppId(objectId);
+    const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(id).value();
     const value = {
-      ...(metadata && Object.keys(metadata).length > 0 && { metadata }),
+      createdAt: created_at,
       messages: true,
+      ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
-
-    return buildSetTransactionBody(buildSetValueOp(ref, value), address);
+    return buildSetTxBody(buildSetValueOp(threadPath, value), address);
   }
 
   private async buildTxBodyForUpdateThread(
-    thread: Thread,
-    appId: string,
+    { id, metadata }: Thread,
+    objectId: string,
     tokenId: string,
-    serviceName: string,
     address: string
   ) {
-    const { id, metadata } = thread;
-    const ref = Ref.app(appId).token(tokenId).ai(serviceName).history(address).thread(id).root();
-    const prev = await getValue(ref, this.ain);
-
+    const appId = AinftObject.getAppId(objectId);
+    const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(id).value();
+    const prev = await getValue(threadPath, this.ain);
     const value = {
       ...prev,
-      ...(metadata && Object.keys(metadata).length > 0 && { metadata }),
+      ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
-
-    return buildSetTransactionBody(buildSetValueOp(ref, value), address);
+    return buildSetTxBody(buildSetValueOp(threadPath, value), address);
   }
 
   private buildTxBodyForDeleteThread(
     threadId: string,
-    appId: string,
+    objectId: string,
     tokenId: string,
-    serviceName: string,
     address: string
   ) {
-    const ref = Ref.app(appId)
+    const appId = AinftObject.getAppId(objectId);
+    const threadPath = Path.app(appId)
       .token(tokenId)
-      .ai(serviceName)
+      .ai()
       .history(address)
       .thread(threadId)
-      .root();
-
-    return buildSetTransactionBody(buildSetValueOp(ref, null), address);
+      .value();
+    return buildSetTxBody(buildSetValueOp(threadPath, null), address);
   }
 }

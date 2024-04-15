@@ -4,7 +4,7 @@ let env: EnvType | null;
 
 export const getEnv = () => {
   if (!env) {
-    throw new Error("env is not defined, use setEnv().");
+    throw new Error("Env is not defined, use setEnv().");
   }
   return env;
 };
