@@ -1,7 +1,7 @@
 import Service from '@ainize-team/ainize-js/dist/service';
 
 import FactoryBase from '../factoryBase';
-import Ainft721Object from '../ainft721Object';
+import AinftObject from '../ainft721Object';
 import { AinizeService } from '../ainize';
 import {
   ServiceType,
@@ -29,7 +29,6 @@ export class Chat extends FactoryBase {
    * @returns {Promise<ChatConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the chat configuration.
    */
   async configure(objectId: string, nickname: string): Promise<ChatConfigurationTransactionResult> {
-    const appId = Ainft721Object.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
@@ -42,7 +41,7 @@ export class Chat extends FactoryBase {
       name: nickname,
     };
 
-    const txBody = this.buildTxBodyForConfigureChat(config, appId, nickname, address);
+    const txBody = this.buildTxBodyForConfigureChat(config, objectId, nickname, address);
     const result = await sendTx(this.ain, txBody);
 
     return { ...result, config };
@@ -55,7 +54,7 @@ export class Chat extends FactoryBase {
    * @param {number} amount - The amount of credits to deposit.
    * @returns {Promise<CreditTransactionResult>} Returns a promise that resolves with the deposit transaction details (hash, address, and updated credit balance).
    */
-  /**
+  /*
   async depositCredit(nickname: ServiceNickname, amount: number): Promise<CreditTransactionResult> {
     const address = this.ain.signer.getAddress();
 
@@ -72,7 +71,7 @@ export class Chat extends FactoryBase {
 
     return { tx_hash: txHash, address, balance: updatedCredit };
   }
-  /*
+  */
 
   /**
    * Get the current credit for a service.
@@ -101,12 +100,12 @@ export class Chat extends FactoryBase {
 
   private buildTxBodyForConfigureChat(
     config: ChatConfiguration,
-    appId: string,
+    objectId: string,
     serviceName: string,
     address: string
   ) {
+    const appId = AinftObject.getAppId(objectId);
     const ref = Path.app(appId).ai(serviceName).value();
-
     return buildSetTxBody(buildSetValueOp(ref, config), address);
   }
 }

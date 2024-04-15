@@ -69,6 +69,7 @@ export class Messages extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} threadId - The ID of thread.
    * @param {string} messageId - The ID of message.
+   * @param {MessageUpdateParams} MessageUpdateParams - The parameters to update message.
    * @returns Returns a promise that resolves with both the transaction result and the updated message.
    */
   async update(

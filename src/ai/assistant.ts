@@ -351,14 +351,16 @@ export class Assistants extends FactoryBase {
     const setHistoryWriteRuleOp = buildSetWriteRuleOp(historyPath, rules.write);
     const setThreadGCRuleOp = buildSetStateRuleOp(threadPath, rules.state.thread);
     const setMessageGCRuleOp = buildSetStateRuleOp(messagePath, rules.state.message);
-    const setOp = buildSetOp([
-      setAssistantInfoOp,
-      setHistoryWriteRuleOp,
-      setThreadGCRuleOp,
-      setMessageGCRuleOp,
-    ]);
 
-    return buildSetTxBody(setOp, address);
+    return buildSetTxBody(
+      buildSetOp([
+        setAssistantInfoOp,
+        setHistoryWriteRuleOp,
+        setThreadGCRuleOp,
+        setMessageGCRuleOp,
+      ]),
+      address
+    );
   }
 
   private buildTxBodyForUpdateAssistant(
@@ -392,14 +394,16 @@ export class Assistants extends FactoryBase {
     const unsetThreadGCRuleOp = buildSetStateRuleOp(threadPath, null);
     const unsetHistoryWriteRuleOp = buildSetWriteRuleOp(historyPath, null);
     const unsetAssistantInfoOp = buildSetValueOp(assistantPath, null);
-    const unsetOp = buildSetOp([
-      unsetMessageGCRuleOp,
-      unsetThreadGCRuleOp,
-      unsetHistoryWriteRuleOp,
-      unsetAssistantInfoOp,
-    ]);
 
-    return buildSetTxBody(unsetOp, address);
+    return buildSetTxBody(
+      buildSetOp([
+        unsetMessageGCRuleOp,
+        unsetThreadGCRuleOp,
+        unsetHistoryWriteRuleOp,
+        unsetAssistantInfoOp,
+      ]),
+      address
+    );
   }
 
   private async getTokensByAddress(objectId: string, address: string) {
