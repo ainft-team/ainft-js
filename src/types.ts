@@ -849,6 +849,7 @@ export type NftToken = {
   tokenURI: string,
   metadata: NftMetadata,
   isBurnt: boolean,
+  [key: string]: any;
 };
 
 export type NftTokens = {
