@@ -224,7 +224,7 @@ export class Assistants extends FactoryBase {
 
     return { total, items };
     // NOTE(jiyoung): example data
-    /**
+    /*
     return {
       total: 2,
       items: [
@@ -286,7 +286,7 @@ export class Assistants extends FactoryBase {
 
     return data;
     // NOTE(jiyoung): example data
-    /**
+    /*
     return {
       tokenId: '1',
       objectId: '0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401',
