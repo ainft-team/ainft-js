@@ -182,33 +182,41 @@ export class Threads extends FactoryBase {
     tokenId: string,
     { limit = 20, offset = 0, order = 'desc' }: QueryParams
   ) {
-    const appId = AinftObject.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
 
-    const serverName = this.ainize.getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const threads = await this.getThreadsByAddress(objectId, tokenId, address);
+    const sorted = this.sortThreads(threads, order);
 
+    const total = sorted.length;
+    const items = sorted.slice(offset, offset + limit);
+
+    return { total, items };
+    // NOTE(jiyoung): example data
+    /*
     return {
       total: 2,
       items: [
         {
           id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
-          title: '도와드릴까요?',
-          metadata: {},
           created_at: 1711962854,
+          metadata: {
+            title: '도와드릴까요?',
+          },
         },
         {
           id: 'thread_mmzBrZeM5vllqEceRttvu1xk',
-          title: '영문번역',
-          metadata: {},
           created_at: 1711961028,
+          metadata: {
+            title: '영문번역',
+          },
         },
       ],
     };
+    */
   }
 
   async createAndRun(
@@ -320,5 +328,27 @@ export class Threads extends FactoryBase {
       .thread(threadId)
       .value();
     return buildSetTxBody(buildSetValueOp(threadPath, null), address);
+  }
+  private async getThreadsByAddress(objectId: string, tokenId: string, address: string) {
+    const appId = AinftObject.getAppId(objectId);
+    const threadsPath = Path.app(appId).token(tokenId).ai().history(address).threads().value();
+    const threads = await this.ain.db.ref(threadsPath).getValue();
+    return Object.values(threads).map(this.toThread);
+  }
+
+  private toThread(data: any): Thread {
+    return {
+      id: data.id,
+      metadata: data.metadata || {},
+      created_at: data.createdAt,
+    };
+  }
+
+  private sortThreads(threads: Thread[], order: 'asc' | 'desc') {
+    return threads.sort((a, b) => {
+      if (a.created_at < b.created_at) return order === 'asc' ? -1 : 1;
+      if (a.created_at > b.created_at) return order === 'asc' ? 1 : -1;
+      return 0;
+    });
   }
 }

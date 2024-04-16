@@ -41,6 +41,9 @@ describe.skip('thread', () => {
       offset: 0,
       order: 'desc',
     });
+
+    expect(result.total).toBeDefined();
+    expect(result.items).toBeDefined();
   });
 
   it('should update thread', async () => {

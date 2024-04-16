@@ -65,7 +65,7 @@ export const validateAssistant = async (
   if (!assistant) {
     throw new Error('Assistant not found');
   }
-  if (assistantId !== null && assistantId !== assistant.id) {
+  if (assistantId && assistantId !== assistant.id) {
     throw new Error('Invalid assistant id');
   }
 };
