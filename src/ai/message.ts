@@ -212,16 +212,13 @@ export class Messages extends FactoryBase {
       content,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
-    const { data } = await this.ainize.request(this.ain, { serverName, opType, data: body });
+    const { data } = await this.ainize.request<any>(this.ain, { serverName, opType, data: body });
     return data;
   }
 
   private async createRun(serverName: string, threadId: string, assistantId: string) {
     const opType = OperationType.CREATE_RUN;
-    const body = {
-      threadId,
-      assistantId,
-    };
+    const body = { threadId, assistantId };
     const { data } = await this.ainize.request<any>(this.ain, { serverName, opType, data: body });
     return data;
   }
