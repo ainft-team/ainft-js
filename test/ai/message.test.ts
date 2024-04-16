@@ -2,6 +2,8 @@ import AinftJs from '../../src/ainft';
 import { messageId, objectId, privateKey, threadId, tokenId } from '../test_data';
 import { MESSAGE_REGEX, TX_HASH_REGEX } from '../constants';
 
+jest.setTimeout(60000); // 1min
+
 describe.skip('message', () => {
   let ainft: AinftJs;
 

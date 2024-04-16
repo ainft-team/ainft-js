@@ -14,7 +14,7 @@ import {
   ThreadUpdateParams,
   ThreadWithMessages,
 } from '../types';
-import { buildSetTxBody, buildSetValueOp, getValue, sendTx } from '../utils/util';
+import { buildSetTxBody, buildSetValueOp, getAssistant, getValue, sendTx } from '../utils/util';
 import { Path } from '../utils/path';
 import {
   validateAssistant,
@@ -225,6 +225,7 @@ export class Threads extends FactoryBase {
     tokenId: string,
     { metadata, messages }: ThreadCreateAndRunParams
   ) {
+    const appId = AinftObject.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
@@ -234,8 +235,10 @@ export class Threads extends FactoryBase {
     const serverName = this.ainize.getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
+    const assistant = await getAssistant(this.ain, appId, tokenId);
     const opType = OperationType.CREATE_RUN_THREAD;
     const body = {
+      assistantId: assistant.id,
       ...(metadata && !_.isEmpty(metadata) && { metadata }), // thread
       ...(messages && messages.length > 0 && { messages }),
     };
@@ -325,7 +328,7 @@ export class Threads extends FactoryBase {
   ) {
     const appId = AinftObject.getAppId(objectId);
     const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(id).value();
-    const prev = await getValue(threadPath, this.ain);
+    const prev = await getValue(this.ain, threadPath);
     const value = {
       ...prev,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),

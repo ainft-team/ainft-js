@@ -88,7 +88,7 @@ export class Assistants extends FactoryBase {
       return { assistant: data };
     }
 
-    const txBody = this.buildTxBodyForCreateAssistant(data, objectId, tokenId, address);
+    const txBody = this.buildTxBodyForCreateAssistant(address, objectId, tokenId, data);
     const result = await sendTx(this.ain, txBody);
 
     return { ...result, assistant: data };
@@ -138,7 +138,7 @@ export class Assistants extends FactoryBase {
       return { assistant: data };
     }
 
-    const txBody = this.buildTxBodyForUpdateAssistant(data, objectId, tokenId, address);
+    const txBody = this.buildTxBodyForUpdateAssistant(address, objectId, tokenId, data);
     const result = await sendTx(this.ain, txBody);
 
     return { ...result, assistant: data };
@@ -178,7 +178,7 @@ export class Assistants extends FactoryBase {
       return { delAssistant: data };
     }
 
-    const txBody = this.buildTxBodyForDeleteAssistant(objectId, tokenId, address);
+    const txBody = this.buildTxBodyForDeleteAssistant(address, objectId, tokenId);
     const result = await sendTx(this.ain, txBody);
 
     return { ...result, delAssistant: data };
@@ -307,10 +307,10 @@ export class Assistants extends FactoryBase {
   }
 
   private buildTxBodyForCreateAssistant(
-    { id, model, name, instructions, description, metadata, created_at }: Assistant,
+    address: string,
     objectId: string,
     tokenId: string,
-    address: string
+    { id, model, name, instructions, description, metadata, created_at }: Assistant
   ) {
     const appId = AinftObject.getAppId(objectId);
     const assistantPath = Path.app(appId).token(tokenId).ai().value();
@@ -364,10 +364,10 @@ export class Assistants extends FactoryBase {
   }
 
   private buildTxBodyForUpdateAssistant(
-    { model, name, instructions, description, metadata }: Assistant,
+    address: string,
     objectId: string,
     tokenId: string,
-    address: string
+    { model, name, instructions, description, metadata }: Assistant
   ) {
     const appId = AinftObject.getAppId(objectId);
     const assistantConfigPath = Path.app(appId).token(tokenId).ai().config().value();
@@ -383,7 +383,7 @@ export class Assistants extends FactoryBase {
     return buildSetTxBody(buildSetValueOp(assistantConfigPath, config), address);
   }
 
-  private buildTxBodyForDeleteAssistant(objectId: string, tokenId: string, address: string) {
+  private buildTxBodyForDeleteAssistant(address: string, objectId: string, tokenId: string) {
     const appId = AinftObject.getAppId(objectId);
     const assistantPath = Path.app(appId).token(tokenId).ai().value();
     const historyPath = `/apps/${appId}/tokens/${tokenId}/ai/history/$user_addr`;

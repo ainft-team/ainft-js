@@ -7,14 +7,14 @@ import { valueExists, getValue } from './util';
 export const isObjectOwner = async (ain: Ain, objectId: string, address: string) => {
   const appId = AinftObject.getAppId(objectId);
   const objectPath = Path.app(appId).value();
-  const object = await getValue(objectPath, ain);
+  const object = await getValue(ain, objectPath);
   return address === object.owner;
 };
 
 export const validateObject = async (ain: Ain, objectId: string) => {
   const appId = AinftObject.getAppId(objectId);
   const objectPath = Path.app(appId).value();
-  if (!(await valueExists(objectPath, ain))) {
+  if (!(await valueExists(ain, objectPath))) {
     throw new Error('Object not found');
   }
 };
@@ -26,7 +26,7 @@ export const validateServerConfigurationForObject = async (
 ) => {
   const appId = AinftObject.getAppId(objectId);
   const configPath = Path.app(appId).ai(serverName).value();
-  if (!(await valueExists(configPath, ain))) {
+  if (!(await valueExists(ain, configPath))) {
     throw new Error('Server configuration is missing for object');
   }
 };
@@ -40,7 +40,7 @@ export const validateObjectOwner = async (ain: Ain, objectId: string, address: s
 export const validateToken = async (ain: Ain, objectId: string, tokenId: string) => {
   const appId = AinftObject.getAppId(objectId);
   const tokenPath = Path.app(appId).token(tokenId).value();
-  if (!(await valueExists(tokenPath, ain))) {
+  if (!(await valueExists(ain, tokenPath))) {
     throw new Error('Token not found');
   }
 };
@@ -48,7 +48,7 @@ export const validateToken = async (ain: Ain, objectId: string, tokenId: string)
 export const validateDuplicateAssistant = async (ain: Ain, objectId: string, tokenId: string) => {
   const appId = AinftObject.getAppId(objectId);
   const assistantPath = Path.app(appId).token(tokenId).ai().value();
-  if (await valueExists(assistantPath, ain)) {
+  if (await valueExists(ain, assistantPath)) {
     throw new Error('Assistant already exists');
   }
 };
@@ -61,7 +61,7 @@ export const validateAssistant = async (
 ) => {
   const appId = AinftObject.getAppId(objectId);
   const assistantPath = Path.app(appId).token(tokenId).ai().value();
-  const assistant = await getValue(assistantPath, ain);
+  const assistant = await getValue(ain, assistantPath);
   if (!assistant) {
     throw new Error('Assistant not found');
   }
@@ -79,7 +79,7 @@ export const validateThread = async (
 ) => {
   const appId = AinftObject.getAppId(objectId);
   const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).value();
-  if (!(await valueExists(threadPath, ain))) {
+  if (!(await valueExists(ain, threadPath))) {
     throw new Error('Thread not found');
   }
 };
@@ -94,7 +94,7 @@ export const validateMessage = async (
 ) => {
   const appId = AinftObject.getAppId(objectId);
   const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
-  const messages: MessageMap = await getValue(messagesPath, ain);
+  const messages: MessageMap = await getValue(ain, messagesPath);
   // TODO(jiyoung): optimize inefficient loop.
   for (const key in messages) {
     if (messages[key].id === messageId) {
