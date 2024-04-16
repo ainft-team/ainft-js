@@ -68,7 +68,8 @@ describe.skip('thread', () => {
 
   it('should create and run thread', async () => {
     const result = await ainft.thread.createAndRun(objectId, tokenId, {
-      message: { role: 'user', content: '안녕하세요' },
+      metadata: { title: 'New chat' },
+      messages: [{ role: 'user', content: '안녕하세요' }],
     });
   });
 });

@@ -12,6 +12,7 @@ import {
   ThreadDeleted,
   ThreadTransactionResult,
   ThreadUpdateParams,
+  ThreadWithMessages,
 } from '../types';
 import { buildSetTxBody, buildSetValueOp, getValue, sendTx } from '../utils/util';
 import { Path } from '../utils/path';
@@ -62,7 +63,7 @@ export class Threads extends FactoryBase {
       data: body,
     });
 
-    const txBody = this.buildTxBodyForCreateThread(data, objectId, tokenId, address);
+    const txBody = this.buildTxBodyForCreateThread(address, objectId, tokenId, data);
     const result = await sendTx(this.ain, txBody);
 
     return { ...result, thread: data };
@@ -104,7 +105,7 @@ export class Threads extends FactoryBase {
       data: body,
     });
 
-    const txBody = await this.buildTxBodyForUpdateThread(data, objectId, tokenId, address);
+    const txBody = await this.buildTxBodyForUpdateThread(address, objectId, tokenId, data);
     const result = await sendTx(this.ain, txBody);
 
     return { ...result, thread: data };
@@ -141,7 +142,7 @@ export class Threads extends FactoryBase {
       data: body,
     });
 
-    const txBody = this.buildTxBodyForDeleteThread(threadId, objectId, tokenId, address);
+    const txBody = this.buildTxBodyForDeleteThread(address, objectId, tokenId, threadId);
     const result = await sendTx(this.ain, txBody);
 
     return { ...result, delThread: data };
@@ -222,7 +223,7 @@ export class Threads extends FactoryBase {
   async createAndRun(
     objectId: string,
     tokenId: string,
-    { thread, message }: ThreadCreateAndRunParams
+    { metadata, messages }: ThreadCreateAndRunParams
   ) {
     const address = this.ain.signer.getAddress();
 
@@ -233,17 +234,33 @@ export class Threads extends FactoryBase {
     const serverName = this.ainize.getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
-    // TODO(jiyoung): request and send transaction.
-    // ...
+    const opType = OperationType.CREATE_RUN_THREAD;
+    const body = {
+      ...(metadata && !_.isEmpty(metadata) && { metadata }), // thread
+      ...(messages && messages.length > 0 && { messages }),
+    };
 
+    const { data } = await this.ainize.requestWithAuth<ThreadWithMessages>(this.ain, {
+      serverName,
+      opType,
+      data: body,
+    });
+
+    const txBody = this.buildTxBodyForCreateAndRunThread(address, objectId, tokenId, data);
+    const result = await sendTx(this.ain, txBody);
+
+    return { ...result, ...data };
+    // NOTE(jiyoung): example data
+    /*
     return {
       tx_hash: '0x' + 'a'.repeat(64),
       result: { code: 0 },
       thread: {
         id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
-        title: '도와드릴까요?',
-        metadata: {},
         created_at: 1711962854,
+        metadata: {
+          title: '도와드릴까요?',
+        },
       },
       messages: {
         '0': {
@@ -264,7 +281,7 @@ export class Threads extends FactoryBase {
         },
         '1': {
           id: 'msg_17BndvyTHP5i99QM1Ha4okaV',
-          created_at: 1711967047,
+          created_at: 1711967100,
           thread_id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
           role: 'assistant',
           content: {
@@ -280,17 +297,19 @@ export class Threads extends FactoryBase {
         },
       },
     };
+    */
   }
 
   private buildTxBodyForCreateThread(
-    { id, metadata, created_at }: Thread,
+    address: string,
     objectId: string,
     tokenId: string,
-    address: string
+    { id, metadata, created_at }: Thread
   ) {
     const appId = AinftObject.getAppId(objectId);
     const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(id).value();
     const value = {
+      id,
       createdAt: created_at,
       messages: true,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
@@ -299,10 +318,10 @@ export class Threads extends FactoryBase {
   }
 
   private async buildTxBodyForUpdateThread(
-    { id, metadata }: Thread,
+    address: string,
     objectId: string,
     tokenId: string,
-    address: string
+    { id, metadata }: Thread
   ) {
     const appId = AinftObject.getAppId(objectId);
     const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(id).value();
@@ -315,10 +334,10 @@ export class Threads extends FactoryBase {
   }
 
   private buildTxBodyForDeleteThread(
-    threadId: string,
+    address: string,
     objectId: string,
     tokenId: string,
-    address: string
+    threadId: string
   ) {
     const appId = AinftObject.getAppId(objectId);
     const threadPath = Path.app(appId)
@@ -329,6 +348,44 @@ export class Threads extends FactoryBase {
       .value();
     return buildSetTxBody(buildSetValueOp(threadPath, null), address);
   }
+
+  private buildTxBodyForCreateAndRunThread(
+    address: string,
+    objectId: string,
+    tokenId: string,
+    { thread, messages }: ThreadWithMessages
+  ) {
+    const appId = AinftObject.getAppId(objectId);
+    const threadPath = Path.app(appId)
+      .token(tokenId)
+      .ai()
+      .history(address)
+      .thread(thread.id)
+      .value();
+
+    // FIXME(jiyoung): prevent message overwrite from same timestamp.
+    const newMessages: { [key: string]: object } = {};
+    Object.keys(messages).forEach((key) => {
+      const { id, created_at, role, content, metadata } = messages[key];
+      newMessages[`${created_at}`] = {
+        id,
+        role,
+        createdAt: created_at,
+        ...(content && !_.isEmpty(content) && { content }),
+        ...(metadata && !_.isEmpty(metadata) && { metadata }),
+      };
+    });
+
+    const value = {
+      id: thread.id,
+      createdAt: thread.created_at,
+      ...(!_.isEmpty(newMessages) ? { messages: newMessages } : { messages: true }),
+      ...(thread.metadata && !_.isEmpty(thread.metadata) && { metadata: thread.metadata }),
+    };
+
+    return buildSetTxBody(buildSetValueOp(threadPath, value), address);
+  }
+
   private async getThreadsByAddress(objectId: string, tokenId: string, address: string) {
     const appId = AinftObject.getAppId(objectId);
     const threadsPath = Path.app(appId).token(tokenId).ai().history(address).threads().value();
