@@ -22,8 +22,8 @@ export const SUPPORTED_AINFT_STANDARDS = {
   721: '721',
 };
 
-export const THREAD_GC_MAX_SIBLINGS = 50;
-export const THREAD_GC_NUM_SIBLINGS_DELETED = 30;
+export const THREAD_GC_MAX_SIBLINGS = 20;
+export const THREAD_GC_NUM_SIBLINGS_DELETED = 10;
 
 export const MESSAGE_GC_MAX_SIBLINGS = 15;
 export const MESSAGE_GC_NUM_SIBLINGS_DELETED = 10;

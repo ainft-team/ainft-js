@@ -30,7 +30,7 @@ export const Path = {
               },
               history: (address: string) => {
                 return {
-                  value: () => `${Path.app(appId).token(tokenId).ai().value()}/${address}`,
+                  value: () => `${Path.app(appId).token(tokenId).ai().value()}/history/${address}`,
                   threads: () => {
                     return {
                       value: () =>

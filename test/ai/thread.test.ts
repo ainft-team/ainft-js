@@ -41,6 +41,9 @@ describe.skip('thread', () => {
       offset: 0,
       order: 'desc',
     });
+
+    expect(result.total).toBeDefined();
+    expect(result.items).toBeDefined();
   });
 
   it('should update thread', async () => {
@@ -65,7 +68,8 @@ describe.skip('thread', () => {
 
   it('should create and run thread', async () => {
     const result = await ainft.thread.createAndRun(objectId, tokenId, {
-      message: { role: 'user', content: '안녕하세요' },
+      metadata: { title: 'New chat' },
+      messages: [{ role: 'user', content: '안녕하세요' }],
     });
   });
 });

@@ -1295,6 +1295,11 @@ export interface ThreadDeleted {
   deleted: boolean;
 }
 
+export interface ThreadWithMessages {
+  thread: Thread;
+  messages: MessageMap;
+}
+
 export interface ThreadCreateParams {
   /**
    * The metadata can contain up to 16 pairs,
@@ -1304,8 +1309,8 @@ export interface ThreadCreateParams {
 }
 
 export interface ThreadCreateAndRunParams {
-  thread?: ThreadCreateParams;
-  message?: MessageCreateParams;
+  metadata?: object | null;
+  messages?: Array<MessageCreateParams>;
 }
 
 export interface ThreadUpdateParams {

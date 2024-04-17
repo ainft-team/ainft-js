@@ -12,7 +12,7 @@ import {
   MessageUpdateParams,
   Page,
 } from '../types';
-import { buildSetTxBody, buildSetValueOp, getValue, sendTx } from '../utils/util';
+import { buildSetTxBody, buildSetValueOp, getAssistant, getValue, sendTx } from '../utils/util';
 import {
   validateAssistant,
   validateMessage,
@@ -44,20 +44,21 @@ export class Messages extends FactoryBase {
     threadId: string,
     body: MessageCreateParams
   ): Promise<MessagesTransactionResult> {
+    const appId = AinftObject.getAppId(objectId);
     const address = this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
-    const assistant = await this.getAssistant(objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
     const serverName = this.ainize.getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
+    const assistant = await getAssistant(this.ain, appId, tokenId);
     const messages = await this.createMessageAndRun(serverName, threadId, assistant.id, body);
 
-    const txBody = this.buildTxBodyForCreateMessage(threadId, messages, objectId, tokenId, address);
+    const txBody = this.buildTxBodyForCreateMessage(address, objectId, tokenId, threadId, messages);
     const result = await sendTx(this.ain, txBody);
 
     return { ...result, messages };
@@ -212,16 +213,13 @@ export class Messages extends FactoryBase {
       content,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
-    const { data } = await this.ainize.request(this.ain, { serverName, opType, data: body });
+    const { data } = await this.ainize.request<any>(this.ain, { serverName, opType, data: body });
     return data;
   }
 
   private async createRun(serverName: string, threadId: string, assistantId: string) {
     const opType = OperationType.CREATE_RUN;
-    const body = {
-      threadId,
-      assistantId,
-    };
+    const body = { threadId, assistantId };
     const { data } = await this.ainize.request<any>(this.ain, { serverName, opType, data: body });
     return data;
   }
@@ -265,11 +263,11 @@ export class Messages extends FactoryBase {
   }
 
   private buildTxBodyForCreateMessage(
-    threadId: string,
-    messages: MessageMap,
+    address: string,
     objectId: string,
     tokenId: string,
-    address: string
+    threadId: string,
+    messages: MessageMap
   ) {
     const appId = AinftObject.getAppId(objectId);
     const messagesPath = Path.app(appId)
@@ -280,11 +278,10 @@ export class Messages extends FactoryBase {
       .messages()
       .value();
 
-    const map: { [key: string]: object } = {};
-
+    const newMessages: { [key: string]: object } = {};
     Object.keys(messages).forEach((key) => {
       const { id, created_at, role, content, metadata } = messages[key];
-      map[`${created_at}`] = {
+      newMessages[`${created_at}`] = {
         id,
         role,
         createdAt: created_at,
@@ -293,7 +290,7 @@ export class Messages extends FactoryBase {
       };
     });
 
-    return buildSetTxBody(buildSetValueOp(messagesPath, map), address);
+    return buildSetTxBody(buildSetValueOp(messagesPath, newMessages), address);
   }
 
   private async buildTxBodyForUpdateMessage(
@@ -312,7 +309,7 @@ export class Messages extends FactoryBase {
       .value();
 
     let key = null;
-    const messages: MessageMap = await getValue(messagesPath, this.ain);
+    const messages: MessageMap = await getValue(this.ain, messagesPath);
     for (const ts in messages) {
       if (messages[ts].id === id) {
         key = ts;
@@ -330,22 +327,12 @@ export class Messages extends FactoryBase {
       .thread(thread_id)
       .message(key)
       .value();
-    const prev = await getValue(messagePath, this.ain);
+    const prev = await getValue(this.ain, messagePath);
     const value = {
       ...prev,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
     return buildSetTxBody(buildSetValueOp(messagePath, value), address);
-  }
-
-  private async getAssistant(objectId: string, tokenId: string) {
-    const appId = AinftObject.getAppId(objectId);
-    const assistantPath = Path.app(appId).token(tokenId).ai().value();
-    const assistant = await getValue(assistantPath, this.ain);
-    if (!assistant) {
-      throw new Error('Assistant not found');
-    }
-    return assistant;
   }
 }

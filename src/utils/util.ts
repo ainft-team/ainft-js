@@ -5,6 +5,7 @@ import * as ainUtil from '@ainblockchain/ain-util';
 
 import { MIN_GAS_PRICE } from '../constants';
 import { HttpMethod } from '../types';
+import { Path } from './path';
 
 export const buildData = (
   method: HttpMethod,
@@ -99,11 +100,22 @@ export function serializeEndpoint(endpoint: string) {
   return endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint;
 }
 
-export const valueExists = async (path: string, ain: Ain): Promise<boolean> => {
+export const valueExists = async (ain: Ain, path: string): Promise<boolean> => {
   return !!(await ain.db.ref(path).getValue());
 };
 
-export const getValue = async (path: string, ain: Ain): Promise<any> => {
+export const getAssistant = async (ain: Ain, appId: string, tokenId: string) => {
+  // TODO(jiyoung): fix circular reference with Ainft721Object.getAppId.
+  // const appId = AinftObject.getAppId(objectId);
+  const assistantPath = Path.app(appId).token(tokenId).ai().value();
+  const assistant = await getValue(ain, assistantPath);
+  if (!assistant) {
+    throw new Error('Assistant not found');
+  }
+  return assistant;
+}
+
+export const getValue = async (ain: Ain, path: string): Promise<any> => {
   return ain.db.ref(path).getValue();
 };
 
