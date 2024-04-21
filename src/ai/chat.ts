@@ -29,7 +29,7 @@ export class Chat extends FactoryBase {
    * @returns {Promise<ChatConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the chat configuration.
    */
   async configure(objectId: string, nickname: string): Promise<ChatConfigurationTransactionResult> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateObjectOwner(this.ain, objectId, address);
@@ -56,7 +56,7 @@ export class Chat extends FactoryBase {
    */
   /*
   async depositCredit(nickname: ServiceNickname, amount: number): Promise<CreditTransactionResult> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     const service = await validateAndGetService(serviceName, this.ainize);

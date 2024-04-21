@@ -63,7 +63,6 @@ export default class AinftJs {
     }
 
     this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId);
-    this.ainize = new Ainize(chainId);
 
     if (privateKey) {
       this.setPrivateKey(privateKey);

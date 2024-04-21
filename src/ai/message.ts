@@ -45,7 +45,7 @@ export class Messages extends FactoryBase {
     body: MessageCreateParams
   ): Promise<MessagesTransactionResult> {
     const appId = AinftObject.getAppId(objectId);
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
@@ -80,7 +80,7 @@ export class Messages extends FactoryBase {
     messageId: string,
     { metadata }: MessageUpdateParams
   ): Promise<MessageTransactionResult> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
@@ -124,7 +124,7 @@ export class Messages extends FactoryBase {
     threadId: string,
     messageId: string
   ): Promise<Message> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
@@ -157,7 +157,7 @@ export class Messages extends FactoryBase {
    */
   async list(objectId: string, tokenId: string, threadId: string): Promise<MessageMap> {
     const appId = AinftObject.getAppId(objectId);
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);

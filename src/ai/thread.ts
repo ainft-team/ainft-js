@@ -43,7 +43,7 @@ export class Threads extends FactoryBase {
     tokenId: string,
     { metadata }: ThreadCreateParams
   ): Promise<ThreadTransactionResult> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
@@ -83,7 +83,7 @@ export class Threads extends FactoryBase {
     threadId: string,
     { metadata }: ThreadUpdateParams
   ): Promise<ThreadTransactionResult> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
@@ -123,7 +123,7 @@ export class Threads extends FactoryBase {
     tokenId: string,
     threadId: string
   ): Promise<ThreadDeleteTransactionResult> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
@@ -156,7 +156,7 @@ export class Threads extends FactoryBase {
    * @returns Returns a promise that resolves with the thread.
    */
   async get(objectId: string, tokenId: string, threadId: string): Promise<Thread> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
@@ -183,7 +183,7 @@ export class Threads extends FactoryBase {
     tokenId: string,
     { limit = 20, offset = 0, order = 'desc' }: QueryParams
   ) {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
@@ -226,7 +226,7 @@ export class Threads extends FactoryBase {
     { metadata, messages }: ThreadCreateAndRunParams
   ) {
     const appId = AinftObject.getAppId(objectId);
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
