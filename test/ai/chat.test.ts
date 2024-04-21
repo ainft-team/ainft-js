@@ -6,7 +6,7 @@ describe.skip('chat', () => {
   let ainft: AinftJs;
 
   beforeEach(() => {
-    ainft = new AinftJs(privateKey, {
+    ainft = new AinftJs(privateKey, null, {
       ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
       ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
