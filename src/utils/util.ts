@@ -46,9 +46,10 @@ export const buildSetTxBody = (
 
 export const sendTx = async (ain: Ain, txBody: any) => {
   const result = await ain.sendTransaction(txBody);
-  if (!isTransactionSuccess(result)) {
-    throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
-  }
+  // NOTE(jiyoung): only txHash is returned when sending transaction via signer.
+  // if (!isTransactionSuccess(result)) {
+  //   throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
+  // }
   return result;
 };
 
