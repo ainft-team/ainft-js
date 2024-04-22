@@ -46,9 +46,11 @@ export const buildSetTxBody = (
 
 export const sendTx = async (ain: Ain, txBody: any) => {
   const result = await ain.sendTransaction(txBody);
-  if (!isTransactionSuccess(result)) {
-    throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
-  }
+  // NOTE(jiyoung): request AIN Wallet's owner to add result code.
+  // ref) https://github.com/ainblockchain/ain-blockchain/blob/master/JSON_RPC_API.md#ain_sendsignedtransaction
+  // if (!isTransactionSuccess(result)) {
+  //   throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
+  // }
   return result;
 };
 

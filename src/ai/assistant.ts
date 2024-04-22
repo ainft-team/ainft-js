@@ -59,7 +59,7 @@ export class Assistants extends FactoryBase {
     tokenId: string,
     { model, name, instructions, description, metadata }: AssistantCreateParams
   ): Promise<AssistantTransactionResult> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     const isAdmin = await isObjectOwner(this.ain, objectId, address);
@@ -108,7 +108,7 @@ export class Assistants extends FactoryBase {
     assistantId: string,
     { model, name, instructions, description, metadata }: AssistantUpdateParams
   ): Promise<AssistantTransactionResult> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     const isAdmin = await isObjectOwner(this.ain, objectId, address);
@@ -156,7 +156,7 @@ export class Assistants extends FactoryBase {
     tokenId: string,
     assistantId: string
   ): Promise<AssistantDeleteTransactionResult> {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     const isAdmin = await isObjectOwner(this.ain, objectId, address);
@@ -211,7 +211,7 @@ export class Assistants extends FactoryBase {
   }
 
   async list(objectId: string, { limit = 20, offset = 0, order = 'desc' }: QueryParams) {
-    const address = this.ain.signer.getAddress();
+    const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
 
