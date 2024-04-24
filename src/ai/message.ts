@@ -251,7 +251,7 @@ export class Messages extends FactoryBase {
           clearInterval(interval);
           reject(error);
         }
-      }, 2000); // 2sec
+      }, 60000); // 1min
     });
   }
 
