@@ -226,7 +226,7 @@ export class Messages extends FactoryBase {
 
   private waitForRun(serverName: string, threadId: string, runId: string) {
     return new Promise<void>((resolve, reject) => {
-      const interval = setInterval(async () => {
+      const retrieveRun = async () => {
         try {
           const opType = OperationType.RETRIEVE_RUN;
           const body = { threadId, runId };
@@ -236,22 +236,21 @@ export class Messages extends FactoryBase {
             data: body,
           });
           if (response.data.status === 'completed') {
-            clearInterval(interval);
             resolve();
-          }
-          if (
+          } else if (
             response.data.status === 'expired' ||
             response.data.status === 'failed' ||
             response.data.status === 'cancelled'
           ) {
-            clearInterval(interval);
-            reject(new Error(`Run ${runId} is ${response.data}`));
+            reject(new Error(`Run ${runId} is ${JSON.stringify(response.data)}`));
+          } else {
+            setTimeout(retrieveRun, 2000);
           }
         } catch (error) {
-          clearInterval(interval);
           reject(error);
         }
-      }, 2000); // 2sec
+      };
+      retrieveRun();
     });
   }
 
