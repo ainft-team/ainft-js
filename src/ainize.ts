@@ -2,106 +2,81 @@ import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
 
-import { AIN_BLOCKCHAIN_CHAIN_ID } from './constants';
-import { getEnv } from './utils/env';
+const DEFAULT_TIMEOUT_MS = 60000;
+const DEFAULT_AINIZE_SERVER_NAME = 'ainize_openai';
 
-const DEFAULT_TIMEOUT_MS = 60000; // 1min
-
-export class AinizeService {
-  private static instance: AinizeService;
-  private ainize: Ainize;
-  private isLogin: boolean;
-
-  private constructor() {
-    this.ainize = new Ainize(AIN_BLOCKCHAIN_CHAIN_ID[getEnv()]);
-    this.isLogin = false;
+export const getServer = async (ainize: Ainize, name: string): Promise<Service> => {
+  const server = await ainize.getService(name);
+  const isRunning = await server.isRunning();
+  if (!isRunning) {
+    throw new Error(`${name} is not running.`);
   }
+  return server;
+};
 
-  static getInstance(): AinizeService {
-    if (!AinizeService.instance) {
-      AinizeService.instance = new AinizeService();
+export const getServerName = () => {
+  return DEFAULT_AINIZE_SERVER_NAME;
+};
+
+export const login = async (ainize: Ainize, ain: Ain) => {
+  const privKey = ain.wallet.defaultAccount?.private_key;
+  await (privKey ? ainize.login(privKey) : ainize.loginWithSigner());
+};
+
+export const logout = async (ainize: Ainize) => {
+  await ainize.logout();
+};
+
+export const request = async <T>(
+  ainize: Ainize,
+  { serverName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
+): Promise<AinizeResponse<T>> => {
+  let timer;
+  const startTimer = new Promise(
+    (reject) => (timer = setTimeout(() => reject(`timeout of ${timeout}ms exceeded`), timeout))
+  );
+  const server = await getServer(ainize, serverName);
+  try {
+    const response = await Promise.race([server.request({ ...data, jobType: opType }), startTimer]);
+    if (response.status === AinizeStatus.FAIL) {
+      throw new Error(JSON.stringify(response.data));
     }
-    return AinizeService.instance;
-  }
-
-  async getServer(name: string): Promise<Service> {
-    const server = await this.ainize.getService(name);
-    const isRunning = await server.isRunning();
-    if (!isRunning) {
-      throw new Error(`${name} is not running.`);
-    }
-    return server;
-  }
-
-  getServerName(): string {
-    return 'ainize_openai'; // TODO(jiyoung): change name.
-  }
-
-  async login(ain: Ain) {
-    if (!this.isLogin) {
-      const pk = ain.wallet.defaultAccount?.private_key;
-      await (pk ? this.ainize.login(pk) : this.ainize.loginWithSigner());
-      this.isLogin = true;
-    }
-  }
-
-  async logout() {
-    if (this.isLogin) {
-      await this.ainize.logout();
-      this.isLogin = false;
+    return response as AinizeResponse<T>;
+  } catch (error: any) {
+    throw new Error(`Failed to request ${opType}: ${error.message}`);
+  } finally {
+    if (timer) {
+      clearTimeout(timer);
     }
   }
+};
 
-  async request<T>(
-    ain: Ain,
-    { serverName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
-  ): Promise<AinizeResponse<T>> {
-    let timer;
-    const startTimer = new Promise(
-      (reject) => (timer = setTimeout(() => reject(`timeout of ${timeout}ms exceeded`), timeout))
-    );
-    const server = await this.getServer(serverName);
-    try {
-      const response = await Promise.race([server.request({ ...data, jobType: opType }), startTimer]);
-      if (response.status === AinizeStatus.FAIL) {
-        throw new Error(JSON.stringify(response.data));
-      }
-      return response as AinizeResponse<T>;
-    } catch (error: any) {
-      throw new Error(`Failed to request ${opType}: ${error.message}`);
-    } finally {
-      if (timer) {
-        clearTimeout(timer);
-      }
+export const requestWithAuth = async <T>(
+  ainize: Ainize,
+  ain: Ain,
+  { serverName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
+): Promise<AinizeResponse<T>> => {
+  let timer;
+  const startTimer = new Promise((resolve, reject) =>
+    (timer = setTimeout(() => reject(`timeout of ${timeout}ms exceeded`), timeout)
+  ));
+  try {
+    const server = await getServer(ainize, serverName);
+    await login(ainize, ain);
+    const response = await Promise.race([server.request({ ...data, jobType: opType }), startTimer]);
+    if (response.status === AinizeStatus.FAIL) {
+      throw new Error(JSON.stringify(response.data));
     }
-  }
-
-  async requestWithAuth<T>(
-    ain: Ain,
-    { serverName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
-  ): Promise<AinizeResponse<T>> {
-    let timer;
-    const startTimer = new Promise(
-      (reject) => (timer = setTimeout(() => reject(`timeout of ${timeout}ms exceeded`), timeout))
-    );
-    const server = await this.getServer(serverName);
-    try {
-      await this.login(ain);
-      const response = await Promise.race([server.request({ ...data, jobType: opType }), startTimer]);
-      if (response.status === AinizeStatus.FAIL) {
-        throw new Error(JSON.stringify(response.data));
-      }
-      return response as AinizeResponse<T>;
-    } catch (error: any) {
-      throw new Error(`Failed to request ${opType}: ${error.message}`);
-    } finally {
-      if (timer) {
-        clearTimeout(timer);
-      }
-      await this.logout();
+    return response as AinizeResponse<T>;
+  } catch (error: any) {
+    throw new Error(`Failed to request ${opType}: ${error.message}`);
+  } finally {
+    if (timer) {
+      clearTimeout(timer);
     }
+    await logout(ainize);
   }
-}
+};
 
 export interface AinizeRequest {
   serverName: string;

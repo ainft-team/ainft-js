@@ -1,5 +1,5 @@
 import AinftJs from '../../src/ainft';
-import { privateKey, address, objectId, serviceName } from '../test_data';
+import { privateKey, address, objectId, nickname } from '../test_data';
 import { TX_HASH_REGEX } from '../constants';
 
 describe.skip('chat', () => {
@@ -18,16 +18,16 @@ describe.skip('chat', () => {
   });
 
   it('should configure chat', async () => {
-    const result = await ainft.chat.configure(objectId, 'openai');
+    const result = await ainft.chat.configure(objectId, nickname);
 
     expect(result.tx_hash).toMatch(TX_HASH_REGEX);
     expect(result.result).toBeDefined();
-    expect(result.config.name).toBe(serviceName);
+    expect(result.config.name).toBe(nickname);
     expect(result.config.type).toBe('chat');
   });
 
   it('should get credit', async () => {
-    const credit = await ainft.chat.getCredit('openai');
+    const credit = await ainft.chat.getCredit(nickname);
 
     expect(credit).toBe(null);
   });

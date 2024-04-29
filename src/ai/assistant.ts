@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { AinizeService, OperationType } from '../ainize';
+import { OperationType, getServerName, requestWithAuth } from '../ainize';
 import {
   Assistant,
   AssistantCreateParams,
@@ -45,8 +45,6 @@ import { Path } from '../utils/path';
  * Do not create it directly; Get it from AinftJs instance.
  */
 export class Assistants extends FactoryBase {
-  private ainize: AinizeService = AinizeService.getInstance();
-
   /**
    * Create an assistant with a model and instructions.
    * @param {string} objectId - The ID of AINFT object.
@@ -66,7 +64,7 @@ export class Assistants extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateDuplicateAssistant(this.ain, objectId, tokenId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.CREATE_ASSISTANT;
@@ -78,7 +76,7 @@ export class Assistants extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await this.ainize.requestWithAuth<Assistant>(this.ain, {
+    const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -115,7 +113,7 @@ export class Assistants extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.MODIFY_ASSISTANT;
@@ -128,7 +126,7 @@ export class Assistants extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await this.ainize.requestWithAuth<Assistant>(this.ain, {
+    const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -163,12 +161,12 @@ export class Assistants extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.DELETE_ASSISTANT;
     const body = { assistantId };
-    const { data } = await this.ainize.requestWithAuth<AssistantDeleted>(this.ain, {
+    const { data } = await requestWithAuth<AssistantDeleted>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -196,12 +194,12 @@ export class Assistants extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.RETRIEVE_ASSISTANT;
     const body = { assistantId };
-    const { data } = await this.ainize.requestWithAuth<Assistant>(this.ain, {
+    const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -264,7 +262,7 @@ export class Assistants extends FactoryBase {
 
     await validateObject(this.ain, objectId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.MINT_CREATE_ASSISTANT;
@@ -278,7 +276,7 @@ export class Assistants extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await this.ainize.requestWithAuth<AssistantMinted>(this.ain, {
+    const { data } = await requestWithAuth<AssistantMinted>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,

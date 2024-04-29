@@ -2,7 +2,7 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { AinizeService } from '../ainize';
+import { getServer, login, logout } from '../ainize';
 import {
   ServiceType,
   CreditTransactionResult,
@@ -20,8 +20,6 @@ import { validateObject, validateObjectOwner } from '../utils/validator';
  * Do not create it directly; Get it from AinftJs instance.
  */
 export class Chat extends FactoryBase {
-  private ainize: AinizeService = AinizeService.getInstance();
-
   /**
    * Configures chat for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object to configure for chat.
@@ -34,7 +32,7 @@ export class Chat extends FactoryBase {
     await validateObject(this.ain, objectId);
     await validateObjectOwner(this.ain, objectId, address);
 
-    await this.ainize.getServer(nickname);
+    await getServer(this.ainize!, nickname);
 
     const config = {
       type: ServiceType.CHAT,
@@ -79,10 +77,10 @@ export class Chat extends FactoryBase {
    * @returns {Promise<number|null>} Returns a promise that resolves with the current credit balance.
    */
   async getCredit(nickname: string): Promise<number> {
-    const server = await this.ainize.getServer(nickname);
-    await this.ainize.login(this.ain);
+    const server = await getServer(this.ainize!, nickname);
+    await login(this.ainize!, this.ain);
     const credit = await server.getCreditBalance();
-    await this.ainize.logout();
+    await logout(this.ainize!);
     return credit;
   }
 

@@ -1,9 +1,9 @@
 import axios from 'axios';
 import Ain from '@ainblockchain/ain-js';
+import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
-import _ from 'lodash';
 
 import Nft from './nft';
 import Credit from './credit';
@@ -28,13 +28,14 @@ import { setEnv } from './utils/env';
  */
 export default class AinftJs {
   private baseUrl: string;
+  public ain: Ain;
+  public ainize: Ainize;
   public nft: Nft;
   public credit: Credit;
   public auth: Auth;
   public discord: Discord;
   public event: Event;
   public store: Store;
-  public ain: Ain;
   public personaModels: PersonaModels;
   public textToArt: TextToArt;
   public activity: Activity;
@@ -48,28 +49,26 @@ export default class AinftJs {
     privateKey?: string | null,
     signer?: Signer | null,
     config?: {
-      ainftServerEndpoint?: string,
-      ainBlockchainEndpoint?: string,
-      chainId?: number,
+      ainftServerEndpoint?: string;
+      ainBlockchainEndpoint?: string;
+      chainId?: 0 | 1;
     }
   ) {
-    this.baseUrl = _.get(config, 'ainftServerEndpoint') || AINFT_SERVER_ENDPOINT['prod'];
+    this.baseUrl = config?.ainftServerEndpoint || AINFT_SERVER_ENDPOINT['prod'];
     const stage = this.getStage(this.baseUrl);
+    const endpoint = config?.ainBlockchainEndpoint || AIN_BLOCKCHAIN_ENDPOINT[stage];
+    const chainId = config?.chainId || AIN_BLOCKCHAIN_CHAIN_ID[stage];
     setEnv(stage);
 
-    const chainId = _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAIN_ID[stage];
-    if (!(chainId === 0 || chainId === 1)) {
-      throw new Error(`Invalid chain ID: ${chainId}`);
-    }
-
-    this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId);
+    this.ain = new Ain(endpoint, chainId);
+    this.ainize = new Ainize(chainId);
 
     if (privateKey) {
       this.setPrivateKey(privateKey);
     } else if (signer) {
       this.setSigner(signer);
     } else {
-      throw new Error('You must use either a private key or a signer.');
+      throw new Error('Must set either a private key or a signer.');
     }
 
     this.nft = new Nft(this.ain, this.baseUrl, '/nft');
@@ -82,10 +81,10 @@ export default class AinftJs {
     this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
     this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
     this.activity = new Activity(this.ain, this.baseUrl, '/activity');
-    this.chat = new Chat(this.ain, this.baseUrl);
-    this.assistant = new Assistants(this.ain, this.baseUrl);
-    this.thread = new Threads(this.ain, this.baseUrl);
-    this.message = new Messages(this.ain, this.baseUrl);
+    this.chat = new Chat(this.ain, this.baseUrl, '', this.ainize);
+    this.assistant = new Assistants(this.ain, this.baseUrl, '', this.ainize);
+    this.thread = new Threads(this.ain, this.baseUrl, '', this.ainize);
+    this.message = new Messages(this.ain, this.baseUrl, '', this.ainize);
   }
 
   /**
@@ -110,11 +109,7 @@ export default class AinftJs {
    * @param providerUrl
    * @param chainId
    */
-  setAiNetworkInfo(
-    providerUrl: string,
-    chainId: number,
-    axiosConfig?: any
-  ) {
+  setAiNetworkInfo(providerUrl: string, chainId: number, axiosConfig?: any) {
     this.ain.setProvider(providerUrl, chainId, axiosConfig);
   }
 
