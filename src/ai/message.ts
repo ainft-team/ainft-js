@@ -174,7 +174,7 @@ export class Messages extends FactoryBase {
       data: body,
     });
 
-    return data.data;
+    return data?.data || {};
   }
 
   private async createMessageAndRun(
