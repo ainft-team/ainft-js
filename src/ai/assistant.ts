@@ -407,7 +407,7 @@ export class Assistants extends FactoryBase {
   private async getTokensByAddress(objectId: string, address: string) {
     const appId = AinftObject.getAppId(objectId);
     const tokensPath = Path.app(appId).tokens().value();
-    const tokens: NftTokens = await this.ain.db.ref(tokensPath).getValue();
+    const tokens: NftTokens = await this.ain.db.ref(tokensPath).getValue() || {};
     return Object.values(tokens).filter((token) => token.owner === address);
   }
 
