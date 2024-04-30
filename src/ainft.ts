@@ -1,4 +1,5 @@
 import axios from 'axios';
+import _ from 'lodash';
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
@@ -54,10 +55,10 @@ export default class AinftJs {
       chainId?: 0 | 1;
     }
   ) {
-    this.baseUrl = config?.ainftServerEndpoint || AINFT_SERVER_ENDPOINT['prod'];
+    this.baseUrl = _.get(config, 'ainftServerEndpoint') || AINFT_SERVER_ENDPOINT['prod'];
     const stage = this.getStage(this.baseUrl);
-    const endpoint = config?.ainBlockchainEndpoint || AIN_BLOCKCHAIN_ENDPOINT[stage];
-    const chainId = config?.chainId || AIN_BLOCKCHAIN_CHAIN_ID[stage];
+    const endpoint = _.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage];
+    const chainId = _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAIN_ID[stage];
     setEnv(stage);
 
     this.ain = new Ain(endpoint, chainId);
