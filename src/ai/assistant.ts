@@ -5,6 +5,7 @@ import AinftObject from '../ainft721Object';
 import { OperationType, getServerName, requestWithAuth } from '../ainize';
 import {
   Assistant,
+  AssistantCreateOptions,
   AssistantCreateParams,
   AssistantDeleteTransactionResult,
   AssistantDeleted,
@@ -42,6 +43,11 @@ import {
 import { Path } from '../utils/path';
 import { getEnv } from '../utils/env';
 
+enum Role {
+  OWNER = 'owner',
+  USER = 'user',
+}
+
 /**
  * This class supports building assistants that enables conversation with LLM models.\
  * Do not create it directly; Get it from AinftJs instance.
@@ -52,30 +58,34 @@ export class Assistants extends FactoryBase {
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {AssistantCreateParams} AssistantCreateParams - The parameters to create assistant.
+   * @param {AssistantCreateOptions} AssistantCreateOptions - The creation options.
    * @returns Returns a promise that resolves with both the transaction result and the created assistant.
    */
   async create(
     objectId: string,
     tokenId: string,
-    { model, name, instructions, description, metadata }: AssistantCreateParams
+    { model, name, instructions, description, metadata }: AssistantCreateParams,
+    options: AssistantCreateOptions = {}
   ): Promise<AssistantTransactionResult> {
     const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
-    const isAdmin = await isObjectOwner(this.ain, objectId, address);
     await validateToken(this.ain, objectId, tokenId);
     await validateDuplicateAssistant(this.ain, objectId, tokenId);
 
+    const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
     const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.CREATE_ASSISTANT;
     const body = {
+      role,
       model,
       name,
       instructions,
       ...(description && { description }),
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
+      ...(options && !_.isEmpty(options) && { options }),
     };
 
     const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
@@ -84,7 +94,7 @@ export class Assistants extends FactoryBase {
       data: body,
     });
 
-    if (!isAdmin) {
+    if (role === Role.USER) {
       return { assistant: data };
     }
 
@@ -111,15 +121,16 @@ export class Assistants extends FactoryBase {
     const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
-    const isAdmin = await isObjectOwner(this.ain, objectId, address);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
+    const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
     const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.MODIFY_ASSISTANT;
     const body = {
+      role,
       assistantId,
       ...(model && { model }),
       ...(name && { name }),
@@ -134,7 +145,7 @@ export class Assistants extends FactoryBase {
       data: body,
     });
 
-    if (!isAdmin) {
+    if (role === Role.USER) {
       return { assistant: data };
     }
 
@@ -159,22 +170,22 @@ export class Assistants extends FactoryBase {
     const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
-    const isAdmin = await isObjectOwner(this.ain, objectId, address);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
+    const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
     const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.DELETE_ASSISTANT;
-    const body = { assistantId };
+    const body = { role, assistantId };
     const { data } = await requestWithAuth<AssistantDeleted>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
     });
 
-    if (!isAdmin) {
+    if (role === Role.USER) {
       return { delAssistant: data };
     }
 
