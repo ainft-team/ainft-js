@@ -1,9 +1,9 @@
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
+import { DEFAULT_AINIZE_SERVER_NAME } from './constants';
 
 const DEFAULT_TIMEOUT_MS = 60000;
-const DEFAULT_AINIZE_SERVER_NAME = 'ainize_openai';
 
 export const getServer = async (ainize: Ainize, name: string): Promise<Service> => {
   const server = await ainize.getService(name);
@@ -57,9 +57,9 @@ export const requestWithAuth = async <T>(
   { serverName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
 ): Promise<AinizeResponse<T>> => {
   let timer;
-  const startTimer = new Promise((resolve, reject) =>
-    (timer = setTimeout(() => reject(`timeout of ${timeout}ms exceeded`), timeout)
-  ));
+  const startTimer = new Promise(
+    (reject) => (timer = setTimeout(() => reject(`timeout of ${timeout}ms exceeded`), timeout))
+  );
   try {
     const server = await getServer(ainize, serverName);
     await login(ainize, ain);
@@ -69,7 +69,7 @@ export const requestWithAuth = async <T>(
     }
     return response as AinizeResponse<T>;
   } catch (error: any) {
-    throw new Error(`Failed to request ${opType}: ${error.message}`);
+    throw new Error(`Failed to request ${opType}: ${error}`);
   } finally {
     if (timer) {
       clearTimeout(timer);
@@ -122,4 +122,8 @@ export enum OperationType {
   RETRIEVE_RUN_STEP = 'retrieve_run_step',
   MODIFY_RUN = 'modify_run',
   CANCEL_RUN = 'cancel_run',
+
+  CREATE_USER = 'create_user',
+  GET_CREDIT = 'get_credit',
+  MINT_TOKEN = 'mint_token',
 }

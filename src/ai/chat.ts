@@ -2,7 +2,7 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { getServer, login, logout } from '../ainize';
+import { OperationType, getServer, login, logout, requestWithAuth } from '../ainize';
 import {
   ServiceType,
   CreditTransactionResult,
@@ -13,6 +13,7 @@ import {
 import { buildSetTxBody, buildSetValueOp, sleep, sendTx } from '../utils/util';
 import { Path } from '../utils/path';
 import { validateObject, validateObjectOwner } from '../utils/validator';
+import { DEFAULT_AINIZE_SERVER_NAME } from '../constants';
 
 /**
  * This class supports configuring chat functionality for an AINFT object,\
@@ -77,11 +78,27 @@ export class Chat extends FactoryBase {
    * @returns {Promise<number|null>} Returns a promise that resolves with the current credit balance.
    */
   async getCredit(nickname: string): Promise<number> {
-    const server = await getServer(this.ainize!, nickname);
-    await login(this.ainize!, this.ain);
-    const credit = await server.getCreditBalance();
-    await logout(this.ainize!);
-    return credit;
+    let balance = 0;
+    const address = await this.ain.signer.getAddress();
+
+    if (nickname === DEFAULT_AINIZE_SERVER_NAME) {
+      const opType = OperationType.GET_CREDIT;
+      const body = { address };
+      const { data } = await requestWithAuth<number>(this.ainize!, this.ain, {
+        serverName: nickname,
+        opType,
+        data: body,
+        timeout: 120000,
+      });
+      balance = data;
+    } else {
+      const server = await getServer(this.ainize!, nickname);
+      await login(this.ainize!, this.ain);
+      balance = await server.getCreditBalance();
+      await logout(this.ainize!);
+    }
+
+    return balance;
   }
 
   private async waitForUpdate(expected: number, timeout: number, txHash: string, service: Service) {

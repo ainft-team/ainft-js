@@ -16,6 +16,7 @@ import {
   QueryParams,
 } from '../types';
 import {
+  DEFAULT_AINFT_OBJECT_ID,
   MESSAGE_GC_MAX_SIBLINGS,
   MESSAGE_GC_NUM_SIBLINGS_DELETED,
   THREAD_GC_MAX_SIBLINGS,
@@ -39,6 +40,7 @@ import {
   validateToken,
 } from '../utils/validator';
 import { Path } from '../utils/path';
+import { getEnv } from '../utils/env';
 
 /**
  * This class supports building assistants that enables conversation with LLM models.\
@@ -253,56 +255,89 @@ export class Assistants extends FactoryBase {
     */
   }
 
-  async mintAndCreate(
-    objectId: string,
-    to: string,
-    { model, name, instructions, description, metadata }: AssistantCreateParams
-  ): Promise<AssistantMinted> {
+  async mint(objectId: string, to: string) {
     const checksum = getChecksumAddress(to);
-
-    await validateObject(this.ain, objectId);
+    if (objectId !== DEFAULT_AINFT_OBJECT_ID[getEnv()]) {
+      throw new Error(
+        `cannot request mint for the object '${objectId}'.\n` +
+        `if you're the owner, please use the Ainft721Object.mint() function.`
+      );
+    }
 
     const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
-
-    const opType = OperationType.MINT_CREATE_ASSISTANT;
-    const body = {
-      objectId,
-      to: checksum,
-      model,
-      name,
-      instructions,
-      ...(description && { description }),
-      ...(metadata && !_.isEmpty(metadata) && { metadata }),
-    };
-
-    const { data } = await requestWithAuth<AssistantMinted>(this.ainize!, this.ain, {
+    const opType = OperationType.MINT_TOKEN;
+    const body = { objectId, to: checksum };
+    const { data } = await requestWithAuth<any>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
+      timeout: 2 * 60 * 1000, // 2min
     });
 
     return data;
     // NOTE(jiyoung): example data
     /*
     return {
+      tx_hash: '0x3ffc4aa5f557bddf4b53b90dfe97e368dd6d4d6473cff0b948029e24b2e09868',
       tokenId: '1',
       objectId: '0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401',
-      owner: '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0',
-      assistant: {
-        id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
-        model: 'gpt-3.5-turbo',
-        name: 'AINA-TKAJYJF1C5',
-        instructions: '',
-        description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
-        metadata: {
-          image: 'https://picsum.photos/id/1/200/200',
-        },
-        created_at: 1704034800,
-      },
     };
     */
   }
+
+  // TODO(jiyoung): implement `mintAndCreate` method.
+  // async mintAndCreate(
+  //   objectId: string,
+  //   to: string,
+  //   { model, name, instructions, description, metadata }: AssistantCreateParams
+  // ): Promise<AssistantMinted> {
+  //   const checksum = getChecksumAddress(to);
+  //   if (objectId !== DEFAULT_AINFT_OBJECT_ID[getEnv()]) {
+  //     throw new Error(
+  //       `cannot request mint for the object '${objectId}'.\n` +
+  //       `if you're the owner, please use the Ainft721Object.mint() function.`
+  //     );
+  //   }
+
+  //   const serverName = getServerName();
+  //   const opType = OperationType.MINT_CREATE_ASSISTANT;
+  //   const body = {
+  //     objectId,
+  //     to: checksum,
+  //     model,
+  //     name,
+  //     instructions,
+  //     ...(description && { description }),
+  //     ...(metadata && !_.isEmpty(metadata) && { metadata }),
+  //   };
+
+  //   const { data } = await requestWithAuth<AssistantMinted>(this.ainize!, this.ain, {
+  //     serverName,
+  //     opType,
+  //     data: body,
+  //   });
+
+  //   return data;
+  //   // NOTE(jiyoung): example data
+  //   /*
+  //   return {
+  //     tokenId: '1',
+  //     objectId: '0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401',
+  //     owner: '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0',
+  //     assistant: {
+  //       id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
+  //       model: 'gpt-3.5-turbo',
+  //       name: 'AINA-TKAJYJF1C5',
+  //       instructions: '',
+  //       description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
+  //       metadata: {
+  //         image: 'https://picsum.photos/id/1/200/200',
+  //       },
+  //       created_at: 1704034800,
+  //     },
+  //   };
+  //   */
+  // }
 
   private buildTxBodyForCreateAssistant(
     address: string,
@@ -407,7 +442,7 @@ export class Assistants extends FactoryBase {
   private async getTokensByAddress(objectId: string, address: string) {
     const appId = AinftObject.getAppId(objectId);
     const tokensPath = Path.app(appId).tokens().value();
-    const tokens: NftTokens = await this.ain.db.ref(tokensPath).getValue() || {};
+    const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
     return Object.values(tokens).filter((token) => token.owner === address);
   }
 

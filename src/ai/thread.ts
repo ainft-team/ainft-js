@@ -201,6 +201,7 @@ export class Threads extends FactoryBase {
       items: [
         {
           id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
+          assistant_id: 'asst_OcJZjwpIo3OKOq25NUfi0oeA',
           created_at: 1711962854,
           metadata: {
             title: '도와드릴까요?',
@@ -208,6 +209,7 @@ export class Threads extends FactoryBase {
         },
         {
           id: 'thread_mmzBrZeM5vllqEceRttvu1xk',
+          assistant_id: 'asst_OcJZjwpIo3OKOq25NUfi0oeA',
           created_at: 1711961028,
           metadata: {
             title: '영문번역',

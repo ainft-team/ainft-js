@@ -82,15 +82,19 @@ describe.skip('assistant', () => {
     expect(result.delAssistant.deleted).toBe(true);
   });
 
-  it('should mint and create assistant', async () => {
-    const result = await ainft.assistant.mintAndCreate(objectId, address, {
-      model: 'gpt-3.5-turbo',
-      name: 'AINA-TKAJYJF1C5',
-      instructions: '',
-      description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
-      metadata: {
-        image: 'https://picsum.photos/id/1/200/200',
-      },
-    });
+  it('should mint assistant', async () => {
+    const result = await ainft.assistant.mint(objectId, address);
   });
+
+  // it('should mint and create assistant', async () => {
+  //   const result = await ainft.assistant.mintAndCreate(objectId, address, {
+  //     model: 'gpt-3.5-turbo',
+  //     name: 'AINA-TKAJYJF1C5',
+  //     instructions: '',
+  //     description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
+  //     metadata: {
+  //       image: 'https://picsum.photos/id/1/200/200',
+  //     },
+  //   });
+  // });
 });
