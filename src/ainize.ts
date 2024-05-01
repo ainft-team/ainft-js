@@ -3,7 +3,7 @@ import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
 import { DEFAULT_AINIZE_SERVER_NAME } from './constants';
 
-const DEFAULT_TIMEOUT_MS = 60000;
+const DEFAULT_TIMEOUT_MS = 60 * 1000; // 1min
 
 export const getServer = async (ainize: Ainize, name: string): Promise<Service> => {
   const server = await ainize.getService(name);

@@ -88,7 +88,7 @@ export class Chat extends FactoryBase {
         serverName: nickname,
         opType,
         data: body,
-        timeout: 120000,
+        timeout: 2 * 60 * 1000, // 2min
       });
       balance = data;
     } else {

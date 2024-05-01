@@ -86,6 +86,7 @@ describe.skip('assistant', () => {
     const result = await ainft.assistant.mint(objectId, address);
   });
 
+  // TODO(jiyoung): implement `mintAndCreate` method.
   // it('should mint and create assistant', async () => {
   //   const result = await ainft.assistant.mintAndCreate(objectId, address, {
   //     model: 'gpt-3.5-turbo',

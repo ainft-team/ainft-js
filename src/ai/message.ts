@@ -242,7 +242,7 @@ export class Messages extends FactoryBase {
           ) {
             reject(new Error(`Run ${runId} is ${JSON.stringify(response.data)}`));
           } else {
-            setTimeout(retrieveRun, 2000);
+            setTimeout(retrieveRun, 2 * 1000); // 2sec
           }
         } catch (error) {
           reject(error);
