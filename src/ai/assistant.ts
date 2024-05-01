@@ -17,11 +17,11 @@ import {
   QueryParams,
 } from '../types';
 import {
-  DEFAULT_AINFT_OBJECT_ID,
   MESSAGE_GC_MAX_SIBLINGS,
   MESSAGE_GC_NUM_SIBLINGS_DELETED,
   THREAD_GC_MAX_SIBLINGS,
   THREAD_GC_NUM_SIBLINGS_DELETED,
+  WHITELISTED_OBJECT_IDS,
 } from '../constants';
 import {
   buildSetTxBody,
@@ -73,7 +73,13 @@ export class Assistants extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateDuplicateAssistant(this.ain, objectId, tokenId);
 
+    // NOTE(jiyoung): creation is limited to owners, except for whitelisted objects.
     const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
+    const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+    if (!whitelisted && role !== Role.OWNER) {
+      throw new Error(`cannot create assistant for the object ${objectId}`);
+    }
+
     const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
@@ -94,14 +100,13 @@ export class Assistants extends FactoryBase {
       data: body,
     });
 
-    if (role === Role.USER) {
+    if (role === Role.OWNER) {
+      const txBody = this.buildTxBodyForCreateAssistant(address, objectId, tokenId, data);
+      const result = await sendTx(this.ain, txBody);
+      return { ...result, assistant: data };
+    } else {
       return { assistant: data };
     }
-
-    const txBody = this.buildTxBodyForCreateAssistant(address, objectId, tokenId, data);
-    const result = await sendTx(this.ain, txBody);
-
-    return { ...result, assistant: data };
   }
 
   /**
@@ -124,7 +129,13 @@ export class Assistants extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
+    // NOTE(jiyoung): update is limited to owners, except for whitelisted objects.
     const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
+    const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+    if (!whitelisted && role !== Role.OWNER) {
+      throw new Error(`cannot update assistant for the object ${objectId}`);
+    }
+
     const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
@@ -145,14 +156,13 @@ export class Assistants extends FactoryBase {
       data: body,
     });
 
-    if (role === Role.USER) {
+    if (role === Role.OWNER) {
+      const txBody = this.buildTxBodyForUpdateAssistant(address, objectId, tokenId, data);
+      const result = await sendTx(this.ain, txBody);
+      return { ...result, assistant: data };
+    } else {
       return { assistant: data };
     }
-
-    const txBody = this.buildTxBodyForUpdateAssistant(address, objectId, tokenId, data);
-    const result = await sendTx(this.ain, txBody);
-
-    return { ...result, assistant: data };
   }
 
   /**
@@ -173,7 +183,13 @@ export class Assistants extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
+    // NOTE(jiyoung): deletion is limited to owners, except for whitelisted objects.
     const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
+    const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+    if (!whitelisted && role !== Role.OWNER) {
+      throw new Error(`cannot delete assistant for the object ${objectId}`);
+    }
+
     const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
@@ -185,14 +201,13 @@ export class Assistants extends FactoryBase {
       data: body,
     });
 
-    if (role === Role.USER) {
+    if (role === Role.OWNER) {
+      const txBody = this.buildTxBodyForDeleteAssistant(address, objectId, tokenId);
+      const result = await sendTx(this.ain, txBody);
+      return { ...result, delAssistant: data };
+    } else {
       return { delAssistant: data };
     }
-
-    const txBody = this.buildTxBodyForDeleteAssistant(address, objectId, tokenId);
-    const result = await sendTx(this.ain, txBody);
-
-    return { ...result, delAssistant: data };
   }
 
   /**
@@ -268,10 +283,11 @@ export class Assistants extends FactoryBase {
 
   async mint(objectId: string, to: string) {
     const checksum = getChecksumAddress(to);
-    if (objectId !== DEFAULT_AINFT_OBJECT_ID[getEnv()]) {
+    const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+    if (!whitelisted) {
       throw new Error(
         `cannot request mint for the object '${objectId}'.\n` +
-        `if you're the owner, please use the Ainft721Object.mint() function.`
+          `if you're the owner, please use the Ainft721Object.mint() function.`
       );
     }
 
@@ -303,10 +319,11 @@ export class Assistants extends FactoryBase {
   //   { model, name, instructions, description, metadata }: AssistantCreateParams
   // ): Promise<AssistantMinted> {
   //   const checksum = getChecksumAddress(to);
-  //   if (objectId !== DEFAULT_AINFT_OBJECT_ID[getEnv()]) {
+  //   const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+  //   if (!whitelisted) {
   //     throw new Error(
   //       `cannot request mint for the object '${objectId}'.\n` +
-  //       `if you're the owner, please use the Ainft721Object.mint() function.`
+  //         `if you're the owner, please use the Ainft721Object.mint() function.`
   //     );
   //   }
 
