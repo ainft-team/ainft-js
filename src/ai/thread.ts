@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { AinizeService, OperationType } from '../ainize';
+import { OperationType, getServerName, requestWithAuth } from '../ainize';
 import {
   QueryParams,
   Thread,
@@ -29,8 +29,6 @@ import {
  * Do not create it directly; Get it from AinftJs instance.
  */
 export class Threads extends FactoryBase {
-  private ainize: AinizeService = AinizeService.getInstance();
-
   /**
    * Create a thread.
    * @param {string} objectId - The ID of AINFT object.
@@ -49,7 +47,7 @@ export class Threads extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.CREATE_THREAD;
@@ -57,7 +55,7 @@ export class Threads extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await this.ainize.requestWithAuth<Thread>(this.ain, {
+    const { data } = await requestWithAuth<Thread>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -90,7 +88,7 @@ export class Threads extends FactoryBase {
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.MODIFY_THREAD;
@@ -99,7 +97,7 @@ export class Threads extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await this.ainize.requestWithAuth<Thread>(this.ain, {
+    const { data } = await requestWithAuth<Thread>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -130,13 +128,13 @@ export class Threads extends FactoryBase {
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.DELETE_THREAD;
     const body = { threadId };
 
-    const { data } = await this.ainize.requestWithAuth<ThreadDeleted>(this.ain, {
+    const { data } = await requestWithAuth<ThreadDeleted>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -163,13 +161,13 @@ export class Threads extends FactoryBase {
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.RETRIEVE_THREAD;
     const body = { threadId };
 
-    const { data } = await this.ainize.requestWithAuth<Thread>(this.ain, {
+    const { data } = await requestWithAuth<Thread>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -203,6 +201,7 @@ export class Threads extends FactoryBase {
       items: [
         {
           id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
+          assistant_id: 'asst_OcJZjwpIo3OKOq25NUfi0oeA',
           created_at: 1711962854,
           metadata: {
             title: '도와드릴까요?',
@@ -210,6 +209,7 @@ export class Threads extends FactoryBase {
         },
         {
           id: 'thread_mmzBrZeM5vllqEceRttvu1xk',
+          assistant_id: 'asst_OcJZjwpIo3OKOq25NUfi0oeA',
           created_at: 1711961028,
           metadata: {
             title: '영문번역',
@@ -232,7 +232,7 @@ export class Threads extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const assistant = await getAssistant(this.ain, appId, tokenId);
@@ -243,7 +243,7 @@ export class Threads extends FactoryBase {
       ...(messages && messages.length > 0 && { messages }),
     };
 
-    const { data } = await this.ainize.requestWithAuth<ThreadWithMessages>(this.ain, {
+    const { data } = await requestWithAuth<ThreadWithMessages>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,

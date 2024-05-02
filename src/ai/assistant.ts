@@ -2,9 +2,10 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { AinizeService, OperationType } from '../ainize';
+import { OperationType, getServerName, requestWithAuth } from '../ainize';
 import {
   Assistant,
+  AssistantCreateOptions,
   AssistantCreateParams,
   AssistantDeleteTransactionResult,
   AssistantDeleted,
@@ -20,6 +21,7 @@ import {
   MESSAGE_GC_NUM_SIBLINGS_DELETED,
   THREAD_GC_MAX_SIBLINGS,
   THREAD_GC_NUM_SIBLINGS_DELETED,
+  WHITELISTED_OBJECT_IDS,
 } from '../constants';
 import {
   buildSetTxBody,
@@ -39,59 +41,72 @@ import {
   validateToken,
 } from '../utils/validator';
 import { Path } from '../utils/path';
+import { getEnv } from '../utils/env';
+
+enum Role {
+  OWNER = 'owner',
+  USER = 'user',
+}
 
 /**
  * This class supports building assistants that enables conversation with LLM models.\
  * Do not create it directly; Get it from AinftJs instance.
  */
 export class Assistants extends FactoryBase {
-  private ainize: AinizeService = AinizeService.getInstance();
-
   /**
    * Create an assistant with a model and instructions.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {AssistantCreateParams} AssistantCreateParams - The parameters to create assistant.
+   * @param {AssistantCreateOptions} AssistantCreateOptions - The creation options.
    * @returns Returns a promise that resolves with both the transaction result and the created assistant.
    */
   async create(
     objectId: string,
     tokenId: string,
-    { model, name, instructions, description, metadata }: AssistantCreateParams
+    { model, name, instructions, description, metadata }: AssistantCreateParams,
+    options: AssistantCreateOptions = {}
   ): Promise<AssistantTransactionResult> {
     const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
-    const isAdmin = await isObjectOwner(this.ain, objectId, address);
     await validateToken(this.ain, objectId, tokenId);
     await validateDuplicateAssistant(this.ain, objectId, tokenId);
 
-    const serverName = this.ainize.getServerName();
+    // NOTE(jiyoung): creation is limited to owners, except for whitelisted objects.
+    const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
+    const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+    if (!whitelisted && role !== Role.OWNER) {
+      throw new Error(`cannot create assistant for the object ${objectId}`);
+    }
+
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.CREATE_ASSISTANT;
     const body = {
+      role,
       model,
       name,
       instructions,
       ...(description && { description }),
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
+      ...(options && !_.isEmpty(options) && { options }),
     };
 
-    const { data } = await this.ainize.requestWithAuth<Assistant>(this.ain, {
+    const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
     });
 
-    if (!isAdmin) {
+    if (role === Role.OWNER) {
+      const txBody = this.buildTxBodyForCreateAssistant(address, objectId, tokenId, data);
+      const result = await sendTx(this.ain, txBody);
+      return { ...result, assistant: data };
+    } else {
       return { assistant: data };
     }
-
-    const txBody = this.buildTxBodyForCreateAssistant(address, objectId, tokenId, data);
-    const result = await sendTx(this.ain, txBody);
-
-    return { ...result, assistant: data };
   }
 
   /**
@@ -111,15 +126,22 @@ export class Assistants extends FactoryBase {
     const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
-    const isAdmin = await isObjectOwner(this.ain, objectId, address);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
-    const serverName = this.ainize.getServerName();
+    // NOTE(jiyoung): update is limited to owners, except for whitelisted objects.
+    const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
+    const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+    if (!whitelisted && role !== Role.OWNER) {
+      throw new Error(`cannot update assistant for the object ${objectId}`);
+    }
+
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.MODIFY_ASSISTANT;
     const body = {
+      role,
       assistantId,
       ...(model && { model }),
       ...(name && { name }),
@@ -128,20 +150,19 @@ export class Assistants extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await this.ainize.requestWithAuth<Assistant>(this.ain, {
+    const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
     });
 
-    if (!isAdmin) {
+    if (role === Role.OWNER) {
+      const txBody = this.buildTxBodyForUpdateAssistant(address, objectId, tokenId, data);
+      const result = await sendTx(this.ain, txBody);
+      return { ...result, assistant: data };
+    } else {
       return { assistant: data };
     }
-
-    const txBody = this.buildTxBodyForUpdateAssistant(address, objectId, tokenId, data);
-    const result = await sendTx(this.ain, txBody);
-
-    return { ...result, assistant: data };
   }
 
   /**
@@ -159,29 +180,34 @@ export class Assistants extends FactoryBase {
     const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
-    const isAdmin = await isObjectOwner(this.ain, objectId, address);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
-    const serverName = this.ainize.getServerName();
+    // NOTE(jiyoung): deletion is limited to owners, except for whitelisted objects.
+    const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
+    const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+    if (!whitelisted && role !== Role.OWNER) {
+      throw new Error(`cannot delete assistant for the object ${objectId}`);
+    }
+
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.DELETE_ASSISTANT;
-    const body = { assistantId };
-    const { data } = await this.ainize.requestWithAuth<AssistantDeleted>(this.ain, {
+    const body = { role, assistantId };
+    const { data } = await requestWithAuth<AssistantDeleted>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
     });
 
-    if (!isAdmin) {
+    if (role === Role.OWNER) {
+      const txBody = this.buildTxBodyForDeleteAssistant(address, objectId, tokenId);
+      const result = await sendTx(this.ain, txBody);
+      return { ...result, delAssistant: data };
+    } else {
       return { delAssistant: data };
     }
-
-    const txBody = this.buildTxBodyForDeleteAssistant(address, objectId, tokenId);
-    const result = await sendTx(this.ain, txBody);
-
-    return { ...result, delAssistant: data };
   }
 
   /**
@@ -196,12 +222,12 @@ export class Assistants extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.RETRIEVE_ASSISTANT;
     const body = { assistantId };
-    const { data } = await this.ainize.requestWithAuth<Assistant>(this.ain, {
+    const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -255,56 +281,91 @@ export class Assistants extends FactoryBase {
     */
   }
 
-  async mintAndCreate(
-    objectId: string,
-    to: string,
-    { model, name, instructions, description, metadata }: AssistantCreateParams
-  ): Promise<AssistantMinted> {
+  async mint(objectId: string, to: string) {
     const checksum = getChecksumAddress(to);
+    const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+    if (!whitelisted) {
+      throw new Error(
+        `cannot request mint for the object '${objectId}'.\n` +
+          `if you're the owner, please use the Ainft721Object.mint() function.`
+      );
+    }
 
-    await validateObject(this.ain, objectId);
-
-    const serverName = this.ainize.getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
-
-    const opType = OperationType.MINT_CREATE_ASSISTANT;
-    const body = {
-      objectId,
-      to: checksum,
-      model,
-      name,
-      instructions,
-      ...(description && { description }),
-      ...(metadata && !_.isEmpty(metadata) && { metadata }),
-    };
-
-    const { data } = await this.ainize.requestWithAuth<AssistantMinted>(this.ain, {
+    const serverName = getServerName();
+    const opType = OperationType.MINT_TOKEN;
+    const body = { objectId, to: checksum };
+    const { data } = await requestWithAuth<any>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
+      timeout: 2 * 60 * 1000, // 2min
     });
 
     return data;
     // NOTE(jiyoung): example data
     /*
     return {
+      tx_hash: '0x3ffc4aa5f557bddf4b53b90dfe97e368dd6d4d6473cff0b948029e24b2e09868',
       tokenId: '1',
       objectId: '0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401',
-      owner: '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0',
-      assistant: {
-        id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
-        model: 'gpt-3.5-turbo',
-        name: 'AINA-TKAJYJF1C5',
-        instructions: '',
-        description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
-        metadata: {
-          image: 'https://picsum.photos/id/1/200/200',
-        },
-        created_at: 1704034800,
-      },
     };
     */
   }
+
+  // TODO(jiyoung): implement `mintAndCreate` method.
+  // async mintAndCreate(
+  //   objectId: string,
+  //   to: string,
+  //   { model, name, instructions, description, metadata }: AssistantCreateParams
+  // ): Promise<AssistantMinted> {
+  //   const checksum = getChecksumAddress(to);
+  //   const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+  //   if (!whitelisted) {
+  //     throw new Error(
+  //       `cannot request mint for the object '${objectId}'.\n` +
+  //         `if you're the owner, please use the Ainft721Object.mint() function.`
+  //     );
+  //   }
+
+  //   const serverName = getServerName();
+  //   const opType = OperationType.MINT_CREATE_ASSISTANT;
+  //   const body = {
+  //     objectId,
+  //     to: checksum,
+  //     model,
+  //     name,
+  //     instructions,
+  //     ...(description && { description }),
+  //     ...(metadata && !_.isEmpty(metadata) && { metadata }),
+  //   };
+
+  //   const { data } = await requestWithAuth<AssistantMinted>(this.ainize!, this.ain, {
+  //     serverName,
+  //     opType,
+  //     data: body,
+  //   });
+
+  //   return data;
+  //   // NOTE(jiyoung): example data
+  //   /*
+  //   return {
+  //     tokenId: '1',
+  //     objectId: '0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401',
+  //     owner: '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0',
+  //     assistant: {
+  //       id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
+  //       model: 'gpt-3.5-turbo',
+  //       name: 'AINA-TKAJYJF1C5',
+  //       instructions: '',
+  //       description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
+  //       metadata: {
+  //         image: 'https://picsum.photos/id/1/200/200',
+  //       },
+  //       created_at: 1704034800,
+  //     },
+  //   };
+  //   */
+  // }
 
   private buildTxBodyForCreateAssistant(
     address: string,
@@ -409,7 +470,7 @@ export class Assistants extends FactoryBase {
   private async getTokensByAddress(objectId: string, address: string) {
     const appId = AinftObject.getAppId(objectId);
     const tokensPath = Path.app(appId).tokens().value();
-    const tokens: NftTokens = await this.ain.db.ref(tokensPath).getValue();
+    const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
     return Object.values(tokens).filter((token) => token.owner === address);
   }
 

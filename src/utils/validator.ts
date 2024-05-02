@@ -8,7 +8,7 @@ export const isObjectOwner = async (ain: Ain, objectId: string, address: string)
   const appId = AinftObject.getAppId(objectId);
   const objectPath = Path.app(appId).value();
   const object = await getValue(ain, objectPath);
-  return address === object.owner;
+  return address === object?.owner;
 };
 
 export const validateObject = async (ain: Ain, objectId: string) => {

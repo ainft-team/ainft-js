@@ -27,3 +27,12 @@ export const THREAD_GC_NUM_SIBLINGS_DELETED = 10;
 
 export const MESSAGE_GC_MAX_SIBLINGS = 15;
 export const MESSAGE_GC_NUM_SIBLINGS_DELETED = 10;
+
+export const DEFAULT_AINIZE_SERVER_NAME = 'ainize_openai';
+
+export const WHITELISTED_OBJECT_IDS: Record<string, string[]> = {
+  dev: [
+    '0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401', // aina
+  ],
+  prod: [],
+};

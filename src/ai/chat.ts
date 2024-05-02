@@ -2,7 +2,7 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { AinizeService } from '../ainize';
+import { OperationType, getServer, login, logout, requestWithAuth } from '../ainize';
 import {
   ServiceType,
   CreditTransactionResult,
@@ -13,6 +13,7 @@ import {
 import { buildSetTxBody, buildSetValueOp, sleep, sendTx } from '../utils/util';
 import { Path } from '../utils/path';
 import { validateObject, validateObjectOwner } from '../utils/validator';
+import { DEFAULT_AINIZE_SERVER_NAME } from '../constants';
 
 /**
  * This class supports configuring chat functionality for an AINFT object,\
@@ -20,8 +21,6 @@ import { validateObject, validateObjectOwner } from '../utils/validator';
  * Do not create it directly; Get it from AinftJs instance.
  */
 export class Chat extends FactoryBase {
-  private ainize: AinizeService = AinizeService.getInstance();
-
   /**
    * Configures chat for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object to configure for chat.
@@ -34,7 +33,7 @@ export class Chat extends FactoryBase {
     await validateObject(this.ain, objectId);
     await validateObjectOwner(this.ain, objectId, address);
 
-    await this.ainize.getServer(nickname);
+    await getServer(this.ainize!, nickname);
 
     const config = {
       type: ServiceType.CHAT,
@@ -79,11 +78,27 @@ export class Chat extends FactoryBase {
    * @returns {Promise<number|null>} Returns a promise that resolves with the current credit balance.
    */
   async getCredit(nickname: string): Promise<number> {
-    const server = await this.ainize.getServer(nickname);
-    await this.ainize.login(this.ain);
-    const credit = await server.getCreditBalance();
-    await this.ainize.logout();
-    return credit;
+    let balance = 0;
+    const address = await this.ain.signer.getAddress();
+
+    if (nickname === DEFAULT_AINIZE_SERVER_NAME) {
+      const opType = OperationType.GET_CREDIT;
+      const body = { address };
+      const { data } = await requestWithAuth<number>(this.ainize!, this.ain, {
+        serverName: nickname,
+        opType,
+        data: body,
+        timeout: 2 * 60 * 1000, // 2min
+      });
+      balance = data;
+    } else {
+      const server = await getServer(this.ainize!, nickname);
+      await login(this.ainize!, this.ain);
+      balance = await server.getCreditBalance();
+      await logout(this.ainize!);
+    }
+
+    return balance;
   }
 
   private async waitForUpdate(expected: number, timeout: number, txHash: string, service: Service) {

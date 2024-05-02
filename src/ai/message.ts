@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { AinizeService, OperationType } from '../ainize';
+import { OperationType, getServerName, login, logout, request, requestWithAuth } from '../ainize';
 import {
   Message,
   MessageCreateParams,
@@ -28,8 +28,6 @@ import { Path } from '../utils/path';
  * Do not create it directly; Get it from AinftJs instance.
  */
 export class Messages extends FactoryBase {
-  private ainize: AinizeService = AinizeService.getInstance();
-
   /**
    * Create a message.
    * @param {string} objectId - The ID of AINFT object.
@@ -52,7 +50,7 @@ export class Messages extends FactoryBase {
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const assistant = await getAssistant(this.ain, appId, tokenId);
@@ -88,7 +86,7 @@ export class Messages extends FactoryBase {
     await validateThread(this.ain, objectId, tokenId, address, threadId);
     await validateMessage(this.ain, objectId, tokenId, address, threadId, messageId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.MODIFY_MESSAGE;
@@ -98,7 +96,7 @@ export class Messages extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await this.ainize.requestWithAuth<Message>(this.ain, {
+    const { data } = await requestWithAuth<Message>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -132,13 +130,13 @@ export class Messages extends FactoryBase {
     await validateThread(this.ain, objectId, tokenId, address, threadId);
     await validateMessage(this.ain, objectId, tokenId, address, threadId, messageId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.RETRIEVE_MESSAGE;
     const body = { threadId, messageId };
 
-    const { data } = await this.ainize.requestWithAuth<Message>(this.ain, {
+    const { data } = await requestWithAuth<Message>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
@@ -164,19 +162,19 @@ export class Messages extends FactoryBase {
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = this.ainize.getServerName();
+    const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.LIST_MESSAGES;
     const body = { threadId };
 
-    const { data } = await this.ainize.requestWithAuth<Page<MessageMap>>(this.ain, {
+    const { data } = await requestWithAuth<Page<MessageMap>>(this.ainize!, this.ain, {
       serverName,
       opType,
       data: body,
     });
 
-    return data.data;
+    return data?.data || {};
   }
 
   private async createMessageAndRun(
@@ -186,7 +184,7 @@ export class Messages extends FactoryBase {
     body: MessageCreateParams
   ) {
     try {
-      await this.ainize.login(this.ain);
+      await login(this.ainize!, this.ain);
       // TODO(jiyoung): handle these actions from one endpoint.
       await this.createMessage(serverName, threadId, body);
       const run = await this.createRun(serverName, threadId, assistantId);
@@ -197,7 +195,7 @@ export class Messages extends FactoryBase {
     } catch (error: any) {
       throw new Error(error);
     } finally {
-      await this.ainize.logout();
+      await logout(this.ainize!);
     }
   }
 
@@ -213,14 +211,14 @@ export class Messages extends FactoryBase {
       content,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
-    const { data } = await this.ainize.request<any>(this.ain, { serverName, opType, data: body });
+    const { data } = await request<any>(this.ainize!, { serverName, opType, data: body });
     return data;
   }
 
   private async createRun(serverName: string, threadId: string, assistantId: string) {
     const opType = OperationType.CREATE_RUN;
     const body = { threadId, assistantId };
-    const { data } = await this.ainize.request<any>(this.ain, { serverName, opType, data: body });
+    const { data } = await request<any>(this.ainize!, { serverName, opType, data: body });
     return data;
   }
 
@@ -230,7 +228,7 @@ export class Messages extends FactoryBase {
         try {
           const opType = OperationType.RETRIEVE_RUN;
           const body = { threadId, runId };
-          const response = await this.ainize.request<any>(this.ain, {
+          const response = await request<any>(this.ainize!, {
             serverName,
             opType,
             data: body,
@@ -244,7 +242,7 @@ export class Messages extends FactoryBase {
           ) {
             reject(new Error(`Run ${runId} is ${JSON.stringify(response.data)}`));
           } else {
-            setTimeout(retrieveRun, 2000);
+            setTimeout(retrieveRun, 2 * 1000); // 2sec
           }
         } catch (error) {
           reject(error);
@@ -257,7 +255,7 @@ export class Messages extends FactoryBase {
   private async listMessages(serverName: string, threadId: string) {
     const opType = OperationType.LIST_MESSAGES;
     const body = { threadId };
-    const { data } = await this.ainize.request<any>(this.ain, { serverName, opType, data: body });
+    const { data } = await request<any>(this.ainize!, { serverName, opType, data: body });
     return data;
   }
 
