@@ -36,13 +36,8 @@ describe.skip('thread', () => {
   });
 
   it('should list threads', async () => {
-    const result = await ainft.thread.list(objectId, tokenId, {
-      limit: 20,
-      offset: 0,
-      order: 'desc',
-    });
+    const result = await ainft.thread.list(objectId, null, null, { limit: 20, order: 'desc' });
 
-    expect(result.total).toBeDefined();
     expect(result.items).toBeDefined();
   });
 
