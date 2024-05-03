@@ -12,9 +12,17 @@ import {
   ThreadDeleted,
   ThreadTransactionResult,
   ThreadUpdateParams,
+  ThreadWithAssistant,
   ThreadWithMessages,
 } from '../types';
-import { buildSetTxBody, buildSetValueOp, getAssistant, getValue, sendTx } from '../utils/util';
+import {
+  buildSetTxBody,
+  buildSetValueOp,
+  getAssistant,
+  getChecksumAddress,
+  getValue,
+  sendTx,
+} from '../utils/util';
 import { Path } from '../utils/path';
 import {
   validateAssistant,
@@ -41,17 +49,31 @@ export class Threads extends FactoryBase {
     tokenId: string,
     { metadata }: ThreadCreateParams
   ): Promise<ThreadTransactionResult> {
+    const appId = AinftObject.getAppId(objectId);
     const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
+    const assistant = await getAssistant(this.ain, appId, tokenId);
 
     const serverName = getServerName();
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.CREATE_THREAD;
     const body = {
+      objectId,
+      tokenId,
+      assistant: {
+        id: assistant?.id,
+        model: assistant?.config?.model,
+        name: assistant?.config?.name,
+        instructions: assistant?.config?.instructions,
+        description: assistant?.config?.description || null,
+        metadata: assistant?.config?.metadata || null,
+        createdAt: assistant?.createdAt,
+      },
+      address,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
@@ -178,44 +200,75 @@ export class Threads extends FactoryBase {
 
   async list(
     objectId: string,
-    tokenId: string,
-    { limit = 20, offset = 0, order = 'desc' }: QueryParams
+    tokenId?: string | null,
+    address?: string | null,
+    { limit = 20, order = 'desc', next }: QueryParams = {}
   ) {
-    const address = await this.ain.signer.getAddress();
+    let checksum = null;
+    if (address) {
+      checksum = getChecksumAddress(address);
+    }
 
     await validateObject(this.ain, objectId);
-    await validateToken(this.ain, objectId, tokenId);
-    await validateAssistant(this.ain, objectId, tokenId);
 
-    const threads = await this.getThreadsByAddress(objectId, tokenId, address);
-    const sorted = this.sortThreads(threads, order);
+    const serverName = getServerName();
+    const opType = OperationType.LIST_THREADS;
+    const body = {
+      objectId,
+      ...(tokenId && { tokenId }),
+      ...(checksum && { address: checksum }),
+      limit,
+      order,
+      ...(next && { next }),
+    };
 
-    const total = sorted.length;
-    const items = sorted.slice(offset, offset + limit);
+    const { data } = await requestWithAuth<any>(this.ainize!, this.ain, {
+      serverName,
+      opType,
+      data: body,
+    });
 
-    return { total, items };
+    return data;
     // NOTE(jiyoung): example data
     /*
     return {
-      total: 2,
-      items: [
-        {
+      items: {
+        '0': {
           id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
-          assistant_id: 'asst_OcJZjwpIo3OKOq25NUfi0oeA',
+          assistant: {
+              id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
+              model: 'gpt-3.5-turbo',
+              name: 'AINA-TKAJYJF1C5',
+              instructions: '',
+              description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
+              metadata: {
+                image: 'https://picsum.photos/id/1/200/200',
+              },
+            }, 
           created_at: 1711962854,
           metadata: {
             title: '도와드릴까요?',
           },
         },
-        {
+        '1': {
           id: 'thread_mmzBrZeM5vllqEceRttvu1xk',
-          assistant_id: 'asst_OcJZjwpIo3OKOq25NUfi0oeA',
+          assistant: {
+              id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
+              model: 'gpt-3.5-turbo',
+              name: 'AINA-TKAJYJF1C5',
+              instructions: '',
+              description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
+              metadata: {
+                image: 'https://picsum.photos/id/1/200/200',
+              },
+            }, 
           created_at: 1711961028,
           metadata: {
             title: '영문번역',
           },
         },
-      ],
+      },
+      next: 'e49274a2-a255-4f95-b57a-68beebc6bdf7',
     };
     */
   }
@@ -387,28 +440,5 @@ export class Threads extends FactoryBase {
     };
 
     return buildSetTxBody(buildSetValueOp(threadPath, value), address);
-  }
-
-  private async getThreadsByAddress(objectId: string, tokenId: string, address: string) {
-    const appId = AinftObject.getAppId(objectId);
-    const threadsPath = Path.app(appId).token(tokenId).ai().history(address).threads().value();
-    const threads = await this.ain.db.ref(threadsPath).getValue();
-    return Object.values(threads).map(this.toThread);
-  }
-
-  private toThread(data: any): Thread {
-    return {
-      id: data.id,
-      metadata: data.metadata || {},
-      created_at: data.createdAt,
-    };
-  }
-
-  private sortThreads(threads: Thread[], order: 'asc' | 'desc') {
-    return threads.sort((a, b) => {
-      if (a.created_at < b.created_at) return order === 'asc' ? -1 : 1;
-      if (a.created_at > b.created_at) return order === 'asc' ? 1 : -1;
-      return 0;
-    });
   }
 }

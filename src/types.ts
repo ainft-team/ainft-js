@@ -1295,6 +1295,19 @@ export interface Thread {
   created_at: number;
 }
 
+export interface ThreadWithAssistant {
+  /** The identifier. */
+  id: string;
+  /**
+   * The metadata can contain up to 16 pairs,
+   * with keys limited to 64 characters and values to 512 characters.
+   */
+  metadata: object | null;
+  /** The UNIX timestamp in seconds. */
+  created_at: number;
+  assistant: Assistant;
+}
+
 export interface ThreadDeleted {
   /** The identifier. */
   id: string;
@@ -1367,6 +1380,7 @@ export interface QueryParams {
   limit?: number;
   offset?: number;
   order?: 'asc' | 'desc';
+  next?: string | null;
 }
 
 export interface Page<T> {
