@@ -111,7 +111,7 @@ export default class AinftJs {
    * @param chainId
    */
   setAiNetworkInfo(providerUrl: string, chainId: number, axiosConfig?: any) {
-    this.ain.setProvider(providerUrl, chainId, axiosConfig);
+    this.ain.setProvider(providerUrl, undefined, chainId, axiosConfig);
   }
 
   /**
