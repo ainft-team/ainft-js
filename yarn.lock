@@ -2,6 +2,35 @@
 # yarn lockfile v1
 
 
+"@ainblockchain/ain-js@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.10.0.tgz#2ab91ee9c5f083ef8830e8db528b69c18264aefa"
+  integrity sha512-4fmL7vaLBesY2de3aTtJTpjT0MO5ezeQSUlZcU5bjm5aY9LCFfCxSy3vkYrAROC7KstNODSfWjzMlpoc9afrWA==
+  dependencies:
+    "@ainblockchain/ain-util" "^1.1.9"
+    "@types/node" "^12.7.3"
+    "@types/randombytes" "^2.0.0"
+    "@types/semver" "^7.3.4"
+    "@types/ws" "8.5.3"
+    axios "^0.21.4"
+    bip39 "^3.0.2"
+    browserify-cipher "^1.0.1"
+    eventemitter3 "^4.0.0"
+    hdkey "^1.1.1"
+    is-in-browser "^2.0.0"
+    isomorphic-ws "^5.0.0"
+    lodash "^4.17.20"
+    node-seal "^4.5.7"
+    patch-package "^8.0.0"
+    pbkdf2 "^3.0.17"
+    postinstall-postinstall "^2.1.0"
+    randombytes "^2.1.0"
+    scryptsy "^2.1.0"
+    semver "^6.3.0"
+    url-parse "^1.4.7"
+    uuid "^3.3.3"
+    ws "^8.16.0"
+
 "@ainblockchain/ain-js@^1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.9.0.tgz#3d04271149f5788bfd1913b604bc6c391327c10b"
