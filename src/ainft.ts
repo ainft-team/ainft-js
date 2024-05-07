@@ -61,7 +61,7 @@ export default class AinftJs {
     const chainId = _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAIN_ID[stage];
     setEnv(stage);
 
-    this.ain = new Ain(endpoint, chainId);
+    this.ain = new Ain(endpoint, undefined, chainId);
     this.ainize = new Ainize(chainId);
 
     if (privateKey) {
@@ -111,7 +111,7 @@ export default class AinftJs {
    * @param chainId
    */
   setAiNetworkInfo(providerUrl: string, chainId: number, axiosConfig?: any) {
-    this.ain.setProvider(providerUrl, chainId, axiosConfig);
+    this.ain.setProvider(providerUrl, undefined, chainId, axiosConfig);
   }
 
   /**
