@@ -1210,6 +1210,8 @@ export interface ChatConfiguration {
 export interface Assistant {
   /** The identifier. */
   id: string;
+  /** The ID of AINFT token. */
+  tokenId: string | null;
   /** The name of the model to use. */
   model: string;
   /** The name of the assistant. */

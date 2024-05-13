@@ -264,6 +264,7 @@ export class Assistants extends FactoryBase {
             image: 'https://picsum.photos/id/2/200/200',
           },
           created_at: 1711969423,
+          tokenId: '1',
         },
         {
           id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
@@ -275,6 +276,7 @@ export class Assistants extends FactoryBase {
             image: 'https://picsum.photos/id/1/200/200',
           },
           created_at: 1704034800,
+          tokenId: '2',
         },
       ],
     };
@@ -471,13 +473,18 @@ export class Assistants extends FactoryBase {
     const appId = AinftObject.getAppId(objectId);
     const tokensPath = Path.app(appId).tokens().value();
     const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
-    return Object.values(tokens).filter((token) => token.owner === address);
+    return Object.entries(tokens).reduce<NftToken[]>((acc, [id, token]) => {
+      if (token.owner === address) {
+        acc.push({ tokenId: id, ...token });
+      }
+      return acc;
+    }, []);
   }
 
   private getAssistantsFromTokens(tokens: NftToken[]) {
     return tokens.reduce<Assistant[]>((acc, token) => {
       if (token.ai) {
-        acc.push(this.toAssistant(token.ai));
+        acc.push(this.toAssistant(token));
       }
       return acc;
     }, []);
@@ -485,13 +492,14 @@ export class Assistants extends FactoryBase {
 
   private toAssistant(data: any): Assistant {
     return {
-      id: data.id,
-      model: data.config.model,
-      name: data.config.name,
-      instructions: data.config.instructions,
-      description: data.config.description || null,
-      metadata: data.config.metadata || {},
-      created_at: data.createdAt,
+      id: data.ai.id,
+      tokenId: data.tokenId,
+      model: data.ai.config.model,
+      name: data.ai.config.name,
+      instructions: data.ai.config.instructions,
+      description: data.ai.config.description || null,
+      metadata: data.ai.config.metadata || {},
+      created_at: data.ai.createdAt,
     };
   }
 
