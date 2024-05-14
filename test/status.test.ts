@@ -1,13 +1,14 @@
 import AinftJs from '../src/ainft';
 
-describe('Status', () => {
+describe('status', () => {
   it('should return health', async () => {
-    // TODO(hyeonwoong): remove dev api endpoint.
-    const ainftJs = new AinftJs('a'.repeat(64), null, {
-      ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
-      ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
+    const ainft = new AinftJs({
+      privateKey: 'a'.repeat(64),
+      baseURL: 'https://ainft-api-dev.ainetwork.ai',
+      blockchainURL: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
     });
-    expect(await ainftJs.getStatus()).toMatchObject({ health: true });
+
+    expect(await ainft.getStatus()).toMatchObject({ health: true });
   });
 });

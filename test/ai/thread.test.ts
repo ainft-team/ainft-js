@@ -5,16 +5,18 @@ import { TX_HASH_REGEX, THREAD_REGEX } from '../constants';
 describe.skip('thread', () => {
   let ainft: AinftJs;
 
-  beforeEach(async () => {
-    ainft = new AinftJs(privateKey, null, {
-      ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
-      ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
+  beforeAll(async () => {
+    ainft = new AinftJs({
+      privateKey,
+      baseURL: 'https://ainft-api-dev.ainetwork.ai',
+      blockchainURL: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
     });
+    await ainft.open();
   });
 
   afterAll(async () => {
-    jest.restoreAllMocks();
+    await ainft.close();
   });
 
   it('should create thread', async () => {

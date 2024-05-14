@@ -5,16 +5,18 @@ import { ASSISTANT_REGEX, TX_HASH_REGEX } from '../constants';
 describe.skip('assistant', () => {
   let ainft: AinftJs;
 
-  beforeEach(() => {
-    ainft = new AinftJs(privateKey, null, {
-      ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
-      ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
+  beforeAll(async () => {
+    ainft = new AinftJs({
+      privateKey,
+      baseURL: 'https://ainft-api-dev.ainetwork.ai',
+      blockchainURL: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
     });
+    await ainft.open();
   });
 
-  afterAll(() => {
-    jest.restoreAllMocks();
+  afterAll(async () => {
+    await ainft.close();
   });
 
   it('should create assistant', async () => {
