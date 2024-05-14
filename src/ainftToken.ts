@@ -27,7 +27,7 @@ export class AinftToken extends FactoryBase {
    * @param baseUrl The base url to request api to AINFT factory server.
    */
   constructor(tokenInfo: { ainftObjectId: string, tokenId: string, tokenURI: string, metadata?: object }, ain: Ain, baseUrl: string) {
-    super(ain, baseUrl);
+    super(baseUrl, null, ain);
     this.ainftObjectId = tokenInfo.ainftObjectId;
     this.tokenId = tokenInfo.tokenId;
     this.tokenURI = tokenInfo.tokenURI;

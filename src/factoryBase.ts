@@ -16,15 +16,16 @@ export default class FactoryBase {
   public route: string;
   /** The Ain object for sign and send transaction to AIN blockchain. */
   public ain: Ain;
+   /** The Ainize object for send request to AIN blockchain. */
   public ainize?: Ainize;
 
   constructor(
-    ain: Ain,
     baseUrl: string,
-    route: string = '',
+    route: string | null,
+    ain: Ain,
     ainize?: Ainize,
   ) {
-    this.route = route;
+    this.route = route || '';
     this.ain = ain;
     this.ainize = ainize;
 
