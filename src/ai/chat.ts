@@ -2,7 +2,7 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getServer, login, logout, requestWithAuth } from '../ainize';
+import { OperationType, getServer, request } from '../ainize';
 import {
   ServiceType,
   CreditTransactionResult,
@@ -60,13 +60,9 @@ export class Chat extends FactoryBase {
     const serviceName = await validateAndGetServiceName(nickname, this.ainize);
     const service = await validateAndGetService(serviceName, this.ainize);
 
-    await ainizeLogin(this.ain, this.ainize);
-
     const currentCredit = await service.getCreditBalance();
     const txHash = await service.chargeCredit(amount);
     const updatedCredit = await this.waitForUpdate(currentCredit + amount, 60000, txHash, service); // 1min
-
-    await ainizeLogout(this.ainize);
 
     return { tx_hash: txHash, address, balance: updatedCredit };
   }
@@ -84,7 +80,7 @@ export class Chat extends FactoryBase {
     if (nickname === DEFAULT_AINIZE_SERVER_NAME) {
       const opType = OperationType.GET_CREDIT;
       const body = { address };
-      const { data } = await requestWithAuth<number>(this.ainize!, this.ain, {
+      const { data } = await request<number>(this.ainize!, {
         serverName: nickname,
         opType,
         data: body,
@@ -93,9 +89,7 @@ export class Chat extends FactoryBase {
       balance = data;
     } else {
       const server = await getServer(this.ainize!, nickname);
-      await login(this.ainize!, this.ain);
       balance = await server.getCreditBalance();
-      await logout(this.ainize!);
     }
 
     return balance;

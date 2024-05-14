@@ -18,15 +18,6 @@ export const getServerName = () => {
   return DEFAULT_AINIZE_SERVER_NAME;
 };
 
-export const login = async (ainize: Ainize, ain: Ain) => {
-  const privKey = ain.wallet.defaultAccount?.private_key;
-  await (privKey ? ainize.login(privKey) : ainize.loginWithSigner());
-};
-
-export const logout = async (ainize: Ainize) => {
-  await ainize.logout();
-};
-
 export const request = async <T>(
   ainize: Ainize,
   { serverName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
@@ -48,33 +39,6 @@ export const request = async <T>(
     if (timer) {
       clearTimeout(timer);
     }
-  }
-};
-
-export const requestWithAuth = async <T>(
-  ainize: Ainize,
-  ain: Ain,
-  { serverName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
-): Promise<AinizeResponse<T>> => {
-  let timer;
-  const startTimer = new Promise(
-    (reject) => (timer = setTimeout(() => reject(`timeout of ${timeout}ms exceeded`), timeout))
-  );
-  try {
-    const server = await getServer(ainize, serverName);
-    await login(ainize, ain);
-    const response = await Promise.race([server.request({ ...data, jobType: opType }), startTimer]);
-    if (response.status === AinizeStatus.FAIL) {
-      throw new Error(JSON.stringify(response.data));
-    }
-    return response as AinizeResponse<T>;
-  } catch (error: any) {
-    throw new Error(`Failed to request ${opType}: ${error}`);
-  } finally {
-    if (timer) {
-      clearTimeout(timer);
-    }
-    await logout(ainize);
   }
 };
 
