@@ -153,7 +153,7 @@ export default class AinftJs {
     if (privateKey) {
       await this.ainize.login(privateKey);
     } else {
-      await this.ainize.loginWithSigner()
+      await this.ainize.loginWithSigner();
     }
   }
 
