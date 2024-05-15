@@ -22,6 +22,7 @@ import {
   AIN_BLOCKCHAIN_CHAIN_ID,
   AIN_BLOCKCHAIN_ENDPOINT,
 } from './constants';
+import { setEnv } from './utils/env';
 
 export interface ClientOptions {
   privateKey?: string;
@@ -70,6 +71,7 @@ export default class AinftJs {
     this.ainize = new Ainize(this._chainId);
 
     this.setCredentials(privateKey, signer);
+    setEnv(stage);
 
     this.nft = new Nft(this._baseUrl, '/nft', this.ain);
     this.eth = new Eth(this._baseUrl, '/nft', this.ain);
