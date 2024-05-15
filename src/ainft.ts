@@ -150,7 +150,11 @@ export default class AinftJs {
 
   async open() {
     const privateKey = this.ain.wallet.defaultAccount?.private_key;
-    await (privateKey ? this.ainize.login(privateKey) : this.ainize.loginWithSigner());
+    if (privateKey) {
+      await this.ainize.login(privateKey);
+    } else {
+      await this.ainize.loginWithSigner()
+    }
   }
 
   async close() {
