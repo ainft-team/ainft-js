@@ -26,8 +26,8 @@ import {
 export interface ClientOptions {
   privateKey?: string;
   signer?: Signer;
-  baseURL?: string | null;
-  blockchainURL?: string | null;
+  baseUrl?: string | null;
+  blockchainUrl?: string | null;
   chainId?: 0 | 1 | null;
 }
 
@@ -52,39 +52,39 @@ export default class AinftJs {
   public thread: Threads;
   public message: Messages;
 
-  private _baseURL: string;
-  private _blockchainURL: string;
+  private _baseUrl: string;
+  private _blockchainUrl: string;
   private _chainId: 0 | 1;
 
-  constructor({ privateKey, signer, baseURL, blockchainURL, chainId }: ClientOptions = {}) {
+  constructor({ privateKey, signer, baseUrl, blockchainUrl, chainId }: ClientOptions = {}) {
     if (privateKey === undefined && signer === undefined) {
       throw new Error('must provide either private key or signer');
     }
 
-    this._baseURL = baseURL || 'https://ainft-api.ainetwork.ai';
-    const stage = this.getStage(this._baseURL);
-    this._blockchainURL = blockchainURL || AIN_BLOCKCHAIN_ENDPOINT[stage];
+    this._baseUrl = baseUrl || 'https://ainft-api.ainetwork.ai';
+    const stage = this.getStage(this._baseUrl);
+    this._blockchainUrl = blockchainUrl || AIN_BLOCKCHAIN_ENDPOINT[stage];
     this._chainId = chainId || AIN_BLOCKCHAIN_CHAIN_ID[stage];
 
-    this.ain = new Ain(this._blockchainURL, undefined, this._chainId);
+    this.ain = new Ain(this._blockchainUrl, undefined, this._chainId);
     this.ainize = new Ainize(this._chainId);
 
     this.setCredentials(privateKey, signer);
 
-    this.nft = new Nft(this._baseURL, '/nft', this.ain);
-    this.eth = new Eth(this._baseURL, '/nft', this.ain);
-    this.credit = new Credit(this._baseURL, '/credit', this.ain);
-    this.auth = new Auth(this._baseURL, '/auth', this.ain, this.ainize);
-    this.discord = new Discord(this._baseURL, '/discord', this.ain);
-    this.event = new Event(this._baseURL, '/event', this.ain);
-    this.store = new Store(this._baseURL, '/store', this.ain);
-    this.personaModels = new PersonaModels(this._baseURL, '/persona-models', this.ain);
-    this.textToArt = new TextToArt(this._baseURL, '/text-to-art', this.ain);
-    this.activity = new Activity(this._baseURL, '/activity', this.ain);
-    this.chat = new Chat(this._baseURL, null, this.ain, this.ainize);
-    this.assistant = new Assistants(this._baseURL, null, this.ain, this.ainize);
-    this.thread = new Threads(this._baseURL, null, this.ain, this.ainize);
-    this.message = new Messages(this._baseURL, null, this.ain, this.ainize);
+    this.nft = new Nft(this._baseUrl, '/nft', this.ain);
+    this.eth = new Eth(this._baseUrl, '/nft', this.ain);
+    this.credit = new Credit(this._baseUrl, '/credit', this.ain);
+    this.auth = new Auth(this._baseUrl, '/auth', this.ain, this.ainize);
+    this.discord = new Discord(this._baseUrl, '/discord', this.ain);
+    this.event = new Event(this._baseUrl, '/event', this.ain);
+    this.store = new Store(this._baseUrl, '/store', this.ain);
+    this.personaModels = new PersonaModels(this._baseUrl, '/persona-models', this.ain);
+    this.textToArt = new TextToArt(this._baseUrl, '/text-to-art', this.ain);
+    this.activity = new Activity(this._baseUrl, '/activity', this.ain);
+    this.chat = new Chat(this._baseUrl, null, this.ain, this.ainize);
+    this.assistant = new Assistants(this._baseUrl, null, this.ain, this.ainize);
+    this.thread = new Threads(this._baseUrl, null, this.ain, this.ainize);
+    this.message = new Messages(this._baseUrl, null, this.ain, this.ainize);
   }
 
   /**
@@ -92,7 +92,7 @@ export default class AinftJs {
    * @param baseUrl
    */
   setBaseUrl(baseUrl: string) {
-    this._baseURL = baseUrl;
+    this._baseUrl = baseUrl;
     this.nft.setBaseUrl(baseUrl);
     this.credit.setBaseUrl(baseUrl);
     this.auth.setBaseUrl(baseUrl);
@@ -166,7 +166,7 @@ export default class AinftJs {
    * @returns
    */
   async getStatus(): Promise<{ health: boolean }> {
-    return (await axios.get(`${this._baseURL}/status`)).data;
+    return (await axios.get(`${this._baseUrl}/status`)).data;
   }
 
   static createAccount() {
