@@ -213,8 +213,9 @@ export class Messages extends FactoryBase {
   }
 
   private async createRun(serverName: string, threadId: string, assistantId: string) {
+    const address = await this.ain.signer.getAddress();
     const opType = OperationType.CREATE_RUN;
-    const body = { threadId, assistantId };
+    const body = { threadId, assistantId, address };
     const { data } = await request<any>(this.ainize!, { serverName, opType, data: body });
     return data;
   }
