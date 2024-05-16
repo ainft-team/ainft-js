@@ -85,6 +85,8 @@ export class Assistants extends FactoryBase {
     const opType = OperationType.CREATE_ASSISTANT;
     const body = {
       role,
+      objectId,
+      tokenId,
       model,
       name,
       instructions,
@@ -141,6 +143,8 @@ export class Assistants extends FactoryBase {
     const opType = OperationType.MODIFY_ASSISTANT;
     const body = {
       role,
+      objectId,
+      tokenId,
       assistantId,
       ...(model && { model }),
       ...(name && { name }),
@@ -193,7 +197,7 @@ export class Assistants extends FactoryBase {
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.DELETE_ASSISTANT;
-    const body = { role, assistantId };
+    const body = { role, objectId, tokenId, assistantId };
     const { data } = await request<AssistantDeleted>(this.ainize!, {
       serverName,
       opType,
