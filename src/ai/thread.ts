@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getServerName, requestWithAuth } from '../ainize';
+import { OperationType, getServerName, request } from '../ainize';
 import {
   QueryParams,
   Thread,
@@ -77,7 +77,7 @@ export class Threads extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await requestWithAuth<Thread>(this.ainize!, this.ain, {
+    const { data } = await request<Thread>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -119,7 +119,7 @@ export class Threads extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await requestWithAuth<Thread>(this.ainize!, this.ain, {
+    const { data } = await request<Thread>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -156,7 +156,7 @@ export class Threads extends FactoryBase {
     const opType = OperationType.DELETE_THREAD;
     const body = { threadId };
 
-    const { data } = await requestWithAuth<ThreadDeleted>(this.ainize!, this.ain, {
+    const { data } = await request<ThreadDeleted>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -189,7 +189,7 @@ export class Threads extends FactoryBase {
     const opType = OperationType.RETRIEVE_THREAD;
     const body = { threadId };
 
-    const { data } = await requestWithAuth<Thread>(this.ainize!, this.ain, {
+    const { data } = await request<Thread>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -222,7 +222,7 @@ export class Threads extends FactoryBase {
       ...(next && { next }),
     };
 
-    const { data } = await requestWithAuth<any>(this.ainize!, this.ain, {
+    const { data } = await request<any>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -296,7 +296,7 @@ export class Threads extends FactoryBase {
       ...(messages && messages.length > 0 && { messages }),
     };
 
-    const { data } = await requestWithAuth<ThreadWithMessages>(this.ainize!, this.ain, {
+    const { data } = await request<ThreadWithMessages>(this.ainize!, {
       serverName,
       opType,
       data: body,

@@ -30,7 +30,7 @@ export default class Ainft721Object extends FactoryBase {
    * @param baseUrl The base url to request api to AINFT factory server.
    */
   constructor(objectInfo: { id: string, name: string, symbol: string, owner: string}, ain: Ain, baseUrl: string) {
-    super(ain, baseUrl);
+    super(baseUrl, null, ain);
     this.id = objectInfo.id;
     this.name = objectInfo.name;
     this.symbol = objectInfo.symbol;

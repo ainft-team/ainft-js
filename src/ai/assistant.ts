@@ -2,14 +2,13 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getServerName, requestWithAuth } from '../ainize';
+import { OperationType, getServerName, request } from '../ainize';
 import {
   Assistant,
   AssistantCreateOptions,
   AssistantCreateParams,
   AssistantDeleteTransactionResult,
   AssistantDeleted,
-  AssistantMinted,
   AssistantTransactionResult,
   AssistantUpdateParams,
   NftToken,
@@ -86,6 +85,8 @@ export class Assistants extends FactoryBase {
     const opType = OperationType.CREATE_ASSISTANT;
     const body = {
       role,
+      objectId,
+      tokenId,
       model,
       name,
       instructions,
@@ -94,7 +95,7 @@ export class Assistants extends FactoryBase {
       ...(options && !_.isEmpty(options) && { options }),
     };
 
-    const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
+    const { data } = await request<Assistant>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -142,6 +143,8 @@ export class Assistants extends FactoryBase {
     const opType = OperationType.MODIFY_ASSISTANT;
     const body = {
       role,
+      objectId,
+      tokenId,
       assistantId,
       ...(model && { model }),
       ...(name && { name }),
@@ -150,7 +153,7 @@ export class Assistants extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
+    const { data } = await request<Assistant>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -194,8 +197,8 @@ export class Assistants extends FactoryBase {
     await validateServerConfigurationForObject(this.ain, objectId, serverName);
 
     const opType = OperationType.DELETE_ASSISTANT;
-    const body = { role, assistantId };
-    const { data } = await requestWithAuth<AssistantDeleted>(this.ainize!, this.ain, {
+    const body = { role, objectId, tokenId, assistantId };
+    const { data } = await request<AssistantDeleted>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -227,7 +230,7 @@ export class Assistants extends FactoryBase {
 
     const opType = OperationType.RETRIEVE_ASSISTANT;
     const body = { assistantId };
-    const { data } = await requestWithAuth<Assistant>(this.ainize!, this.ain, {
+    const { data } = await request<Assistant>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -296,7 +299,7 @@ export class Assistants extends FactoryBase {
     const serverName = getServerName();
     const opType = OperationType.MINT_TOKEN;
     const body = { objectId, to: checksum };
-    const { data } = await requestWithAuth<any>(this.ainize!, this.ain, {
+    const { data } = await request<any>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -341,7 +344,7 @@ export class Assistants extends FactoryBase {
   //     ...(metadata && !_.isEmpty(metadata) && { metadata }),
   //   };
 
-  //   const { data } = await requestWithAuth<AssistantMinted>(this.ainize!, this.ain, {
+  //   const { data } = await request<AssistantMinted>(this.ainize!, {
   //     serverName,
   //     opType,
   //     data: body,

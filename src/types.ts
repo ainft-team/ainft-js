@@ -1263,10 +1263,8 @@ export interface AssistantCreateParams {
 }
 
 export interface AssistantCreateOptions {
-  /** If true, automatically set the name for the assistant. */
-  autoName?: boolean;
   /** If true, automatically set the profile image for the assistant. */
-  autoProfileImage?: boolean;
+  image?: boolean;
 }
 
 export interface AssistantUpdateParams {

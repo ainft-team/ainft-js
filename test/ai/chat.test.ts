@@ -5,16 +5,18 @@ import { TX_HASH_REGEX } from '../constants';
 describe.skip('chat', () => {
   let ainft: AinftJs;
 
-  beforeEach(() => {
-    ainft = new AinftJs(privateKey, null, {
-      ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
-      ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
+  beforeAll(async () => {
+    ainft = new AinftJs({
+      privateKey,
+      baseUrl: 'https://ainft-api-dev.ainetwork.ai',
+      blockchainUrl: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
     });
+    await ainft.open();
   });
 
-  afterAll(() => {
-    jest.restoreAllMocks();
+  afterAll(async () => {
+    await ainft.close();
   });
 
   it('should configure chat', async () => {

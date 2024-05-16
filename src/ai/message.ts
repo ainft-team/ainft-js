@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getServerName, login, logout, request, requestWithAuth } from '../ainize';
+import { OperationType, getServerName, request } from '../ainize';
 import {
   Message,
   MessageCreateParams,
@@ -96,7 +96,7 @@ export class Messages extends FactoryBase {
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
 
-    const { data } = await requestWithAuth<Message>(this.ainize!, this.ain, {
+    const { data } = await request<Message>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -136,7 +136,7 @@ export class Messages extends FactoryBase {
     const opType = OperationType.RETRIEVE_MESSAGE;
     const body = { threadId, messageId };
 
-    const { data } = await requestWithAuth<Message>(this.ainize!, this.ain, {
+    const { data } = await request<Message>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -168,7 +168,7 @@ export class Messages extends FactoryBase {
     const opType = OperationType.LIST_MESSAGES;
     const body = { threadId };
 
-    const { data } = await requestWithAuth<Page<MessageMap>>(this.ainize!, this.ain, {
+    const { data } = await request<Page<MessageMap>>(this.ainize!, {
       serverName,
       opType,
       data: body,
@@ -184,7 +184,6 @@ export class Messages extends FactoryBase {
     body: MessageCreateParams
   ) {
     try {
-      await login(this.ainize!, this.ain);
       // TODO(jiyoung): handle these actions from one endpoint.
       await this.createMessage(serverName, threadId, body);
       const run = await this.createRun(serverName, threadId, assistantId);
@@ -194,8 +193,6 @@ export class Messages extends FactoryBase {
       return list.data;
     } catch (error: any) {
       throw new Error(error);
-    } finally {
-      await logout(this.ainize!);
     }
   }
 
