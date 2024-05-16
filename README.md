@@ -18,8 +18,8 @@ You can see reference about AINFT Factory: https://docs.ainetwork.ai/ainfts/ainf
 
 ## Installation
 
-```sh
-npm install @ainft-team/ainft-js
+```bash
+yarn add @ainft-team/ainft-js
 ```
 
 ## Usage

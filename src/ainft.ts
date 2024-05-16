@@ -150,6 +150,9 @@ export default class AinftJs {
     this.setSigner(signer);
   }
 
+  /**
+   * Opens a session with the blockchain endpoint.
+   */
   async open() {
     const privateKey = this.ain.wallet.defaultAccount?.private_key;
     if (privateKey) {
@@ -159,6 +162,9 @@ export default class AinftJs {
     }
   }
 
+  /**
+   * Closes a session with the blockchain endpoint.
+   */
   async close() {
     await this.ainize.logout();
   }
