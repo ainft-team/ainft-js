@@ -67,7 +67,7 @@ export default class AinftJs {
     this._blockchainUrl = blockchainUrl || AIN_BLOCKCHAIN_ENDPOINT[stage];
     this._chainId = chainId || AIN_BLOCKCHAIN_CHAIN_ID[stage];
 
-    this.ain = new Ain(this._blockchainUrl, undefined, this._chainId);
+    this.ain = new Ain(this._blockchainUrl, null, this._chainId);
     this.ainize = new Ainize(this._chainId);
 
     this.setCredentials(privateKey, signer);
