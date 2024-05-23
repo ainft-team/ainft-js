@@ -6,15 +6,16 @@ import { valueExists, getValue } from './util';
 
 export const isObjectOwner = async (ain: Ain, objectId: string, address: string) => {
   const appId = AinftObject.getAppId(objectId);
-  const objectPath = Path.app(appId).value();
-  const object = await getValue(ain, objectPath);
-  return address === object?.owner;
+  const objectOwnerPath = `apps/${appId}/owner`;
+  const objectOwner = await getValue(ain, objectOwnerPath);
+  return address === objectOwner;
 };
 
 export const validateObject = async (ain: Ain, objectId: string) => {
   const appId = AinftObject.getAppId(objectId);
   const objectPath = Path.app(appId).value();
-  if (!(await valueExists(ain, objectPath))) {
+  const object = await getValue(ain, objectPath, { is_shallow: true });
+  if (!object) {
     throw new Error('Object not found');
   }
 };
@@ -93,7 +94,13 @@ export const validateMessage = async (
   messageId: string
 ) => {
   const appId = AinftObject.getAppId(objectId);
-  const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
+  const messagesPath = Path.app(appId)
+    .token(tokenId)
+    .ai()
+    .history(address)
+    .thread(threadId)
+    .messages()
+    .value();
   const messages: MessageMap = await getValue(ain, messagesPath);
   // TODO(jiyoung): optimize inefficient loop.
   for (const key in messages) {
