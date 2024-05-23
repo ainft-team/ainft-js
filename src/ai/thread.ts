@@ -173,104 +173,55 @@ export class Threads extends FactoryBase {
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} threadId - The ID of thread.
+   * @param {string} address - The checksum address of account.
    * @returns Returns a promise that resolves with the thread.
    */
-  async get(objectId: string, tokenId: string, threadId: string): Promise<Thread> {
-    const address = await this.ain.signer.getAddress();
-
+  async get(objectId: string, tokenId: string, threadId: string, address: string): Promise<Thread> {
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const appId = AinftObject.getAppId(objectId);
+    const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).value();
+    const data = await this.ain.db.ref(threadPath).getValue();
+    const thread = {
+      id: data.id,
+      metadata: data.metadata || {},
+      created_at: data.createdAt,
+    };
 
-    const opType = OperationType.RETRIEVE_THREAD;
-    const body = { threadId };
-
-    const { data } = await request<Thread>(this.ainize!, {
-      serverName,
-      opType,
-      data: body,
-    });
-
-    return data;
+    return thread;
   }
 
+  /**
+   * Retrieves a list of threads.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string | null} [tokenId] - The ID of AINFT token.
+   * @param {string | null} [address] - The checksum address of account.
+   * @param {QueryParams} QueryParams - The parameters for querying items.
+   * @returns Returns a promise that resolves with the list of threads.
+   */
   async list(
     objectId: string,
     tokenId?: string | null,
     address?: string | null,
-    { limit = 20, order = 'desc', next }: QueryParams = {}
+    { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
   ) {
-    let checksum = null;
-    if (address) {
-      checksum = getChecksumAddress(address);
+    await validateObject(this.ain, objectId);
+    if (tokenId) {
+      await validateToken(this.ain, objectId, tokenId);
     }
 
-    await validateObject(this.ain, objectId);
+    const tokens = await this.fetchTokens(objectId);
+    const threads = this.flattenThreads(tokens);
+    const filtered = this.filterThreads(threads, tokenId, address);
+    const sorted = _.orderBy(filtered, ['created_at'], [order]);
 
-    const serverName = getServerName();
-    const opType = OperationType.LIST_THREADS;
-    const body = {
-      objectId,
-      ...(tokenId && { tokenId }),
-      ...(checksum && { address: checksum }),
-      limit,
-      order,
-      ...(next && { next }),
-    };
+    const total = sorted.length;
+    const items = sorted.slice(offset, offset + limit);
 
-    const { data } = await request<any>(this.ainize!, {
-      serverName,
-      opType,
-      data: body,
-    });
-
-    return data;
-    // NOTE(jiyoung): example data
-    /*
-    return {
-      items: {
-        '0': {
-          id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
-          assistant: {
-              id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
-              model: 'gpt-3.5-turbo',
-              name: 'AINA-TKAJYJF1C5',
-              instructions: '',
-              description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
-              metadata: {
-                image: 'https://picsum.photos/id/1/200/200',
-              },
-            }, 
-          created_at: 1711962854,
-          metadata: {
-            title: '도와드릴까요?',
-          },
-        },
-        '1': {
-          id: 'thread_mmzBrZeM5vllqEceRttvu1xk',
-          assistant: {
-              id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
-              model: 'gpt-3.5-turbo',
-              name: 'AINA-TKAJYJF1C5',
-              instructions: '',
-              description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
-              metadata: {
-                image: 'https://picsum.photos/id/1/200/200',
-              },
-            }, 
-          created_at: 1711961028,
-          metadata: {
-            title: '영문번역',
-          },
-        },
-      },
-      next: 'e49274a2-a255-4f95-b57a-68beebc6bdf7',
-    };
-    */
+    return { total, items };
   }
 
   async createAndRun(
@@ -440,5 +391,57 @@ export class Threads extends FactoryBase {
     };
 
     return buildSetTxBody(buildSetValueOp(threadPath, value), address);
+  }
+
+  private async fetchTokens(objectId: string) {
+    const appId = AinftObject.getAppId(objectId);
+    const tokensPath = Path.app(appId).tokens().value();
+    return this.ain.db.ref(tokensPath).getValue();
+  }
+
+  private flattenThreads(tokens: any) {
+    const flatten: any = [];
+    _.forEach(tokens, (token, tokenId) => {
+      const assistant = token.ai;
+      if (!assistant) {
+        return;
+      }
+      const histories = assistant.history;
+      if (typeof histories !== 'object' || histories === true) {
+        return;
+      }
+      _.forEach(histories, (history, address) => {
+        const threads = _.get(history, 'threads');
+        _.forEach(threads, (thread) => {
+          flatten.push({
+            id: thread.id,
+            metadata: thread.metadata || {},
+            created_at: thread.createdAt,
+            assistant: {
+              id: assistant.id,
+              tokenId,
+              model: assistant.config.model,
+              name: assistant.config.name,
+              instructions: assistant.config.instructions,
+              description: assistant.config.description || null,
+              metadata: assistant.config.metadata || {},
+              created_at: assistant.createdAt,
+            },
+            author: { address },
+          });
+        });
+      });
+    });
+    return flatten;
+  }
+
+  private filterThreads(threads: any, tokenId?: string | null, address?: string | null) {
+    return _.filter(threads, (thread) => {
+      const threadTokenId = _.get(thread, 'assistant.tokenId');
+      const threadAddress = _.get(thread, 'author.address');
+      const tokenIdMatch = tokenId ? threadTokenId === tokenId : true;
+      const addressMatch = address ? threadAddress === address : true;
+      return tokenIdMatch && addressMatch;
+    });
   }
 }

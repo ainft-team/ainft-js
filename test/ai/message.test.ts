@@ -1,5 +1,5 @@
 import AinftJs from '../../src/ainft';
-import { messageId, objectId, privateKey, threadId, tokenId } from '../test_data';
+import { messageId, objectId, privateKey, threadId, tokenId, address } from '../test_data';
 import { MESSAGE_REGEX, TX_HASH_REGEX } from '../constants';
 
 jest.setTimeout(60 * 1000); // 1min
@@ -39,7 +39,7 @@ describe.skip('message', () => {
   });
 
   it('should get message', async () => {
-    const message = await ainft.message.get(objectId, tokenId, threadId, messageId);
+    const message = await ainft.message.get(objectId, tokenId, threadId, messageId, address);
 
     expect(message.id).toBe(messageId);
     expect(message.thread_id).toBe(threadId);
@@ -49,7 +49,7 @@ describe.skip('message', () => {
   });
 
   it('should list messages', async () => {
-    const messages = await ainft.message.list(objectId, tokenId, threadId);
+    const messages = await ainft.message.list(objectId, tokenId, threadId, address);
 
     expect(Object.keys(messages).length).toBe(2);
   });

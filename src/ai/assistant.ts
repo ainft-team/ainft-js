@@ -30,6 +30,7 @@ import {
   buildSetOp,
   buildSetStateRuleOp,
   getChecksumAddress,
+  getAssistant,
 } from '../utils/util';
 import {
   isObjectOwner,
@@ -221,27 +222,38 @@ export class Assistants extends FactoryBase {
    * @returns Returns a promise that resolves with the assistant.
    */
   async get(objectId: string, tokenId: string, assistantId: string): Promise<Assistant> {
+    const appId = AinftObject.getAppId(objectId);
+
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
-    await validateAssistant(this.ain, objectId, tokenId, assistantId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const data = await getAssistant(this.ain, appId, tokenId);
+    const assistant = {
+      id: data.id,
+      tokenId,
+      model: data.config.model,
+      name: data.config.name,
+      instructions: data.config.instructions,
+      description: data.config.description || null,
+      metadata: data.config.metadata || {},
+      created_at: data.createdAt,
+    };
 
-    const opType = OperationType.RETRIEVE_ASSISTANT;
-    const body = { assistantId };
-    const { data } = await request<Assistant>(this.ainize!, {
-      serverName,
-      opType,
-      data: body,
-    });
-
-    return data;
+    return assistant;
   }
 
-  async list(objectId: string, { limit = 20, offset = 0, order = 'desc' }: QueryParams) {
-    const address = await this.ain.signer.getAddress();
-
+  /**
+   * Retrieves a list of assistants.
+   * @param {string} objectId - The ID of AINFT object.
+   * @param {string} address - The checksum address of account.
+   * @param {QueryParams} QueryParams - The parameters for querying items.
+   * @returns Returns a promise that resolves with the list of assistants.
+   */
+  async list(
+    objectId: string,
+    address: string,
+    { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
+  ) {
     await validateObject(this.ain, objectId);
 
     const tokens = await this.getTokensByAddress(objectId, address);
