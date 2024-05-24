@@ -1290,7 +1290,7 @@ export interface Thread {
    * The metadata can contain up to 16 pairs,
    * with keys limited to 64 characters and values to 512 characters.
    */
-  metadata: object | null;
+  metadata: object | {};
   /** The UNIX timestamp in seconds. */
   created_at: number;
 }
@@ -1377,10 +1377,12 @@ export interface MessageMap {
 }
 
 export interface QueryParams {
+  /** The maximum number of items to return */
   limit?: number;
+  /** The number of items to skip */
   offset?: number;
+  /** The order of the result set */
   order?: 'asc' | 'desc';
-  next?: string | null;
 }
 
 export interface Page<T> {

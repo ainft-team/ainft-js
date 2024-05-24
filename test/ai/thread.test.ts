@@ -1,5 +1,5 @@
 import AinftJs from '../../src/ainft';
-import { privateKey, objectId, tokenId, threadId } from '../test_data';
+import { privateKey, address, objectId, tokenId, threadId } from '../test_data';
 import { TX_HASH_REGEX, THREAD_REGEX } from '../constants';
 
 describe.skip('thread', () => {
@@ -31,14 +31,14 @@ describe.skip('thread', () => {
   });
 
   it('should get thread', async () => {
-    const thread = await ainft.thread.get(objectId, tokenId, threadId);
+    const thread = await ainft.thread.get(objectId, tokenId, threadId, address);
 
     expect(thread.id).toBe(threadId);
     expect(thread.metadata).toEqual({ key1: 'value1' });
   });
 
   it('should list threads', async () => {
-    const result = await ainft.thread.list(objectId, null, null, { limit: 20, order: 'desc' });
+    const result = await ainft.thread.list(objectId, null, null, { limit: 20, offset: 0, order: 'desc' });
 
     expect(result.items).toBeDefined();
   });

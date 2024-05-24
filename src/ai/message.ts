@@ -10,7 +10,6 @@ import {
   MessageMap,
   MessageTransactionResult,
   MessageUpdateParams,
-  Page,
 } from '../types';
 import { buildSetTxBody, buildSetValueOp, getAssistant, getValue, sendTx } from '../utils/util';
 import {
@@ -114,67 +113,48 @@ export class Messages extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} threadId - The ID of thread.
    * @param {string} messageId - The ID of message.
+   * @param {string} address - The checksum address of account.
    * @returns Returns a promise that resolves with the message.
    */
   async get(
     objectId: string,
     tokenId: string,
     threadId: string,
-    messageId: string
+    messageId: string,
+    address: string
   ): Promise<Message> {
-    const address = await this.ain.signer.getAddress();
-
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
-    await validateMessage(this.ain, objectId, tokenId, address, threadId, messageId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const appId = AinftObject.getAppId(objectId);
+    const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
+    const messages: MessageMap = await getValue(this.ain, messagesPath);
+    const key = this.findMessageKey(messages, messageId);
 
-    const opType = OperationType.RETRIEVE_MESSAGE;
-    const body = { threadId, messageId };
-
-    const { data } = await request<Message>(this.ainize!, {
-      serverName,
-      opType,
-      data: body,
-    });
-
-    return data;
+    return messages[key];
   }
 
-  // TODO(jiyoung): fetch from blockchain db.
   /**
    * Retrieves a list of messages.
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} threadId - The ID of thread.
+   * @param {string} address - The checksum address of account.
    * @returns Returns a promise that resolves with the list of messages.
    */
-  async list(objectId: string, tokenId: string, threadId: string): Promise<MessageMap> {
-    const appId = AinftObject.getAppId(objectId);
-    const address = await this.ain.signer.getAddress();
-
+  async list(objectId: string, tokenId: string, threadId: string, address: string): Promise<MessageMap> {
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const appId = AinftObject.getAppId(objectId);
+    const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
+    const messages = await this.ain.db.ref(messagesPath).getValue();
 
-    const opType = OperationType.LIST_MESSAGES;
-    const body = { threadId };
-
-    const { data } = await request<Page<MessageMap>>(this.ainize!, {
-      serverName,
-      opType,
-      data: body,
-    });
-
-    return data?.data || {};
+    return messages;
   }
 
   private async createMessageAndRun(
@@ -330,4 +310,18 @@ export class Messages extends FactoryBase {
 
     return buildSetTxBody(buildSetValueOp(messagePath, value), address);
   }
+
+  private findMessageKey = (messages: MessageMap, messageId: string) => {
+    let messageKey = null;
+    for (const key in messages) {
+      if (messages[key].id === messageId) {
+        messageKey = key;
+        break;
+      }
+    }
+    if (!messageKey) {
+      throw new Error('Message not found');
+    }
+    return messageKey;
+  };
 }

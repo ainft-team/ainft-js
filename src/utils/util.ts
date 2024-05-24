@@ -1,6 +1,11 @@
 import stringify = require('fast-json-stable-stringify');
 import Ain from '@ainblockchain/ain-js';
-import { SetOperation, SetMultiOperation, TransactionInput } from '@ainblockchain/ain-js/lib/types';
+import {
+  SetOperation,
+  SetMultiOperation,
+  TransactionInput,
+  GetOptions,
+} from '@ainblockchain/ain-js/lib/types';
 import * as ainUtil from '@ainblockchain/ain-util';
 
 import { MIN_GAS_PRICE } from '../constants';
@@ -113,10 +118,10 @@ export const getAssistant = async (ain: Ain, appId: string, tokenId: string) => 
     throw new Error('Assistant not found');
   }
   return assistant;
-}
+};
 
-export const getValue = async (ain: Ain, path: string): Promise<any> => {
-  return ain.db.ref(path).getValue();
+export const getValue = async (ain: Ain, path: string, options?: GetOptions): Promise<any> => {
+  return ain.db.ref().getValue(path, options);
 };
 
 export const getChecksumAddress = (address: string): string => {
