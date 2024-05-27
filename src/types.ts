@@ -1412,4 +1412,9 @@ export interface MessageUpdateParams {
 
 export type EnvType = 'dev' | 'prod';
 
-export type TokenStatus = 'minted' | 'assistant_created' | 'thread_created' | 'message_created';
+export enum TokenStatus {
+  MINTED = 'minted',
+  ASSISTANT_CREATED = 'assistant_created',
+  THREAD_CREATED = 'thread_created',
+  MESSAGE_CREATED = 'message_created',
+}

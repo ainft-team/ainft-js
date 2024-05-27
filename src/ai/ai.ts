@@ -104,7 +104,7 @@ export class Ai extends FactoryBase {
   async getUserTokensByStatus(
     objectId: string,
     address: string,
-    status?: TokenStatus,
+    status?: string,
     { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
   ) {
     await validateObject(this.ain, objectId);
@@ -121,13 +121,13 @@ export class Ai extends FactoryBase {
     }, []);
 
     tokens.map((token) => {
-      let status = 'minted';
+      let status = TokenStatus.MINTED;
       const assistantCreated = token.ai;
       if (assistantCreated) {
-        status = 'assistant_created';
+        status = TokenStatus.ASSISTANT_CREATED;
         const threadCreated = _.some(token.ai.history, (address) => !_.isEmpty(address.threads));
         if (threadCreated) {
-          status = 'thread_created';
+          status = TokenStatus.THREAD_CREATED;
           const messageCreated = _.some(token.ai.history, (address) =>
             _.some(
               address.threads,
@@ -135,7 +135,7 @@ export class Ai extends FactoryBase {
             )
           );
           if (messageCreated) {
-            status = 'message_created';
+            status = TokenStatus.MESSAGE_CREATED;
           }
         }
       }
@@ -143,7 +143,7 @@ export class Ai extends FactoryBase {
       return token;
     });
 
-    const filtered = tokens.filter((token) => !status || token.status === status);
+    const filtered = tokens.filter((token) => !status || token.status == status);
     const sorted = _.orderBy(filtered, ['tokenId'], [order]);
 
     const total = sorted.length;
