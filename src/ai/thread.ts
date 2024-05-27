@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getServerName, request } from '../ainize';
+import { OperationType, getServiceName, request } from '../ainize';
 import {
   QueryParams,
   Thread,
@@ -57,8 +57,8 @@ export class Threads extends FactoryBase {
     await validateAssistant(this.ain, objectId, tokenId);
     const assistant = await getAssistant(this.ain, appId, tokenId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const serviceName = getServiceName();
+    await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const opType = OperationType.CREATE_THREAD;
     const body = {
@@ -78,7 +78,7 @@ export class Threads extends FactoryBase {
     };
 
     const { data } = await request<Thread>(this.ainize!, {
-      serverName,
+      serviceName,
       opType,
       data: body,
     });
@@ -110,8 +110,8 @@ export class Threads extends FactoryBase {
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const serviceName = getServiceName();
+    await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const opType = OperationType.MODIFY_THREAD;
     const body = {
@@ -120,7 +120,7 @@ export class Threads extends FactoryBase {
     };
 
     const { data } = await request<Thread>(this.ainize!, {
-      serverName,
+      serviceName,
       opType,
       data: body,
     });
@@ -150,14 +150,14 @@ export class Threads extends FactoryBase {
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const serviceName = getServiceName();
+    await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const opType = OperationType.DELETE_THREAD;
     const body = { threadId };
 
     const { data } = await request<ThreadDeleted>(this.ainize!, {
-      serverName,
+      serviceName,
       opType,
       data: body,
     });
@@ -236,8 +236,8 @@ export class Threads extends FactoryBase {
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const serviceName = getServiceName();
+    await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const assistant = await getAssistant(this.ain, appId, tokenId);
     const opType = OperationType.CREATE_RUN_THREAD;
@@ -248,7 +248,7 @@ export class Threads extends FactoryBase {
     };
 
     const { data } = await request<ThreadWithMessages>(this.ainize!, {
-      serverName,
+      serviceName,
       opType,
       data: body,
     });

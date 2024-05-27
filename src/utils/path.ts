@@ -7,9 +7,9 @@ export const Path = {
   app: (appId: string) => {
     return {
       value: () => `${Path.apps().value()}/${appId}`,
-      ai: (serverName: string) => {
+      ai: (serviceName: string) => {
         return {
-          value: () => `${Path.app(appId).value()}/ai/${serverName}`,
+          value: () => `${Path.app(appId).value()}/ai/${serviceName}`,
         };
       },
       tokens: () => {

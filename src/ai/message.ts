@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getServerName, request } from '../ainize';
+import { OperationType, getServiceName, request } from '../ainize';
 import {
   Message,
   MessageCreateParams,
@@ -49,11 +49,11 @@ export class Messages extends FactoryBase {
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const serviceName = getServiceName();
+    await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const assistant = await getAssistant(this.ain, appId, tokenId);
-    const messages = await this.createMessageAndRun(serverName, threadId, assistant.id, body);
+    const messages = await this.createMessageAndRun(serviceName, threadId, assistant.id, body);
 
     const txBody = this.buildTxBodyForCreateMessage(address, objectId, tokenId, threadId, messages);
     const result = await sendTx(this.ain, txBody);
@@ -85,8 +85,8 @@ export class Messages extends FactoryBase {
     await validateThread(this.ain, objectId, tokenId, address, threadId);
     await validateMessage(this.ain, objectId, tokenId, address, threadId, messageId);
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const serviceName = getServiceName();
+    await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const opType = OperationType.MODIFY_MESSAGE;
     const body = {
@@ -96,7 +96,7 @@ export class Messages extends FactoryBase {
     };
 
     const { data } = await request<Message>(this.ainize!, {
-      serverName,
+      serviceName,
       opType,
       data: body,
     });
@@ -158,18 +158,18 @@ export class Messages extends FactoryBase {
   }
 
   private async createMessageAndRun(
-    serverName: string,
+    serviceName: string,
     threadId: string,
     assistantId: string,
     body: MessageCreateParams
   ) {
     try {
       // TODO(jiyoung): handle these actions from one endpoint.
-      await this.createMessage(serverName, threadId, body);
-      const run = await this.createRun(serverName, threadId, assistantId);
-      await this.waitForRun(serverName, threadId, run.id);
+      await this.createMessage(serviceName, threadId, body);
+      const run = await this.createRun(serviceName, threadId, assistantId);
+      await this.waitForRun(serviceName, threadId, run.id);
       // TODO(jiyoung): if 'has_more=true', use cursor to fetch more data.
-      const list = await this.listMessages(serverName, threadId);
+      const list = await this.listMessages(serviceName, threadId);
       return list.data;
     } catch (error: any) {
       throw new Error(error);
@@ -177,7 +177,7 @@ export class Messages extends FactoryBase {
   }
 
   private async createMessage(
-    serverName: string,
+    serviceName: string,
     threadId: string,
     { role, content, metadata }: MessageCreateParams
   ) {
@@ -188,26 +188,26 @@ export class Messages extends FactoryBase {
       content,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
-    const { data } = await request<any>(this.ainize!, { serverName, opType, data: body });
+    const { data } = await request<any>(this.ainize!, { serviceName, opType, data: body });
     return data;
   }
 
-  private async createRun(serverName: string, threadId: string, assistantId: string) {
+  private async createRun(serviceName: string, threadId: string, assistantId: string) {
     const address = await this.ain.signer.getAddress();
     const opType = OperationType.CREATE_RUN;
     const body = { threadId, assistantId, address };
-    const { data } = await request<any>(this.ainize!, { serverName, opType, data: body });
+    const { data } = await request<any>(this.ainize!, { serviceName, opType, data: body });
     return data;
   }
 
-  private waitForRun(serverName: string, threadId: string, runId: string) {
+  private waitForRun(serviceName: string, threadId: string, runId: string) {
     return new Promise<void>((resolve, reject) => {
       const retrieveRun = async () => {
         try {
           const opType = OperationType.RETRIEVE_RUN;
           const body = { threadId, runId };
           const response = await request<any>(this.ainize!, {
-            serverName,
+            serviceName,
             opType,
             data: body,
           });
@@ -230,10 +230,10 @@ export class Messages extends FactoryBase {
     });
   }
 
-  private async listMessages(serverName: string, threadId: string) {
+  private async listMessages(serviceName: string, threadId: string) {
     const opType = OperationType.LIST_MESSAGES;
     const body = { threadId };
-    const { data } = await request<any>(this.ainize!, { serverName, opType, data: body });
+    const { data } = await request<any>(this.ainize!, { serviceName, opType, data: body });
     return data;
   }
 
