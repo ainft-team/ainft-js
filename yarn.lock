@@ -81,10 +81,10 @@
     uuid "^3.3.3"
     varuint-bitcoin "^1.1.0"
 
-"@ainize-team/ainize-js@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@ainize-team/ainize-js/-/ainize-js-1.2.0.tgz#dd7945f0ba2e20a68989306069d5c5212a927a97"
-  integrity sha512-mBhtSJ4SAXw0vT+OOOs3EcBT5V2VpFq4qGf/1jQnbcGqVWuKHIS27hb7oTwVeUiVXaum6jIf5gWrrUrYkQsNoQ==
+"@ainize-team/ainize-js@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@ainize-team/ainize-js/-/ainize-js-1.2.1.tgz#8e380cd77ef4a9a760109fa582fa1a3644980b6e"
+  integrity sha512-hZsVr4oUBV3cXRVZn9sZYjOqAmLu9F450xTQxOns1Rk7bgFI06ZPlrq7UGLtzuChxTFX3cUg9+t7kb4LyUpfZw==
   dependencies:
     "@ainblockchain/ain-js" "^1.10.0"
     axios "^0.26.1"
