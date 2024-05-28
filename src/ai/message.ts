@@ -60,18 +60,19 @@ export class Messages extends FactoryBase {
     await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const assistant = await getAssistant(this.ain, appId, tokenId);
-    const messages = await this.createMessageAndRun(serviceName, threadId, assistant.id, body);
+    const newMessages = await this.createMessageAndRun(serviceName, threadId, assistant.id, body);
+    const allMessages = await this.getAllMessages(appId, tokenId, address, threadId, newMessages);
 
     const txBody = await this.buildTxBodyForCreateMessage(
       address,
       objectId,
       tokenId,
       threadId,
-      messages
+      allMessages
     );
     const result = await sendTx(this.ain, txBody);
 
-    return { ...result, messages };
+    return { ...result, messages: allMessages };
   }
 
   /**
@@ -198,9 +199,8 @@ export class Messages extends FactoryBase {
       await this.createMessage(serviceName, threadId, body);
       const run = await this.createRun(serviceName, threadId, assistantId);
       await this.waitForRun(serviceName, threadId, run.id);
-      // TODO(jiyoung): if 'has_more=true', use cursor to fetch more data.
-      const list = await this.listMessages(serviceName, threadId);
-      return list.data;
+      const messages = await this.getNewMessages(serviceName, threadId);
+      return messages.data;
     } catch (error: any) {
       throw new Error(error);
     }
@@ -260,9 +260,10 @@ export class Messages extends FactoryBase {
     });
   }
 
-  private async listMessages(serviceName: string, threadId: string) {
+  private async getNewMessages(serviceName: string, threadId: string) {
     const opType = OperationType.LIST_MESSAGES;
-    const body = { threadId };
+    // NOTE(jiyoung): fetch new two messages due to transaction size limit.
+    const body = { threadId, limit: 2, order: 'desc' };
     const { data } = await request<any>(this.ainize!, { serviceName, opType, data: body });
     return data;
   }
@@ -272,36 +273,24 @@ export class Messages extends FactoryBase {
     objectId: string,
     tokenId: string,
     threadId: string,
-    messages: MessageMap
+    messages: any
   ) {
     const appId = AinftObject.getAppId(objectId);
     const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
     const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).value();
 
-    const newMessages: { [key: string]: any } = {};
-    Object.keys(messages).forEach((key) => {
-      const { id, created_at, role, content, metadata } = messages[key];
-      newMessages[`${created_at}`] = {
-        id,
-        role,
-        createdAt: created_at,
-        ...(content && !_.isEmpty(content) && { content }),
-        ...(metadata && !_.isEmpty(metadata) && { metadata }),
-      };
-    });
-
     const prev = (await this.ain.db.ref(`${threadPath}/metadata`).getValue()) || {};
 
-    const messageKeys = Object.keys(newMessages);
+    const messageKeys = Object.keys(messages);
     const lastMessageKey = messageKeys[messageKeys.length - 1];
 
     const defaultTitle = 'New chat';
-    const lastMessage = newMessages[lastMessageKey]?.content[0]?.text?.value || defaultTitle;
+    const lastMessage = messages[lastMessageKey]?.content[0]?.text?.value || defaultTitle;
 
     const maxLength = 10;
     const title = lastMessage.length > maxLength ? lastMessage.substring(0, maxLength) + '...' : lastMessage;
 
-    const setMessageInfoOp = buildSetValueOp(messagesPath, newMessages);
+    const setMessageInfoOp = buildSetValueOp(messagesPath, messages);
     const setThreadTitleOp = buildSetValueOp(`${threadPath}/metadata`, {
       ...prev,
       title,
@@ -351,6 +340,36 @@ export class Messages extends FactoryBase {
     };
 
     return buildSetTxBody(buildSetValueOp(messagePath, value), address);
+  }
+
+  private async getAllMessages(
+    appId: string,
+    tokenId: string,
+    address: string,
+    threadId: string,
+    newMessages: MessageMap
+  ) {
+    let messages: { [key: string]: any } = {};
+    const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
+
+    const prev = await this.ain.db.ref(messagesPath).getValue();
+    if (_.isObject(prev) && !_.isEmpty(prev)) {
+      messages = {
+        ...prev,
+      };
+    }
+    Object.keys(newMessages).forEach((key) => {
+      const { id, created_at, role, content, metadata } = newMessages[key];
+      messages[`${created_at}`] = {
+        id,
+        role,
+        createdAt: created_at,
+        ...(content && !_.isEmpty(content) && { content }),
+        ...(metadata && !_.isEmpty(metadata) && { metadata }),
+      };
+    });
+
+    return messages;
   }
 
   private findMessageKey = (messages: MessageMap, messageId: string) => {
