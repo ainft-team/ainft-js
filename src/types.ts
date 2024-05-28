@@ -1144,10 +1144,10 @@ export interface TransactionResult {
 }
 
 /**
- * Represents a chat configuration transaction result.
+ * Represents a ai configuration transaction result.
  */
-export interface ChatConfigurationTransactionResult extends TransactionResult {
-  config: ChatConfiguration;
+export interface AiConfigurationTransactionResult extends TransactionResult {
+  config: AiConfiguration;
 }
 
 /**
@@ -1200,9 +1200,7 @@ export interface MessagesTransactionResult extends TransactionResult {
   messages: MessageMap;
 }
 
-export interface ChatConfiguration {
-  /** The type of the service. */
-  type: ServiceType;
+export interface AiConfiguration {
   /** The name of the service. */
   name: string;
 }
@@ -1413,3 +1411,10 @@ export interface MessageUpdateParams {
 }
 
 export type EnvType = 'dev' | 'prod';
+
+export enum TokenStatus {
+  MINTED = 'minted',
+  ASSISTANT_CREATED = 'assistant_created',
+  THREAD_CREATED = 'thread_created',
+  MESSAGE_CREATED = 'message_created',
+}

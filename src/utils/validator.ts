@@ -23,10 +23,10 @@ export const validateObject = async (ain: Ain, objectId: string) => {
 export const validateServerConfigurationForObject = async (
   ain: Ain,
   objectId: string,
-  serverName: string
+  serviceName: string
 ) => {
   const appId = AinftObject.getAppId(objectId);
-  const configPath = Path.app(appId).ai(serverName).value();
+  const configPath = Path.app(appId).ai(serviceName).value();
   if (!(await valueExists(ain, configPath))) {
     throw new Error('Server configuration is missing for object');
   }

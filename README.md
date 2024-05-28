@@ -108,7 +108,7 @@ Introducing the main API functions that can be used in the `ainftToken` module.
 - `setMetadata(metadata)`: Sets metadata of AINFT.
 
 ## AI API
-We provide AI API functions, including chat, assistant, thread, and message.
+We provide AI API functions, including assistant, thread, and message.
 To use these functions follow streamlined steps:
 1. **Initialization**: Before using any AI functions, initialize the event channel with the `open()` method.
 2. **Using AI functions**: After opening the event channel, you can use AI function.

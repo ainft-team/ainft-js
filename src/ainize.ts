@@ -1,11 +1,11 @@
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
-import { DEFAULT_AINIZE_SERVER_NAME } from './constants';
+import { DEFAULT_AINIZE_SERVICE_NAME } from './constants';
 
 const DEFAULT_TIMEOUT_MS = 60 * 1000; // 1min
 
-export const getServer = async (ainize: Ainize, name: string): Promise<Service> => {
+export const getService = async (ainize: Ainize, name: string): Promise<Service> => {
   const server = await ainize.getService(name);
   const isRunning = await server.isRunning();
   if (!isRunning) {
@@ -14,19 +14,19 @@ export const getServer = async (ainize: Ainize, name: string): Promise<Service> 
   return server;
 };
 
-export const getServerName = () => {
-  return DEFAULT_AINIZE_SERVER_NAME;
+export const getServiceName = () => {
+  return DEFAULT_AINIZE_SERVICE_NAME;
 };
 
 export const request = async <T>(
   ainize: Ainize,
-  { serverName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
+  { serviceName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
 ): Promise<AinizeResponse<T>> => {
   let timer;
   const startTimer = new Promise(
     (reject) => (timer = setTimeout(() => reject(`timeout of ${timeout}ms exceeded`), timeout))
   );
-  const server = await getServer(ainize, serverName);
+  const server = await getService(ainize, serviceName);
   try {
     const response = await Promise.race([server.request({ ...data, jobType: opType }), startTimer]);
     if (response.status === AinizeStatus.FAIL) {
@@ -43,7 +43,7 @@ export const request = async <T>(
 };
 
 export interface AinizeRequest {
-  serverName: string;
+  serviceName: string;
   opType: OperationType;
   data?: any;
   timeout?: number;

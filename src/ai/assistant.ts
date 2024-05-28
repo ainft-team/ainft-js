@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getServerName, request } from '../ainize';
+import { OperationType, getServiceName, request } from '../ainize';
 import {
   Assistant,
   AssistantCreateOptions,
@@ -80,8 +80,8 @@ export class Assistants extends FactoryBase {
       throw new Error(`cannot create assistant for the object ${objectId}`);
     }
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const serviceName = getServiceName();
+    await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const opType = OperationType.CREATE_ASSISTANT;
     const body = {
@@ -97,7 +97,7 @@ export class Assistants extends FactoryBase {
     };
 
     const { data } = await request<Assistant>(this.ainize!, {
-      serverName,
+      serviceName,
       opType,
       data: body,
     });
@@ -138,8 +138,8 @@ export class Assistants extends FactoryBase {
       throw new Error(`cannot update assistant for the object ${objectId}`);
     }
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const serviceName = getServiceName();
+    await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const opType = OperationType.MODIFY_ASSISTANT;
     const body = {
@@ -155,7 +155,7 @@ export class Assistants extends FactoryBase {
     };
 
     const { data } = await request<Assistant>(this.ainize!, {
-      serverName,
+      serviceName,
       opType,
       data: body,
     });
@@ -194,13 +194,13 @@ export class Assistants extends FactoryBase {
       throw new Error(`cannot delete assistant for the object ${objectId}`);
     }
 
-    const serverName = getServerName();
-    await validateServerConfigurationForObject(this.ain, objectId, serverName);
+    const serviceName = getServiceName();
+    await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const opType = OperationType.DELETE_ASSISTANT;
     const body = { role, objectId, tokenId, assistantId };
     const { data } = await request<AssistantDeleted>(this.ainize!, {
-      serverName,
+      serviceName,
       opType,
       data: body,
     });
@@ -308,11 +308,11 @@ export class Assistants extends FactoryBase {
       );
     }
 
-    const serverName = getServerName();
+    const serviceName = getServiceName();
     const opType = OperationType.MINT_TOKEN;
     const body = { objectId, to: checksum };
     const { data } = await request<any>(this.ainize!, {
-      serverName,
+      serviceName,
       opType,
       data: body,
       timeout: 2 * 60 * 1000, // 2min
@@ -344,7 +344,7 @@ export class Assistants extends FactoryBase {
   //     );
   //   }
 
-  //   const serverName = getServerName();
+  //   const serviceName = getServiceName();
   //   const opType = OperationType.MINT_CREATE_ASSISTANT;
   //   const body = {
   //     objectId,
@@ -357,7 +357,7 @@ export class Assistants extends FactoryBase {
   //   };
 
   //   const { data } = await request<AssistantMinted>(this.ainize!, {
-  //     serverName,
+  //     serviceName,
   //     opType,
   //     data: body,
   //   });

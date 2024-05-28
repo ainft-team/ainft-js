@@ -28,7 +28,7 @@ export const THREAD_GC_NUM_SIBLINGS_DELETED = 10;
 export const MESSAGE_GC_MAX_SIBLINGS = 15;
 export const MESSAGE_GC_NUM_SIBLINGS_DELETED = 10;
 
-export const DEFAULT_AINIZE_SERVER_NAME = 'openai_backend';
+export const DEFAULT_AINIZE_SERVICE_NAME = 'openai_backend';
 
 export const WHITELISTED_OBJECT_IDS: Record<string, string[]> = {
   dev: [
