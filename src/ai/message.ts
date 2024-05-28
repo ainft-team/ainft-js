@@ -11,7 +11,14 @@ import {
   MessageTransactionResult,
   MessageUpdateParams,
 } from '../types';
-import { buildSetTxBody, buildSetValueOp, getAssistant, getValue, sendTx } from '../utils/util';
+import {
+  buildSetOp,
+  buildSetTxBody,
+  buildSetValueOp,
+  getAssistant,
+  getValue,
+  sendTx,
+} from '../utils/util';
 import {
   validateAssistant,
   validateMessage,
@@ -55,7 +62,13 @@ export class Messages extends FactoryBase {
     const assistant = await getAssistant(this.ain, appId, tokenId);
     const messages = await this.createMessageAndRun(serviceName, threadId, assistant.id, body);
 
-    const txBody = this.buildTxBodyForCreateMessage(address, objectId, tokenId, threadId, messages);
+    const txBody = await this.buildTxBodyForCreateMessage(
+      address,
+      objectId,
+      tokenId,
+      threadId,
+      messages
+    );
     const result = await sendTx(this.ain, txBody);
 
     return { ...result, messages };
@@ -129,7 +142,13 @@ export class Messages extends FactoryBase {
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
     const appId = AinftObject.getAppId(objectId);
-    const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
+    const messagesPath = Path.app(appId)
+      .token(tokenId)
+      .ai()
+      .history(address)
+      .thread(threadId)
+      .messages()
+      .value();
     const messages: MessageMap = await getValue(this.ain, messagesPath);
     const key = this.findMessageKey(messages, messageId);
 
@@ -144,14 +163,25 @@ export class Messages extends FactoryBase {
    * @param {string} address - The checksum address of account.
    * @returns Returns a promise that resolves with the list of messages.
    */
-  async list(objectId: string, tokenId: string, threadId: string, address: string): Promise<MessageMap> {
+  async list(
+    objectId: string,
+    tokenId: string,
+    threadId: string,
+    address: string
+  ): Promise<MessageMap> {
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
     const appId = AinftObject.getAppId(objectId);
-    const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
+    const messagesPath = Path.app(appId)
+      .token(tokenId)
+      .ai()
+      .history(address)
+      .thread(threadId)
+      .messages()
+      .value();
     const messages = await this.ain.db.ref(messagesPath).getValue();
 
     return messages;
@@ -237,7 +267,7 @@ export class Messages extends FactoryBase {
     return data;
   }
 
-  private buildTxBodyForCreateMessage(
+  private async buildTxBodyForCreateMessage(
     address: string,
     objectId: string,
     tokenId: string,
@@ -245,15 +275,10 @@ export class Messages extends FactoryBase {
     messages: MessageMap
   ) {
     const appId = AinftObject.getAppId(objectId);
-    const messagesPath = Path.app(appId)
-      .token(tokenId)
-      .ai()
-      .history(address)
-      .thread(threadId)
-      .messages()
-      .value();
+    const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
+    const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).value();
 
-    const newMessages: { [key: string]: object } = {};
+    const newMessages: { [key: string]: any } = {};
     Object.keys(messages).forEach((key) => {
       const { id, created_at, role, content, metadata } = messages[key];
       newMessages[`${created_at}`] = {
@@ -265,7 +290,24 @@ export class Messages extends FactoryBase {
       };
     });
 
-    return buildSetTxBody(buildSetValueOp(messagesPath, newMessages), address);
+    const prev = (await this.ain.db.ref(`${threadPath}/metadata`).getValue()) || {};
+
+    const messageKeys = Object.keys(newMessages);
+    const lastMessageKey = messageKeys[messageKeys.length - 1];
+
+    const defaultTitle = 'New chat';
+    const lastMessage = newMessages[lastMessageKey]?.content[0]?.text?.value || defaultTitle;
+
+    const maxLength = 10;
+    const title = lastMessage.length > maxLength ? lastMessage.substring(0, maxLength) + '...' : lastMessage;
+
+    const setMessageInfoOp = buildSetValueOp(messagesPath, newMessages);
+    const setThreadTitleOp = buildSetValueOp(`${threadPath}/metadata`, {
+      ...prev,
+      title,
+    });
+
+    return buildSetTxBody(buildSetOp([setThreadTitleOp, setMessageInfoOp]), address);
   }
 
   private async buildTxBodyForUpdateMessage(
