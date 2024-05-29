@@ -78,6 +78,7 @@ export enum OperationType {
   LIST_MESSAGES = 'list_messages',
   RETRIEVE_MESSAGE = 'retrieve_message',
   MODIFY_MESSAGE = 'modify_message',
+  SEND_MESSAGE = 'send_message',
 
   CREATE_RUN = 'create_run',
   LIST_RUNS = 'list_runs',

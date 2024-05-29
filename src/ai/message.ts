@@ -60,7 +60,7 @@ export class Messages extends FactoryBase {
     await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const assistant = await getAssistant(this.ain, appId, tokenId);
-    const newMessages = await this.createMessageAndRun(serviceName, threadId, assistant.id, body);
+    const newMessages = await this.sendMessage(serviceName, threadId, assistant.id, address, body);
     const allMessages = await this.getAllMessages(appId, tokenId, address, threadId, newMessages);
 
     const txBody = await this.buildTxBodyForCreateMessage(
@@ -188,6 +188,23 @@ export class Messages extends FactoryBase {
     return messages;
   }
 
+  private async sendMessage(
+    serviceName: string,
+    threadId: string,
+    assistantId: string,
+    address: string,
+    params: MessageCreateParams
+  ) {
+    try {
+      const opType = OperationType.SEND_MESSAGE;
+      const body = { ...params, threadId, assistantId, address };
+      const { data } = await request<any>(this.ainize!, { serviceName, opType, data: body });
+      return data.data;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
   private async createMessageAndRun(
     serviceName: string,
     threadId: string,
@@ -276,8 +293,19 @@ export class Messages extends FactoryBase {
     messages: any
   ) {
     const appId = AinftObject.getAppId(objectId);
-    const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
-    const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).value();
+    const messagesPath = Path.app(appId)
+      .token(tokenId)
+      .ai()
+      .history(address)
+      .thread(threadId)
+      .messages()
+      .value();
+    const threadPath = Path.app(appId)
+      .token(tokenId)
+      .ai()
+      .history(address)
+      .thread(threadId)
+      .value();
 
     const prev = (await this.ain.db.ref(`${threadPath}/metadata`).getValue()) || {};
 
@@ -288,7 +316,8 @@ export class Messages extends FactoryBase {
     const lastMessage = messages[lastMessageKey]?.content[0]?.text?.value || defaultTitle;
 
     const maxLength = 10;
-    const title = lastMessage.length > maxLength ? lastMessage.substring(0, maxLength) + '...' : lastMessage;
+    const title =
+      lastMessage.length > maxLength ? lastMessage.substring(0, maxLength) + '...' : lastMessage;
 
     const setMessageInfoOp = buildSetValueOp(messagesPath, messages);
     const setThreadTitleOp = buildSetValueOp(`${threadPath}/metadata`, {
@@ -350,7 +379,13 @@ export class Messages extends FactoryBase {
     newMessages: MessageMap
   ) {
     let messages: { [key: string]: any } = {};
-    const messagesPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).messages().value();
+    const messagesPath = Path.app(appId)
+      .token(tokenId)
+      .ai()
+      .history(address)
+      .thread(threadId)
+      .messages()
+      .value();
 
     const prev = await this.ain.db.ref(messagesPath).getValue();
     if (_.isObject(prev) && !_.isEmpty(prev)) {
