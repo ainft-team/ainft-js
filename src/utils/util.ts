@@ -37,64 +37,6 @@ export const buildData = (
   return _data;
 };
 
-export const buildSetTxBody = (
-  operation: SetOperation | SetMultiOperation,
-  address: string
-): TransactionInput => {
-  return {
-    operation: operation,
-    address,
-    gas_price: MIN_GAS_PRICE,
-    nonce: -1,
-  };
-};
-
-export const sendTx = async (ain: Ain, txBody: any) => {
-  const result = await ain.sendTransaction(txBody);
-  if (!isTransactionSuccess(result)) {
-    throw new Error(`Transaction failed: ${JSON.stringify(result)}`);
-  }
-  return result;
-};
-
-export function isTransactionSuccess(transactionResponse: any) {
-  const { result } = transactionResponse;
-  if (result.code && result.code !== 0) {
-    return false;
-  }
-  if (result.result_list) {
-    const results = Object.values(result.result_list);
-    return results.every((_result: any) => _result.code === 0);
-  }
-  return true;
-}
-
-export const buildSetValueOp = (ref: string, value: any): SetOperation => ({
-  type: 'SET_VALUE',
-  ref,
-  value,
-});
-
-export const buildSetWriteRuleOp = (ref: string, rule: any) => buildSetRuleOp(ref, { write: rule });
-
-export const buildSetStateRuleOp = (ref: string, rule: any) => buildSetRuleOp(ref, { state: rule });
-
-export const buildSetRuleOp = (ref: string, rule: { write?: any; state?: any }): SetOperation => ({
-  type: 'SET_RULE',
-  ref,
-  value: {
-    '.rule': {
-      write: rule.write,
-      state: rule.state,
-    },
-  },
-});
-
-export const buildSetOp = (opList: any[]): SetMultiOperation => ({
-  type: 'SET',
-  op_list: opList,
-});
-
 export function sleep(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);

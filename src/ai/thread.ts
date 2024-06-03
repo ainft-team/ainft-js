@@ -15,15 +15,9 @@ import {
   ThreadWithAssistant,
   ThreadWithMessages,
 } from '../types';
-import {
-  buildSetTxBody,
-  buildSetValueOp,
-  getAssistant,
-  getChecksumAddress,
-  getValue,
-  sendTx,
-} from '../utils/util';
 import { Path } from '../utils/path';
+import { buildSetValueOp, buildSetTxBody, sendTx } from '../utils/transaction';
+import { getAssistant, getValue } from '../utils/util';
 import {
   validateAssistant,
   validateObject,
@@ -84,7 +78,7 @@ export class Threads extends FactoryBase {
     });
 
     const txBody = this.buildTxBodyForCreateThread(address, objectId, tokenId, data);
-    const result = await sendTx(this.ain, txBody);
+    const result = await sendTx(txBody, this.ain);
 
     return { ...result, thread: data };
   }
@@ -126,7 +120,7 @@ export class Threads extends FactoryBase {
     });
 
     const txBody = await this.buildTxBodyForUpdateThread(address, objectId, tokenId, data);
-    const result = await sendTx(this.ain, txBody);
+    const result = await sendTx(txBody, this.ain);
 
     return { ...result, thread: data };
   }
@@ -163,7 +157,7 @@ export class Threads extends FactoryBase {
     });
 
     const txBody = this.buildTxBodyForDeleteThread(address, objectId, tokenId, threadId);
-    const result = await sendTx(this.ain, txBody);
+    const result = await sendTx(txBody, this.ain);
 
     return { ...result, delThread: data };
   }
@@ -183,7 +177,12 @@ export class Threads extends FactoryBase {
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
     const appId = AinftObject.getAppId(objectId);
-    const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).value();
+    const threadPath = Path.app(appId)
+      .token(tokenId)
+      .ai()
+      .history(address)
+      .thread(threadId)
+      .value();
     const data = await this.ain.db.ref(threadPath).getValue();
     const thread = {
       id: data.id,
@@ -254,7 +253,7 @@ export class Threads extends FactoryBase {
     });
 
     const txBody = this.buildTxBodyForCreateAndRunThread(address, objectId, tokenId, data);
-    const result = await sendTx(this.ain, txBody);
+    const result = await sendTx(txBody, this.ain);
 
     return { ...result, ...data };
     // NOTE(jiyoung): example data

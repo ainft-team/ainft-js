@@ -11,14 +11,9 @@ import {
   MessageTransactionResult,
   MessageUpdateParams,
 } from '../types';
-import {
-  buildSetOp,
-  buildSetTxBody,
-  buildSetValueOp,
-  getAssistant,
-  getValue,
-  sendTx,
-} from '../utils/util';
+import { Path } from '../utils/path';
+import { buildSetValueOp, buildSetOp, buildSetTxBody, sendTx } from '../utils/transaction';
+import { getAssistant, getValue } from '../utils/util';
 import {
   validateAssistant,
   validateMessage,
@@ -27,7 +22,6 @@ import {
   validateThread,
   validateToken,
 } from '../utils/validator';
-import { Path } from '../utils/path';
 
 /**
  * This class supports create messages within threads.\
@@ -70,7 +64,7 @@ export class Messages extends FactoryBase {
       threadId,
       allMessages
     );
-    const result = await sendTx(this.ain, txBody);
+    const result = await sendTx(txBody, this.ain);
 
     return { ...result, messages: allMessages };
   }
@@ -116,7 +110,7 @@ export class Messages extends FactoryBase {
     });
 
     const txBody = await this.buildTxBodyForUpdateMessage(data, objectId, tokenId, address);
-    const result = await sendTx(this.ain, txBody);
+    const result = await sendTx(txBody, this.ain);
 
     return { ...result, message: data };
   }

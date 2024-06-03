@@ -22,16 +22,17 @@ import {
   THREAD_GC_NUM_SIBLINGS_DELETED,
   WHITELISTED_OBJECT_IDS,
 } from '../constants';
+import { getEnv } from '../utils/env';
+import { Path } from '../utils/path';
 import {
-  buildSetTxBody,
   buildSetValueOp,
-  sendTx,
   buildSetWriteRuleOp,
-  buildSetOp,
   buildSetStateRuleOp,
-  getChecksumAddress,
-  getAssistant,
-} from '../utils/util';
+  buildSetOp,
+  buildSetTxBody,
+  sendTx,
+} from '../utils/transaction';
+import { getChecksumAddress, getAssistant } from '../utils/util';
 import {
   isObjectOwner,
   validateAssistant,
@@ -40,8 +41,6 @@ import {
   validateServerConfigurationForObject,
   validateToken,
 } from '../utils/validator';
-import { Path } from '../utils/path';
-import { getEnv } from '../utils/env';
 
 enum Role {
   OWNER = 'owner',
@@ -104,7 +103,7 @@ export class Assistants extends FactoryBase {
 
     if (role === Role.OWNER) {
       const txBody = this.buildTxBodyForCreateAssistant(address, objectId, tokenId, data);
-      const result = await sendTx(this.ain, txBody);
+      const result = await sendTx(txBody, this.ain);
       return { ...result, assistant: data };
     } else {
       return { assistant: data };
@@ -162,7 +161,7 @@ export class Assistants extends FactoryBase {
 
     if (role === Role.OWNER) {
       const txBody = this.buildTxBodyForUpdateAssistant(address, objectId, tokenId, data);
-      const result = await sendTx(this.ain, txBody);
+      const result = await sendTx(txBody, this.ain);
       return { ...result, assistant: data };
     } else {
       return { assistant: data };
@@ -207,7 +206,7 @@ export class Assistants extends FactoryBase {
 
     if (role === Role.OWNER) {
       const txBody = this.buildTxBodyForDeleteAssistant(address, objectId, tokenId);
-      const result = await sendTx(this.ain, txBody);
+      const result = await sendTx(txBody, this.ain);
       return { ...result, delAssistant: data };
     } else {
       return { delAssistant: data };
