@@ -3,7 +3,7 @@ import Ainize from '@ainize-team/ainize-js';
 import stringify = require("fast-json-stable-stringify");
 import axios, { AxiosRequestHeaders } from "axios";
 import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types";
-import { buildData, isJoiError, sleep } from './utils/util';
+import { buildData, isJoiError } from './utils/util';
 import FormData from "form-data";
 
 /** 

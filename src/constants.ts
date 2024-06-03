@@ -10,13 +10,11 @@ export const AIN_BLOCKCHAIN_ENDPOINT = {
   prod: 'https://mainnet-api.ainetwork.ai',
 };
 
-export const AIN_BLOCKCHAIN_CHAIN_ID = {
-  dev: 0,
-  prod: 1,
-} as const;
+export const AIN_BLOCKCHAIN_CHAIN_ID = { dev: 0, prod: 1 } as const;
 
 export const MIN_GAS_PRICE = 500;
-export const APP_STAKING_LOCKUP_DURATION_MS = 30 * 1000; // 30 seconds
+export const APP_STAKING_LOCKUP_DURATION_MS = 30 * 1000; // 30sec
+export const TX_BYTES_LIMIT = 10000; // 10kb
 
 export const SUPPORTED_AINFT_STANDARDS = {
   721: '721',
@@ -24,7 +22,6 @@ export const SUPPORTED_AINFT_STANDARDS = {
 
 export const THREAD_GC_MAX_SIBLINGS = 20;
 export const THREAD_GC_NUM_SIBLINGS_DELETED = 10;
-
 export const MESSAGE_GC_MAX_SIBLINGS = 15;
 export const MESSAGE_GC_NUM_SIBLINGS_DELETED = 10;
 

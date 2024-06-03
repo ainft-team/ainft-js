@@ -12,10 +12,11 @@ import {
   QueryParams,
   TokenStatus,
 } from '../types';
-import { buildSetTxBody, buildSetValueOp, sleep, sendTx } from '../utils/util';
-import { Path } from '../utils/path';
-import { validateObject, validateObjectOwner } from '../utils/validator';
 import { DEFAULT_AINIZE_SERVICE_NAME } from '../constants';
+import { Path } from '../utils/path';
+import { buildSetTxBody, buildSetValueOp, sendTx } from '../utils/transaction';
+import { sleep } from '../utils/util';
+import { validateObject, validateObjectOwner } from '../utils/validator';
 
 /**
  * This class manages ai configurations for AINFT object,\
@@ -40,7 +41,7 @@ export class Ai extends FactoryBase {
     await getService(this.ainize!, serviceName); // NOTE(jiyoung): check if the service is deployed on Ainize.
 
     const txBody = this.buildTxBodyForConfigureAi(objectId, serviceName, address);
-    const result = await sendTx(this.ain, txBody);
+    const result = await sendTx(txBody, this.ain);
 
     return { ...result, config: { name: serviceName } };
   }
