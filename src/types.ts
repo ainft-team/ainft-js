@@ -1131,6 +1131,7 @@ export type ServiceNickname = string | 'openai';
  * Please note that image-related models are currently not supported.
  */
 export type Model =
+  | 'gpt-4o'
   | 'gpt-4-turbo'
   | 'gpt-4'
   | 'gpt-3.5-turbo';
