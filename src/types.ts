@@ -1211,6 +1211,8 @@ export interface Assistant {
   id: string;
   /** The ID of AINFT token. */
   tokenId: string | null;
+  /** The owner address of AINFT token. */
+  owner: string | null;
   /** The name of the model to use. */
   model: string;
   /** The name of the assistant. */

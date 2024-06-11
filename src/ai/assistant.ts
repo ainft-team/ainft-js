@@ -32,7 +32,7 @@ import {
   buildSetTxBody,
   sendTx,
 } from '../utils/transaction';
-import { getChecksumAddress, getAssistant } from '../utils/util';
+import { getChecksumAddress, getAssistant, getToken } from '../utils/util';
 import {
   isObjectOwner,
   validateAssistant,
@@ -226,19 +226,22 @@ export class Assistants extends FactoryBase {
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
 
-    const data = await getAssistant(this.ain, appId, tokenId);
-    const assistant = {
-      id: data.id,
+    const assistant = await getAssistant(this.ain, appId, tokenId);
+    const token = await getToken(this.ain, appId, tokenId);
+
+    const data = {
+      id: assistant.id,
       tokenId,
-      model: data.config.model,
-      name: data.config.name,
-      instructions: data.config.instructions,
-      description: data.config.description || null,
-      metadata: data.config.metadata || {},
-      created_at: data.createdAt,
+      owner: token.owner,
+      model: assistant.config.model,
+      name: assistant.config.name,
+      instructions: assistant.config.instructions,
+      description: assistant.config.description || null,
+      metadata: assistant.config.metadata || {},
+      created_at: assistant.createdAt,
     };
 
-    return assistant;
+    return data;
   }
 
   /**
@@ -508,6 +511,7 @@ export class Assistants extends FactoryBase {
     return {
       id: data.ai.id,
       tokenId: data.tokenId,
+      owner: data.owner,
       model: data.ai.config.model,
       name: data.ai.config.name,
       instructions: data.ai.config.instructions,
