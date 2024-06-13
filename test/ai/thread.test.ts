@@ -12,11 +12,11 @@ describe.skip('thread', () => {
       blockchainUrl: 'https://testnet-api.ainetwork.ai',
       chainId: 0,
     });
-    await ainft.open();
+    await ainft.connect();
   });
 
   afterAll(async () => {
-    await ainft.close();
+    await ainft.disconnect();
   });
 
   it('should create thread', async () => {

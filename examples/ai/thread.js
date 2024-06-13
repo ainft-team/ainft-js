@@ -12,11 +12,11 @@ async function main() {
   try {
     console.log('Creating thread...\n');
 
-    await ainft.open();
+    await ainft.connect();
 
     const { thread, tx_hash } = await ainft.thread.create(objectId, tokenId, {});
 
-    await ainft.close();
+    await ainft.disconnect();
 
     console.log(`\nSuccessfully created thread with ID: ${thread.id}`);
     console.log(`thread: ${JSON.stringify(thread, null, 2)}`);

@@ -2,39 +2,10 @@
 # yarn lockfile v1
 
 
-"@ainblockchain/ain-js@^1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.10.0.tgz#2ab91ee9c5f083ef8830e8db528b69c18264aefa"
-  integrity sha512-4fmL7vaLBesY2de3aTtJTpjT0MO5ezeQSUlZcU5bjm5aY9LCFfCxSy3vkYrAROC7KstNODSfWjzMlpoc9afrWA==
-  dependencies:
-    "@ainblockchain/ain-util" "^1.1.9"
-    "@types/node" "^12.7.3"
-    "@types/randombytes" "^2.0.0"
-    "@types/semver" "^7.3.4"
-    "@types/ws" "8.5.3"
-    axios "^0.21.4"
-    bip39 "^3.0.2"
-    browserify-cipher "^1.0.1"
-    eventemitter3 "^4.0.0"
-    hdkey "^1.1.1"
-    is-in-browser "^2.0.0"
-    isomorphic-ws "^5.0.0"
-    lodash "^4.17.20"
-    node-seal "^4.5.7"
-    patch-package "^8.0.0"
-    pbkdf2 "^3.0.17"
-    postinstall-postinstall "^2.1.0"
-    randombytes "^2.1.0"
-    scryptsy "^2.1.0"
-    semver "^6.3.0"
-    url-parse "^1.4.7"
-    uuid "^3.3.3"
-    ws "^8.16.0"
-
-"@ainblockchain/ain-js@^1.10.1":
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.10.1.tgz#e872708c0576189ab9e6ac42ef51d9370d32878b"
-  integrity sha512-8NZ1jiMIm0OrOnTsM5D+6rr09HLeOaQc3ZzJi4OUqrbg/2/L5f6MPtkFpiSeMISthzeGngoi7Jx8J99wIccoiQ==
+"@ainblockchain/ain-js@^1.10.2":
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.10.2.tgz#c0ed1e230a6c2b3703169a5c243c173944004bdd"
+  integrity sha512-2lHYnvbjEHm3/K5Lw5wCNVBtj61Z1p1u+FbveXMg4vDCwUnuYwvCrtZjTxxv13MXHoJ6izdkkA3X93GWtQhpow==
   dependencies:
     "@ainblockchain/ain-util" "^1.1.9"
     "@types/node" "^12.7.3"
@@ -81,12 +52,12 @@
     uuid "^3.3.3"
     varuint-bitcoin "^1.1.0"
 
-"@ainize-team/ainize-js@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@ainize-team/ainize-js/-/ainize-js-1.2.1.tgz#8e380cd77ef4a9a760109fa582fa1a3644980b6e"
-  integrity sha512-hZsVr4oUBV3cXRVZn9sZYjOqAmLu9F450xTQxOns1Rk7bgFI06ZPlrq7UGLtzuChxTFX3cUg9+t7kb4LyUpfZw==
+"@ainize-team/ainize-js@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@ainize-team/ainize-js/-/ainize-js-1.2.2.tgz#abd3fed7238bb92a3064664a26996b80cdb42640"
+  integrity sha512-6zwxSZmLof1RWyBBONTdPNOXkOBBApRA8RwgnNrUnlT4M+845ZorKTv6dNhWxKBR2lcs5v+/LYlcDET/pecYpw==
   dependencies:
-    "@ainblockchain/ain-js" "^1.10.0"
+    "@ainblockchain/ain-js" "^1.10.2"
     axios "^0.26.1"
     express "^4.18.2"
     fast-json-stable-stringify "^2.1.0"
