@@ -155,13 +155,14 @@ export default class AinftJs {
    * Connects to the blockchain endpoint.
    */
   async connect() {
-    if (!this.isConnected()) {
-      const privateKey = this.ain.wallet.defaultAccount?.private_key;
-      if (privateKey) {
-        await this.ainize.login(privateKey);
-      } else {
-        await this.ainize.loginWithSigner();
-      }
+    if (this.isConnected()) {
+      throw new Error('Client is already connected.');
+    }
+    const privateKey = this.ain.wallet.defaultAccount?.private_key;
+    if (privateKey) {
+      await this.ainize.login(privateKey);
+    } else {
+      await this.ainize.loginWithSigner();
     }
   }
 
@@ -177,9 +178,10 @@ export default class AinftJs {
    * Disconnects from the blockchain endpoint.
    */
   async disconnect() {
-    if (this.isConnected()) {
-      await this.ainize.logout();
+    if (!this.isConnected()) {
+      throw new Error('Client is not connected.');
     }
+    await this.ainize.logout();
   }
 
   /**
