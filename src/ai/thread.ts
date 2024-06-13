@@ -12,7 +12,6 @@ import {
   ThreadDeleted,
   ThreadTransactionResult,
   ThreadUpdateParams,
-  ThreadWithAssistant,
   ThreadWithMessages,
 } from '../types';
 import { Path } from '../utils/path';
@@ -256,54 +255,6 @@ export class Threads extends FactoryBase {
     const result = await sendTx(txBody, this.ain);
 
     return { ...result, ...data };
-    // NOTE(jiyoung): example data
-    /*
-    return {
-      tx_hash: '0x' + 'a'.repeat(64),
-      result: { code: 0 },
-      thread: {
-        id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
-        created_at: 1711962854,
-        metadata: {
-          title: '도와드릴까요?',
-        },
-      },
-      messages: {
-        '0': {
-          id: 'msg_Fay6rXAtGqBADFhukBzeZtjN',
-          created_at: 1711967047,
-          thread_id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
-          role: 'user',
-          content: {
-            '0': {
-              type: 'text',
-              text: {
-                value: '안녕하세요',
-              },
-            },
-          },
-          assistant_id: null,
-          run_id: null,
-        },
-        '1': {
-          id: 'msg_17BndvyTHP5i99QM1Ha4okaV',
-          created_at: 1711967100,
-          thread_id: 'thread_yjw3LcSxSxIkrk225v7kLpCA',
-          role: 'assistant',
-          content: {
-            '0': {
-              type: 'text',
-              text: {
-                value: '안녕하세요! 무엇을 도와드릴까요?',
-              },
-            },
-          },
-          assistant_id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
-          run_id: 'run_l0eBpAdMOtj8uAwrkAMKWg4l',
-        },
-      },
-    };
-    */
   }
 
   private buildTxBodyForCreateThread(

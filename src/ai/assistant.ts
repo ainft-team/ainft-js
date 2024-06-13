@@ -266,38 +266,6 @@ export class Assistants extends FactoryBase {
     const items = sorted.slice(offset, offset + limit);
 
     return { total, items };
-    // NOTE(jiyoung): example data
-    /*
-    return {
-      total: 2,
-      items: [
-        {
-          id: 'asst_CswXI1p9YGKr32Ks2ENPb5VL',
-          model: 'gpt-4',
-          name: 'AINA-EBAJYJF111',
-          instructions: '',
-          description: 'OpenAI의 가장 강력한 모델입니다.',
-          metadata: {
-            image: 'https://picsum.photos/id/2/200/200',
-          },
-          created_at: 1711969423,
-          tokenId: '1',
-        },
-        {
-          id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
-          model: 'gpt-3.5-turbo',
-          name: 'AINA-TKAJYJF1C5',
-          instructions: '',
-          description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
-          metadata: {
-            image: 'https://picsum.photos/id/1/200/200',
-          },
-          created_at: 1704034800,
-          tokenId: '2',
-        },
-      ],
-    };
-    */
   }
 
   async mint(objectId: string, to: string) {
@@ -321,70 +289,7 @@ export class Assistants extends FactoryBase {
     });
 
     return data;
-    // NOTE(jiyoung): example data
-    /*
-    return {
-      tx_hash: '0x3ffc4aa5f557bddf4b53b90dfe97e368dd6d4d6473cff0b948029e24b2e09868',
-      tokenId: '1',
-      objectId: '0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401',
-    };
-    */
   }
-
-  // TODO(jiyoung): implement `mintAndCreate` method.
-  // async mintAndCreate(
-  //   objectId: string,
-  //   to: string,
-  //   { model, name, instructions, description, metadata }: AssistantCreateParams
-  // ): Promise<AssistantMinted> {
-  //   const checksum = getChecksumAddress(to);
-  //   const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
-  //   if (!whitelisted) {
-  //     throw new Error(
-  //       `cannot request mint for the object '${objectId}'.\n` +
-  //         `if you're the owner, please use the Ainft721Object.mint() function.`
-  //     );
-  //   }
-
-  //   const serviceName = getServiceName();
-  //   const opType = OperationType.MINT_CREATE_ASSISTANT;
-  //   const body = {
-  //     objectId,
-  //     to: checksum,
-  //     model,
-  //     name,
-  //     instructions,
-  //     ...(description && { description }),
-  //     ...(metadata && !_.isEmpty(metadata) && { metadata }),
-  //   };
-
-  //   const { data } = await request<AssistantMinted>(this.ainize!, {
-  //     serviceName,
-  //     opType,
-  //     data: body,
-  //   });
-
-  //   return data;
-  //   // NOTE(jiyoung): example data
-  //   /*
-  //   return {
-  //     tokenId: '1',
-  //     objectId: '0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401',
-  //     owner: '0x7ed9c30C9F3A31Daa9614b90B4a710f61Bd585c0',
-  //     assistant: {
-  //       id: 'asst_IfWuJqqO5PdCF9DbgZRcFClG',
-  //       model: 'gpt-3.5-turbo',
-  //       name: 'AINA-TKAJYJF1C5',
-  //       instructions: '',
-  //       description: '일상적인 작업에 적합합니다. GPT-3.5-turbo에 의해 구동됩니다.',
-  //       metadata: {
-  //         image: 'https://picsum.photos/id/1/200/200',
-  //       },
-  //       created_at: 1704034800,
-  //     },
-  //   };
-  //   */
-  // }
 
   private buildTxBodyForCreateAssistant(
     address: string,
