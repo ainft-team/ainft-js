@@ -62,6 +62,15 @@ export const getAssistant = async (ain: Ain, appId: string, tokenId: string) => 
   return assistant;
 };
 
+export const getToken = async (ain: Ain, appId: string, tokenId: string) => {
+  const tokenPath = Path.app(appId).token(tokenId).value();
+  const token = await getValue(ain, tokenPath);
+  if (!token) {
+    throw new Error('Token not found');
+  }
+  return token;
+};
+
 export const getValue = async (ain: Ain, path: string, options?: GetOptions): Promise<any> => {
   return ain.db.ref().getValue(path, options);
 };

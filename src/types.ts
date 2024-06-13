@@ -1211,6 +1211,8 @@ export interface Assistant {
   id: string;
   /** The ID of AINFT token. */
   tokenId: string | null;
+  /** The owner address of AINFT token. */
+  owner: string | null;
   /** The name of the model to use. */
   model: string;
   /** The name of the assistant. */
@@ -1226,16 +1228,6 @@ export interface Assistant {
   metadata: object | null;
   /** The UNIX timestamp in seconds. */
   created_at: number;
-}
-
-export interface AssistantMinted {
-  /** The ID of AINFT token. */
-  tokenId: string;
-  /** The ID of AINFT object. */
-  objectId: string;
-  /** The owner address of AINFT token. */
-  owner: string;
-  assistant: Assistant;
 }
 
 export interface AssistantDeleted {
@@ -1292,19 +1284,6 @@ export interface Thread {
   metadata: object | {};
   /** The UNIX timestamp in seconds. */
   created_at: number;
-}
-
-export interface ThreadWithAssistant {
-  /** The identifier. */
-  id: string;
-  /**
-   * The metadata can contain up to 16 pairs,
-   * with keys limited to 64 characters and values to 512 characters.
-   */
-  metadata: object | null;
-  /** The UNIX timestamp in seconds. */
-  created_at: number;
-  assistant: Assistant;
 }
 
 export interface ThreadDeleted {
