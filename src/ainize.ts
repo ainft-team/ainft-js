@@ -1,6 +1,7 @@
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
+import Handler from '@ainize-team/ainize-js/dist/handlers/handler';
 import { DEFAULT_AINIZE_SERVICE_NAME } from './constants';
 
 const DEFAULT_TIMEOUT_MS = 60 * 1000; // 1min
@@ -22,10 +23,15 @@ export const request = async <T>(
   ainize: Ainize,
   { serviceName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
 ): Promise<AinizeResponse<T>> => {
+  if (!Handler.getInstance().isConnected()) {
+    throw new Error('Network error: blockchain event channel is not connected.');
+  }
+
   let timer;
   const startTimer = new Promise(
     (reject) => (timer = setTimeout(() => reject(`timeout of ${timeout}ms exceeded`), timeout))
   );
+
   const server = await getService(ainize, serviceName);
   try {
     const response = await Promise.race([server.request({ ...data, jobType: opType }), startTimer]);

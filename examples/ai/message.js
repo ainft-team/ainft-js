@@ -14,7 +14,7 @@ async function main() {
   try {
     console.log('Creating message...\n');
 
-    await ainft.open();
+    await ainft.connect();
 
     const threadId = '<YOUR_THREAD_ID>'; // TODO(user): update this
     const { messages, tx_hash } = await ainft.message.create(objectId, tokenId, threadId, {
@@ -23,7 +23,7 @@ async function main() {
       metadata: { language: 'en' }, // TODO(user): update this
     });
 
-    await ainft.close();
+    await ainft.disconnect();
 
     console.log(`\nSuccessfully created new message with reply:`);
     console.log(`messages: ${JSON.stringify(messages, null, 4)}`);

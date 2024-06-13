@@ -110,9 +110,9 @@ Introducing the main API functions that can be used in the `ainftToken` module.
 ## AI API
 We provide AI API functions, including assistant, thread, and message.
 To use these functions follow streamlined steps:
-1. **Initialization**: Before using any AI functions, initialize the event channel with the `open()` method.
+1. **Initialization**: Before using any AI functions, initialize the event channel with the `connect()` method.
 2. **Using AI functions**: After opening the event channel, you can use AI function.
-3. **Closure**: Ensure to close the event channel with the `close()` method when the functions are no longer needed.
+3. **Closure**: Ensure to close the event channel with the `disconnect()` method when the functions are no longer needed.
 
 ```js
 import AinftJs from '@ainft-team/ainft-js';
@@ -125,12 +125,12 @@ const ainft = new AinftJs({
 });
 
 async function main() {
-  await ainft.open(); // open event channel
+  await ainft.connect(); // connect to the blockchain endpoint
 
   // your ai function usage here
   // ...
 
-  await ainft.close(); // close event channel to free up resource
+  await ainft.disconnect(); // disconnect from the blockchain endpoint
 }
 
 main();

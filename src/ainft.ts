@@ -5,6 +5,7 @@ import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
+import Handler from '@ainize-team/ainize-js/dist/handlers/handler';
 
 import Nft from './nft';
 import Credit from './credit';
@@ -151,9 +152,9 @@ export default class AinftJs {
   }
 
   /**
-   * Opens a session with the blockchain endpoint.
+   * Connects to the blockchain endpoint.
    */
-  async open() {
+  async connect() {
     const privateKey = this.ain.wallet.defaultAccount?.private_key;
     if (privateKey) {
       await this.ainize.login(privateKey);
@@ -163,9 +164,17 @@ export default class AinftJs {
   }
 
   /**
-   * Closes a session with the blockchain endpoint.
+   * Checks whether the client is connected to the blockchain endpoint.
+   * @returns Returns `true` if connected, `false` otherwise.
    */
-  async close() {
+  isConnected(): boolean {
+    return Handler.getInstance().isConnected();
+  }
+
+  /**
+   * Disconnects from the blockchain endpoint.
+   */
+  async disconnect() {
     await this.ainize.logout();
   }
 

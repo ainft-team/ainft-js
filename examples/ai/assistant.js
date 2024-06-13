@@ -15,7 +15,7 @@ async function main() {
   try {
     console.log('Creating assistant...\n');
 
-    await ainft.open();
+    await ainft.connect();
 
     const { assistant, tx_hash } = await ainft.assistant.create(objectId, tokenId, {
       model: 'gpt-4', // TODO(user): update this
@@ -25,7 +25,7 @@ async function main() {
       metadata: { topic: 'Tech', language: 'en' }, // TODO(user): update this
     });
 
-    await ainft.close();
+    await ainft.disconnect();
 
     console.log(`\nSuccessfully created assistant with ID: ${assistant.id}`);
     console.log(`assistant: ${JSON.stringify(assistant, null, 4)}`);

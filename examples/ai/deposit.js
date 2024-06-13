@@ -12,11 +12,11 @@ async function main() {
   try {
     console.log('Depositing credit...\n');
 
-    await ainft.open();
+    await ainft.connect();
 
     const { tx_hash, address, balance } = await ainft.chat.depositCredit('openai', 10);
 
-    await ainft.close();
+    await ainft.disconnect();
 
     console.log(`\nSuccessfully deposited credit for chatting!`);
     console.log(`address: ${address}`);
