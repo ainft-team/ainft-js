@@ -38,10 +38,16 @@ export default class Nft extends FactoryBase {
    *  });
    * ```
    */
-  async create(name: string, symbol: string): Promise<{ txHash: string, ainftObject: Ainft721Object }> {
+  async create(name: string, symbol: string, description?: string, metadata?: object): Promise<{ txHash: string; ainftObject: Ainft721Object }> {
     const address = await this.ain.signer.getAddress();
 
-    const body = { address, name, symbol };
+    const body = {
+      address,
+      name,
+      symbol,
+      ...(description && { description }),
+      ...(metadata && { metadata }),
+    };
     const trailingUrl = 'native';
     const { ainftObjectId, txBody } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);
     const res = await this.ain.sendTransaction(txBody);
@@ -52,7 +58,7 @@ export default class Nft extends FactoryBase {
 
     await this.register(ainftObjectId);
     const ainftObject = await this.get(ainftObjectId);
-    return { txHash: res.tx_hash, ainftObject }
+    return { txHash: res.tx_hash, ainftObject };
   }
 
   /**
