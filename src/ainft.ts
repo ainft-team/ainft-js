@@ -58,7 +58,7 @@ export default class AinftJs {
       throw new Error(`Invalid chain ID: ${chainId}`);
     }
 
-    this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], chainId);
+    this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], null, chainId);
     this.ainize = new Ainize(chainId);
     this.setPrivateKey(privateKey);
 
