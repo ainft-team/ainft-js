@@ -102,7 +102,7 @@ export default class AinftJs {
     chainId: number,
     axiosConfig?: any
   ) {
-    this.ain.setProvider(providerUrl, chainId, axiosConfig);
+    this.ain.setProvider(providerUrl, null, chainId, axiosConfig);
   }
 
   /**
