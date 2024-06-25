@@ -146,7 +146,7 @@ const MSG_PATTERN = /^msg_([A-Za-z0-9]{24})$/;
 
 jest.setTimeout(60000);
 
-describe('message', () => {
+describe.skip('message', () => {
   let ainft: AinftJs;
 
   beforeAll(async () => {

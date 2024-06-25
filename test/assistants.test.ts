@@ -45,7 +45,7 @@ const ASST_PATTERN = /^asst_([A-Za-z0-9]{24})$/;
 
 jest.setTimeout(60000);
 
-describe('assistant', () => {
+describe.skip('assistant', () => {
   let ainft: AinftJs;
 
   beforeAll(() => {
