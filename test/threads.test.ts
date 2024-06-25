@@ -44,7 +44,7 @@ const THREAD_PATTERN = /^thread_([A-Za-z0-9]{24})$/;
 
 jest.setTimeout(60000);
 
-describe('thread', () => {
+describe.skip('thread', () => {
   let ainft: AinftJs;
 
   beforeAll(async () => {

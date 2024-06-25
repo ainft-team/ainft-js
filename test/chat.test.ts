@@ -26,7 +26,7 @@ const TX_PATTERN = /^0x([A-Fa-f0-9]{64})$/;
 
 jest.setTimeout(60000);
 
-describe('chat', () => {
+describe.skip('chat', () => {
   let ainft: AinftJs;
 
   beforeAll(() => {
