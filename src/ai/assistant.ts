@@ -68,6 +68,7 @@ export class Assistants extends FactoryBase {
   ): Promise<AssistantTransactionResult> {
     const address = await this.ain.signer.getAddress();
 
+    // TODO(jiyoung): limit character count for 'instruction' and 'description'.
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateDuplicateAssistant(this.ain, objectId, tokenId);
@@ -126,6 +127,7 @@ export class Assistants extends FactoryBase {
   ): Promise<AssistantTransactionResult> {
     const address = await this.ain.signer.getAddress();
 
+    // TODO(jiyoung): limit character count for 'instruction' and 'description'.
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId, assistantId);
