@@ -14,7 +14,7 @@ export const AIN_BLOCKCHAIN_CHAIN_ID = { dev: 0, prod: 1 } as const;
 
 export const MIN_GAS_PRICE = 500;
 export const APP_STAKING_LOCKUP_DURATION_MS = 30 * 1000; // 30sec
-export const TX_BYTES_LIMIT = 10000; // 10kb
+export const TX_BYTES_LIMIT = 100000; // 100kb
 
 export const SUPPORTED_AINFT_STANDARDS = {
   721: '721',
