@@ -79,7 +79,7 @@ export class Threads extends FactoryBase {
     const txBody = this.buildTxBodyForCreateThread(address, objectId, tokenId, data);
     const result = await sendTx(txBody, this.ain);
 
-    return { ...result, thread: data };
+    return { ...result, thread: data, tokenId };
   }
 
   /**
