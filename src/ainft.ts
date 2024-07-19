@@ -5,6 +5,7 @@ import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
+import { ConnectionCallback, DisconnectionCallback } from '@ainblockchain/ain-js/lib/types';
 import Handler from '@ainize-team/ainize-js/dist/handlers/handler';
 
 import Nft from './nft';
@@ -153,16 +154,18 @@ export default class AinftJs {
 
   /**
    * Connects to the blockchain endpoint.
+   * @param {ConnectionCallback} connectionCb The connection callback function.
+   * @param {DisconnectionCallback} disconnectionCb The disconnection callback function.
    */
-  async connect() {
+  async connect(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback) {
     if (this.isConnected()) {
       throw new Error('Client is already connected.');
     }
     const privateKey = this.ain.wallet.defaultAccount?.private_key;
     if (privateKey) {
-      await this.ainize.login(privateKey);
+      await this.ainize.login(privateKey, connectionCb, disconnectionCb);
     } else {
-      await this.ainize.loginWithSigner();
+      await this.ainize.loginWithSigner(connectionCb, disconnectionCb);
     }
   }
 

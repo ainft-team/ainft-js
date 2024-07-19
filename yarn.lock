@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@ainblockchain/ain-js@^1.10.2":
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.10.2.tgz#c0ed1e230a6c2b3703169a5c243c173944004bdd"
-  integrity sha512-2lHYnvbjEHm3/K5Lw5wCNVBtj61Z1p1u+FbveXMg4vDCwUnuYwvCrtZjTxxv13MXHoJ6izdkkA3X93GWtQhpow==
+"@ainblockchain/ain-js@^1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.12.0.tgz#6bd2c051ae200b6a8eee28d175f14fa677f56e04"
+  integrity sha512-wsipsiVzgtAkNhBR04t/UlQ7nXnIt1MRU11kctYzCbFsz8YrVhrX6WM2kXxWEsm37KnmtsZkt7f6WgfO/JdM4Q==
   dependencies:
-    "@ainblockchain/ain-util" "^1.1.9"
+    "@ainblockchain/ain-util" "^1.2.1"
     "@types/node" "^12.7.3"
     "@types/randombytes" "^2.0.0"
     "@types/semver" "^7.3.4"
@@ -52,12 +52,33 @@
     uuid "^3.3.3"
     varuint-bitcoin "^1.1.0"
 
-"@ainize-team/ainize-js@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@ainize-team/ainize-js/-/ainize-js-1.2.2.tgz#abd3fed7238bb92a3064664a26996b80cdb42640"
-  integrity sha512-6zwxSZmLof1RWyBBONTdPNOXkOBBApRA8RwgnNrUnlT4M+845ZorKTv6dNhWxKBR2lcs5v+/LYlcDET/pecYpw==
+"@ainblockchain/ain-util@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-util/-/ain-util-1.2.1.tgz#c5445f4718da0820c4955be44b07400172a864ef"
+  integrity sha512-++Sjv4PBT2/sdHeQNCDNb67ZIObxQnRQzILh+E72BUNnaEcS9cf9+4RC9I8JRqWkBiPvsD7oJPpMYYn0xwfECg==
   dependencies:
-    "@ainblockchain/ain-js" "^1.10.2"
+    bip39 "^3.0.4"
+    bn.js "^4.11.8"
+    browserify-cipher "^1.0.1"
+    eccrypto "^1.1.6"
+    fast-json-stable-stringify "^2.0.0"
+    hdkey "^2.0.1"
+    keccak "^2.0.0"
+    pbkdf2 "^3.0.17"
+    randombytes "^2.1.0"
+    rlp "^2.2.2"
+    safe-buffer "^5.1.2"
+    scryptsy "^2.1.0"
+    secp256k1 "^3.6.2"
+    uuid "^3.3.3"
+    varuint-bitcoin "^1.1.0"
+
+"@ainize-team/ainize-js@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@ainize-team/ainize-js/-/ainize-js-1.3.0.tgz#1bc1cdef084e43dbc7cfb952131703c9712cd6d0"
+  integrity sha512-0habTDSg1U0vAMqrIfJeSq69ukdt4q5Wqf3Uz66405Ufq8NOrkF78rlyRJAmTJvnn5fLis2F6etR287Wiy+LIQ==
+  dependencies:
+    "@ainblockchain/ain-js" "^1.12.0"
     axios "^0.26.1"
     express "^4.18.2"
     fast-json-stable-stringify "^2.1.0"
