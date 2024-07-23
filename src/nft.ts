@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import FactoryBase from './factoryBase';
 import {
   DeleteAssetParams,
@@ -7,6 +9,7 @@ import {
   UploadAssetFromDataUrlParams,
   AinftTokenSearchResponse,
   AinftObjectSearchResponse,
+  AinftObjectCreateParams,
 } from './types';
 import Ainft721Object from './ainft721Object';
 import stringify from 'fast-json-stable-stringify';
@@ -38,7 +41,7 @@ export default class Nft extends FactoryBase {
    *  });
    * ```
    */
-  async create(name: string, symbol: string, description?: string, metadata?: object): Promise<{ txHash: string; ainftObject: Ainft721Object }> {
+  async create({ name, symbol, description, metadata }: AinftObjectCreateParams): Promise<{ txHash: string; ainftObject: Ainft721Object }> {
     const address = await this.ain.signer.getAddress();
 
     const body = {
@@ -46,7 +49,7 @@ export default class Nft extends FactoryBase {
       name,
       symbol,
       ...(description && { description }),
-      ...(metadata && { metadata }),
+      ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
     const trailingUrl = 'native';
     const { ainftObjectId, txBody } = await this.sendRequest(HttpMethod.POST, trailingUrl, body);

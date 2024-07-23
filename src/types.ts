@@ -1021,6 +1021,7 @@ export interface SearchOption {
   limit?: number,
   cursor?: string,
 }
+
 export interface NftSearchParams extends SearchOption {
   /** The address of the user who owns the AINFT. */
   userAddress?: string;
@@ -1091,7 +1092,7 @@ export interface getTxbodyAddAiHistoryParams {
 
 export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {}
 
-export interface AinftObjectSearchResponse extends SearchReponse {
+export interface AinftObjectSearchResponse extends SearchResponse {
   ainftObjects: {
     id: string;
     name: string;
@@ -1100,7 +1101,7 @@ export interface AinftObjectSearchResponse extends SearchReponse {
   }[];
 }
 
-export interface AinftTokenSearchResponse extends SearchReponse {
+export interface AinftTokenSearchResponse extends SearchResponse {
   nfts: {
     tokenId: string;
     owner: string;
@@ -1110,9 +1111,24 @@ export interface AinftTokenSearchResponse extends SearchReponse {
   }[];
 }
 
-export interface SearchReponse {
+export interface SearchResponse {
   isFinal: boolean;
   cursor?: string;
+}
+
+export interface Metadata {
+  [key: string]: any;
+}
+
+export interface AinftObjectCreateParams {
+  /** The name of the AINFT object. */
+  name: string;
+  /** The symbol of the AINFT object. */
+  symbol: string;
+  /** The description of the AINFT object. */
+  description?: string | null;
+  /** The metadata of the AINFT object. */
+  metadata?: Metadata | null;
 }
 
 export enum ServiceType {
