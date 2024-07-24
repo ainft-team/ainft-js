@@ -1,7 +1,7 @@
-import { AinftToken } from "./ainftToken";
-import FactoryBase from "./factoryBase";
-import { HttpMethod } from "./types";
-import Ain from "@ainblockchain/ain-js";
+import { AinftToken } from './ainftToken';
+import FactoryBase from './factoryBase';
+import { HttpMethod, Metadata } from './types';
+import Ain from '@ainblockchain/ain-js';
 
 /**
  * The class of AINFT 721 object.
@@ -17,6 +17,10 @@ export default class Ainft721Object extends FactoryBase {
   readonly owner: string;
   /** The ID of app in AIN blockchain. */
   readonly appId: string;
+  /** The description of AINFT object. */
+  readonly description?: string | null;
+  /** The metadata of AINFT object. */
+  readonly metadata?: Metadata;
 
   /**
    * Constructor of Ainft721Object.
@@ -29,13 +33,26 @@ export default class Ainft721Object extends FactoryBase {
    * @param ain Ain instance to sign and send transaction to AIN blockchain.
    * @param baseUrl The base url to request api to AINFT factory server.
    */
-  constructor(objectInfo: { id: string, name: string, symbol: string, owner: string}, ain: Ain, baseUrl: string) {
+  constructor(
+    objectInfo: {
+      id: string;
+      name: string;
+      symbol: string;
+      owner: string;
+      description?: string;
+      metadata?: Metadata;
+    },
+    ain: Ain,
+    baseUrl: string
+  ) {
     super(baseUrl, null, ain);
     this.id = objectInfo.id;
     this.name = objectInfo.name;
     this.symbol = objectInfo.symbol;
     this.owner = objectInfo.owner;
     this.appId = Ainft721Object.getAppId(objectInfo.id);
+    this.description = objectInfo.description || null;
+    this.metadata = objectInfo.metadata || {};
   }
 
   /**
@@ -44,7 +61,7 @@ export default class Ainft721Object extends FactoryBase {
    * @returns Returns AINFT token instance.
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * async function main() {
    *  const ainftObject = await ainftJs.nft.get('YOUR-AINFT-OBJECT-ID');
@@ -53,12 +70,25 @@ export default class Ainft721Object extends FactoryBase {
    * ```
    */
   async getToken(tokenId: string): Promise<AinftToken> {
-    const { nfts } = await this.sendRequestWithoutSign(HttpMethod.GET, `native/search/nfts`, { ainftObjectId: this.id, tokenId });
+    const { nfts } = await this.sendRequestWithoutSign(
+      HttpMethod.GET,
+      `native/search/nfts`,
+      { ainftObjectId: this.id, tokenId }
+    );
     if (nfts.length === 0) {
       throw new Error('Token not found');
     }
     const token = nfts[0];
-    return new AinftToken({ ainftObjectId: this.id, tokenId, tokenURI: token.tokenURI, metadata: token.metadata }, this.ain, this.baseUrl);
+    return new AinftToken(
+      {
+        ainftObjectId: this.id,
+        tokenId,
+        tokenURI: token.tokenURI,
+        metadata: token.metadata,
+      },
+      this.ain,
+      this.baseUrl
+    );
   }
 
   /**
@@ -67,10 +97,10 @@ export default class Ainft721Object extends FactoryBase {
    * @param to 	The address the AINFT will be send to.
    * @param tokenId Token ID of AINFT.
    * @returns Returns transaction result.
-   * 
+   *
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * async function main() {
    *  const ainftObject = await ainftJs.nft.get('YOUR-AINFT-OBJECT-ID');
@@ -80,7 +110,7 @@ export default class Ainft721Object extends FactoryBase {
    * ```
    */
   async transfer(from: string, to: string, tokenId: string): Promise<any> {
-    const txbody  = await this.getTxBodyForTransfer(from, to, tokenId);
+    const txbody = await this.getTxBodyForTransfer(from, to, tokenId);
     return this.ain.sendTransaction(txbody);
   }
 
@@ -91,7 +121,7 @@ export default class Ainft721Object extends FactoryBase {
    * @returns Returns transaction result.
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * async function main() {
    *  const ainftObject = await ainftJs.nft.get('YOUR-AINFT-OBJECT-ID');
@@ -112,10 +142,10 @@ export default class Ainft721Object extends FactoryBase {
    * @param to The address the AINFT will be send to.
    * @param tokenId Token ID of AINFT.
    * @returns Returns transaction body without signature.
-   * 
+   *
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * async function main() {
    *  const ainftObject = await ainftJs.nft.get('YOUR-AINFT-OBJECT-ID');
@@ -128,7 +158,7 @@ export default class Ainft721Object extends FactoryBase {
     const body = {
       address: from,
       toAddress: to,
-    }
+    };
     const trailingUrl = `native/${this.id}/${tokenId}/transfer`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
@@ -139,10 +169,10 @@ export default class Ainft721Object extends FactoryBase {
    * @param to The address the AINFT will be send.
    * @param tokenId Token ID of AINFT.
    * @returns Returns transaction body without signature.
-   * 
+   *
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * async function main() {
    *  const ainftObject = await ainftJs.nft.get('YOUR-AINFT-OBJECT-ID');
@@ -156,14 +186,14 @@ export default class Ainft721Object extends FactoryBase {
       address: ownerAddress,
       toAddress: to,
       tokenId,
-    }
+    };
     const trailingUrl = `native/${this.id}/mint`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
 
   /**
    * Gets app ID by AINFT object ID.
-   * @param id 
+   * @param id
    */
   static getAppId(objectId: string): string {
     return `ainft721_${objectId.toLowerCase()}`;
