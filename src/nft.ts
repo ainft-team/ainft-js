@@ -41,14 +41,13 @@ export default class Nft extends FactoryBase {
    *  });
    * ```
    */
-  async create({ name, symbol, description, metadata }: AinftObjectCreateParams): Promise<{ txHash: string; ainftObject: Ainft721Object }> {
+  async create({ name, symbol, metadata }: AinftObjectCreateParams): Promise<{ txHash: string; ainftObject: Ainft721Object }> {
     const address = await this.ain.signer.getAddress();
 
     const body = {
       address,
       name,
       symbol,
-      ...(description && { description }),
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
     const trailingUrl = 'native';

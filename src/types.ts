@@ -1125,10 +1125,8 @@ export interface AinftObjectCreateParams {
   name: string;
   /** The symbol of the AINFT object. */
   symbol: string;
-  /** The description of the AINFT object. */
-  description?: string | null;
   /** The metadata of the AINFT object. */
-  metadata?: Metadata | null;
+  metadata?: Metadata;
 }
 
 export enum ServiceType {
