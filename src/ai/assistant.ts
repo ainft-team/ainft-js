@@ -58,7 +58,7 @@ export class Assistants extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {AssistantCreateParams} AssistantCreateParams - The parameters to create assistant.
    * @param {AssistantCreateOptions} AssistantCreateOptions - The creation options.
-   * @returns Returns a promise that resolves with both the transaction result and the created assistant.
+   * @returns A promise that resolves with both the transaction result and the created assistant.
    */
   async create(
     objectId: string,
@@ -117,7 +117,7 @@ export class Assistants extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} assistantId - The ID of assistant.
    * @param {AssistantUpdateParams} AssistantUpdateParams - The parameters to update assistant.
-   * @returns Returns a promise that resolves with both the transaction result and the updated assistant.
+   * @returns A promise that resolves with both the transaction result and the updated assistant.
    */
   async update(
     objectId: string,
@@ -175,7 +175,7 @@ export class Assistants extends FactoryBase {
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} assistantId - The ID of assistant.
-   * @returns Returns a promise that resolves with both the transaction result and the deleted assistant.
+   * @returns A promise that resolves with both the transaction result and the deleted assistant.
    */
   async delete(
     objectId: string,
@@ -220,7 +220,7 @@ export class Assistants extends FactoryBase {
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} assistantId - The ID of assistant.
-   * @returns Returns a promise that resolves with the assistant.
+   * @returns A promise that resolves with the assistant.
    */
   async get(objectId: string, tokenId: string, assistantId: string): Promise<Assistant> {
     const appId = AinftObject.getAppId(objectId);
@@ -251,7 +251,7 @@ export class Assistants extends FactoryBase {
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} address - The checksum address of account.
    * @param {QueryParams} QueryParams - The parameters for querying items.
-   * @returns Returns a promise that resolves with the list of assistants.
+   * @returns A promise that resolves with the list of assistants.
    */
   async list(
     objectId: string,

@@ -34,7 +34,7 @@ export class Messages extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} threadId - The ID of thread.
    * @param {MessageCreateParams} MessageCreateParams - The parameters to create message.
-   * @returns Returns a promise that resolves with both the transaction result and a list including the new message.
+   * @returns A promise that resolves with both the transaction result and a list including the new message.
    */
   async create(
     objectId: string,
@@ -76,7 +76,7 @@ export class Messages extends FactoryBase {
    * @param {string} threadId - The ID of thread.
    * @param {string} messageId - The ID of message.
    * @param {MessageUpdateParams} MessageUpdateParams - The parameters to update message.
-   * @returns Returns a promise that resolves with both the transaction result and the updated message.
+   * @returns A promise that resolves with both the transaction result and the updated message.
    */
   async update(
     objectId: string,
@@ -122,7 +122,7 @@ export class Messages extends FactoryBase {
    * @param {string} threadId - The ID of thread.
    * @param {string} messageId - The ID of message.
    * @param {string} address - The checksum address of account.
-   * @returns Returns a promise that resolves with the message.
+   * @returns A promise that resolves with the message.
    */
   async get(
     objectId: string,
@@ -156,7 +156,7 @@ export class Messages extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} threadId - The ID of thread.
    * @param {string} address - The checksum address of account.
-   * @returns Returns a promise that resolves with the list of messages.
+   * @returns A promise that resolves with the list of messages.
    */
   async list(
     objectId: string,
