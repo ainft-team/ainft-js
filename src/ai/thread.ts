@@ -35,7 +35,7 @@ export class Threads extends FactoryBase {
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {ThreadCreateParams} ThreadCreateParams - The parameters to create thread.
-   * @returns Returns a promise that resolves with both the transaction result and the created thread.
+   * @returns A promise that resolves with both the transaction result and the created thread.
    */
   async create(
     objectId: string,
@@ -88,7 +88,7 @@ export class Threads extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} threadId - The ID of thread.
    * @param {ThreadUpdateParams} ThreadUpdateParams - The parameters to update thread.
-   * @returns Returns a promise that resolves with both the transaction result and the updated thread.
+   * @returns A promise that resolves with both the transaction result and the updated thread.
    */
   async update(
     objectId: string,
@@ -129,7 +129,7 @@ export class Threads extends FactoryBase {
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} threadId - The ID of thread.
-   * @returns Returns a promise that resolves with both the transaction result and the deleted thread.
+   * @returns A promise that resolves with both the transaction result and the deleted thread.
    */
   async delete(
     objectId: string,
@@ -167,7 +167,7 @@ export class Threads extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} threadId - The ID of thread.
    * @param {string} address - The checksum address of account.
-   * @returns Returns a promise that resolves with the thread.
+   * @returns A promise that resolves with the thread.
    */
   async get(objectId: string, tokenId: string, threadId: string, address: string): Promise<Thread> {
     await validateObject(this.ain, objectId);
@@ -198,7 +198,7 @@ export class Threads extends FactoryBase {
    * @param {string | null} [tokenId] - The ID of AINFT token.
    * @param {string | null} [address] - The checksum address of account.
    * @param {QueryParams} QueryParams - The parameters for querying items.
-   * @returns Returns a promise that resolves with the list of threads.
+   * @returns A promise that resolves with the list of threads.
    */
   async list(
     objectId: string,

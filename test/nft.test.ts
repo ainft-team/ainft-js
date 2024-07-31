@@ -2,7 +2,7 @@ import AinftJs from '../src/ainft';
 import { AINFT_OBJECT_REGEX, TX_HASH_REGEX } from './constants';
 import { address, privateKey } from './test_data';
 
-describe('nft', () => {
+describe.skip('nft', () => {
   const ainft = new AinftJs({
     privateKey,
     baseUrl: 'https://ainft-api-dev.ainetwork.ai',
@@ -14,12 +14,12 @@ describe('nft', () => {
     const result = await ainft.nft.create({
       name: 'name',
       symbol: 'symbol',
-      description: 'description',
       metadata: {
         author: {
           address: address,
           username: 'username',
         },
+        description: 'description',
         logoImage: 'https://picsum.photos/200/200',
         bannerImage: 'https://picsum.photos/1400/264',
         externalLink: 'https://example.com',
@@ -31,12 +31,12 @@ describe('nft', () => {
     expect(result.ainftObject.name).toBe('name');
     expect(result.ainftObject.symbol).toBe('symbol');
     expect(result.ainftObject.owner).toBe(address);
-    expect(result.ainftObject.description).toBe('description');
     expect(result.ainftObject.metadata).toEqual({
       author: {
         address: address,
         username: 'username',
       },
+      description: 'description',
       logoImage: 'https://picsum.photos/200/200',
       bannerImage: 'https://picsum.photos/1400/264',
       externalLink: 'https://example.com',

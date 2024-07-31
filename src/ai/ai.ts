@@ -28,7 +28,7 @@ export class Ai extends FactoryBase {
    * Sets up ai configuration for an AINFT object.
    * @param {string} objectId - The ID of the AINFT object.
    * @param {string} serviceName - The name of Ainize service.
-   * @returns {Promise<AiConfigurationTransactionResult>} Returns a promise that resolves with both the transaction result and the configuration info.
+   * @returns {Promise<AiConfigurationTransactionResult>} A promise that resolves with both the transaction result and the configuration info.
    */
   async configure(
     objectId: string,
@@ -49,7 +49,7 @@ export class Ai extends FactoryBase {
   /**
    * Retrieves the credit balance for a service.
    * @param {string} serviceName - The name of Ainize service.
-   * @returns {Promise<number|null>} Returns a promise that resolves with the credit balance.
+   * @returns {Promise<number|null>} A promise that resolves with the credit balance.
    */
   async getCredit(serviceName: string): Promise<number> {
     const address = await this.ain.signer.getAddress();
@@ -80,7 +80,7 @@ export class Ai extends FactoryBase {
    * Deposits a credits for a service.
    * @param {string} serviceName - The name of Ainize service.
    * @param {number} amount - The amount of credits to deposit.
-   * @returns {Promise<CreditTransactionResult>} Returns a promise that resolves with the deposit transaction info.
+   * @returns {Promise<CreditTransactionResult>} A promise that resolves with the deposit transaction info.
    */
   /*
   async depositCredit(serviceName: string, amount: number): Promise<CreditTransactionResult> {

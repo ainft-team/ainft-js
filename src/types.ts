@@ -1125,10 +1125,8 @@ export interface AinftObjectCreateParams {
   name: string;
   /** The symbol of the AINFT object. */
   symbol: string;
-  /** The description of the AINFT object. */
-  description?: string | null;
   /** The metadata of the AINFT object. */
-  metadata?: Metadata | null;
+  metadata?: Metadata;
 }
 
 export enum ServiceType {
@@ -1242,6 +1240,8 @@ export interface Assistant {
    * with keys limited to 64 characters and values to 512 characters.
    */
   metadata: object | null;
+  /** The metric of the assistant. */
+  metric?: { [key: string]: number } | null;
   /** The UNIX timestamp in seconds. */
   created_at: number;
 }

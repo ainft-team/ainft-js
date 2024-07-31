@@ -58,7 +58,7 @@ export class Assistants extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {AssistantCreateParams} AssistantCreateParams - The parameters to create assistant.
    * @param {AssistantCreateOptions} AssistantCreateOptions - The creation options.
-   * @returns Returns a promise that resolves with both the transaction result and the created assistant.
+   * @returns A promise that resolves with both the transaction result and the created assistant.
    */
   async create(
     objectId: string,
@@ -117,7 +117,7 @@ export class Assistants extends FactoryBase {
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} assistantId - The ID of assistant.
    * @param {AssistantUpdateParams} AssistantUpdateParams - The parameters to update assistant.
-   * @returns Returns a promise that resolves with both the transaction result and the updated assistant.
+   * @returns A promise that resolves with both the transaction result and the updated assistant.
    */
   async update(
     objectId: string,
@@ -175,7 +175,7 @@ export class Assistants extends FactoryBase {
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} assistantId - The ID of assistant.
-   * @returns Returns a promise that resolves with both the transaction result and the deleted assistant.
+   * @returns A promise that resolves with both the transaction result and the deleted assistant.
    */
   async delete(
     objectId: string,
@@ -220,7 +220,7 @@ export class Assistants extends FactoryBase {
    * @param {string} objectId - The ID of AINFT object.
    * @param {string} tokenId - The ID of AINFT token.
    * @param {string} assistantId - The ID of assistant.
-   * @returns Returns a promise that resolves with the assistant.
+   * @returns A promise that resolves with the assistant.
    */
   async get(objectId: string, tokenId: string, assistantId: string): Promise<Assistant> {
     const appId = AinftObject.getAppId(objectId);
@@ -249,18 +249,18 @@ export class Assistants extends FactoryBase {
   /**
    * Retrieves a list of assistants.
    * @param {string} objectId - The ID of AINFT object.
-   * @param {string} address - The checksum address of account.
-   * @param {QueryParams} QueryParams - The parameters for querying items.
-   * @returns Returns a promise that resolves with the list of assistants.
+   * @param {string} [address] - (Optional) The checksum address of account.
+   * @param {QueryParams} [queryParams={}] - The parameters for querying items.
+   * @returns A promise that resolves with the list of assistants.
    */
   async list(
     objectId: string,
-    address: string,
+    address?: string | null,
     { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
   ) {
     await validateObject(this.ain, objectId);
 
-    const tokens = await this.getTokensByAddress(objectId, address);
+    const tokens = await this.getTokens(objectId, address);
     const assistants = this.getAssistantsFromTokens(tokens);
     const sorted = this.sortAssistants(assistants, order);
 
@@ -393,12 +393,12 @@ export class Assistants extends FactoryBase {
     );
   }
 
-  private async getTokensByAddress(objectId: string, address: string) {
+  private async getTokens(objectId: string, address?: string | null) {
     const appId = AinftObject.getAppId(objectId);
     const tokensPath = Path.app(appId).tokens().value();
     const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
     return Object.entries(tokens).reduce<NftToken[]>((acc, [id, token]) => {
-      if (token.owner === address) {
+      if (!address || token.owner === address) {
         acc.push({ tokenId: id, ...token });
       }
       return acc;
@@ -408,13 +408,13 @@ export class Assistants extends FactoryBase {
   private getAssistantsFromTokens(tokens: NftToken[]) {
     return tokens.reduce<Assistant[]>((acc, token) => {
       if (token.ai) {
-        acc.push(this.toAssistant(token));
+        acc.push(this.toAssistant(token, this.countThreads(token.ai.history)));
       }
       return acc;
     }, []);
   }
 
-  private toAssistant(data: any): Assistant {
+  private toAssistant(data: any, numThreads: number): Assistant {
     return {
       id: data.ai.id,
       tokenId: data.tokenId,
@@ -425,6 +425,7 @@ export class Assistants extends FactoryBase {
       description: data.ai.config.description || null,
       metadata: data.ai.config.metadata || {},
       created_at: data.ai.createdAt,
+      metric: { numThreads },
     };
   }
 
@@ -434,5 +435,18 @@ export class Assistants extends FactoryBase {
       if (a.created_at > b.created_at) return order === 'asc' ? 1 : -1;
       return 0;
     });
+  }
+
+  private countThreads(items: any) {
+    if (typeof items !== 'object' || !items) {
+      return 0;
+    }
+    return Object.values(items).reduce((sum: number, item: any) => {
+      const count =
+        item.threads && typeof item.threads === 'object'
+          ? Object.keys(item.threads).length
+          : 0;
+      return sum + count;
+    }, 0);
   }
 }
