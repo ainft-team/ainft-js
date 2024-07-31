@@ -438,11 +438,15 @@ export class Assistants extends FactoryBase {
   }
 
   private countThreads(items: any) {
-    if (typeof items === 'boolean' || !items) {
+    if (typeof items !== 'object' || !items) {
       return 0;
     }
-    return _.sumBy(_.values(items), (item) => {
-      return _.isObject(item.threads) ? _.keys(item.threads).length : 0;
-    });
+    return Object.values(items).reduce((sum: number, item: any) => {
+      const count =
+        item.threads && typeof item.threads === 'object'
+          ? Object.keys(item.threads).length
+          : 0;
+      return sum + count;
+    }, 0);
   }
 }
