@@ -249,18 +249,18 @@ export class Assistants extends FactoryBase {
   /**
    * Retrieves a list of assistants.
    * @param {string} objectId - The ID of AINFT object.
-   * @param {string} address - The checksum address of account.
-   * @param {QueryParams} QueryParams - The parameters for querying items.
+   * @param {string} [address] - (Optional) The checksum address of account.
+   * @param {QueryParams} [queryParams={}] - The parameters for querying items.
    * @returns A promise that resolves with the list of assistants.
    */
   async list(
     objectId: string,
-    address: string,
+    address?: string | null,
     { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
   ) {
     await validateObject(this.ain, objectId);
 
-    const tokens = await this.getTokensByAddress(objectId, address);
+    const tokens = await this.getTokens(objectId, address);
     const assistants = this.getAssistantsFromTokens(tokens);
     const sorted = this.sortAssistants(assistants, order);
 
@@ -393,12 +393,12 @@ export class Assistants extends FactoryBase {
     );
   }
 
-  private async getTokensByAddress(objectId: string, address: string) {
+  private async getTokens(objectId: string, address?: string | null) {
     const appId = AinftObject.getAppId(objectId);
     const tokensPath = Path.app(appId).tokens().value();
     const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
     return Object.entries(tokens).reduce<NftToken[]>((acc, [id, token]) => {
-      if (token.owner === address) {
+      if (!address || token.owner === address) {
         acc.push({ tokenId: id, ...token });
       }
       return acc;
@@ -408,13 +408,13 @@ export class Assistants extends FactoryBase {
   private getAssistantsFromTokens(tokens: NftToken[]) {
     return tokens.reduce<Assistant[]>((acc, token) => {
       if (token.ai) {
-        acc.push(this.toAssistant(token));
+        acc.push(this.toAssistant(token, this.countThreads(token.ai.history)));
       }
       return acc;
     }, []);
   }
 
-  private toAssistant(data: any): Assistant {
+  private toAssistant(data: any, numThreads: number): Assistant {
     return {
       id: data.ai.id,
       tokenId: data.tokenId,
@@ -425,6 +425,7 @@ export class Assistants extends FactoryBase {
       description: data.ai.config.description || null,
       metadata: data.ai.config.metadata || {},
       created_at: data.ai.createdAt,
+      metric: { numThreads },
     };
   }
 
@@ -433,6 +434,15 @@ export class Assistants extends FactoryBase {
       if (a.created_at < b.created_at) return order === 'asc' ? -1 : 1;
       if (a.created_at > b.created_at) return order === 'asc' ? 1 : -1;
       return 0;
+    });
+  }
+
+  private countThreads(items: any) {
+    if (typeof items === 'boolean' || !items) {
+      return 0;
+    }
+    return _.sumBy(_.values(items), (item) => {
+      return _.isObject(item.threads) ? _.keys(item.threads).length : 0;
     });
   }
 }

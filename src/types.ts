@@ -1240,6 +1240,8 @@ export interface Assistant {
    * with keys limited to 64 characters and values to 512 characters.
    */
   metadata: object | null;
+  /** The metric of the assistant. */
+  metric?: { [key: string]: number } | null;
   /** The UNIX timestamp in seconds. */
   created_at: number;
 }

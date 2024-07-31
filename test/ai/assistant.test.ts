@@ -50,7 +50,7 @@ describe.skip('assistant', () => {
   });
 
   it('should list assistants', async () => {
-    const result = await ainft.assistant.list(objectId, address);
+    const result = await ainft.assistant.list(objectId, null);
 
     expect(result.total).toBeDefined();
     expect(result.items).toBeDefined();
