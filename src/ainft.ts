@@ -156,16 +156,17 @@ export default class AinftJs {
    * Connects to the blockchain endpoint.
    * @param {ConnectionCallback} connectionCb The connection callback function.
    * @param {DisconnectionCallback} disconnectionCb The disconnection callback function.
+   * @param {string} customClientId The custom client ID to set.
    */
-  async connect(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback) {
+  async connect(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, customClientId?: string) {
     if (this.isConnected()) {
       throw new Error('Client is already connected.');
     }
     const privateKey = this.ain.wallet.defaultAccount?.private_key;
     if (privateKey) {
-      await this.ainize.login(privateKey, connectionCb, disconnectionCb);
+      await this.ainize.login(privateKey, connectionCb, disconnectionCb, customClientId);
     } else {
-      await this.ainize.loginWithSigner(connectionCb, disconnectionCb);
+      await this.ainize.loginWithSigner(connectionCb, disconnectionCb, customClientId);
     }
   }
 
