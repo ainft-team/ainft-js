@@ -1,3 +1,14 @@
+import { ConnectionCallback, DisconnectionCallback } from '@ainblockchain/ain-js/lib/types';
+
+export interface ConnectParams {
+  /** The connection callback function. */
+  connectionCb?: ConnectionCallback;
+  /** The disconnection callback function. */
+  disconnectionCb?: DisconnectionCallback;
+  /** The custom client ID to set. */
+  customClientId?: string;
+}
+
 export interface SerializedMessage {
   code: number;
   message: string | undefined;
