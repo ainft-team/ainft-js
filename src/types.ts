@@ -1033,6 +1033,8 @@ export interface NftSearchParams extends SearchOption {
   name?: string;
   /** The symbol of AINFT object. */
   symbol?: string;
+  /** The slug of AINFT object. */
+  slug?: string;
 }
 
 export interface getTxBodyTransferNftParams {
