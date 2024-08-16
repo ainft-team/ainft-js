@@ -1033,7 +1033,7 @@ export interface NftSearchParams extends SearchOption {
   name?: string;
   /** The symbol of AINFT object. */
   symbol?: string;
-  /** The slug of AINFT object. */
+  /** The URL-safe version of the name. (e.g. "My Object" -> "my-object") */
   slug?: string;
 }
 
