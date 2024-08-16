@@ -181,6 +181,7 @@ export default class Nft extends FactoryBase {
    *  userAddress: '0x...',
    *  name: '...',
    *  symbol: '...',
+   *  slug: '...',
    *  limit: 5,
    *  cursor: '...'
    * }
@@ -197,8 +198,8 @@ export default class Nft extends FactoryBase {
   searchAinftObjects(searchParams: NftSearchParams): Promise<AinftObjectSearchResponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
-      const { userAddress, ainftObjectId, name, symbol, limit, cursor } = searchParams;
-      query = { userAddress, ainftObjectId, name, symbol, cursor, limit };
+      const { userAddress, ainftObjectId, name, symbol, slug, limit, cursor } = searchParams;
+      query = { userAddress, ainftObjectId, name, symbol, slug, cursor, limit };
     }
     const trailingUrl = `native/search/ainftObjects`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
