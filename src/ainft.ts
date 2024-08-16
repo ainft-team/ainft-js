@@ -5,7 +5,6 @@ import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
-import { ConnectionCallback, DisconnectionCallback } from '@ainblockchain/ain-js/lib/types';
 import Handler from '@ainize-team/ainize-js/dist/handlers/handler';
 
 import Nft from './nft';
@@ -25,6 +24,7 @@ import {
   AIN_BLOCKCHAIN_ENDPOINT,
 } from './constants';
 import { setEnv } from './utils/env';
+import { ConnectParams } from './types';
 
 export interface ClientOptions {
   privateKey?: string;
@@ -154,11 +154,9 @@ export default class AinftJs {
 
   /**
    * Connects to the blockchain endpoint.
-   * @param {ConnectionCallback} connectionCb The connection callback function.
-   * @param {DisconnectionCallback} disconnectionCb The disconnection callback function.
-   * @param {string} customClientId The custom client ID to set.
+   * @param {ConnectParams} connectParams - The parameters to connect.
    */
-  async connect(connectionCb?: ConnectionCallback, disconnectionCb?: DisconnectionCallback, customClientId?: string) {
+  async connect({ connectionCb, disconnectionCb, customClientId }: ConnectParams = {}) {
     if (this.isConnected()) {
       throw new Error('Client is already connected.');
     }
