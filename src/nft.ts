@@ -198,8 +198,8 @@ export default class Nft extends FactoryBase {
   searchAinftObjects(searchParams: NftSearchParams): Promise<AinftObjectSearchResponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
-      const { userAddress, ainftObjectId, name, symbol, slug, limit, cursor } = searchParams;
-      query = { userAddress, ainftObjectId, name, symbol, slug, cursor, limit };
+      const { userAddress, ainftObjectId, name, symbol, slug, limit, cursor, order } = searchParams;
+      query = { userAddress, ainftObjectId, name, symbol, slug, cursor, limit, order };
     }
     const trailingUrl = `native/search/ainftObjects`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
@@ -234,8 +234,8 @@ export default class Nft extends FactoryBase {
   searchNfts(searchParams: NftSearchParams): Promise<AinftTokenSearchResponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
-      const { userAddress, ainftObjectId, name, symbol, limit, cursor, tokenId } = searchParams;
-      query = { userAddress, ainftObjectId, name, symbol, cursor, limit, tokenId };
+      const { userAddress, ainftObjectId, name, symbol, slug, tokenId, limit, cursor, order } = searchParams;
+      query = { userAddress, ainftObjectId, name, symbol, slug, tokenId, limit, cursor, order };
     }
     const trailingUrl = `native/search/nfts`;
     return this.sendRequest(HttpMethod.GET, trailingUrl, query);
