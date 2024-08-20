@@ -1031,6 +1031,7 @@ export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {
 export interface SearchOption {
   limit?: number,
   cursor?: string,
+  order?: 'asc' | 'desc',
 }
 
 export interface NftSearchParams extends SearchOption {
@@ -1044,7 +1045,7 @@ export interface NftSearchParams extends SearchOption {
   name?: string;
   /** The symbol of AINFT object. */
   symbol?: string;
-  /** The URL-safe version of the name. (e.g. "My Object" -> "my-object") */
+  /** The URL slug of AINFT object. (e.g. "My Object" -> "my-object") */
   slug?: string;
 }
 

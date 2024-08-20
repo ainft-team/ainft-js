@@ -19,6 +19,8 @@ export default class Ainft721Object extends FactoryBase {
   readonly appId: string;
   /** The metadata of AINFT object. */
   readonly metadata?: Metadata;
+  /** The URL slug of AINFT object. */
+  readonly slug?: string | null;
 
   /**
    * Constructor of Ainft721Object.
@@ -29,6 +31,7 @@ export default class Ainft721Object extends FactoryBase {
    * @param objectInfo.symbol The symbol of AINFT object.
    * @param objectInfo.owner The owner of AINFT object.
    * @param objectInfo.metadata The metadata of AINFT object.
+   * @param objectInfo.slug The URL slug of AINFT object.
    * @param ain Ain instance to sign and send transaction to AIN blockchain.
    * @param baseUrl The base url to request api to AINFT factory server.
    */
@@ -39,6 +42,7 @@ export default class Ainft721Object extends FactoryBase {
       symbol: string;
       owner: string;
       metadata?: Metadata;
+      slug?: string;
     },
     ain: Ain,
     baseUrl: string
@@ -50,6 +54,7 @@ export default class Ainft721Object extends FactoryBase {
     this.owner = objectInfo.owner;
     this.appId = Ainft721Object.getAppId(objectInfo.id);
     this.metadata = objectInfo.metadata || {};
+    this.slug = objectInfo.slug || null;
   }
 
   /**
