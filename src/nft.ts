@@ -201,8 +201,8 @@ export default class Nft extends FactoryBase {
       const { userAddress, ainftObjectId, name, symbol, slug, limit, cursor, order } = searchParams;
       query = { userAddress, ainftObjectId, name, symbol, slug, cursor, limit, order };
     }
-    const trailingUrl = `native/search/ainftObjects`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    const trailingUrl = 'native/search/ainftObjects';
+    return this.sendRequestWithoutSign(HttpMethod.GET, trailingUrl, query);
   }
 
   /**
@@ -237,8 +237,8 @@ export default class Nft extends FactoryBase {
       const { userAddress, ainftObjectId, name, symbol, slug, tokenId, limit, cursor, order } = searchParams;
       query = { userAddress, ainftObjectId, name, symbol, slug, tokenId, limit, cursor, order };
     }
-    const trailingUrl = `native/search/nfts`;
-    return this.sendRequest(HttpMethod.GET, trailingUrl, query);
+    const trailingUrl = 'native/search/nfts';
+    return this.sendRequestWithoutSign(HttpMethod.GET, trailingUrl, query);
   }
 
   /**
