@@ -1237,6 +1237,8 @@ export interface AiConfiguration {
 export interface Assistant {
   /** The identifier. */
   id: string;
+  /** The ID of AINFT object.  */
+  objectId: string | null;
   /** The ID of AINFT token. */
   tokenId: string | null;
   /** The owner address of AINFT token. */

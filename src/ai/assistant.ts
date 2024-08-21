@@ -237,6 +237,7 @@ export class Assistants extends FactoryBase {
 
     const data = {
       id: assistant.id,
+      objectId,
       tokenId,
       owner: token.owner,
       model: assistant.config.model,
@@ -404,7 +405,7 @@ export class Assistants extends FactoryBase {
     const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
     return Object.entries(tokens).reduce<NftToken[]>((acc, [id, token]) => {
       if (!address || token.owner === address) {
-        acc.push({ tokenId: id, ...token });
+        acc.push({ objectId, tokenId: id, ...token });
       }
       return acc;
     }, []);
@@ -422,6 +423,7 @@ export class Assistants extends FactoryBase {
   private toAssistant(data: any, numThreads: number): Assistant {
     return {
       id: data.ai.id,
+      objectId: data.objectId,
       tokenId: data.tokenId,
       owner: data.owner,
       model: data.ai.config.model,
