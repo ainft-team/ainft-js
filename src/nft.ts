@@ -169,14 +169,14 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Searches for AINFT objects created on the AIN Blockchain.
+   * Searches for AINFT objects created on the AIN Blockchain. This method accesses public data only.
    * @param {NftSearchParams} searchParams The parameters to search AINFT object.
    * @returns Returns searched AINFT objects.
    * 
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
    * 
-   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * const ainftJs = new AinftJs();
    * const params = {
    *  userAddress: '0x...',
    *  name: '...',
@@ -206,13 +206,13 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Searches for AINFTs on the ain blockchain.
+   * Searches for AINFTs on the ain blockchain. This method accesses public data only.
    * @param {NftSearchParams} searchParams The parameters to search AINFT.
    * @returns Returns searched AINFTs
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
    * 
-   * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
+   * const ainftJs = new AinftJs();
    * const params = {
    *  userAddress: '0x...',
    *  name: '...',
