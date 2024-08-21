@@ -169,7 +169,8 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Searches for AINFT objects created on the AIN Blockchain. This method accesses public data only.
+   * Searches for AINFT objects created on the AIN Blockchain.
+   * This method accesses public data only and does not require signature in the requests.
    * @param {NftSearchParams} searchParams The parameters to search AINFT object.
    * @returns Returns searched AINFT objects.
    * 
@@ -206,7 +207,8 @@ export default class Nft extends FactoryBase {
   }
 
   /**
-   * Searches for AINFTs on the ain blockchain. This method accesses public data only.
+   * Searches for AINFTs on the ain blockchain.
+   * This method accesses public data only and does not require signature in the requests.
    * @param {NftSearchParams} searchParams The parameters to search AINFT.
    * @returns Returns searched AINFTs
    * ```ts
