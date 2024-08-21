@@ -253,20 +253,26 @@ export class Assistants extends FactoryBase {
 
   /**
    * Retrieves a list of assistants.
-   * @param {string} objectId - The ID of AINFT object.
+   * @param {string[]} objectIds - The ID(s) of AINFT object.
    * @param {string} [address] - (Optional) The checksum address of account.
    * @param {QueryParams} [queryParams={}] - The parameters for querying items.
    * @returns A promise that resolves with the list of assistants.
    */
   async list(
-    objectId: string,
+    objectIds: string[],
     address?: string | null,
     { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
   ) {
-    await validateObject(this.ain, objectId);
+    await Promise.all(objectIds.map((objectId) => validateObject(this.ain, objectId)));
 
-    const tokens = await this.getTokens(objectId, address);
-    const assistants = this.getAssistantsFromTokens(tokens);
+    const allAssistants = await Promise.all(
+      objectIds.map(async (objectId) => {
+        const tokens = await this.getTokens(objectId, address);
+        return this.getAssistantsFromTokens(tokens);
+      })
+    )
+    const assistants = allAssistants.flat();
+
     const sorted = this.sortAssistants(assistants, order);
 
     const total = sorted.length;
@@ -450,9 +456,7 @@ export class Assistants extends FactoryBase {
     }
     return Object.values(items).reduce((sum: number, item: any) => {
       const count =
-        item.threads && typeof item.threads === 'object'
-          ? Object.keys(item.threads).length
-          : 0;
+        item.threads && typeof item.threads === 'object' ? Object.keys(item.threads).length : 0;
       return sum + count;
     }, 0);
   }
