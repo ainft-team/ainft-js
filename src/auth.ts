@@ -2,6 +2,7 @@ import Reference from '@ainblockchain/ain-js/lib/ain-db/ref';
 import FactoryBase from './factoryBase';
 import { APP_STAKING_LOCKUP_DURATION_MS, MIN_GAS_PRICE } from './constants';
 import { HttpMethod, User } from './types';
+import { authenticated } from './utils/decorator';
 
 /**
  * This class supports creating AINFT factory app and users. \
@@ -13,6 +14,7 @@ export default class Auth extends FactoryBase {
    * @param {string} appname - The name of app.
    * @returns Returns transaction result.
    */
+  @authenticated
   async createApp(appname: string) {
     const address = await this.ain.signer.getAddress();
     return this.ain.db.ref(`/manage_app/${appname}/create/${Date.now()}`).setValue({
@@ -38,6 +40,7 @@ export default class Auth extends FactoryBase {
    * @param {string} userId The ID of user to create.
    * @returns
    */
+  @authenticated
   createUser(appId: string, userId: string): Promise<User> {
     const body = { appId, userId };
     const trailingUrl = 'create_user_account';
@@ -50,12 +53,13 @@ export default class Auth extends FactoryBase {
    * @param {string} userId The ID of user to be admin.
    * @returns
    */
+  // TODO(hyeonwoong): add registerUserToAdmin and deregisterUserFromAdmin
+  @authenticated
   createAdmin(appId: string, userId: string): Promise<User> {
     const body = { appId, userId };
     const trailingUrl = 'create_admin_account';
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
   }
-  // TODO(hyeonwoong): add registerUserToAdmin and deregisterUserFromAdmin
 
   /**
    * Gets AINFT factory user in app.
@@ -63,6 +67,7 @@ export default class Auth extends FactoryBase {
    * @param {string} userId The ID of user to get.
    * @returns Return user information.
    */
+  @authenticated
   getUser(appId: string, userId: string): Promise<User> {
     const query = { appId };
     const trailingUrl = `user/${userId}`;
@@ -76,6 +81,7 @@ export default class Auth extends FactoryBase {
    * @param {string} ethAddress The ethereum address to add.
    * @returns
    */
+  @authenticated
   addUserEthAddress(appId: string, userId: string, ethAddress: string): Promise<User> {
     const body = {
       appId,
@@ -92,6 +98,7 @@ export default class Auth extends FactoryBase {
    * @param {string} ethAddress The ethereum address to delete.
    * @returns
    */
+  @authenticated
   removeUserEthAddress(appId: string, userId: string, ethAddress: string): Promise<User> {
     const query = {
       appId,
@@ -109,6 +116,7 @@ export default class Auth extends FactoryBase {
    * @param {string} contractAddress The address of contract.
    * @returns
    */
+  @authenticated
   addManagedContract(
     appId: string,
     chain: string,
@@ -133,6 +141,7 @@ export default class Auth extends FactoryBase {
    * @param {string} contractAddress The address of contract.
    * @returns
    */
+  @authenticated
   removeManagedContract(
     appId: string,
     chain: string,
@@ -155,6 +164,7 @@ export default class Auth extends FactoryBase {
    * @param {string} accessAinAddress This is the address of the account that will be accessible to the AINFT Factory app. If not set, it is set to the address of the account set as the privateKey.
    * @returns
    */
+  @authenticated
   async registerBlockchainApp(appId: string, accessAinAddress?: string) {
     const ownerAddress = await this.ain.signer.getAddress();
     const body = {
@@ -172,6 +182,7 @@ export default class Auth extends FactoryBase {
    * @param {string} appId The ID of app.
    * @returns
    */
+  @authenticated
   async getTxBodyForDelegateApp(appId: string) {
     const address = await this.ain.signer.getAddress();
     const body = { appId, address };
@@ -185,6 +196,7 @@ export default class Auth extends FactoryBase {
    * @param {string} appId The ID of app.
    * @returns
    */
+  @authenticated
   async delegateApp(appId: string) {
     const txBody = await this.getTxBodyForDelegateApp(appId);
     return this.ain.sendTransaction(txBody);
@@ -197,6 +209,7 @@ export default class Auth extends FactoryBase {
    * @param {string} userId The ID of user.
    * @param {string} chain The symbol of chain.
    */
+  @authenticated
   getUserDepositAddress(appId: string, userId: string, chain: string): Promise<string> {
     const body = {
       appId,
@@ -212,6 +225,7 @@ export default class Auth extends FactoryBase {
    * @param {string[]} owners The list of addresses to be owner.
    * @returns {string} transaction hash
    */
+  @authenticated
   addOwners(appId: string, owners: string[]): Promise<string> {
     const body = {
       appId,

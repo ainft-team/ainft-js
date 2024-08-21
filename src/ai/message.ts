@@ -22,7 +22,7 @@ import {
   validateThread,
   validateToken,
 } from '../utils/validator';
-import { requireAuth } from '../decorators/require-auth';
+import { authenticated } from '../utils/decorator';
 
 /**
  * This class supports create messages within threads.\
@@ -37,7 +37,7 @@ export class Messages extends FactoryBase {
    * @param {MessageCreateParams} MessageCreateParams - The parameters to create message.
    * @returns A promise that resolves with both the transaction result and a list including the new message.
    */
-  @requireAuth
+  @authenticated
   async create(
     objectId: string,
     tokenId: string,
@@ -80,7 +80,7 @@ export class Messages extends FactoryBase {
    * @param {MessageUpdateParams} MessageUpdateParams - The parameters to update message.
    * @returns A promise that resolves with both the transaction result and the updated message.
    */
-  @requireAuth
+  @authenticated
   async update(
     objectId: string,
     tokenId: string,

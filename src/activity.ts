@@ -1,5 +1,6 @@
 import FactoryBase from "./factoryBase";
 import { ActivityNftInfo, AddAiHistoryParams, HttpMethod, NftActivityType, TaskTypeCategory, getTxbodyAddAiHistoryParams } from "./types";
+import { authenticated } from "./utils/decorator";
 
 /**
  * This class supports add activities.\
@@ -14,6 +15,7 @@ export default class Activity extends FactoryBase {
    * @param activityType The type of activity.
    * @param nftInfo Information about the NFTs used in the activity.
    */
+  @authenticated
   add(
     appId: string,
     userId: string,
@@ -40,6 +42,7 @@ export default class Activity extends FactoryBase {
    * @param label The label of record.
    * @param data Data related to the activity.
    */
+  @authenticated
   addNftRecord(
     appId: string,
     userId: string,
@@ -63,6 +66,7 @@ export default class Activity extends FactoryBase {
    * @param {AddAiHistoryParams} AddAiHistoryParams The paramters to add ai history.
    * @returns 
    */
+  @authenticated
   async addNftAiHistory({
     chain,
     network,
@@ -92,6 +96,7 @@ export default class Activity extends FactoryBase {
    * @param {getTxbodyAddAiHistoryParams} getTxbodyAddAiHistoryParams
    * @returns Returns transaction body without signature.
    */
+  @authenticated
   getTxBodyForAddNftAiHistory({
     chain,
     network,

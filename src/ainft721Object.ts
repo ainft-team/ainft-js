@@ -2,6 +2,7 @@ import { AinftToken } from './ainftToken';
 import FactoryBase from './factoryBase';
 import { HttpMethod, Metadata } from './types';
 import Ain from '@ainblockchain/ain-js';
+import { authenticated } from './utils/decorator';
 
 /**
  * The class of AINFT 721 object.
@@ -111,6 +112,7 @@ export default class Ainft721Object extends FactoryBase {
    * }
    * ```
    */
+  @authenticated
   async transfer(from: string, to: string, tokenId: string): Promise<any> {
     const txbody = await this.getTxBodyForTransfer(from, to, tokenId);
     return this.ain.sendTransaction(txbody);
@@ -132,6 +134,7 @@ export default class Ainft721Object extends FactoryBase {
    * }
    * ```
    */
+  @authenticated
   async mint(to: string, tokenId: string): Promise<any> {
     const address = await this.ain.signer.getAddress();
     const txbody = await this.getTxBodyForMint(address, to, tokenId);
@@ -156,6 +159,7 @@ export default class Ainft721Object extends FactoryBase {
    * }
    * ```
    */
+  @authenticated
   getTxBodyForTransfer(from: string, to: string, tokenId: string) {
     const body = {
       address: from,
@@ -183,6 +187,7 @@ export default class Ainft721Object extends FactoryBase {
    * }
    * ```
    */
+  @authenticated
   getTxBodyForMint(ownerAddress: string, to: string, tokenId: string) {
     const body = {
       address: ownerAddress,

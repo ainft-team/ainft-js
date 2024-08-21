@@ -23,7 +23,7 @@ import {
   validateThread,
   validateToken,
 } from '../utils/validator';
-import { requireAuth } from '../decorators/require-auth';
+import { authenticated } from '../utils/decorator';
 
 /**
  * This class supports create threads that assistant can interact with.\
@@ -37,7 +37,7 @@ export class Threads extends FactoryBase {
    * @param {ThreadCreateParams} ThreadCreateParams - The parameters to create thread.
    * @returns A promise that resolves with both the transaction result and the created thread.
    */
-  @requireAuth
+  @authenticated
   async create(
     objectId: string,
     tokenId: string,
@@ -91,7 +91,7 @@ export class Threads extends FactoryBase {
    * @param {ThreadUpdateParams} ThreadUpdateParams - The parameters to update thread.
    * @returns A promise that resolves with both the transaction result and the updated thread.
    */
-  @requireAuth
+  @authenticated
   async update(
     objectId: string,
     tokenId: string,
@@ -133,7 +133,7 @@ export class Threads extends FactoryBase {
    * @param {string} threadId - The ID of thread.
    * @returns A promise that resolves with both the transaction result and the deleted thread.
    */
-  @requireAuth
+  @authenticated
   async delete(
     objectId: string,
     tokenId: string,

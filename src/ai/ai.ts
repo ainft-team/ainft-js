@@ -17,7 +17,7 @@ import { Path } from '../utils/path';
 import { buildSetTxBody, buildSetValueOp, sendTx } from '../utils/transaction';
 import { sleep } from '../utils/util';
 import { validateObject, validateObjectOwner } from '../utils/validator';
-import { requireAuth } from '../decorators/require-auth';
+import { authenticated } from '../utils/decorator';
 
 /**
  * This class manages ai configurations for AINFT object,\
@@ -31,7 +31,7 @@ export class Ai extends FactoryBase {
    * @param {string} serviceName - The name of Ainize service.
    * @returns {Promise<AiConfigurationTransactionResult>} A promise that resolves with both the transaction result and the configuration info.
    */
-  @requireAuth
+  @authenticated
   async configure(
     objectId: string,
     serviceName: string
@@ -53,7 +53,7 @@ export class Ai extends FactoryBase {
    * @param {string} serviceName - The name of Ainize service.
    * @returns {Promise<number|null>} A promise that resolves with the credit balance.
    */
-  @requireAuth
+  @authenticated
   async getCredit(serviceName: string): Promise<number> {
     const address = await this.ain.signer.getAddress();
 
@@ -67,7 +67,7 @@ export class Ai extends FactoryBase {
         serviceName: serviceName,
         opType,
         data: body,
-        timeout: 2*60*1000, // 2min
+        timeout: 2 * 60 * 1000, // 2min
       });
       balance = response.data;
     } else {
@@ -86,7 +86,7 @@ export class Ai extends FactoryBase {
    * @returns {Promise<CreditTransactionResult>} A promise that resolves with the deposit transaction info.
    */
   /*
-  @requireAuth
+  @authenticated
   async depositCredit(serviceName: string, amount: number): Promise<CreditTransactionResult> {
     const address = await this.ain.signer.getAddress();
 
@@ -172,6 +172,8 @@ export class Ai extends FactoryBase {
       }
       await sleep(1000); // 1sec
     }
-    throw new Error(`timeout of ${timeout}ms exceeded.\nplease check the transaction status: ${txHash}`);
+    throw new Error(
+      `timeout of ${timeout}ms exceeded.\nplease check the transaction status: ${txHash}`
+    );
   }
 }
