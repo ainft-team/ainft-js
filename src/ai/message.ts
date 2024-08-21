@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getServiceName, request } from '../ainize';
+import { OperationType, getServiceName, request } from '../utils/ainize';
 import {
   Message,
   MessageCreateParams,

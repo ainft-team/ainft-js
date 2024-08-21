@@ -3,7 +3,7 @@ import Service from '@ainize-team/ainize-js/dist/service';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getService, request } from '../ainize';
+import { OperationType, getService, request } from '../utils/ainize';
 import {
   AiConfigurationTransactionResult,
   CreditTransactionResult,
