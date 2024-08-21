@@ -41,6 +41,7 @@ import {
   validateServerConfigurationForObject,
   validateToken,
 } from '../utils/validator';
+import { requireAuth } from '../decorators/require-auth';
 
 enum Role {
   OWNER = 'owner',
@@ -60,6 +61,7 @@ export class Assistants extends FactoryBase {
    * @param {AssistantCreateOptions} AssistantCreateOptions - The creation options.
    * @returns A promise that resolves with both the transaction result and the created assistant.
    */
+  @requireAuth
   async create(
     objectId: string,
     tokenId: string,
@@ -119,6 +121,7 @@ export class Assistants extends FactoryBase {
    * @param {AssistantUpdateParams} AssistantUpdateParams - The parameters to update assistant.
    * @returns A promise that resolves with both the transaction result and the updated assistant.
    */
+  @requireAuth
   async update(
     objectId: string,
     tokenId: string,
@@ -177,6 +180,7 @@ export class Assistants extends FactoryBase {
    * @param {string} assistantId - The ID of assistant.
    * @returns A promise that resolves with both the transaction result and the deleted assistant.
    */
+  @requireAuth
   async delete(
     objectId: string,
     tokenId: string,
@@ -270,6 +274,7 @@ export class Assistants extends FactoryBase {
     return { total, items };
   }
 
+  @requireAuth
   async mint(objectId: string, to: string) {
     const checksum = getChecksumAddress(to);
     const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);

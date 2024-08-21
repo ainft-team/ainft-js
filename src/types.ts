@@ -1336,11 +1336,6 @@ export interface ThreadCreateParams {
   metadata?: object | null;
 }
 
-export interface ThreadCreateAndRunParams {
-  metadata?: object | null;
-  messages?: Array<MessageCreateParams>;
-}
-
 export interface ThreadUpdateParams {
   /**
    * The metadata can contain up to 16 pairs,
