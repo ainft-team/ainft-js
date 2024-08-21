@@ -197,25 +197,32 @@ export class Threads extends FactoryBase {
 
   /**
    * Retrieves a list of threads.
-   * @param {string} objectId - The ID of AINFT object.
+   * @param {string[]} objectIds - The ID(s) of AINFT object.
    * @param {string | null} [tokenId] - The ID of AINFT token.
    * @param {string | null} [address] - The checksum address of account.
    * @param {QueryParams} QueryParams - The parameters for querying items.
    * @returns A promise that resolves with the list of threads.
    */
   async list(
-    objectId: string,
+    objectIds: string[],
     tokenId?: string | null,
     address?: string | null,
     { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
   ) {
-    await validateObject(this.ain, objectId);
+    await Promise.all(objectIds.map((objectId) => validateObject(this.ain, objectId)));
+
     if (tokenId) {
-      await validateToken(this.ain, objectId, tokenId);
+      await Promise.all(objectIds.map((objectId) => validateToken(this.ain, objectId, tokenId)));
     }
 
-    const tokens = await this.fetchTokens(objectId);
-    const threads = this.flattenThreads(tokens);
+    const allThreads = await Promise.all(
+      objectIds.map(async (objectId) => {
+        const tokens = await this.fetchTokens(objectId);
+        return this.flattenThreads(objectId, tokens);
+      })
+    );
+    const threads = allThreads.flat();
+
     const filtered = this.filterThreads(threads, tokenId, address);
     const sorted = _.orderBy(filtered, ['created_at'], [order]);
 
@@ -280,7 +287,7 @@ export class Threads extends FactoryBase {
     return this.ain.db.ref(tokensPath).getValue();
   }
 
-  private flattenThreads(tokens: any) {
+  private flattenThreads(objectId: string, tokens: any) {
     const flatten: any = [];
     _.forEach(tokens, (token, tokenId) => {
       const assistant = token.ai;
@@ -300,6 +307,7 @@ export class Threads extends FactoryBase {
             created_at: thread.createdAt,
             assistant: {
               id: assistant.id,
+              objectId,
               tokenId,
               model: assistant.config.model,
               name: assistant.config.name,
