@@ -17,6 +17,7 @@ import { Path } from '../utils/path';
 import { buildSetTxBody, buildSetValueOp, sendTx } from '../utils/transaction';
 import { sleep } from '../utils/util';
 import { validateObject, validateObjectOwner } from '../utils/validator';
+import { requireAuth } from '../decorators/require-auth';
 
 /**
  * This class manages ai configurations for AINFT object,\
@@ -30,6 +31,7 @@ export class Ai extends FactoryBase {
    * @param {string} serviceName - The name of Ainize service.
    * @returns {Promise<AiConfigurationTransactionResult>} A promise that resolves with both the transaction result and the configuration info.
    */
+  @requireAuth
   async configure(
     objectId: string,
     serviceName: string
@@ -51,6 +53,7 @@ export class Ai extends FactoryBase {
    * @param {string} serviceName - The name of Ainize service.
    * @returns {Promise<number|null>} A promise that resolves with the credit balance.
    */
+  @requireAuth
   async getCredit(serviceName: string): Promise<number> {
     const address = await this.ain.signer.getAddress();
 
@@ -83,6 +86,7 @@ export class Ai extends FactoryBase {
    * @returns {Promise<CreditTransactionResult>} A promise that resolves with the deposit transaction info.
    */
   /*
+  @requireAuth
   async depositCredit(serviceName: string, amount: number): Promise<CreditTransactionResult> {
     const address = await this.ain.signer.getAddress();
 

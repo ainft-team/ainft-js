@@ -62,11 +62,4 @@ describe.skip('thread', () => {
     expect(result.delThread.id).toBe(threadId);
     expect(result.delThread.deleted).toBe(true);
   });
-
-  it('should create and run thread', async () => {
-    const result = await ainft.thread.createAndRun(objectId, tokenId, {
-      metadata: { title: 'New chat' },
-      messages: [{ role: 'user', content: '안녕하세요' }],
-    });
-  });
 });

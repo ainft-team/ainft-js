@@ -25,6 +25,7 @@ import {
 } from './constants';
 import { setEnv } from './utils/env';
 import { ConnectParams } from './types';
+import { requireAuth } from './decorators/require-auth';
 
 export interface ClientOptions {
   privateKey?: string;
@@ -60,10 +61,6 @@ export default class AinftJs {
   private _chainId: 0 | 1;
 
   constructor({ privateKey, signer, baseUrl, blockchainUrl, chainId }: ClientOptions = {}) {
-    if (privateKey === undefined && signer === undefined) {
-      throw new Error('must provide either private key or signer');
-    }
-
     this._baseUrl = baseUrl || 'https://ainft-api.ainetwork.ai';
     const stage = this.getStage(this._baseUrl);
     this._blockchainUrl = blockchainUrl || AIN_BLOCKCHAIN_ENDPOINT[stage];
@@ -156,6 +153,7 @@ export default class AinftJs {
    * Connects to the blockchain endpoint.
    * @param {ConnectParams} connectParams - The parameters to connect.
    */
+  @requireAuth
   async connect({ connectionCb, disconnectionCb, customClientId }: ConnectParams = {}) {
     if (this.isConnected()) {
       throw new Error('Client is already connected.');
@@ -172,6 +170,7 @@ export default class AinftJs {
    * Checks whether the client is connected to the blockchain endpoint.
    * @returns Returns `true` if connected, `false` otherwise.
    */
+  @requireAuth
   isConnected(): boolean {
     return Handler.getInstance().isConnected();
   }
@@ -179,6 +178,7 @@ export default class AinftJs {
   /**
    * Disconnects from the blockchain endpoint.
    */
+  @requireAuth
   async disconnect() {
     if (!this.isConnected()) {
       throw new Error('Client is not connected.');
