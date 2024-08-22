@@ -1,5 +1,6 @@
 import FactoryBase from './factoryBase';
 import { HttpMethod, CreatePersonaModelInfo, ChatResponse, PersonaModelCreditInfo } from './types';
+import { authenticated } from './utils/decorator';
 
 /**
  * This class supports creating persona models and managing it.\
@@ -14,6 +15,7 @@ export default class PersonaModels extends FactoryBase {
    * @param coreBeliefs - This is the central content of the persona model. The model reflects this with the highest priority.
    * @returns Returns the information of the persona model created.
    */
+  @authenticated
   create(
     appId: string,
     userId: string,
@@ -39,6 +41,7 @@ export default class PersonaModels extends FactoryBase {
    * @param messageId (Optional) The ID of message. If you want to manage the message ID separately, set it up.
    * @returns Returns response of persona model.
    */
+  @authenticated
   chat(
     modelId: string,
     appId: string,
@@ -63,6 +66,7 @@ export default class PersonaModels extends FactoryBase {
    * @param modelId The ID of persona model.
    * @returns If set, returns credit and burn amount information.
    */
+  @authenticated
   getCreditInfo(
     appId: string,
     modelId: string

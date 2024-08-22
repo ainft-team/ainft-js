@@ -25,6 +25,7 @@ import {
   itemType,
   UseItemReturnType,
 } from './types';
+import { authenticated } from './utils/decorator';
 
 /**
  * This class supports managing items, store and user items.\
@@ -36,6 +37,7 @@ export default class Store extends FactoryBase {
    * @param {CreateItemParams} CreateItemParams - The parameters to create a new item.
    * @returns {Promise<Item>} Returns created item information.
    */
+  @authenticated
   createItem({
     appId,
     type,
@@ -66,6 +68,7 @@ export default class Store extends FactoryBase {
    * Updates an item.
    * @param {UpdateItemParams} UpdateItemParams - The parameters to update an item.
    */
+  @authenticated
   updateItem({
     appId,
     itemName,
@@ -94,6 +97,7 @@ export default class Store extends FactoryBase {
    * @param {string} subtype - The subtype of the item.
    * @param {string} value - The value of the item.
    */
+  @authenticated
   deregisterItemFromAllStore(
     appId: string,
     type: string,
@@ -110,6 +114,7 @@ export default class Store extends FactoryBase {
    * @param {RegisterItemParams} RegisterItemParams - The parameters to register an item.
    * @returns {Promise<StoreItem>} Returns item information registered in the store.
    */
+  @authenticated
   registerItem({
     appId,
     storeId,
@@ -142,6 +147,7 @@ export default class Store extends FactoryBase {
    * @param {string} storeId - The ID of the store.
    * @param {string} itemName - The name of the item.
    */
+  @authenticated
   deregisterItem(appId: string, storeId: string, itemName: string) {
     const query = { appId };
     const trailingUrl = `${storeId}/item/${encodeURIComponent(itemName)}`;
@@ -157,6 +163,7 @@ export default class Store extends FactoryBase {
    * @param {string=} reason The reason for giving an item. ex) Event for NFT holder
    * @returns {Promise<ItemGiveHistory>} Returns information of item give history.
    */
+  @authenticated
   giveItemToUser(
     appId: string,
     userId: string,
@@ -178,6 +185,7 @@ export default class Store extends FactoryBase {
    * Updates item in store.
    * @param {UpdateStoreItemParams} UpdateStoreItemParams - The parameters to update store item.
    */
+  @authenticated
   updateStoreItem({
     appId,
     storeId,
@@ -208,6 +216,7 @@ export default class Store extends FactoryBase {
    * @param {string} storeId - The ID of the store.
    * @returns {Promise<StoreItem[]>} List of store items.
    */
+  @authenticated
   getStoreItemList(appId: string, storeId: string): Promise<StoreItem[]> {
     const query = { appId };
     const trailingUrl = `${storeId}`;
@@ -220,6 +229,7 @@ export default class Store extends FactoryBase {
    * @param {string} userId - The ID of the user.
    * @returns {Promise<UserItem[]>} List of user items.
    */
+  @authenticated
   getUserInventory(appId: string, userId: string): Promise<UserItem[]> {
     const query = { appId };
     const trailingUrl = `inventory/${userId}`;
@@ -233,6 +243,7 @@ export default class Store extends FactoryBase {
    * @param {string} subtype - The subtype of the items to fetch.
    * @returns {Promise<Item[]>} List of items.
    */
+  @authenticated
   getAllItems(appId: string, type?: string, subtype?: string): Promise<Item[]> {
     const query = { appId, type, subtype };
     const trailingUrl = `items`;
@@ -246,6 +257,7 @@ export default class Store extends FactoryBase {
    * @param {string} itemName - The name of the item to fetch.
    * @returns {Promise<StoreItem>} Information about the store item.
    */
+  @authenticated
   getStoreItemInfo(
     appId: string,
     storeId: string,
@@ -264,6 +276,7 @@ export default class Store extends FactoryBase {
    * @param {string} itemName - The name of the item to fetch.
    * @returns {Promise<UserItem>} Information about the user item.
    */
+  @authenticated
   getUserItemInfo(
     appId: string,
     userId: string,
@@ -280,6 +293,7 @@ export default class Store extends FactoryBase {
    * @param {StorePurchaseParams} StorePurchaseParams - The purchase parameters.
    * @returns {Promise<PurchaseHistory>} Returns purchase history.
    */
+  @authenticated
   purchaseStoreItem({
     appId,
     storeId,
@@ -302,6 +316,7 @@ export default class Store extends FactoryBase {
    * @param {GetPurchaseHistoryParams} GetPurchaseHistoryParams - The parameters for the request.
    * @returns {Promise<History<PurchaseHistory>>} - A Promise that resolves to an object containing the purchase history.
    */
+  @authenticated
   getPurchaseHistory({
     appId,
     year,
@@ -321,6 +336,7 @@ export default class Store extends FactoryBase {
    * @param {GetItemPurchaseHistoryParams} GetItemPurchaseHistoryParams - The parameters for the request.
    * @returns {Promise<History<PurchaseHistory>>} A Promise that resolves to an object containing the purchase history of the item.
    */
+  @authenticated
   getItemPurchaseHistory({
     appId,
     itemName,
@@ -342,6 +358,7 @@ export default class Store extends FactoryBase {
    * @param {GetUserPurchaseHistoryParams} GetUserPurchaseHistoryParams - The parameters for the request.
    * @returns {Promise<History<PurchaseHistory>>} - A Promise that resolves to an object containing the purchase history of the user.
    */
+  @authenticated
   getUserPurchaseHistory({
     appId,
     userId,
@@ -362,6 +379,7 @@ export default class Store extends FactoryBase {
    * @param {GetItemHistoryParams} GetItemHistoryParams - The parameters for the request.
    * @returns {Promise<History<ItemHistory>>} - A Promise that resolves to an object containing the usage history.
    */
+  @authenticated
   getItemHistory({
     appId,
     year,
@@ -381,6 +399,7 @@ export default class Store extends FactoryBase {
    * @param {GetSingleItemHistoryParams} GetSingleItemHistoryParams - The parameters for the request.
    * @returns {Promise<History<ItemHistory>>} - A Promise that resolves to an object containing the usage history of the item.
    */
+  @authenticated
   getSingleItemHistory({
     appId,
     itemName,
@@ -402,6 +421,7 @@ export default class Store extends FactoryBase {
    * @param {GetUserItemHistoryParams} GetUserItemHistoryParams - The parameters for the request.
    * @returns {Promise<History<ItemHistory>>} - A Promise that resolves to an object containing the item usage history of the user.
    */
+  @authenticated
   getUserItemHistory({
     appId,
     userId,
@@ -422,6 +442,7 @@ export default class Store extends FactoryBase {
    * @param {ItemTryOnParams} ItemTryOnParams - The parameters for trying on an item.
    * @returns {Promise<{ image: string; isOccupied: boolean }>} - A promise that returns an object containing the image and whether the item is occupied or not.
    */
+  @authenticated
   tryOnItem({
     appId,
     userId,
@@ -451,6 +472,7 @@ export default class Store extends FactoryBase {
    * @param {ItemUseParams} ItemUseParams - The parameters for using an item.
    * @returns {UseItemReturnType[T]} - A Promise representing the retrieved item. The return type is determined based on the itemType.
    */
+  @authenticated
   useItem<T extends itemType>({
     appId,
     userId,
@@ -479,6 +501,7 @@ export default class Store extends FactoryBase {
    * @param {string} tokenId - The ID of NFT to unequip item.
    * @returns {Promise<NftMetadata>} - A promise that returns the metadata of the NFT after unequip nft trait item.
    */
+  @authenticated
   unequipNftTraitItem(
     appId: string,
     userId: string,
@@ -510,6 +533,7 @@ export default class Store extends FactoryBase {
    * @param {string} tokenId - The ID of NFT to unequip item.
    * @returns {Promise<NftMetadata>} - A promise that returns the metadata of the NFT after unequip nft trait item.
    */
+  @authenticated
   resetNftTraitItem(
     appId: string,
     userId: string,

@@ -2,7 +2,7 @@ import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
 import Handler from '@ainize-team/ainize-js/dist/handlers/handler';
-import { DEFAULT_AINIZE_SERVICE_NAME } from './constants';
+import { DEFAULT_AINIZE_SERVICE_NAME } from '../constants';
 
 const DEFAULT_TIMEOUT_MS = 60 * 1000; // 1min
 

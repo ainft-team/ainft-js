@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import FactoryBase from '../factoryBase';
 import AinftObject from '../ainft721Object';
-import { OperationType, getServiceName, request } from '../ainize';
+import { OperationType, getServiceName, request } from '../utils/ainize';
 import {
   Assistant,
   AssistantCreateOptions,
@@ -41,7 +41,7 @@ import {
   validateServerConfigurationForObject,
   validateToken,
 } from '../utils/validator';
-import { requireAuth } from '../decorators/require-auth';
+import { authenticated } from '../utils/decorator';
 
 enum Role {
   OWNER = 'owner',
@@ -61,7 +61,7 @@ export class Assistants extends FactoryBase {
    * @param {AssistantCreateOptions} AssistantCreateOptions - The creation options.
    * @returns A promise that resolves with both the transaction result and the created assistant.
    */
-  @requireAuth
+  @authenticated
   async create(
     objectId: string,
     tokenId: string,
@@ -121,7 +121,7 @@ export class Assistants extends FactoryBase {
    * @param {AssistantUpdateParams} AssistantUpdateParams - The parameters to update assistant.
    * @returns A promise that resolves with both the transaction result and the updated assistant.
    */
-  @requireAuth
+  @authenticated
   async update(
     objectId: string,
     tokenId: string,
@@ -180,7 +180,7 @@ export class Assistants extends FactoryBase {
    * @param {string} assistantId - The ID of assistant.
    * @returns A promise that resolves with both the transaction result and the deleted assistant.
    */
-  @requireAuth
+  @authenticated
   async delete(
     objectId: string,
     tokenId: string,
@@ -270,7 +270,7 @@ export class Assistants extends FactoryBase {
         const tokens = await this.getTokens(objectId, address);
         return this.getAssistantsFromTokens(tokens);
       })
-    )
+    );
     const assistants = allAssistants.flat();
 
     const sorted = this.sortAssistants(assistants, order);
@@ -281,7 +281,7 @@ export class Assistants extends FactoryBase {
     return { total, items };
   }
 
-  @requireAuth
+  @authenticated
   async mint(objectId: string, to: string) {
     const checksum = getChecksumAddress(to);
     const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);

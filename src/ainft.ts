@@ -25,7 +25,7 @@ import {
 } from './constants';
 import { setEnv } from './utils/env';
 import { ConnectParams } from './types';
-import { requireAuth } from './decorators/require-auth';
+import { authenticated } from './utils/decorator';
 
 export interface ClientOptions {
   privateKey?: string;
@@ -153,7 +153,7 @@ export default class AinftJs {
    * Connects to the blockchain endpoint.
    * @param {ConnectParams} connectParams - The parameters to connect.
    */
-  @requireAuth
+  @authenticated
   async connect({ connectionCb, disconnectionCb, customClientId }: ConnectParams = {}) {
     if (this.isConnected()) {
       throw new Error('Client is already connected.');
@@ -170,7 +170,7 @@ export default class AinftJs {
    * Checks whether the client is connected to the blockchain endpoint.
    * @returns Returns `true` if connected, `false` otherwise.
    */
-  @requireAuth
+  @authenticated
   isConnected(): boolean {
     return Handler.getInstance().isConnected();
   }
@@ -178,7 +178,7 @@ export default class AinftJs {
   /**
    * Disconnects from the blockchain endpoint.
    */
-  @requireAuth
+  @authenticated
   async disconnect() {
     if (!this.isConnected()) {
       throw new Error('Client is not connected.');

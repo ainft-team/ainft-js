@@ -14,6 +14,7 @@ import {
   History,
   RewardInfo,
 } from './types';
+import { authenticated } from './utils/decorator';
 
 /**
  * This class supports event functionality for activating tokenomics in the community.\
@@ -24,6 +25,7 @@ export default class Event extends FactoryBase {
    * Creates a new event. Sets the tasks to be performed and the rewards to receive.
    * @param {CreateEventParams} CreateEventParams The parameters to create event.
    */
+  @authenticated
   create({
     appId,
     eventId,
@@ -52,6 +54,7 @@ export default class Event extends FactoryBase {
    * Updates an event.
    * @param {Partial<CreateEventParams>} UpdateEventParams The parameters to update event.
    */
+  @authenticated
   update({
     appId,
     eventId,
@@ -78,6 +81,7 @@ export default class Event extends FactoryBase {
    * @param {string} appId The ID of app.
    * @param {string} eventId The ID of event.
    */
+  @authenticated
   delete(appId: string, eventId: string): Promise<void> {
     const query = { appId };
     const trailingUrl = `${eventId}`;
@@ -90,6 +94,7 @@ export default class Event extends FactoryBase {
    * @param {string} eventId The ID of event.
    * @returns Returns event information.
    */
+  @authenticated
   get(appId: string, eventId: string): Promise<TokenomicsEvent> {
     const query = { appId };
     const trailingUrl = `${eventId}`;
@@ -102,6 +107,7 @@ export default class Event extends FactoryBase {
    * @param {AddEventActivityParams} AddEventActivityParams The parameters to add event activity.
    * @returns Returns activity ID.
    */
+  @authenticated
   addActivity({
     appId,
     userId,
@@ -124,6 +130,7 @@ export default class Event extends FactoryBase {
    * @param {GetEventActivityParams} GetEventActivityParams The parameters to get event activity.
    * @returns {Promise<Activity | null>} Returns activity object or null.
    */
+  @authenticated
   getActivity({
     appId,
     userId,
@@ -147,6 +154,7 @@ export default class Event extends FactoryBase {
    * Updates the activity's status. Activity status includes CREATED, REWARDED, and FAILED.
    * @param {UpdateEventActivityStatusParams} UpdateEventActivityStatusParams The parameters to update activity status
    */
+  @authenticated
   updateActivityStatus({
     eventId,
     activityId,
@@ -167,6 +175,7 @@ export default class Event extends FactoryBase {
    * Returns a list of TaskTypes to use for events.
    * @param {string} appId The ID of app.
    */
+  @authenticated
   getTaskTypeList(appId: string): Promise<TaskType[]> {
     const query = { appId };
     const trailingUrl = 'task-types';
@@ -177,6 +186,7 @@ export default class Event extends FactoryBase {
    * Returns a list of RewardTypes to use for events.
    * @param {string} appId The ID of app.
    */
+  @authenticated
   getRewardTypeList(appId: string): Promise<RewardType[]> {
     const query = { appId };
     const trailingUrl = 'reward-types';
@@ -189,6 +199,7 @@ export default class Event extends FactoryBase {
    * @param {string} userId The ID of the user who wants to check pending rewards.
    * @param {string} eventId The ID of event to check pending rewards.
    */
+  @authenticated
   getPendingRewards(
     appId: string,
     userId: string,
@@ -206,6 +217,7 @@ export default class Event extends FactoryBase {
    * @param {string} eventId The ID of the event that the user participated in.
    * @param {RewardOptions} options The options of reward.
    */
+  @authenticated
   reward(
     appId: string,
     userId: string,
@@ -227,6 +239,7 @@ export default class Event extends FactoryBase {
    * @param {string} userId The ID of the user who wants to check reward history.
    * @param {string} eventId The ID of event to check reward history.
    */
+  @authenticated
   getRewardHistory(
     appId: string,
     userId: string,
@@ -246,6 +259,7 @@ export default class Event extends FactoryBase {
    * @param {string} userId The ID of the user who wants to check the activity history.
    * @param {string} eventId The ID of the event you want to check activity history.
    */
+  @authenticated
   getActivityHistory(
     appId: string,
     userId: string,

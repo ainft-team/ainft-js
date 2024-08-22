@@ -17,6 +17,7 @@ import {
   RemoveNftSymbolParams,
   SetEthNftMetadataParams
 } from "./types";
+import { authenticated } from "./utils/decorator";
 
 /**
  * This class allows app to register and manage ETH Contracts. This allows you to enrich tokenomics.\
@@ -30,6 +31,7 @@ export default class Eth extends FactoryBase {
    * @param {AddNftSymbolParams} AddNftSymbolParams The parameters to add NFT symbol.
    * @returns
    */
+  @authenticated
   addNftSymbol({
     appId,
     network,
@@ -46,6 +48,7 @@ export default class Eth extends FactoryBase {
    * @param {GetAppNftSymbolListParams} GetAppNftSymbolListParams The parameters to get NFT symbol list in app.
    * @returns Returns a list of symbols registered in the app.
    */
+  @authenticated
   getAppNftSymbolList({ appId }: GetAppNftSymbolListParams): Promise<string[]> {
     const query = { appId };
     const trailingUrl = 'symbol';
@@ -57,6 +60,7 @@ export default class Eth extends FactoryBase {
    * @param {RemoveNftSymbolParams} RemoveNftSymbolParams The parameters to remove NFT symbol from app.
    * @returns Returns removed contract information.
    */
+  @authenticated
   removeNftSymbol({
     appId,
     symbol,
@@ -71,6 +75,7 @@ export default class Eth extends FactoryBase {
    * @param {GetNftSymbolParams} GetNftSymbolParams The parameters to get contract by symbol.
    * @returns Returns contract information by symbol.
    */
+  @authenticated
   getContractInfoBySymbol({
     appId,
     symbol,
@@ -86,6 +91,7 @@ export default class Eth extends FactoryBase {
    * @param {GetNftParams} GetNftParams The parameters to get NFT information.
    * @returns Returns NFT information.
    */
+  @authenticated
   getNft({
     appId,
     network,
@@ -103,6 +109,7 @@ export default class Eth extends FactoryBase {
    * @param {GetNftContractInfoParams} GetNftContractInfoParams The parameters to get contract information.
    * @returns Returns contract information.
    */
+  @authenticated
   getNftContractInfo({
     appId,
     network,
@@ -118,6 +125,7 @@ export default class Eth extends FactoryBase {
    * @param {GetNftsInCollectionParams} GetNftsInCollectionParams
    * @returns Returns a map of NFTs distinguished by their token IDs.
    */
+  @authenticated
   getNftsInCollection({
     network,
     collectionId,
@@ -135,6 +143,7 @@ export default class Eth extends FactoryBase {
    * @param {GetUserNftListParams} GetUserNftListParams The parameters to get NFT list user owned.
    * @returns Returns NFTs owned by the user along with their contract information.
    */
+  @authenticated
   getUserNftList({
     appId,
     network,
@@ -156,6 +165,7 @@ export default class Eth extends FactoryBase {
    * @param {SetEthNftMetadataParams} SetNftMetadataParams The parameters to set NFT metadata.
    * @returns Returns set metadata.
    */
+  @authenticated
   async setNftMetadata({
     appId,
     network,

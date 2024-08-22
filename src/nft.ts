@@ -14,6 +14,7 @@ import {
 import Ainft721Object from './ainft721Object';
 import stringify from 'fast-json-stable-stringify';
 import { isTxSuccess } from './utils/transaction';
+import { authenticated } from './utils/decorator';
 
 /**
  * This class supports creating AINFT object, searching AINFTs and things about NFTs.\
@@ -41,6 +42,7 @@ export default class Nft extends FactoryBase {
    *  });
    * ```
    */
+  @authenticated
   async create({ name, symbol, metadata }: AinftObjectCreateParams): Promise<{ txHash: string; ainftObject: Ainft721Object }> {
     const address = await this.ain.signer.getAddress();
 
@@ -77,6 +79,7 @@ export default class Nft extends FactoryBase {
    *  })
    * ```
    */
+  @authenticated
   async register(ainftObjectId: string): Promise<void> {
     const address = await this.ain.signer.getAddress();
     const message = stringify({
@@ -248,6 +251,7 @@ export default class Nft extends FactoryBase {
    * @param {UploadAssetFromBufferParams} UploadAssetFromBufferParams 
    * @returns {Promise<string>} Return the asset url.
    */
+  @authenticated
   uploadAsset({
     appId,
     buffer,
@@ -270,6 +274,7 @@ export default class Nft extends FactoryBase {
    * @param {UploadAssetFromDataUrlParams} UploadAssetFromDataUrlParams 
    * @returns {Promise<string>} Return the asset url.
    */
+  @authenticated
   uploadAssetWithDataUrl({
     appId,
     dataUrl,
@@ -288,6 +293,7 @@ export default class Nft extends FactoryBase {
    * Delete the asset you uploaded.
    * @param {DeleteAssetParams} DeleteAssetParams 
    */
+  @authenticated
   deleteAsset({
     appId,
     filePath
