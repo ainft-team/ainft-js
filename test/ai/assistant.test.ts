@@ -21,7 +21,7 @@ describe.skip('assistant', () => {
 
   it('should create assistant', async () => {
     const result = await ainft.assistant.create(objectId, tokenId, {
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       name: 'name',
       instructions: 'instructions',
       description: 'description',
@@ -31,7 +31,7 @@ describe.skip('assistant', () => {
     expect(result.tx_hash).toMatch(TX_HASH_REGEX);
     expect(result.result).toBeDefined();
     expect(result.assistant.id).toMatch(ASSISTANT_REGEX);
-    expect(result.assistant.model).toBe('gpt-3.5-turbo');
+    expect(result.assistant.model).toBe('gpt-4o-mini');
     expect(result.assistant.name).toBe('name');
     expect(result.assistant.instructions).toBe('instructions');
     expect(result.assistant.description).toBe('description');
@@ -42,7 +42,7 @@ describe.skip('assistant', () => {
     const assistant = await ainft.assistant.get(objectId, tokenId, assistantId);
 
     expect(assistant.id).toBe(assistantId);
-    expect(assistant.model).toBe('gpt-3.5-turbo');
+    expect(assistant.model).toBe('gpt-4o-mini');
     expect(assistant.name).toBe('name');
     expect(assistant.instructions).toBe('instructions');
     expect(assistant.description).toBe('description');
