@@ -1,6 +1,7 @@
 import Ain from '@ainblockchain/ain-js';
 import { TransactionInput, SetOperation, SetMultiOperation } from '@ainblockchain/ain-js/lib/types';
 import { MIN_GAS_PRICE, TX_BYTES_LIMIT } from '../constants';
+import { AinftError } from '../error';
 
 export const buildSetValueOp = (ref: string, value: any): SetOperation => ({
   type: 'SET_VALUE',
@@ -58,12 +59,15 @@ export const isTxSuccess = (txResult: any) => {
 
 export const sendTx = async (txBody: TransactionInput, ain: Ain) => {
   if (!isTxSizeValid(txBody)) {
-    throw new Error(`transaction exceeds size limit: ${TX_BYTES_LIMIT} bytes`);
+    throw new AinftError(
+      'payload-too-large',
+      `transaction exceeds size limit: ${TX_BYTES_LIMIT} bytes`
+    );
   }
   const result = await ain.sendTransaction(txBody);
   if (!isTxSuccess(result)) {
     console.error(JSON.stringify(result, null, 2));
-    throw new Error(`transaction failed: ${result.tx_hash}`);
+    throw new AinftError('internal', `failed to send transaction: ${result.tx_hash}`);
   }
   return result;
 };

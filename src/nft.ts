@@ -15,6 +15,7 @@ import Ainft721Object from './ainft721Object';
 import stringify from 'fast-json-stable-stringify';
 import { isTxSuccess } from './utils/transaction';
 import { authenticated } from './utils/decorator';
+import { AinftError } from './error';
 
 /**
  * This class supports creating AINFT object, searching AINFTs and things about NFTs.\
@@ -28,7 +29,7 @@ export default class Nft extends FactoryBase {
    * @returns Transaction hash and AINFT object instance.
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * ainftJs.nft.create('nameOfAinftObject', 'symbolOfAinftObject')
    *  .then((res) => {
@@ -43,7 +44,11 @@ export default class Nft extends FactoryBase {
    * ```
    */
   @authenticated
-  async create({ name, symbol, metadata }: AinftObjectCreateParams): Promise<{ txHash: string; ainftObject: Ainft721Object }> {
+  async create({
+    name,
+    symbol,
+    metadata,
+  }: AinftObjectCreateParams): Promise<{ txHash: string; ainftObject: Ainft721Object }> {
     const address = await this.ain.signer.getAddress();
 
     const body = {
@@ -57,7 +62,7 @@ export default class Nft extends FactoryBase {
     const res = await this.ain.sendTransaction(txBody);
 
     if (!isTxSuccess(res)) {
-      throw Error(`App creation is failed. - ${JSON.stringify(res)}`);
+      throw new AinftError('internal', `app creation is failed: ${JSON.stringify(res)}`);
     }
 
     await this.register(ainftObjectId);
@@ -71,7 +76,7 @@ export default class Nft extends FactoryBase {
    * @param ainftObjectId The ID of AINFT object.
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * ainftJs.nft.register('YOUR-AINFT-OBJECT-ID')
    *  .catch((error) => {
@@ -97,10 +102,10 @@ export default class Nft extends FactoryBase {
    * Get AINFT object instance by ainftObjectId.
    * @param ainftObjectId The ID of AINFT object.
    * @returns Returns the AINFT object corresponding to the given ID.
-   * 
+   *
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * ainftJs.nft.get('YOUR-AINFT-OBJECT-ID')
    *  .then((res) => {
@@ -115,7 +120,7 @@ export default class Nft extends FactoryBase {
   async get(ainftObjectId: string): Promise<Ainft721Object> {
     const { ainftObjects } = await this.searchAinftObjects({ ainftObjectId });
     if (ainftObjects.length === 0) {
-      throw new Error('AINFT object not found');
+      throw new AinftError('not-found', `object not found: ${ainftObjectId}`);
     }
     const ainftObject = ainftObjects[0];
     return new Ainft721Object(ainftObject, this.ain, this.baseUrl);
@@ -127,10 +132,10 @@ export default class Nft extends FactoryBase {
    * @param limit - Sets the maximum number of NFTs to retrieve.
    * @param cursor - Optional cursor to use for pagination.
    * @returns Returns AINFTs.
-   * 
+   *
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * ainftJs.nft.getAinftsByAinftObject('YOUR-AINFT-OBJECT-ID', 5)
    *  .then((res) => {
@@ -142,7 +147,11 @@ export default class Nft extends FactoryBase {
    *  })
    * ```
    */
-  async getAinftsByAinftObject(ainftObjectId: string, limit?: number, cursor?: string): Promise<AinftTokenSearchResponse> {
+  async getAinftsByAinftObject(
+    ainftObjectId: string,
+    limit?: number,
+    cursor?: string
+  ): Promise<AinftTokenSearchResponse> {
     return this.searchNfts({ ainftObjectId, limit, cursor });
   }
 
@@ -152,10 +161,10 @@ export default class Nft extends FactoryBase {
    * @param limit - Sets the maximum number of NFTs to retrieve.
    * @param cursor - Optional cursor to use for pagination.
    * @returns Returns AINFTs.
-   * 
+   *
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs('YOUR-PRIVATE-KEY');
    * ainftJs.nft.getAinftsByAccount('TOKEN-OWNER-ADDRESS')
    *  .then((res) => {
@@ -167,7 +176,11 @@ export default class Nft extends FactoryBase {
    *  })
    * ```
    */
-  async getAinftsByAccount(address: string, limit?: number, cursor?: string): Promise<AinftTokenSearchResponse> {
+  async getAinftsByAccount(
+    address: string,
+    limit?: number,
+    cursor?: string
+  ): Promise<AinftTokenSearchResponse> {
     return this.searchNfts({ userAddress: address, limit, cursor });
   }
 
@@ -176,10 +189,10 @@ export default class Nft extends FactoryBase {
    * This method accesses public data only and does not require signature in the requests.
    * @param {NftSearchParams} searchParams The parameters to search AINFT object.
    * @returns Returns searched AINFT objects.
-   * 
+   *
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs();
    * const params = {
    *  userAddress: '0x...',
@@ -216,7 +229,7 @@ export default class Nft extends FactoryBase {
    * @returns Returns searched AINFTs
    * ```ts
    * import AinftJs from '@ainft-team/ainft-js';
-   * 
+   *
    * const ainftJs = new AinftJs();
    * const params = {
    *  userAddress: '0x...',
@@ -239,7 +252,8 @@ export default class Nft extends FactoryBase {
   searchNfts(searchParams: NftSearchParams): Promise<AinftTokenSearchResponse> {
     let query: Record<string, any> = {};
     if (searchParams) {
-      const { userAddress, ainftObjectId, name, symbol, slug, tokenId, limit, cursor, order } = searchParams;
+      const { userAddress, ainftObjectId, name, symbol, slug, tokenId, limit, cursor, order } =
+        searchParams;
       query = { userAddress, ainftObjectId, name, symbol, slug, tokenId, limit, cursor, order };
     }
     const trailingUrl = 'native/search/nfts';
@@ -248,42 +262,43 @@ export default class Nft extends FactoryBase {
 
   /**
    * Upload the asset file using the buffer.
-   * @param {UploadAssetFromBufferParams} UploadAssetFromBufferParams 
+   * @param {UploadAssetFromBufferParams} UploadAssetFromBufferParams
    * @returns {Promise<string>} Return the asset url.
    */
   @authenticated
-  uploadAsset({
-    appId,
-    buffer,
-    filePath
-  }: UploadAssetFromBufferParams): Promise<string> {
+  uploadAsset({ appId, buffer, filePath }: UploadAssetFromBufferParams): Promise<string> {
     const trailingUrl = `asset/${appId}`;
-    return this.sendFormRequest(HttpMethod.POST, trailingUrl, {
-      appId,
-      filePath
-    }, {
-      asset: {
-        filename: filePath,
-        buffer
+    return this.sendFormRequest(
+      HttpMethod.POST,
+      trailingUrl,
+      {
+        appId,
+        filePath,
+      },
+      {
+        asset: {
+          filename: filePath,
+          buffer,
+        },
       }
-    });
+    );
   }
 
   /**
    * Upload the asset file using the data url.
-   * @param {UploadAssetFromDataUrlParams} UploadAssetFromDataUrlParams 
+   * @param {UploadAssetFromDataUrlParams} UploadAssetFromDataUrlParams
    * @returns {Promise<string>} Return the asset url.
    */
   @authenticated
   uploadAssetWithDataUrl({
     appId,
     dataUrl,
-    filePath
+    filePath,
   }: UploadAssetFromDataUrlParams): Promise<string> {
     const body = {
       appId,
       dataUrl,
-      filePath
+      filePath,
     };
     const trailingUrl = `asset/${appId}`;
     return this.sendRequest(HttpMethod.POST, trailingUrl, body);
@@ -291,14 +306,11 @@ export default class Nft extends FactoryBase {
 
   /**
    * Delete the asset you uploaded.
-   * @param {DeleteAssetParams} DeleteAssetParams 
+   * @param {DeleteAssetParams} DeleteAssetParams
    */
   @authenticated
-  deleteAsset({
-    appId,
-    filePath
-  }: DeleteAssetParams): Promise<void> {
-    const encodeFilePath = encodeURIComponent(filePath)
+  deleteAsset({ appId, filePath }: DeleteAssetParams): Promise<void> {
+    const encodeFilePath = encodeURIComponent(filePath);
     const trailingUrl = `asset/${appId}/${encodeFilePath}`;
     return this.sendRequest(HttpMethod.DELETE, trailingUrl);
   }

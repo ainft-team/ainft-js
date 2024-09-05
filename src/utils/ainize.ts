@@ -3,6 +3,7 @@ import Ainize from '@ainize-team/ainize-js';
 import Service from '@ainize-team/ainize-js/dist/service';
 import Handler from '@ainize-team/ainize-js/dist/handlers/handler';
 import { DEFAULT_AINIZE_SERVICE_NAME } from '../constants';
+import { AinftError } from '../error';
 
 const DEFAULT_TIMEOUT_MS = 60 * 1000; // 1min
 
@@ -10,7 +11,7 @@ export const getService = async (ainize: Ainize, name: string): Promise<Service>
   const server = await ainize.getService(name);
   const isRunning = await server.isRunning();
   if (!isRunning) {
-    throw new Error(`${name} is not running.`);
+    throw new AinftError('unavailable', `service ${name} is not running.`);
   }
   return server;
 };
@@ -24,7 +25,8 @@ export const request = async <T>(
   { serviceName, opType, data, timeout = DEFAULT_TIMEOUT_MS }: AinizeRequest
 ): Promise<AinizeResponse<T>> => {
   if (!Handler.getInstance().isConnected()) {
-    throw new Error('Network error: blockchain event channel is not connected.');
+    // NOTE(jiyoung): client error handling method need to be updated.
+    throw new AinftError('unavailable', 'connection to the blockchain network could not be established.');
   }
 
   let timer;
@@ -36,11 +38,11 @@ export const request = async <T>(
   try {
     const response = await Promise.race([server.request({ ...data, jobType: opType }), startTimer]);
     if (response.status === AinizeStatus.FAIL) {
-      throw new Error(JSON.stringify(response.data));
+      throw new AinftError('internal', JSON.stringify(response.data));
     }
     return response as AinizeResponse<T>;
   } catch (error: any) {
-    throw new Error(`Failed to request ${opType}: ${error.message}`);
+    throw new AinftError('internal', `failed to ${opType}: ${error.message}`);
   } finally {
     if (timer) {
       clearTimeout(timer);

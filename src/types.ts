@@ -1,5 +1,21 @@
 import { ConnectionCallback, DisconnectionCallback } from '@ainblockchain/ain-js/lib/types';
 
+export type ErrorCode =
+  | 'invalid-argument'
+  | 'unauthenticated'
+  | 'permission-denied'
+  | 'not-found'
+  | 'already-exists'
+  | 'precondition-failed'
+  | 'bad-request'       // 400
+  | 'forbidden'         // 403
+  | 'payload-too-large' // 413
+  | 'internal'          // 500
+  | 'unavailable'       // 503
+  | 'gateway-timeout'   // 504
+  | 'not-implemented'
+  | 'unknown';
+
 export interface ConnectParams {
   /** The connection callback function. */
   connectionCb?: ConnectionCallback;
