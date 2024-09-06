@@ -1,10 +1,11 @@
+import { AinftError } from '../error';
 import { EnvType } from '../types';
 
 let env: EnvType | null;
 
 export const getEnv = () => {
   if (!env) {
-    throw new Error("Env is not defined, use setEnv().");
+    throw new AinftError('bad-request', 'env is not defined. please call setEnv() first.');
   }
   return env;
 };

@@ -42,6 +42,7 @@ import {
   validateToken,
 } from '../utils/validator';
 import { authenticated } from '../utils/decorator';
+import { AinftError } from '../error';
 
 enum Role {
   OWNER = 'owner',
@@ -79,7 +80,7 @@ export class Assistants extends FactoryBase {
     const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
     const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
     if (!whitelisted && role !== Role.OWNER) {
-      throw new Error(`cannot create assistant for the object ${objectId}`);
+      throw new AinftError('permission-denied', `cannot create assistant for ${objectId}`);
     }
 
     const serviceName = getServiceName();
@@ -139,7 +140,7 @@ export class Assistants extends FactoryBase {
     const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
     const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
     if (!whitelisted && role !== Role.OWNER) {
-      throw new Error(`cannot update assistant for the object ${objectId}`);
+      throw new AinftError('permission-denied', `cannot update assistant for ${objectId}`);
     }
 
     const serviceName = getServiceName();
@@ -196,7 +197,7 @@ export class Assistants extends FactoryBase {
     const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
     const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
     if (!whitelisted && role !== Role.OWNER) {
-      throw new Error(`cannot delete assistant for the object ${objectId}`);
+      throw new AinftError('permission-denied', `cannot delete assistant for ${objectId}`);
     }
 
     const serviceName = getServiceName();
@@ -286,9 +287,9 @@ export class Assistants extends FactoryBase {
     const checksum = getChecksumAddress(to);
     const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
     if (!whitelisted) {
-      throw new Error(
-        `cannot request mint for the object '${objectId}'.\n` +
-          `if you're the owner, please use the Ainft721Object.mint() function.`
+      throw new AinftError(
+        'forbidden',
+        `cannot mint token for ${objectId}. please use the Ainft721Object.mint() function instead.`
       );
     }
 

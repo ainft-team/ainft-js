@@ -3,6 +3,7 @@ import FactoryBase from './factoryBase';
 import { HttpMethod, Metadata } from './types';
 import Ain from '@ainblockchain/ain-js';
 import { authenticated } from './utils/decorator';
+import { AinftError } from './error';
 
 /**
  * The class of AINFT 721 object.
@@ -73,13 +74,12 @@ export default class Ainft721Object extends FactoryBase {
    * ```
    */
   async getToken(tokenId: string): Promise<AinftToken> {
-    const { nfts } = await this.sendRequestWithoutSign(
-      HttpMethod.GET,
-      `native/search/nfts`,
-      { ainftObjectId: this.id, tokenId }
-    );
+    const { nfts } = await this.sendRequestWithoutSign(HttpMethod.GET, `native/search/nfts`, {
+      ainftObjectId: this.id,
+      tokenId,
+    });
     if (nfts.length === 0) {
-      throw new Error('Token not found');
+      throw new AinftError('not-found', `token not found: ${tokenId}`);
     }
     const token = nfts[0];
     return new AinftToken(

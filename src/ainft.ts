@@ -26,6 +26,7 @@ import {
 import { setEnv } from './utils/env';
 import { ConnectParams } from './types';
 import { authenticated } from './utils/decorator';
+import { AinftError } from './error';
 
 export interface ClientOptions {
   privateKey?: string;
@@ -156,7 +157,10 @@ export default class AinftJs {
   @authenticated
   async connect({ connectionCb, disconnectionCb, customClientId }: ConnectParams = {}) {
     if (this.isConnected()) {
-      throw new Error('Client is already connected.');
+      throw new AinftError(
+        'already-exists',
+        'connection to the blockchain network is already established.'
+      );
     }
     const privateKey = this.ain.wallet.defaultAccount?.private_key;
     if (privateKey) {
@@ -181,7 +185,10 @@ export default class AinftJs {
   @authenticated
   async disconnect() {
     if (!this.isConnected()) {
-      throw new Error('Client is not connected.');
+      throw new AinftError(
+        'unavailable',
+        'connection to the blockchain network could not be established.'
+      );
     }
     await this.ainize.logout();
   }

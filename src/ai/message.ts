@@ -23,6 +23,7 @@ import {
   validateToken,
 } from '../utils/validator';
 import { authenticated } from '../utils/decorator';
+import { AinftError } from '../error';
 
 /**
  * This class supports create messages within threads.\
@@ -198,7 +199,7 @@ export class Messages extends FactoryBase {
       const { data } = await request<any>(this.ainize!, { serviceName, opType, data: body });
       return data.data;
     } catch (error: any) {
-      throw new Error(error);
+      throw new AinftError('internal', error.message);
     }
   }
 
@@ -269,7 +270,7 @@ export class Messages extends FactoryBase {
       }
     }
     if (!key) {
-      throw new Error('Message not found');
+      throw new AinftError('not-found', `message not found: ${id}`);
     }
 
     const messagePath = Path.app(appId)
@@ -333,7 +334,7 @@ export class Messages extends FactoryBase {
       }
     }
     if (!messageKey) {
-      throw new Error('Message not found');
+      throw new AinftError('not-found', `message not found: ${messageId}`);
     }
     return messageKey;
   };

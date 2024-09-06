@@ -18,6 +18,7 @@ import { buildSetTxBody, buildSetValueOp, sendTx } from '../utils/transaction';
 import { sleep } from '../utils/util';
 import { validateObject, validateObjectOwner } from '../utils/validator';
 import { authenticated } from '../utils/decorator';
+import { AinftError } from '../error';
 
 /**
  * This class manages ai configurations for AINFT object,\
@@ -172,8 +173,9 @@ export class Ai extends FactoryBase {
       }
       await sleep(1000); // 1sec
     }
-    throw new Error(
-      `timeout of ${timeout}ms exceeded.\nplease check the transaction status: ${txHash}`
+    throw new AinftError(
+      'gateway-timeout',
+      `timeout of ${timeout}ms exceeded. please check the transaction status: ${txHash}`
     );
   }
 }

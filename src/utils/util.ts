@@ -11,6 +11,7 @@ import * as ainUtil from '@ainblockchain/ain-util';
 import { MIN_GAS_PRICE } from '../constants';
 import { HttpMethod } from '../types';
 import { Path } from './path';
+import { AinftError } from '../error';
 
 export const buildData = (
   method: HttpMethod,
@@ -57,7 +58,7 @@ export const getAssistant = async (ain: Ain, appId: string, tokenId: string) => 
   const assistantPath = Path.app(appId).token(tokenId).ai().value();
   const assistant = await getValue(ain, assistantPath);
   if (!assistant) {
-    throw new Error('Assistant not found');
+    throw new AinftError('not-found', `assistant not found: ${appId}(${tokenId})`);
   }
   return assistant;
 };
@@ -66,7 +67,7 @@ export const getToken = async (ain: Ain, appId: string, tokenId: string) => {
   const tokenPath = Path.app(appId).token(tokenId).value();
   const token = await getValue(ain, tokenPath);
   if (!token) {
-    throw new Error('Token not found');
+    throw new AinftError('not-found', `token not found: ${appId}(${tokenId})`);
   }
   return token;
 };
