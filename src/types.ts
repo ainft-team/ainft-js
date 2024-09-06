@@ -1398,13 +1398,17 @@ export interface MessageMap {
 }
 
 export interface QueryParams {
-  /** The maximum number of items to return */
+  /** The maximum number of items to return. */
   limit?: number;
-  /** The number of items to skip */
+  /** The number of items to skip. */
   offset?: number;
-  /** The order of the result set */
+  /** The field by which to sort the results. */
+  sort?: 'created' | 'updated';
+  /** The order of the result set. */
   order?: 'asc' | 'desc';
 }
+
+export type QueryParamsWithoutSort = Omit<QueryParams, 'sort'>;
 
 export interface Page<T> {
   data: T;
