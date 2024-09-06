@@ -24,6 +24,7 @@ import {
   validateToken,
 } from '../utils/validator';
 import { authenticated } from '../utils/decorator';
+import { AinftError } from '../error';
 
 /**
  * This class supports create threads that assistant can interact with.\
@@ -346,7 +347,7 @@ export class Threads extends FactoryBase {
     } else if (sort === 'updated') {
       return _.orderBy(threads, ['updated_at'], [order]);
     } else {
-      throw new Error(`invalid sort criteria: ${sort}`);
+      throw new AinftError('bad-request', `invalid sort criteria: ${sort}`);
     }
   }
 }
