@@ -9,7 +9,7 @@ import {
   CreditTransactionResult,
   NftToken,
   NftTokens,
-  QueryParams,
+  QueryParamsWithoutSort,
   TokenStatus,
 } from '../types';
 import { DEFAULT_AINIZE_SERVICE_NAME } from '../constants';
@@ -110,8 +110,8 @@ export class Ai extends FactoryBase {
   async getUserTokensByStatus(
     objectId: string,
     address: string,
-    status?: string,
-    { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
+    status?: string | null,
+    { limit = 20, offset = 0, order = 'desc' }: QueryParamsWithoutSort = {}
   ) {
     await validateObject(this.ain, objectId);
 

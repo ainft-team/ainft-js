@@ -13,7 +13,7 @@ import {
   AssistantUpdateParams,
   NftToken,
   NftTokens,
-  QueryParams,
+  QueryParamsWithoutSort,
 } from '../types';
 import {
   MESSAGE_GC_MAX_SIBLINGS,
@@ -256,13 +256,13 @@ export class Assistants extends FactoryBase {
    * Retrieves a list of assistants.
    * @param {string[]} objectIds - The ID(s) of AINFT object.
    * @param {string} [address] - (Optional) The checksum address of account.
-   * @param {QueryParams} [queryParams={}] - The parameters for querying items.
+   * @param {QueryParamsWithoutSort} [queryParamsWithoutSort={}] - The parameters for querying items.
    * @returns A promise that resolves with the list of assistants.
    */
   async list(
     objectIds: string[],
     address?: string | null,
-    { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
+    { limit = 20, offset = 0, order = 'desc' }: QueryParamsWithoutSort = {}
   ) {
     await Promise.all(objectIds.map((objectId) => validateObject(this.ain, objectId)));
 

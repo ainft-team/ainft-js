@@ -24,6 +24,7 @@ import {
   validateToken,
 } from '../utils/validator';
 import { authenticated } from '../utils/decorator';
+import { AinftError } from '../error';
 
 /**
  * This class supports create threads that assistant can interact with.\
@@ -207,7 +208,7 @@ export class Threads extends FactoryBase {
     objectIds: string[],
     tokenId?: string | null,
     address?: string | null,
-    { limit = 20, offset = 0, order = 'desc' }: QueryParams = {}
+    { limit = 20, offset = 0, sort = 'created', order = 'desc' }: QueryParams = {}
   ) {
     await Promise.all(objectIds.map((objectId) => validateObject(this.ain, objectId)));
 
@@ -224,7 +225,7 @@ export class Threads extends FactoryBase {
     const threads = allThreads.flat();
 
     const filtered = this.filterThreads(threads, tokenId, address);
-    const sorted = _.orderBy(filtered, ['created_at'], [order]);
+    const sorted = this.sortThreads(filtered, sort, order);
 
     const total = sorted.length;
     const items = sorted.slice(offset, offset + limit);
@@ -301,10 +302,16 @@ export class Threads extends FactoryBase {
       _.forEach(histories, (history, address) => {
         const threads = _.get(history, 'threads');
         _.forEach(threads, (thread) => {
+          let updatedAt = thread.createdAt;
+          if (typeof thread.messages === 'object' && thread.messages !== null) {
+            const keys = Object.keys(thread.messages);
+            updatedAt = Number(keys[keys.length - 1]);
+          }
           flatten.push({
             id: thread.id,
             metadata: thread.metadata || {},
             created_at: thread.createdAt,
+            updated_at: updatedAt,
             assistant: {
               id: assistant.id,
               objectId,
@@ -332,5 +339,15 @@ export class Threads extends FactoryBase {
       const addressMatch = address ? threadAddress === address : true;
       return tokenIdMatch && addressMatch;
     });
+  }
+
+  private sortThreads(threads: any, sort: string, order: 'asc' | 'desc') {
+    if (sort === 'created') {
+      return _.orderBy(threads, ['created_at'], [order]);
+    } else if (sort === 'updated') {
+      return _.orderBy(threads, ['updated_at'], [order]);
+    } else {
+      throw new AinftError('bad-request', `invalid sort criteria: ${sort}`);
+    }
   }
 }
