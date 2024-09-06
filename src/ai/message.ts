@@ -57,7 +57,7 @@ export class Messages extends FactoryBase {
     await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const assistant = await getAssistant(this.ain, appId, tokenId);
-    const newMessages = await this.sendMessage(serviceName, threadId, assistant.id, address, body);
+    const newMessages = await this.sendMessage(serviceName, threadId, objectId, tokenId, assistant.id, address, body);
     const allMessages = await this.getAllMessages(appId, tokenId, address, threadId, newMessages);
 
     const txBody = await this.buildTxBodyForCreateMessage(
@@ -189,13 +189,15 @@ export class Messages extends FactoryBase {
   private async sendMessage(
     serviceName: string,
     threadId: string,
+    objectId: string,
+    tokenId: string,
     assistantId: string,
     address: string,
     params: MessageCreateParams
   ) {
     try {
       const opType = OperationType.SEND_MESSAGE;
-      const body = { ...params, threadId, assistantId, address };
+      const body = { ...params, threadId, objectId, tokenId, assistantId, address };
       const { data } = await request<any>(this.ainize!, { serviceName, opType, data: body });
       return data.data;
     } catch (error: any) {
