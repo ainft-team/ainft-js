@@ -8,40 +8,65 @@
 The ainft-js is typescript SDK to interact with AIN blockchain and create and manage AINFT.
 
 ## AINFT Factory
-The AINFT Factory is a component consisting of AINFT Factory server and ainft-js.  AINFT Factory supports the following two features:
+
+The AINFT Factory is a component consisting of AINFT Factory server and ainft-js. AINFT Factory supports the following two features:
+
 - AINFT: Supports creating and managing AINFT, the NFT of the Ain blockchain.
 - Tokenomics: Supports functions for activating tokenomics in NFT communities.
 
 You can see reference about AINFT Factory: https://docs.ainetwork.ai/ainfts/ainft.
 
-## Getting start
+## Installation
 
 ```bash
-npm install @ainft-team/ainft-js
+yarn add @ainft-team/ainft-js
 ```
 
-After installing the app, you can then import and use the SDK
-```javascript
-const AinftJs = require('@ainft-team/ainft-js').default;
+## Usage
 
-// Enter the private key for the account you want to use to create and manage AINFT.
-// If you don't have an account, you can create it through ain wallet,
-// or you can leverage tools/create_account.js.
-const ainftJs = new AinftJs(<YOUR_PRIVATE_KEY>);
+First, install the application and import the SDK to get started:
+
+```js
+import AinftJs from '@ainft-team/ainft-js';
 ```
 
-If you want to connect to the testnet of the Ain blockchain, you can set the Ain blockchain endpoint.
-```javascript
-const config = {
-  ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
-  ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai'
-}
-const ainftJs = new AinftJs(<YOUR_PRIVATE_KEY>, config);
+### Configuration
+
+To initialize the SDK with a private key, create an instance of **\`AinftJs\`** as follows. If you don't have an account, create one through the AIN wallet or by using script at **\`examples/wallet/createAccount.js\`**;
+
+```js
+const ainft = new AinftJs({
+  privateKey: '<YOUR_PRIVATE_KEY>',
+});
+```
+
+Alternatively, you can use the AIN wallet for authentication and transaction signing in the Chrome browser.
+
+```js
+const ainft = new AinftJs({
+  signer: new AinWalletSigner(),
+});
+```
+
+### Connecting to the Testnet
+
+To connect to the AIN blockchain testnet, configure the SDK with the testnet endpoints:
+
+```js
+const ainft = new AinftJs({
+  privateKey: '<YOUR_PRIVATE_KEY>',
+  baseUrl: 'https://ainft-api-dev.ainetwork.ai',
+  blockchainUrl: 'https://testnet-api.ainetwork.ai',
+  chainId: 0,
+});
 ```
 
 ## Features
+
 ### AINFT
+
 You can create AINFT object and mint AINFT though AINFT object. Below modules support it.
+
 - `nft`: Creates AINFT object and Searches AINFTs and AINFT objects.
 - `ainft721Object`: It is AINFT object class. Mints AINFTs and Transfers it to other accounts.
 - `ainftToken`: It is AINFT class. Updates metadata.
@@ -49,13 +74,15 @@ You can create AINFT object and mint AINFT though AINFT object. Below modules su
 You can learn how to make AINFT in [tutorials](https://docs.ainetwork.ai/ainfts/developer-reference/ainft-tutorial).
 
 ### Tokenomics
+
 Features for activating tokenomics in NFT communities.
+
 - `credit`: Create and manage community-specific credits.
 - `event`: Create and manage events where user can take action and receive rewards. This is a function for credit mining.
 - `store`: You can create items, register them in the store, and sell them. This is a function for consuming credit.
 
-
 ## NFT API
+
 Introducing the main API functions that can be used in the `nft` module.
 
 - `create(name, symbol)`: Creates AINFT object.
@@ -67,6 +94,7 @@ Introducing the main API functions that can be used in the `nft` module.
 - `searchAinfts(searchParams)`: Search for AINFT. You can use ainft object id, name, symbol, token id, user address for searching.
 
 ## AINFT721 Object API
+
 Introducing the main API functions that can be used in the `ainftObject` module.
 
 - `getToken(tokenId)`: Gets AINFT that was minted by AINFT object.
@@ -74,15 +102,46 @@ Introducing the main API functions that can be used in the `ainftObject` module.
 - `mint(to, tokenId)`: Mints AINFT.
 
 ## AINFT Token API
+
 Introducing the main API functions that can be used in the `ainftToken` module.
 
 - `setMetadata(metadata)`: Sets metadata of AINFT.
 
+## AI API
+We provide AI API functions, including assistant, thread, and message.
+To use these functions follow streamlined steps:
+1. **Initialization**: Before using any AI functions, initialize the event channel with the `connect()` method.
+2. **Using AI functions**: After opening the event channel, you can use AI function.
+3. **Closure**: Ensure to close the event channel with the `disconnect()` method when the functions are no longer needed.
+
+```js
+import AinftJs from '@ainft-team/ainft-js';
+
+const ainft = new AinftJs({
+  privateKey: '<YOUR_PRIVATE_KEY>',
+  baseUrl: 'https://ainft-api-dev.ainetwork.ai',
+  blockchainUrl: 'https://testnet-api.ainetwork.ai',
+  chainId: 0,
+});
+
+async function main() {
+  await ainft.connect(); // connect to the blockchain endpoint
+
+  // your ai function usage here
+  // ...
+
+  await ainft.disconnect(); // disconnect from the blockchain endpoint
+}
+
+main();
+```
 
 ## AINFT tutorial
+
 You can view the [tutorial document](https://docs.ainetwork.ai/ainfts/developer-reference/ainft-tutorial) at the following link. and You can also look at scripts created for tutorials in the [tutorial directory](https://github.com/ainft-team/ainft-js/tree/main/examples).
 
 Tutorial scripts
+
 - [createAinftObject](https://github.com/ainft-team/ainft-js/blob/master/examples/nft/createAinftObject.js)
 - [mintAinft](https://github.com/ainft-team/ainft-js/blob/master/examples/nft/mintNft.js)
 - [transferAinft](https://github.com/ainft-team/ainft-js/blob/master/examples/nft/transferNft.js)
@@ -90,7 +149,9 @@ Tutorial scripts
 - [searchAinft](https://github.com/ainft-team/ainft-js/blob/master/examples/nft/search.js)
 
 ## API Documentation
+
 API documentation is available at https://ainft-team.github.io/ainft-js.
 
 ## License
+
 MIT License

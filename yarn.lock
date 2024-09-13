@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@ainblockchain/ain-js@^1.10.2":
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.10.2.tgz#c0ed1e230a6c2b3703169a5c243c173944004bdd"
-  integrity sha512-2lHYnvbjEHm3/K5Lw5wCNVBtj61Z1p1u+FbveXMg4vDCwUnuYwvCrtZjTxxv13MXHoJ6izdkkA3X93GWtQhpow==
+"@ainblockchain/ain-js@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.13.0.tgz#547a036385ac8ea2fb9a643cbf8151bf4c4b65ed"
+  integrity sha512-XFxbxamfoUbgh6iOUjIQZPduotEI32lsRZxYCjD5SGlQ/kXzdrZ9rz0EJCFoE0O/Nu6bawC7h96Jvc8M/xon0w==
   dependencies:
-    "@ainblockchain/ain-util" "^1.1.9"
+    "@ainblockchain/ain-util" "^1.2.1"
     "@types/node" "^12.7.3"
     "@types/randombytes" "^2.0.0"
     "@types/semver" "^7.3.4"
@@ -31,30 +31,6 @@
     uuid "^3.3.3"
     ws "^8.16.0"
 
-"@ainblockchain/ain-js@^1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-js/-/ain-js-1.6.3.tgz#56ca744a6bf5e558f2acba75f106e8f88f5426ba"
-  integrity sha512-rdQfT6jcqcF4VP1twwMQkCijZ6SN1RewTjU1D35rJ7ZnRQjoIxekkodkdcIDVvyUEpR6A6iuT9SSSTz9KUMNbA==
-  dependencies:
-    "@ainblockchain/ain-util" "^1.1.9"
-    "@types/node" "^12.7.3"
-    "@types/randombytes" "^2.0.0"
-    "@types/semver" "^7.3.4"
-    axios "^0.21.4"
-    bip39 "^3.0.2"
-    browserify-cipher "^1.0.1"
-    eventemitter3 "^4.0.0"
-    hdkey "^1.1.1"
-    lodash "^4.17.20"
-    node-seal "^4.5.7"
-    pbkdf2 "^3.0.17"
-    randombytes "^2.1.0"
-    scryptsy "^2.1.0"
-    semver "^6.3.0"
-    url-parse "^1.4.7"
-    uuid "^3.3.3"
-    ws "^8.2.3"
-
 "@ainblockchain/ain-util@^1.1.9":
   version "1.1.9"
   resolved "https://registry.yarnpkg.com/@ainblockchain/ain-util/-/ain-util-1.1.9.tgz#4369547af354d84229c5b0f1fd4e93e8497d6227"
@@ -76,12 +52,33 @@
     uuid "^3.3.3"
     varuint-bitcoin "^1.1.0"
 
-"@ainize-team/ainize-js@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@ainize-team/ainize-js/-/ainize-js-1.1.1.tgz#63c675bc63a85f2321283aeb83f01cc023ba1662"
-  integrity sha512-BS7aKB4Gq0dHk2b5KP30UaJf1QzkexYY28lsy6SB3A/063EA1dXgIG6xcBipxeETCFXSnpPMx9Eh1kUTBakKJg==
+"@ainblockchain/ain-util@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@ainblockchain/ain-util/-/ain-util-1.2.1.tgz#c5445f4718da0820c4955be44b07400172a864ef"
+  integrity sha512-++Sjv4PBT2/sdHeQNCDNb67ZIObxQnRQzILh+E72BUNnaEcS9cf9+4RC9I8JRqWkBiPvsD7oJPpMYYn0xwfECg==
   dependencies:
-    "@ainblockchain/ain-js" "^1.6.3"
+    bip39 "^3.0.4"
+    bn.js "^4.11.8"
+    browserify-cipher "^1.0.1"
+    eccrypto "^1.1.6"
+    fast-json-stable-stringify "^2.0.0"
+    hdkey "^2.0.1"
+    keccak "^2.0.0"
+    pbkdf2 "^3.0.17"
+    randombytes "^2.1.0"
+    rlp "^2.2.2"
+    safe-buffer "^5.1.2"
+    scryptsy "^2.1.0"
+    secp256k1 "^3.6.2"
+    uuid "^3.3.3"
+    varuint-bitcoin "^1.1.0"
+
+"@ainize-team/ainize-js@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@ainize-team/ainize-js/-/ainize-js-1.3.1.tgz#063e1a59c22bdfbcaca15875d956e70c6740820c"
+  integrity sha512-ihzqaeAroVygFiMA7LiL5/RMD5eNltjnBEbyvFUf5Lk6i/lVPg/L6wJOMMUrMTA1DCcZ+5oNhROofWmw5h6+4Q==
+  dependencies:
+    "@ainblockchain/ain-js" "^1.13.0"
     axios "^0.26.1"
     express "^4.18.2"
     fast-json-stable-stringify "^2.1.0"
@@ -2958,15 +2955,7 @@ methods@~1.1.2:
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==
 
-micromatch@^4.0.2:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-4.0.7.tgz#33e8190d9fe474a9895525f5618eee136d46c2e5"
-  integrity sha512-LPP/3KorzCwBxfeUuZmaR6bG2kdeHSbe0P2tY3FLRU4vYrjYz5hI4QZwV0njUx3jeuKe67YukQ1LSPZBKDqO/Q==
-  dependencies:
-    braces "^3.0.3"
-    picomatch "^2.3.1"
-
-micromatch@^4.0.4:
+micromatch@^4.0.2, micromatch@^4.0.4:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-4.0.5.tgz#bc8999a7cbbf77cdc89f132f6e467051b49090c6"
   integrity sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==
@@ -3935,14 +3924,9 @@ write-file-atomic@^4.0.2:
     signal-exit "^3.0.7"
 
 ws@^8.16.0:
-  version "8.17.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.17.1.tgz#9293da530bb548febc95371d90f9c878727d919b"
-  integrity sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==
-
-ws@^8.2.3:
-  version "8.8.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.8.1.tgz#5dbad0feb7ade8ecc99b830c1d77c913d4955ff0"
-  integrity sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==
+  version "8.16.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.16.0.tgz#d1cd774f36fbc07165066a60e40323eab6446fd4"
+  integrity sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==
 
 y18n@^5.0.5:
   version "5.0.8"
@@ -3960,9 +3944,9 @@ yallist@^4.0.0:
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
 yaml@^2.2.2:
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.4.5.tgz#60630b206dd6d84df97003d33fc1ddf6296cca5e"
-  integrity sha512-aBx2bnqDzVOyNKfsysjA2ms5ZlnjSAW2eG3/L5G/CSujfjLJTJsEw1bGw8kCf04KodQWk1pxlGnZ56CRxiawmg==
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.4.1.tgz#2e57e0b5e995292c25c75d2658f0664765210eed"
+  integrity sha512-pIXzoImaqmfOrL7teGUBt/T7ZDnyeGBWyXQBvOVhLkWLN37GXv8NMLK406UY6dS51JfcQHsmcW5cJ441bHg6Lg==
 
 yargs-parser@^21.0.1, yargs-parser@^21.1.1:
   version "21.1.1"

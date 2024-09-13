@@ -1,3 +1,30 @@
+import { ConnectionCallback, DisconnectionCallback } from '@ainblockchain/ain-js/lib/types';
+
+export type ErrorCode =
+  | 'invalid-argument'
+  | 'unauthenticated'
+  | 'permission-denied'
+  | 'not-found'
+  | 'already-exists'
+  | 'precondition-failed'
+  | 'bad-request'       // 400
+  | 'forbidden'         // 403
+  | 'payload-too-large' // 413
+  | 'internal'          // 500
+  | 'unavailable'       // 503
+  | 'gateway-timeout'   // 504
+  | 'not-implemented'
+  | 'unknown';
+
+export interface ConnectParams {
+  /** The connection callback function. */
+  connectionCb?: ConnectionCallback;
+  /** The disconnection callback function. */
+  disconnectionCb?: DisconnectionCallback;
+  /** The custom client ID to set. */
+  customClientId?: string;
+}
+
 export interface SerializedMessage {
   code: number;
   message: string | undefined;
@@ -849,6 +876,7 @@ export type NftToken = {
   tokenURI: string,
   metadata: NftMetadata,
   isBurnt: boolean,
+  [key: string]: any;
 };
 
 export type NftTokens = {
@@ -1019,7 +1047,9 @@ export interface MintNftParams extends Omit<getTxBodyMintNftParams, 'address'> {
 export interface SearchOption {
   limit?: number,
   cursor?: string,
+  order?: 'asc' | 'desc',
 }
+
 export interface NftSearchParams extends SearchOption {
   /** The address of the user who owns the AINFT. */
   userAddress?: string;
@@ -1031,6 +1061,8 @@ export interface NftSearchParams extends SearchOption {
   name?: string;
   /** The symbol of AINFT object. */
   symbol?: string;
+  /** The URL slug of AINFT object. (e.g. "My Object" -> "my-object") */
+  slug?: string;
 }
 
 export interface getTxBodyTransferNftParams {
@@ -1088,9 +1120,9 @@ export interface getTxbodyAddAiHistoryParams {
   userAddress: string;
 }
 
-export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {};
+export interface AddAiHistoryParams extends Omit<getTxbodyAddAiHistoryParams, 'userAddress'> {}
 
-export interface AinftObjectSearchResponse extends SearchReponse {
+export interface AinftObjectSearchResponse extends SearchResponse {
   ainftObjects: {
     id: string;
     name: string;
@@ -1099,7 +1131,7 @@ export interface AinftObjectSearchResponse extends SearchReponse {
   }[];
 }
 
-export interface AinftTokenSearchResponse extends SearchReponse {
+export interface AinftTokenSearchResponse extends SearchResponse {
   nfts: {
     tokenId: string;
     owner: string;
@@ -1109,43 +1141,30 @@ export interface AinftTokenSearchResponse extends SearchReponse {
   }[];
 }
 
-export interface SearchReponse {
+export interface SearchResponse {
   isFinal: boolean;
   cursor?: string;
+}
+
+export interface Metadata {
+  [key: string]: any;
+}
+
+export interface AinftObjectCreateParams {
+  /** The name of the AINFT object. */
+  name: string;
+  /** The symbol of the AINFT object. */
+  symbol: string;
+  /** The metadata of the AINFT object. */
+  metadata?: Metadata;
 }
 
 export enum ServiceType {
   CHAT = 'chat',
 }
 
-export enum JobType {
-  CREATE_ASSISTANT = 'create_assistant',
-  LIST_ASSISTANTS = 'list_assistants',
-  RETRIEVE_ASSISTANT = 'retrieve_assistant',
-  MODIFY_ASSISTANT = 'modify_assistant',
-  DELETE_ASSISTANT = 'delete_assistant',
-
-  CREATE_THREAD = 'create_thread',
-  RETRIEVE_THREAD = 'retrieve_thread',
-  MODIFY_THREAD = 'modify_thread',
-  DELETE_THREAD = 'delete_thread',
-
-  CREATE_MESSAGE = 'create_message',
-  LIST_MESSAGES = 'list_messages',
-  RETRIEVE_MESSAGE = 'retrieve_message',
-  MODIFY_MESSAGE = 'modify_message',
-
-  CREATE_RUN = 'create_run',
-  LIST_RUNS = 'list_runs',
-  LIST_RUN_STEPS = 'list_run_steps',
-  RETRIEVE_RUN = 'retrieve_run',
-  RETRIEVE_RUN_STEP = 'retrieve_run_step',
-  MODIFY_RUN = 'modify_run',
-  CANCEL_RUN = 'cancel_run',
-}
-
 /**
- * Nickname of the service.
+ * @deprecated Nickname of the service.
  */
 export type ServiceNickname = string | 'openai';
 
@@ -1155,28 +1174,25 @@ export type ServiceNickname = string | 'openai';
  * for description of them.
  * Please note that image-related models are currently not supported.
  */
-export type OpenAIModel =
-  | 'gpt-4-1106-preview'
-  | 'gpt-4'
-  | 'gpt-4-32k'
-  | 'gpt-3.5-turbo-1106'
-  | 'gpt-3.5-turbo'
-  | 'gpt-3.5-turbo-16k'
-  | 'gpt-3.5-turbo-instruct';
+export type Model =
+  | 'gpt-4o-mini'
+  | 'gpt-4o'
+  | 'gpt-4-turbo'
+  | 'gpt-4';
 
 /**
  * Represents a transaction result.
  */
 export interface TransactionResult {
-  tx_hash: string;
-  result: Record<string, unknown>;
+  tx_hash?: string | null;
+  result?: Record<string, unknown> | null;
 }
 
 /**
- * Represents a chat configuration transaction result.
+ * Represents a ai configuration transaction result.
  */
-export interface ChatConfigurationTransactionResult extends TransactionResult {
-  config: ChatConfiguration;
+export interface AiConfigurationTransactionResult extends TransactionResult {
+  config: AiConfiguration;
 }
 
 /**
@@ -1229,9 +1245,7 @@ export interface MessagesTransactionResult extends TransactionResult {
   messages: MessageMap;
 }
 
-export interface ChatConfiguration {
-  /** The type of the service. */
-  type: ServiceType;
+export interface AiConfiguration {
   /** The name of the service. */
   name: string;
 }
@@ -1239,6 +1253,12 @@ export interface ChatConfiguration {
 export interface Assistant {
   /** The identifier. */
   id: string;
+  /** The ID of AINFT object.  */
+  objectId: string | null;
+  /** The ID of AINFT token. */
+  tokenId: string | null;
+  /** The owner address of AINFT token. */
+  owner: string | null;
   /** The name of the model to use. */
   model: string;
   /** The name of the assistant. */
@@ -1252,6 +1272,8 @@ export interface Assistant {
    * with keys limited to 64 characters and values to 512 characters.
    */
   metadata: object | null;
+  /** The metric of the assistant. */
+  metric?: { [key: string]: number } | null;
   /** The UNIX timestamp in seconds. */
   created_at: number;
 }
@@ -1265,7 +1287,7 @@ export interface AssistantDeleted {
 
 export interface AssistantCreateParams {
   /** The name of the model to use. */
-  model: OpenAIModel;
+  model: Model;
   /** The name of the assistant. The maximum length is 256 characters. */
   name: string;
   /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
@@ -1279,9 +1301,14 @@ export interface AssistantCreateParams {
   metadata?: object | null;
 }
 
+export interface AssistantCreateOptions {
+  /** If true, automatically set the profile image for the assistant. */
+  image?: boolean;
+}
+
 export interface AssistantUpdateParams {
   /** The name of the model to use. */
-  model?: OpenAIModel;
+  model?: Model;
   /** The name of the assistant. The maximum length is 256 characters. */
   name?: string | null;
   /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
@@ -1302,7 +1329,7 @@ export interface Thread {
    * The metadata can contain up to 16 pairs,
    * with keys limited to 64 characters and values to 512 characters.
    */
-  metadata: object | null;
+  metadata: object | {};
   /** The UNIX timestamp in seconds. */
   created_at: number;
 }
@@ -1312,6 +1339,11 @@ export interface ThreadDeleted {
   id: string;
   /** The delete flag. */
   deleted: boolean;
+}
+
+export interface ThreadWithMessages {
+  thread: Thread;
+  messages: MessageMap;
 }
 
 export interface ThreadCreateParams {
@@ -1365,6 +1397,19 @@ export interface MessageMap {
   [key: string]: Message;
 }
 
+export interface QueryParams {
+  /** The maximum number of items to return. */
+  limit?: number;
+  /** The number of items to skip. */
+  offset?: number;
+  /** The field by which to sort the results. */
+  sort?: 'created' | 'updated';
+  /** The order of the result set. */
+  order?: 'asc' | 'desc';
+}
+
+export type QueryParamsWithoutSort = Omit<QueryParams, 'sort'>;
+
 export interface Page<T> {
   data: T;
   first_id: string;
@@ -1390,4 +1435,13 @@ export interface MessageUpdateParams {
    * with keys limited to 64 characters and values to 512 characters.
    */
   metadata?: object | null;
+}
+
+export type EnvType = 'dev' | 'prod';
+
+export enum TokenStatus {
+  MINTED = 'minted',
+  ASSISTANT_CREATED = 'assistant_created',
+  THREAD_CREATED = 'thread_created',
+  MESSAGE_CREATED = 'message_created',
 }

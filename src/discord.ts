@@ -7,6 +7,7 @@ import {
   InviteInfo,
 } from "./types";
 import FactoryBase from "./factoryBase";
+import { authenticated } from "./utils/decorator";
 
 /**
  * This class supports the functionality of the AINFT factory for seamless use on Discord.\
@@ -19,6 +20,7 @@ export default class Discord extends FactoryBase {
    * @param {string} discordGuildId The discord guild ID to which app will be linked.
    * @returns
    */
+  @authenticated
   connectDiscordWithApp(appId: string, discordGuildId: string): Promise<void> {
     const body = { appId, discordServerId: discordGuildId };
     const trailingUrl = 'register';
@@ -31,6 +33,7 @@ export default class Discord extends FactoryBase {
    * @param {string} appId The ID of app.
    * @returns Returns connected app Id or null.
    */
+  @authenticated
   getConnectedApp(
     discordGuildId: string,
     appId: string = ''
@@ -46,6 +49,7 @@ export default class Discord extends FactoryBase {
    * @param {string} discordGuildId The ID of discord guild.
    * @returns Returns event list connected discord guild.
    */
+  @authenticated
   getConnectedEventsByServer(
     appId: string,
     discordGuildId: string
@@ -62,6 +66,7 @@ export default class Discord extends FactoryBase {
    * @param {string} discordChannelId The ID of discord channel.
    * @returns Returns a map of task IDs for each event ID.
    */
+  @authenticated
   getConnectedTasksByChannel(
     appId: string,
     discordGuildId: string,
@@ -80,6 +85,7 @@ export default class Discord extends FactoryBase {
    * @param {string} discordGuildId The discord guild ID to which the model will be linked.
    * @param {string} discordChannelId The discord channel ID to which the model will be linked.
    */
+  @authenticated
   addPersonaModelToDiscordChannel(
     appId: string,
     modelId: string,
@@ -105,6 +111,7 @@ export default class Discord extends FactoryBase {
    * @param {string} discordChannelId The discord channel ID to which model was connected.
    * @returns 
    */
+  @authenticated
   getPersonaModelForDiscordChannel(
     appId: string,
     discordGuildId: string,
@@ -121,6 +128,7 @@ export default class Discord extends FactoryBase {
    * @param {string} discordGuildId The discord build ID to which model was connected.
    * @returns Returns a Map of information about the models linked to each channel in the guild."
    */
+  @authenticated
   getPersonaModelForDiscordServer(
     appId: string,
     discordGuildId: string
@@ -136,6 +144,7 @@ export default class Discord extends FactoryBase {
    * @param {string} discordGuildId The discord guild ID to which the model will be disconnected.
    * @param {string} discordChannelId The discord channel ID to which the model will be disconnected.
    */
+  @authenticated
   deletePersonaModelFromDiscordChannel(
     appId: string,
     discordGuildId: string,
@@ -156,6 +165,7 @@ export default class Discord extends FactoryBase {
    * @param {Array<string>} ambiguousInviters Array of userIds invited in a short time.
    * @returns {Promise<InviteInfo>} Return InviteInfo object.
    */
+  @authenticated
   addInviteInfo(
     appId: string,
     eventId: string,
@@ -185,6 +195,7 @@ export default class Discord extends FactoryBase {
    * @param {string} inviteeId The ID of invitee.
    * @returns {Promise<InviteInfo>} Return InviteInfo object.
    */
+  @authenticated
   getInviteInfo(
     appId: string,
     discordGuildId: string,

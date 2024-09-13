@@ -1,8 +1,9 @@
 import Ain from "@ainblockchain/ain-js";
+import Ainize from '@ainize-team/ainize-js';
 import stringify = require("fast-json-stable-stringify");
 import axios, { AxiosRequestHeaders } from "axios";
 import { HttpMethod, HttpMethodToAxiosMethod, SerializedMessage } from "./types";
-import { buildData, isJoiError, sleep } from "./common/util";
+import { buildData, isJoiError } from './utils/util';
 import FormData from "form-data";
 
 /** 
@@ -15,14 +16,18 @@ export default class FactoryBase {
   public route: string;
   /** The Ain object for sign and send transaction to AIN blockchain. */
   public ain: Ain;
+   /** The Ainize object for send request to AIN blockchain. */
+  public ainize?: Ainize;
 
   constructor(
-    ain: Ain,
     baseUrl: string,
-    route?: string,
+    route: string | null,
+    ain: Ain,
+    ainize?: Ainize,
   ) {
     this.route = route || '';
     this.ain = ain;
+    this.ainize = ainize;
 
     this.setBaseUrl(baseUrl);
   }

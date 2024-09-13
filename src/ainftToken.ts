@@ -1,6 +1,7 @@
 import Ain from "@ainblockchain/ain-js";
 import FactoryBase from "./factoryBase";
 import { HttpMethod } from "./types";
+import { authenticated } from "./utils/decorator";
 
 /**
  * The class of AINFT Token.
@@ -27,7 +28,7 @@ export class AinftToken extends FactoryBase {
    * @param baseUrl The base url to request api to AINFT factory server.
    */
   constructor(tokenInfo: { ainftObjectId: string, tokenId: string, tokenURI: string, metadata?: object }, ain: Ain, baseUrl: string) {
-    super(ain, baseUrl);
+    super(baseUrl, null, ain);
     this.ainftObjectId = tokenInfo.ainftObjectId;
     this.tokenId = tokenInfo.tokenId;
     this.tokenURI = tokenInfo.tokenURI;
@@ -54,6 +55,7 @@ export class AinftToken extends FactoryBase {
    * }
    * ```
    */
+  @authenticated
   async setMetadata(metadata: object) { 
     const address = await this.ain.signer.getAddress();
     const body = { ainftObjectId: this.ainftObjectId, tokenId: this.tokenId, metadata, userAddress: address };

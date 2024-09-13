@@ -1,10 +1,11 @@
 import axios from 'axios';
+import _ from 'lodash';
 import Ain from '@ainblockchain/ain-js';
 import Ainize from '@ainize-team/ainize-js';
 import * as AinUtil from '@ainblockchain/ain-util';
 import { AinWalletSigner } from '@ainblockchain/ain-js/lib/signer/ain-wallet-signer';
 import { Signer } from '@ainblockchain/ain-js/lib/signer/signer';
-import _ from 'lodash';
+import Handler from '@ainize-team/ainize-js/dist/handlers/handler';
 
 import Nft from './nft';
 import Credit from './credit';
@@ -16,63 +17,76 @@ import PersonaModels from './personaModels';
 import TextToArt from './textToArt';
 import Activity from './activity';
 import Eth from './eth';
-import Chat from './chat/chat';
+import { Ai, Assistants, Threads, Messages } from './ai';
 import {
   AINFT_SERVER_ENDPOINT,
-  AIN_BLOCKCHAIN_CHAINID,
+  AIN_BLOCKCHAIN_CHAIN_ID,
   AIN_BLOCKCHAIN_ENDPOINT,
 } from './constants';
+import { setEnv } from './utils/env';
+import { ConnectParams } from './types';
+import { authenticated } from './utils/decorator';
+import { AinftError } from './error';
+
+export interface ClientOptions {
+  privateKey?: string;
+  signer?: Signer;
+  baseUrl?: string | null;
+  blockchainUrl?: string | null;
+  chainId?: 0 | 1 | null;
+}
 
 /**
  * A class that establishes a blockchain and ainft server connection and initializes other classes.
  */
 export default class AinftJs {
-  private baseUrl: string;
-  private ainize: Ainize;
+  public ain: Ain;
+  public ainize: Ainize;
   public nft: Nft;
   public credit: Credit;
   public auth: Auth;
   public discord: Discord;
   public event: Event;
   public store: Store;
-  public ain: Ain;
   public personaModels: PersonaModels;
   public textToArt: TextToArt;
   public activity: Activity;
   public eth: Eth;
-  public chat: Chat;
+  public ai: Ai;
+  public assistant: Assistants;
+  public thread: Threads;
+  public message: Messages;
 
-  constructor(
-    privateKey: string,
-    config?: {
-      ainftServerEndpoint?: string,
-      ainBlockchainEndpoint?: string,
-      chainId?: number,
-    }
-  ) {
-    this.baseUrl = _.get(config, 'ainftServerEndpoint') || AINFT_SERVER_ENDPOINT['prod'];
-    const stage = this.getStage(this.baseUrl);
-    const chainId = _.get(config, 'chainId') || AIN_BLOCKCHAIN_CHAINID[stage];
+  private _baseUrl: string;
+  private _blockchainUrl: string;
+  private _chainId: 0 | 1;
 
-    if (!(chainId === 0 || chainId === 1)) {
-      throw new Error(`Invalid chain ID: ${chainId}`);
-    }
+  constructor({ privateKey, signer, baseUrl, blockchainUrl, chainId }: ClientOptions = {}) {
+    this._baseUrl = baseUrl || 'https://ainft-api.ainetwork.ai';
+    const stage = this.getStage(this._baseUrl);
+    this._blockchainUrl = blockchainUrl || AIN_BLOCKCHAIN_ENDPOINT[stage];
+    this._chainId = chainId || AIN_BLOCKCHAIN_CHAIN_ID[stage];
 
-    this.ain = new Ain(_.get(config, 'ainBlockchainEndpoint') || AIN_BLOCKCHAIN_ENDPOINT[stage], null, chainId);
-    this.ainize = new Ainize(chainId);
-    this.setPrivateKey(privateKey);
+    this.ain = new Ain(this._blockchainUrl, null, this._chainId);
+    this.ainize = new Ainize(this._chainId);
 
-    this.nft = new Nft(this.ain, this.baseUrl, '/nft');
-    this.eth = new Eth(this.ain, this.baseUrl, '/nft');
-    this.credit = new Credit(this.ain, this.baseUrl, '/credit');
-    this.auth = new Auth(this.ain, this.baseUrl, '/auth');
-    this.discord = new Discord(this.ain, this.baseUrl, '/discord');
-    this.event = new Event(this.ain, this.baseUrl, '/event');
-    this.store = new Store(this.ain, this.baseUrl, '/store');
-    this.personaModels = new PersonaModels(this.ain, this.baseUrl, '/persona-models');
-    this.textToArt = new TextToArt(this.ain, this.baseUrl, '/text-to-art');
-    this.activity = new Activity(this.ain, this.baseUrl, '/activity');
-    this.chat = new Chat(this.ain, this.ainize);
+    this.setCredentials(privateKey, signer);
+    setEnv(stage);
+
+    this.nft = new Nft(this._baseUrl, '/nft', this.ain);
+    this.eth = new Eth(this._baseUrl, '/nft', this.ain);
+    this.credit = new Credit(this._baseUrl, '/credit', this.ain);
+    this.auth = new Auth(this._baseUrl, '/auth', this.ain, this.ainize);
+    this.discord = new Discord(this._baseUrl, '/discord', this.ain);
+    this.event = new Event(this._baseUrl, '/event', this.ain);
+    this.store = new Store(this._baseUrl, '/store', this.ain);
+    this.personaModels = new PersonaModels(this._baseUrl, '/persona-models', this.ain);
+    this.textToArt = new TextToArt(this._baseUrl, '/text-to-art', this.ain);
+    this.activity = new Activity(this._baseUrl, '/activity', this.ain);
+    this.ai = new Ai(this._baseUrl, null, this.ain, this.ainize);
+    this.assistant = new Assistants(this._baseUrl, null, this.ain, this.ainize);
+    this.thread = new Threads(this._baseUrl, null, this.ain, this.ainize);
+    this.message = new Messages(this._baseUrl, null, this.ain, this.ainize);
   }
 
   /**
@@ -80,7 +94,7 @@ export default class AinftJs {
    * @param baseUrl
    */
   setBaseUrl(baseUrl: string) {
-    this.baseUrl = baseUrl;
+    this._baseUrl = baseUrl;
     this.nft.setBaseUrl(baseUrl);
     this.credit.setBaseUrl(baseUrl);
     this.auth.setBaseUrl(baseUrl);
@@ -97,11 +111,7 @@ export default class AinftJs {
    * @param providerUrl
    * @param chainId
    */
-  setAiNetworkInfo(
-    providerUrl: string,
-    chainId: number,
-    axiosConfig?: any
-  ) {
+  setAiNetworkInfo(providerUrl: string, chainId: number, axiosConfig?: any) {
     this.ain.setProvider(providerUrl, null, chainId, axiosConfig);
   }
 
@@ -111,6 +121,14 @@ export default class AinftJs {
    */
   getAccessAccount() {
     return this.ain.wallet.defaultAccount;
+  }
+
+  setCredentials(privateKey?: string, signer?: Signer) {
+    if (privateKey) {
+      this.setPrivateKey(privateKey);
+    } else if (signer) {
+      this.setSigner(signer);
+    }
   }
 
   /**
@@ -133,11 +151,54 @@ export default class AinftJs {
   }
 
   /**
+   * Connects to the blockchain endpoint.
+   * @param {ConnectParams} connectParams - The parameters to connect.
+   */
+  @authenticated
+  async connect({ connectionCb, disconnectionCb, customClientId }: ConnectParams = {}) {
+    if (this.isConnected()) {
+      throw new AinftError(
+        'already-exists',
+        'connection to the blockchain network is already established.'
+      );
+    }
+    const privateKey = this.ain.wallet.defaultAccount?.private_key;
+    if (privateKey) {
+      await this.ainize.login(privateKey, connectionCb, disconnectionCb, customClientId);
+    } else {
+      await this.ainize.loginWithSigner(connectionCb, disconnectionCb, customClientId);
+    }
+  }
+
+  /**
+   * Checks whether the client is connected to the blockchain endpoint.
+   * @returns Returns `true` if connected, `false` otherwise.
+   */
+  @authenticated
+  isConnected(): boolean {
+    return Handler.getInstance().isConnected();
+  }
+
+  /**
+   * Disconnects from the blockchain endpoint.
+   */
+  @authenticated
+  async disconnect() {
+    if (!this.isConnected()) {
+      throw new AinftError(
+        'unavailable',
+        'connection to the blockchain network could not be established.'
+      );
+    }
+    await this.ainize.logout();
+  }
+
+  /**
    * Return the status of the AINFT server.
    * @returns
    */
   async getStatus(): Promise<{ health: boolean }> {
-    return (await axios.get(`${this.baseUrl}/status`)).data;
+    return (await axios.get(`${this._baseUrl}/status`)).data;
   }
 
   static createAccount() {

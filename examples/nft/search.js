@@ -1,12 +1,12 @@
 const AinftJs = require('@ainft-team/ainft-js').default;
+const { privateKey } = require('../config.json');
 
-const config = {
-  ainftServerEndpoint: 'https://ainft-api-dev.ainetwork.ai',
-  ainBlockchainEndpoint: 'https://testnet-api.ainetwork.ai',
-}
-
-const myPrivateKey = 'YOUR_PRIVATE_KEY';
-const ainftJs = new AinftJs(myPrivateKey, config);
+const ainft = new AinftJs({
+  privateKey,
+  baseUrl: 'https://ainft-api-dev.ainetwork.ai',
+  blockchainUrl: 'https://testnet-api.ainetwork.ai',
+  chainId: 0,
+});
 
 const searchAinftObjects = async () => {
   const filter = {
@@ -16,15 +16,16 @@ const searchAinftObjects = async () => {
     symbol: '',
     limit: 0,
     cursor: '',
-  }
-  ainftJs.nft.searchAinftObjects(filter)
+  };
+  ainft.nft
+    .searchAinftObjects(filter)
     .then((res) => {
       console.log(res);
     })
     .catch((error) => {
       console.log(error);
-    })
-}
+    });
+};
 
 const searchNfts = async () => {
   const filter = {
@@ -35,15 +36,15 @@ const searchNfts = async () => {
     symbol: '',
     limit: 0,
     cursor: '',
-  }
-  ainftJs.nft.searchNfts(filter)
+  };
+  ainft.nft
+    .searchNfts(filter)
     .then((res) => {
       console.log(res);
-      })
+    })
     .catch((error) => {
       console.log(error);
     });
-}
-
+};
 
 searchNfts();
