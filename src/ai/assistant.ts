@@ -105,12 +105,26 @@ export class Assistants extends FactoryBase {
       data: body,
     });
 
+    const assistant = {
+      id: data.id,
+      objectId: objectId,
+      tokenId: tokenId,
+      owner: address,
+      model: data.model,
+      name: data.name,
+      instructions: data.instructions,
+      description: data.description,
+      metadata: data.metadata,
+      created_at: data.created_at,
+      metric: { numThreads: 0 },
+    };
+
     if (role === Role.OWNER) {
       const txBody = this.buildTxBodyForCreateAssistant(address, objectId, tokenId, data);
       const result = await sendTx(txBody, this.ain);
-      return { ...result, assistant: data };
+      return { ...result, assistant };
     } else {
-      return { assistant: data };
+      return { assistant };
     }
   }
 
