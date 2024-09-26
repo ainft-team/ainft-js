@@ -70,6 +70,8 @@ export class Assistants extends FactoryBase {
     options: AssistantCreateOptions = {}
   ): Promise<AssistantTransactionResult> {
     const address = await this.ain.signer.getAddress();
+    const appId = AinftObject.getAppId(objectId);
+    const token = await getToken(this.ain, appId, tokenId);
 
     // TODO(jiyoung): limit character count for 'instruction' and 'description'.
     await validateObject(this.ain, objectId);
@@ -105,12 +107,28 @@ export class Assistants extends FactoryBase {
       data: body,
     });
 
+    const assistant = {
+      id: data.id,
+      objectId: objectId,
+      tokenId: tokenId,
+      owner: token.owner,
+      model: data.model,
+      name: data.name,
+      instructions: data.instructions,
+      description: data.description,
+      metadata: data.metadata,
+      created_at: data.created_at,
+      metric: {
+        numThreads: 0,
+      },
+    };
+
     if (role === Role.OWNER) {
       const txBody = this.buildTxBodyForCreateAssistant(address, objectId, tokenId, data);
       const result = await sendTx(txBody, this.ain);
-      return { ...result, assistant: data };
+      return { ...result, assistant };
     } else {
-      return { assistant: data };
+      return { assistant };
     }
   }
 
