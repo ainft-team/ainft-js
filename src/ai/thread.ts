@@ -316,6 +316,7 @@ export class Threads extends FactoryBase {
               id: assistant.id,
               objectId,
               tokenId,
+              owner: token.owner,
               model: assistant.config.model,
               name: assistant.config.name,
               instructions: assistant.config.instructions,
