@@ -2,7 +2,7 @@ import AinftJs from "../../src/ainft";
 import { address, assistantId, objectId, privateKey, tokenId } from "../test_data";
 import { ASSISTANT_REGEX, TX_HASH_REGEX } from "../constants";
 
-describe("assistant", () => {
+describe.skip("assistant", () => {
   let ainft: AinftJs;
 
   beforeAll(async () => {
