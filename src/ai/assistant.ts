@@ -1,11 +1,10 @@
-import _ from 'lodash';
+import _ from "lodash";
 
-import FactoryBase from '../factoryBase';
-import AinftObject from '../ainft721Object';
-import { OperationType, getServiceName, request } from '../utils/ainize';
+import FactoryBase from "../factoryBase";
+import AinftObject from "../ainft721Object";
+import { OperationType, getServiceName, request } from "../utils/ainize";
 import {
   Assistant,
-  AssistantCreateOptions,
   AssistantCreateParams,
   AssistantDeleteTransactionResult,
   AssistantDeleted,
@@ -14,16 +13,16 @@ import {
   NftToken,
   NftTokens,
   QueryParamsWithoutSort,
-} from '../types';
+} from "../types";
 import {
   MESSAGE_GC_MAX_SIBLINGS,
   MESSAGE_GC_NUM_SIBLINGS_DELETED,
   THREAD_GC_MAX_SIBLINGS,
   THREAD_GC_NUM_SIBLINGS_DELETED,
   WHITELISTED_OBJECT_IDS,
-} from '../constants';
-import { getEnv } from '../utils/env';
-import { Path } from '../utils/path';
+} from "../constants";
+import { getEnv } from "../utils/env";
+import { Path } from "../utils/path";
 import {
   buildSetValueOp,
   buildSetWriteRuleOp,
@@ -31,8 +30,8 @@ import {
   buildSetOp,
   buildSetTxBody,
   sendTx,
-} from '../utils/transaction';
-import { getChecksumAddress, getAssistant, getToken } from '../utils/util';
+} from "../utils/transaction";
+import { getChecksumAddress, getAssistant, getToken, arrayToObject } from "../utils/util";
 import {
   isObjectOwner,
   validateAssistant,
@@ -40,13 +39,13 @@ import {
   validateObject,
   validateServerConfigurationForObject,
   validateToken,
-} from '../utils/validator';
-import { authenticated } from '../utils/decorator';
-import { AinftError } from '../error';
+} from "../utils/validator";
+import { authenticated } from "../utils/decorator";
+import { AinftError } from "../error";
 
 enum Role {
-  OWNER = 'owner',
-  USER = 'user',
+  OWNER = "owner",
+  USER = "user",
 }
 
 /**
@@ -56,75 +55,68 @@ enum Role {
 export class Assistants extends FactoryBase {
   /**
    * Create an assistant with a model and instructions.
-   * @param {string} objectId - The ID of AINFT object.
-   * @param {string} tokenId - The ID of AINFT token.
+   * @param {string} objectId - The ID of the AINFT object.
+   * @param {string} tokenId - The ID of the AINFT token.
    * @param {AssistantCreateParams} AssistantCreateParams - The parameters to create assistant.
-   * @param {AssistantCreateOptions} AssistantCreateOptions - The creation options.
    * @returns A promise that resolves with both the transaction result and the created assistant.
    */
   @authenticated
   async create(
     objectId: string,
     tokenId: string,
-    { model, name, instructions, description, metadata }: AssistantCreateParams,
-    options: AssistantCreateOptions = {}
+    params: AssistantCreateParams
   ): Promise<AssistantTransactionResult> {
     const address = await this.ain.signer.getAddress();
-    const appId = AinftObject.getAppId(objectId);
-    const token = await getToken(this.ain, appId, tokenId);
 
-    // TODO(jiyoung): limit character count for 'instruction' and 'description'.
+    // TODO(jiyoung): check character count for input params.
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateDuplicateAssistant(this.ain, objectId, tokenId);
 
+    // TODO(jiyoung): fix it.
     // NOTE(jiyoung): creation is limited to owners, except for whitelisted objects.
     const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
-    const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
-    if (!whitelisted && role !== Role.OWNER) {
-      throw new AinftError('permission-denied', `cannot create assistant for ${objectId}`);
+    const isWhitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
+    if (!isWhitelisted && role !== Role.OWNER) {
+      throw new AinftError("permission-denied", `cannot create assistant for ${objectId}`);
     }
 
+    const token = await getToken(this.ain, objectId, tokenId);
     const serviceName = getServiceName();
     await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const opType = OperationType.CREATE_ASSISTANT;
-    const body = {
-      role,
-      objectId,
-      tokenId,
-      model,
-      name,
-      instructions,
-      ...(description && { description }),
-      ...(metadata && !_.isEmpty(metadata) && { metadata }),
-      ...(options && !_.isEmpty(options) && { options }),
-    };
+    const body = this.buildReqBodyForCreateAssistant(objectId, tokenId, role, params);
 
-    const { data } = await request<Assistant>(this.ainize!, {
+    const { data } = await request<any>(this.ainize!, {
       serviceName,
       opType,
       data: body,
     });
 
-    const assistant = {
+    const assistant: Assistant = {
       id: data.id,
-      objectId: objectId,
-      tokenId: tokenId,
-      owner: token.owner,
+      createdAt: data.createdAt,
+      objectId: data.objectId,
+      tokenId: data.tokenId,
+      tokenOwner: token.owner,
       model: data.model,
       name: data.name,
-      instructions: data.instructions,
       description: data.description,
-      metadata: data.metadata,
-      created_at: data.created_at,
-      metric: {
-        numThreads: 0,
+      instructions: data.instructions,
+      metadata: {
+        author: data.metadata?.author || null,
+        bio: data.metadata?.bio || null,
+        chatStarter: data.metadata?.chatStarter ? Object.values(data.metadata?.chatStarter) : null,
+        greetingMessage: data.metadata?.greetingMessage || null,
+        image: data.metadata?.image || null,
+        tags: data.metadata?.tags ? Object.values(data.metadata?.tags) : null,
       },
+      metrics: data.metrics || {},
     };
 
     if (role === Role.OWNER) {
-      const txBody = this.buildTxBodyForCreateAssistant(address, objectId, tokenId, data);
+      const txBody = this.buildTxBodyForCreateAssistant(data, address);
       const result = await sendTx(txBody, this.ain);
       return { ...result, assistant };
     } else {
@@ -134,9 +126,9 @@ export class Assistants extends FactoryBase {
 
   /**
    * Updates an assistant.
-   * @param {string} objectId - The ID of AINFT object.
-   * @param {string} tokenId - The ID of AINFT token.
-   * @param {string} assistantId - The ID of assistant.
+   * @param {string} objectId - The ID of the AINFT object.
+   * @param {string} tokenId - The ID of the AINFT token.
+   * @param {string} assistantId - The ID of the assistant.
    * @param {AssistantUpdateParams} AssistantUpdateParams - The parameters to update assistant.
    * @returns A promise that resolves with both the transaction result and the updated assistant.
    */
@@ -145,7 +137,7 @@ export class Assistants extends FactoryBase {
     objectId: string,
     tokenId: string,
     assistantId: string,
-    { model, name, instructions, description, metadata }: AssistantUpdateParams
+    params: AssistantUpdateParams
   ): Promise<AssistantTransactionResult> {
     const address = await this.ain.signer.getAddress();
 
@@ -158,37 +150,48 @@ export class Assistants extends FactoryBase {
     const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
     const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
     if (!whitelisted && role !== Role.OWNER) {
-      throw new AinftError('permission-denied', `cannot update assistant for ${objectId}`);
+      throw new AinftError("permission-denied", `cannot update assistant for ${objectId}`);
     }
 
+    const token = await getToken(this.ain, objectId, tokenId);
     const serviceName = getServiceName();
     await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
     const opType = OperationType.MODIFY_ASSISTANT;
-    const body = {
-      role,
-      objectId,
-      tokenId,
-      assistantId,
-      ...(model && { model }),
-      ...(name && { name }),
-      ...(instructions && { instructions }),
-      ...(description && { description }),
-      ...(metadata && !_.isEmpty(metadata) && { metadata }),
-    };
-
-    const { data } = await request<Assistant>(this.ainize!, {
+    const body = this.buildReqBodyForUpdateAssistant(objectId, tokenId, assistantId, role, params);
+    const { data } = await request<any>(this.ainize!, {
       serviceName,
       opType,
       data: body,
     });
 
+    const assistant: Assistant = {
+      id: data.id,
+      createdAt: data.createdAt,
+      objectId: data.objectId,
+      tokenId: data.tokenId,
+      tokenOwner: token.owner,
+      model: data.model,
+      name: data.name,
+      description: data.description,
+      instructions: data.instructions,
+      metadata: {
+        author: data.metadata?.author || null,
+        bio: data.metadata?.bio || null,
+        chatStarter: data.metadata?.chatStarter ? Object.values(data.metadata?.chatStarter) : null,
+        greetingMessage: data.metadata?.greetingMessage || null,
+        image: data.metadata?.image || null,
+        tags: data.metadata?.tags ? Object.values(data.metadata?.tags) : null,
+      },
+      metrics: data.metrics || {},
+    };
+
     if (role === Role.OWNER) {
       const txBody = this.buildTxBodyForUpdateAssistant(address, objectId, tokenId, data);
       const result = await sendTx(txBody, this.ain);
-      return { ...result, assistant: data };
+      return { ...result, assistant };
     } else {
-      return { assistant: data };
+      return { assistant };
     }
   }
 
@@ -215,7 +218,7 @@ export class Assistants extends FactoryBase {
     const role = (await isObjectOwner(this.ain, objectId, address)) ? Role.OWNER : Role.USER;
     const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
     if (!whitelisted && role !== Role.OWNER) {
-      throw new AinftError('permission-denied', `cannot delete assistant for ${objectId}`);
+      throw new AinftError("permission-denied", `cannot delete assistant for ${objectId}`);
     }
 
     const serviceName = getServiceName();
@@ -251,23 +254,35 @@ export class Assistants extends FactoryBase {
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
 
-    const assistant = await getAssistant(this.ain, appId, tokenId);
-    const token = await getToken(this.ain, appId, tokenId);
+    const _assistant = await getAssistant(this.ain, appId, tokenId);
+    const _token = await getToken(this.ain, objectId, tokenId);
 
-    const data = {
-      id: assistant.id,
+    const assistant: Assistant = {
+      id: _assistant.id,
+      createdAt: _assistant.createdAt,
       objectId,
       tokenId,
-      owner: token.owner,
-      model: assistant.config.model,
-      name: assistant.config.name,
-      instructions: assistant.config.instructions,
-      description: assistant.config.description || null,
-      metadata: assistant.config.metadata || {},
-      created_at: assistant.createdAt,
+      tokenOwner: _token.owner,
+      model: _assistant.config.model,
+      name: _assistant.config.name,
+      description: _assistant.config.description || null,
+      instructions: _assistant.config.instructions || null,
+      metadata: {
+        author: _assistant.config.metadata?.author || null,
+        bio: _assistant.config.metadata?.bio || null,
+        chatStarter: _assistant.config.metadata?.chatStarter
+          ? Object.values(_assistant.config.metadata?.chatStarter)
+          : null,
+        greetingMessage: _assistant.config.metadata?.greetingMessage || null,
+        image: _assistant.config.metadata?.image || null,
+        tags: _assistant.config.metadata?.tags
+          ? Object.values(_assistant.config.metadata?.tags)
+          : null,
+      },
+      metrics: _assistant.metrics || {},
     };
 
-    return data;
+    return assistant;
   }
 
   /**
@@ -280,14 +295,13 @@ export class Assistants extends FactoryBase {
   async list(
     objectIds: string[],
     address?: string | null,
-    { limit = 20, offset = 0, order = 'desc' }: QueryParamsWithoutSort = {}
+    { limit = 20, offset = 0, order = "desc" }: QueryParamsWithoutSort = {}
   ) {
     await Promise.all(objectIds.map((objectId) => validateObject(this.ain, objectId)));
 
     const allAssistants = await Promise.all(
       objectIds.map(async (objectId) => {
-        const tokens = await this.getTokens(objectId, address);
-        return this.getAssistantsFromTokens(tokens);
+        return this.getAssistants(objectId, address);
       })
     );
     const assistants = allAssistants.flat();
@@ -306,7 +320,7 @@ export class Assistants extends FactoryBase {
     const whitelisted = WHITELISTED_OBJECT_IDS[getEnv()].includes(objectId);
     if (!whitelisted) {
       throw new AinftError(
-        'forbidden',
+        "forbidden",
         `cannot mint token for ${objectId}. please use the Ainft721Object.mint() function instead.`
       );
     }
@@ -324,30 +338,74 @@ export class Assistants extends FactoryBase {
     return data;
   }
 
-  private buildTxBodyForCreateAssistant(
-    address: string,
+  // NOTE(jiyoung): transform metadata by recursively converting arrays to objects
+  // and replacing empty arrays or objects with null.
+  private transformMetadata(metadata: any) {
+    if (Array.isArray(metadata)) {
+      // 1-1. empty array
+      if (metadata.length === 0) {
+        return null;
+      }
+      // 1-2. array to object
+      const result: { [key: string]: any } = {};
+      metadata.forEach((v, i) => {
+        result[`${i}`] = this.transformMetadata(v);
+      });
+      return result;
+    } else if (typeof metadata === "object" && metadata !== null) {
+      // 2-1. empty object
+      if (Object.keys(metadata).length === 0) {
+        return null;
+      }
+      // 2-2. nested object
+      const result: { [key: string]: any } = {};
+      for (const key in metadata) {
+        result[key] = this.transformMetadata(metadata[key]);
+      }
+      return result;
+    }
+    return metadata;
+  }
+
+  private buildReqBodyForCreateAssistant(
     objectId: string,
     tokenId: string,
-    { id, model, name, instructions, description, metadata, created_at }: Assistant
+    role: Role,
+    params: AssistantCreateParams
   ) {
-    const appId = AinftObject.getAppId(objectId);
-    const assistantPath = Path.app(appId).token(tokenId).ai().value();
-    const historyPath = `/apps/${appId}/tokens/${tokenId}/ai/history/$user_addr`;
+    return {
+      role,
+      objectId,
+      tokenId,
+      model: params.model,
+      name: params.name,
+      description: params.description || null,
+      instructions: params.instructions || null,
+      metadata: this.transformMetadata(params.metadata),
+      options: {
+        autoImage: params.autoImage || false,
+      },
+    };
+  }
+
+  private buildTxBodyForCreateAssistant(assistant: Assistant, address: string) {
+    const appId = AinftObject.getAppId(assistant.objectId);
+    const assistantPath = Path.app(appId).token(assistant.tokenId).ai().value();
+    const historyPath = `/apps/${appId}/tokens/${assistant.tokenId}/ai/history/$user_addr`;
     const threadPath = `${historyPath}/threads/$thread_id`;
     const messagePath = `${threadPath}/messages/$message_id`;
 
-    const config = {
-      model,
-      name,
-      instructions,
-      ...(description && { description }),
-      ...(metadata && !_.isEmpty(metadata) && { metadata }),
-    };
-    const info = {
-      id,
-      type: 'chat',
-      config,
-      createdAt: created_at,
+    const value = {
+      id: assistant.id,
+      createdAt: assistant.createdAt,
+      config: {
+        model: assistant.model,
+        name: assistant.name,
+        ...(assistant.instructions && { instructions: assistant.instructions }),
+        ...(assistant.description && { description: assistant.description }),
+        ...(assistant.metadata &&
+          !_.isEmpty(assistant.metadata) && { metadata: assistant.metadata }),
+      },
       history: true,
     };
 
@@ -365,7 +423,7 @@ export class Assistants extends FactoryBase {
       },
     };
 
-    const setAssistantInfoOp = buildSetValueOp(assistantPath, info);
+    const setAssistantInfoOp = buildSetValueOp(assistantPath, value);
     const setHistoryWriteRuleOp = buildSetWriteRuleOp(historyPath, rules.write);
     const setThreadGCRuleOp = buildSetStateRuleOp(threadPath, rules.state.thread);
     const setMessageGCRuleOp = buildSetStateRuleOp(messagePath, rules.state.message);
@@ -379,6 +437,26 @@ export class Assistants extends FactoryBase {
       ]),
       address
     );
+  }
+
+  private buildReqBodyForUpdateAssistant(
+    objectId: string,
+    tokenId: string,
+    assistantId: string,
+    role: Role,
+    params: AssistantUpdateParams
+  ) {
+    return {
+      role,
+      objectId,
+      tokenId,
+      assistantId,
+      ...(params.model && { model: params.model }),
+      ...(params.name && { name: params.name }),
+      ...(params.description && { description: params.description }),
+      ...(params.instructions && { instructions: params.instructions }),
+      metadata: this.transformMetadata(params.metadata),
+    };
   }
 
   private buildTxBodyForUpdateAssistant(
@@ -424,59 +502,28 @@ export class Assistants extends FactoryBase {
     );
   }
 
-  private async getTokens(objectId: string, address?: string | null) {
+  private async getAssistants(objectId: string, address?: string | null) {
     const appId = AinftObject.getAppId(objectId);
     const tokensPath = Path.app(appId).tokens().value();
     const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
-    return Object.entries(tokens).reduce<NftToken[]>((acc, [id, token]) => {
-      if (!address || token.owner === address) {
-        acc.push({ objectId, tokenId: id, ...token });
-      }
-      return acc;
-    }, []);
+
+    const assistants = await Promise.all(
+      Object.entries(tokens).map(async ([id, token]) => {
+        if (!address || token.owner === address) {
+          return await getAssistant(this.ain, appId, id);
+        }
+        return null;
+      })
+    );
+
+    return assistants.filter((assistant) => assistant !== null);
   }
 
-  private getAssistantsFromTokens(tokens: NftToken[]) {
-    return tokens.reduce<Assistant[]>((acc, token) => {
-      if (token.ai) {
-        acc.push(this.toAssistant(token, this.countThreads(token.ai.history)));
-      }
-      return acc;
-    }, []);
-  }
-
-  private toAssistant(data: any, numThreads: number): Assistant {
-    return {
-      id: data.ai.id,
-      objectId: data.objectId,
-      tokenId: data.tokenId,
-      owner: data.owner,
-      model: data.ai.config.model,
-      name: data.ai.config.name,
-      instructions: data.ai.config.instructions,
-      description: data.ai.config.description || null,
-      metadata: data.ai.config.metadata || {},
-      created_at: data.ai.createdAt,
-      metric: { numThreads },
-    };
-  }
-
-  private sortAssistants(assistants: Assistant[], order: 'asc' | 'desc') {
+  private sortAssistants(assistants: Assistant[], order: "asc" | "desc") {
     return assistants.sort((a, b) => {
-      if (a.created_at < b.created_at) return order === 'asc' ? -1 : 1;
-      if (a.created_at > b.created_at) return order === 'asc' ? 1 : -1;
+      if (a.createdAt < b.createdAt) return order === "asc" ? -1 : 1;
+      if (a.createdAt > b.createdAt) return order === "asc" ? 1 : -1;
       return 0;
     });
-  }
-
-  private countThreads(items: any) {
-    if (typeof items !== 'object' || !items) {
-      return 0;
-    }
-    return Object.values(items).reduce((sum: number, item: any) => {
-      const count =
-        item.threads && typeof item.threads === 'object' ? Object.keys(item.threads).length : 0;
-      return sum + count;
-    }, 0);
   }
 }
