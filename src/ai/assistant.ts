@@ -267,18 +267,7 @@ export class Assistants extends FactoryBase {
       name: _assistant.config.name,
       description: _assistant.config.description || null,
       instructions: _assistant.config.instructions || null,
-      metadata: {
-        author: _assistant.config.metadata?.author || null,
-        bio: _assistant.config.metadata?.bio || null,
-        chatStarter: _assistant.config.metadata?.chatStarter
-          ? Object.values(_assistant.config.metadata?.chatStarter)
-          : null,
-        greetingMessage: _assistant.config.metadata?.greetingMessage || null,
-        image: _assistant.config.metadata?.image || null,
-        tags: _assistant.config.metadata?.tags
-          ? Object.values(_assistant.config.metadata?.tags)
-          : null,
-      },
+      metadata: _assistant.metadata || {},
       metrics: _assistant.metrics || {},
     };
 
@@ -508,15 +497,28 @@ export class Assistants extends FactoryBase {
     const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
 
     const assistants = await Promise.all(
-      Object.entries(tokens).map(async ([id, token]) => {
+      Object.entries(tokens).map(async ([tokenId, token]) => {
         if (!address || token.owner === address) {
-          return await getAssistant(this.ain, appId, id);
+          const assistant = await getAssistant(this.ain, appId, tokenId);
+          return {
+            id: assistant.id,
+            createdAt: assistant.createdAt,
+            objectId,
+            tokenId,
+            tokenOwner: token.owner,
+            model: assistant.config.model,
+            name: assistant.config.name,
+            description: assistant.config.description || null,
+            instructions: assistant.config.instructions || null,
+            metadata: assistant.metadata || {},
+            metrics: assistant.metrics || {},
+          };
         }
         return null;
       })
     );
 
-    return assistants.filter((assistant) => assistant !== null);
+    return assistants.filter((assistant): assistant is Assistant => assistant !== null);
   }
 
   private sortAssistants(assistants: Assistant[], order: "asc" | "desc") {

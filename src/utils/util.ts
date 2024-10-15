@@ -55,6 +55,7 @@ export const valueExists = async (ain: Ain, path: string): Promise<boolean> => {
 };
 
 export const getAssistant = async (ain: Ain, appId: string, tokenId: string) => {
+  // TODO(jiyoung): fix me.
   // TODO(jiyoung): fix circular reference with Ainft721Object.getAppId.
   // const appId = AinftObject.getAppId(objectId);
   const assistantPath = Path.app(appId).token(tokenId).ai().value();
@@ -63,7 +64,8 @@ export const getAssistant = async (ain: Ain, appId: string, tokenId: string) => 
 
   // TODO(jiyoung): hide api endpoint.
   const response = await axios.get(`${AGENT_API_ENDPOINT[getEnv()]}/agents/${assistant.id}`);
-  const data = response.data;
+  const data = response.data?.data;
+  assistant.metadata = data?.metadata;
   assistant.metrics = {
     numCalls: data?.metrics?.num_calls || null,
     numThreads: data?.metrics?.num_threads || null,
