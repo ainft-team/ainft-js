@@ -60,6 +60,7 @@ export const getAssistant = async (ain: Ain, appId: string, tokenId: string) => 
   const assistantPath = Path.app(appId).token(tokenId).ai().value();
   const assistant = await getValue(ain, assistantPath);
   if (!assistant) { return null }
+
   // TODO(jiyoung): hide api endpoint.
   const response = await axios.get(`${AGENT_API_ENDPOINT[getEnv()]}/agents/${assistant.id}`);
   const data = response.data;

@@ -1360,7 +1360,7 @@ export interface Thread {
    */
   metadata: object | {};
   /** The UNIX timestamp in seconds. */
-  created_at: number;
+  createdAt: number;
 }
 
 export interface ThreadDeleted {
