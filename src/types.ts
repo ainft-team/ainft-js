@@ -1299,6 +1299,11 @@ export interface AssistantMetadata extends Metadata {
   tags?: string[] | null;
 }
 
+export interface Money {
+  amount: number;
+  unit: 'USD' | 'AIN';
+}
+
 export interface AssistantMetrics {
   /** The number of API calls. */
   numCalls?: number;
@@ -1307,13 +1312,13 @@ export interface AssistantMetrics {
   /** The number of users. */
   numUsers?: number;
   /** The total credits used by users. */
-  totalUsedCredits?: number;
+  totalUsedCredits?: Money;
   /** The total revenue of the assistant. */
-  totalRevenue?: number;
+  totalRevenue?: Money;
   /** The ad revenue of the assistant. */
-  adRevenue?: number;
+  adRevenue?: Money;
   /** The platform revenue of the assistant. */
-  platformRevenue?: number;
+  platformRevenue?: Money;
 }
 
 export interface AssistantDeleted {
