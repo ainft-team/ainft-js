@@ -497,14 +497,17 @@ export class Assistants extends FactoryBase {
     const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
 
     const assistants = await Promise.all(
-      Object.entries(tokens).map(async ([tokenId, token]) => {
+      Object.entries(tokens).map(async ([id, token]) => {
         if (!address || token.owner === address) {
-          const assistant = await getAssistant(this.ain, appId, tokenId);
+          if (!token.ai) {
+            return null;
+          }
+          const assistant = await getAssistant(this.ain, appId, id);
           return {
             id: assistant.id,
             createdAt: assistant.createdAt,
             objectId,
-            tokenId,
+            tokenId: id,
             tokenOwner: token.owner,
             model: assistant.config.model,
             name: assistant.config.name,
