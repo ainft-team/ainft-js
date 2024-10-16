@@ -10,6 +10,11 @@ export const AIN_BLOCKCHAIN_ENDPOINT = {
   prod: 'https://mainnet-api.ainetwork.ai',
 };
 
+export const AGENT_API_ENDPOINT = {
+  dev: 'https://aina-backend-dev.ainetwork.xyz',
+  prod: 'https://aina-backend.ainetwork.xyz',
+};
+
 export const AIN_BLOCKCHAIN_CHAIN_ID = { dev: 0, prod: 1 } as const;
 
 export const MIN_GAS_PRICE = 500;

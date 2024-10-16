@@ -50,8 +50,8 @@ export class Threads extends FactoryBase {
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
     await validateAssistant(this.ain, objectId, tokenId);
-    const assistant = await getAssistant(this.ain, appId, tokenId);
 
+    const assistant = await getAssistant(this.ain, appId, tokenId);
     const serviceName = getServiceName();
     await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
@@ -59,15 +59,6 @@ export class Threads extends FactoryBase {
     const body = {
       objectId,
       tokenId,
-      assistant: {
-        id: assistant?.id,
-        model: assistant?.config?.model,
-        name: assistant?.config?.name,
-        instructions: assistant?.config?.instructions,
-        description: assistant?.config?.description || null,
-        metadata: assistant?.config?.metadata || null,
-        createdAt: assistant?.createdAt,
-      },
       address,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
@@ -78,10 +69,35 @@ export class Threads extends FactoryBase {
       data: body,
     });
 
+    const thread = {
+      id: data.id,
+      metadata: data.metadata,
+      createdAt: data.createdAt,
+      assistant: {
+        id: assistant.id,
+        createdAt: assistant.createdAt,
+        model: assistant.model,
+        name: assistant.name,
+        description: assistant.description || null,
+        instructions: assistant.instructions || null,
+        metadata: {
+          author: assistant.metadata?.author || null,
+          bio: assistant.metadata?.bio || null,
+          chatStarter: assistant.metadata?.chatStarter
+            ? Object.values(assistant.metadata?.chatStarter)
+            : null,
+          greetingMessage: assistant.metadata?.greetingMessage || null,
+          image: assistant.metadata?.image || null,
+          tags: assistant.metadata?.tags ? Object.values(assistant.metadata?.tags) : null,
+        },
+        metrics: assistant.metrics || {},
+      },
+    };
+
     const txBody = this.buildTxBodyForCreateThread(address, objectId, tokenId, data);
     const result = await sendTx(txBody, this.ain);
 
-    return { ...result, thread: data, tokenId };
+    return { ...result, thread, tokenId };
   }
 
   /**
@@ -190,7 +206,7 @@ export class Threads extends FactoryBase {
     const thread = {
       id: data.id,
       metadata: data.metadata || {},
-      created_at: data.createdAt,
+      createdAt: data.createdAt,
     };
 
     return thread;
@@ -219,7 +235,7 @@ export class Threads extends FactoryBase {
     const allThreads = await Promise.all(
       objectIds.map(async (objectId) => {
         const tokens = await this.fetchTokens(objectId);
-        return this.flattenThreads(objectId, tokens);
+        return await this.flattenThreads(objectId, tokens);
       })
     );
     const threads = allThreads.flat();
@@ -237,13 +253,13 @@ export class Threads extends FactoryBase {
     address: string,
     objectId: string,
     tokenId: string,
-    { id, metadata, created_at }: Thread
+    { id, metadata, createdAt }: Thread
   ) {
     const appId = AinftObject.getAppId(objectId);
     const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(id).value();
     const value = {
       id,
-      createdAt: created_at,
+      createdAt,
       messages: true,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
@@ -288,13 +304,13 @@ export class Threads extends FactoryBase {
     return this.ain.db.ref(tokensPath).getValue();
   }
 
-  private flattenThreads(objectId: string, tokens: any) {
+  private async flattenThreads(objectId: string, tokens: any) {
     const flatten: any = [];
-    _.forEach(tokens, (token, tokenId) => {
-      const assistant = token.ai;
-      if (!assistant) {
+    await Promise.all(_.map(tokens, async (token, tokenId) => {
+      if (!token.ai) {
         return;
       }
+      const assistant = await getAssistant(this.ain, `ainft721_${objectId.toLowerCase()}`, tokenId);
       const histories = assistant.history;
       if (typeof histories !== 'object' || histories === true) {
         return;
@@ -310,25 +326,27 @@ export class Threads extends FactoryBase {
           flatten.push({
             id: thread.id,
             metadata: thread.metadata || {},
-            created_at: thread.createdAt,
-            updated_at: updatedAt,
+            createdAt: thread.createdAt,
+            updatedAt,
             assistant: {
               id: assistant.id,
+              createdAt: assistant.createdAt,
               objectId,
               tokenId,
-              owner: token.owner,
+              tokenOwner: token.owner,
               model: assistant.config.model,
               name: assistant.config.name,
-              instructions: assistant.config.instructions,
               description: assistant.config.description || null,
+              instructions: assistant.config.instructions || null,
               metadata: assistant.config.metadata || {},
-              created_at: assistant.createdAt,
+              metrics: assistant.metrics || {},
             },
             author: { address },
           });
+          });
         });
-      });
-    });
+      })
+    );
     return flatten;
   }
 
