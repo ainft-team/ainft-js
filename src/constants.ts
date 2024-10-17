@@ -33,6 +33,6 @@ export const MESSAGE_GC_NUM_SIBLINGS_DELETED = 10;
 export const DEFAULT_AINIZE_SERVICE_NAME = 'aina_backend';
 
 export const WHITELISTED_OBJECT_IDS: Record<string, string[]> = {
-  dev: ['0xCE3c4D8dA38c77dEC4ca99cD26B1C4BF116FC401'],
+  dev: ['0xA1425e477cF3e9413681d1508cF154C50f337675'],
   prod: ['0x6C8bB2aCBab0D807D74eB04034aA9Fd8c8E9C365'],
 };
