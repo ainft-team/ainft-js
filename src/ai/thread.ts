@@ -72,6 +72,7 @@ export class Threads extends FactoryBase {
       id: data.id,
       metadata: data.metadata,
       createdAt: data.createdAt,
+      updatedAt: data.createdAt,
       assistant: {
         id: assistant.id,
         createdAt: assistant.createdAt,
