@@ -44,14 +44,13 @@ export class Threads extends FactoryBase {
     tokenId: string,
     { metadata }: ThreadCreateParams
   ): Promise<ThreadTransactionResult> {
-    const appId = AinftObject.getAppId(objectId);
     const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
-    await validateAssistant(this.ain, objectId, tokenId);
+    const _assistant = await validateAssistant(this.ain, objectId, tokenId);
 
-    const assistant = await getAssistant(this.ain, appId, tokenId);
+    const assistant = await getAssistant(this.ain, objectId, tokenId, _assistant.id);
     const serviceName = getServiceName();
     await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
@@ -310,8 +309,9 @@ export class Threads extends FactoryBase {
       if (!token.ai) {
         return;
       }
-      const assistant = await getAssistant(this.ain, `ainft721_${objectId.toLowerCase()}`, tokenId);
-      const histories = assistant.history;
+      const assistantId = token.ai.id;
+      const assistant = await getAssistant(this.ain, objectId, tokenId, assistantId);
+      const histories = token.ai.history;
       if (typeof histories !== 'object' || histories === true) {
         return;
       }
@@ -334,11 +334,11 @@ export class Threads extends FactoryBase {
               objectId,
               tokenId,
               tokenOwner: token.owner,
-              model: assistant.config.model,
-              name: assistant.config.name,
-              description: assistant.config.description || null,
-              instructions: assistant.config.instructions || null,
-              metadata: assistant.config.metadata || {},
+              model: assistant.model,
+              name: assistant.name,
+              description: assistant.description || null,
+              instructions: assistant.instructions || null,
+              metadata: assistant.metadata || {},
               metrics: assistant.metrics || {},
             },
             author: { address },

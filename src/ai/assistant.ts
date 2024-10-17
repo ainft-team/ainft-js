@@ -249,29 +249,7 @@ export class Assistants extends FactoryBase {
    * @returns A promise that resolves with the assistant.
    */
   async get(objectId: string, tokenId: string, assistantId: string): Promise<Assistant> {
-    const appId = AinftObject.getAppId(objectId);
-
-    await validateObject(this.ain, objectId);
-    await validateToken(this.ain, objectId, tokenId);
-
-    const _assistant = await getAssistant(this.ain, appId, tokenId);
-    const _token = await getToken(this.ain, objectId, tokenId);
-
-    const assistant: Assistant = {
-      id: _assistant.id,
-      createdAt: _assistant.createdAt,
-      objectId,
-      tokenId,
-      tokenOwner: _token.owner,
-      model: _assistant.config.model,
-      name: _assistant.config.name,
-      description: _assistant.config.description || null,
-      instructions: _assistant.config.instructions || null,
-      metadata: _assistant.metadata || {},
-      metrics: _assistant.metrics || {},
-    };
-
-    return assistant;
+    return getAssistant(this.ain, objectId, tokenId, assistantId);
   }
 
   /**
@@ -494,34 +472,21 @@ export class Assistants extends FactoryBase {
   private async getAssistants(objectId: string, address?: string | null) {
     const appId = AinftObject.getAppId(objectId);
     const tokensPath = Path.app(appId).tokens().value();
-    const tokens: NftTokens = (await this.ain.db.ref(tokensPath).getValue()) || {};
+    const tokens: NftTokens = (await this.ain.db.ref().getValue(tokensPath)) || {};
 
     const assistants = await Promise.all(
-      Object.entries(tokens).map(async ([id, token]) => {
-        if (!address || token.owner === address) {
-          if (!token.ai) {
-            return null;
-          }
-          const assistant = await getAssistant(this.ain, appId, id);
-          return {
-            id: assistant.id,
-            createdAt: assistant.createdAt,
-            objectId,
-            tokenId: id,
-            tokenOwner: token.owner,
-            model: assistant.config.model,
-            name: assistant.config.name,
-            description: assistant.config.description || null,
-            instructions: assistant.config.instructions || null,
-            metadata: assistant.metadata || {},
-            metrics: assistant.metrics || {},
-          };
+      Object.entries(tokens).map(async ([tokenId, token]) => {
+        if (token.ai) {
+          const assistantId = token.ai.id;
+          return await getAssistant(this.ain, objectId, tokenId, assistantId);
         }
-        return null;
       })
     );
 
-    return assistants.filter((assistant): assistant is Assistant => assistant !== null);
+    return assistants.filter(
+      (assistant): assistant is Assistant =>
+        assistant !== null && (!address || assistant.tokenOwner === address)
+    );
   }
 
   private sortAssistants(assistants: Assistant[], order: "asc" | "desc") {

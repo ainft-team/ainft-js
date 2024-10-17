@@ -54,29 +54,20 @@ export const valueExists = async (ain: Ain, path: string): Promise<boolean> => {
   return !!(await ain.db.ref(path).getValue());
 };
 
-export const getAssistant = async (ain: Ain, appId: string, tokenId: string) => {
-  // TODO(jiyoung): fix me.
-  // TODO(jiyoung): fix circular reference with Ainft721Object.getAppId.
-  // const appId = AinftObject.getAppId(objectId);
-  const assistantPath = Path.app(appId).token(tokenId).ai().value();
-  const assistant = await getValue(ain, assistantPath);
-  if (!assistant) { return null }
-
+export const getAssistant = async (
+  ain: Ain,
+  objectId: string,
+  tokenId: string,
+  assistantId: string
+) => {
+  const token = await getToken(ain, objectId, tokenId);
   // TODO(jiyoung): hide api endpoint.
-  const response = await axios.get(`${AGENT_API_ENDPOINT[getEnv()]}/agents/${assistant.id}`);
-  const data = response.data?.data;
-  assistant.metadata = data?.metadata;
-  assistant.metrics = {
-    numCalls: data?.metrics?.num_calls || null,
-    numThreads: data?.metrics?.num_threads || null,
-    numUsers: data?.metrics?.num_users || null,
-    totalUsedCredits: data?.metrics?.total_used_credits || null,
-    totalRevenue: data?.metrics?.total_revenue || null,
-    adRevenue: data?.metrics?.ad_revenue || null,
-    platformRevenue: data?.metrics?.platform_revenue || null,
-  };
-
-  return assistant;
+  const response = await axios.get(`${AGENT_API_ENDPOINT[getEnv()]}/agents/${assistantId}`);
+  const assistant = response.data?.data;
+  if (!assistant) {
+    return null;
+  }
+  return { ...assistant, tokenOwner: token.owner };
 };
 
 export const getToken = async (ain: Ain, objectId: string, tokenId: string) => {
