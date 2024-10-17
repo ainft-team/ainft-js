@@ -480,6 +480,7 @@ export class Assistants extends FactoryBase {
           const assistantId = token.ai.id;
           return await getAssistant(this.ain, objectId, tokenId, assistantId);
         }
+        return null;
       })
     );
 
