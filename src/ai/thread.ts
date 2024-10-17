@@ -362,9 +362,9 @@ export class Threads extends FactoryBase {
 
   private sortThreads(threads: any, sort: string, order: 'asc' | 'desc') {
     if (sort === 'created') {
-      return _.orderBy(threads, ['created_at'], [order]);
+      return _.orderBy(threads, ['createdAt'], [order]);
     } else if (sort === 'updated') {
-      return _.orderBy(threads, ['updated_at'], [order]);
+      return _.orderBy(threads, ['updatedAt'], [order]);
     } else {
       throw new AinftError('bad-request', `invalid sort criteria: ${sort}`);
     }
