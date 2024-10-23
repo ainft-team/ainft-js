@@ -58,6 +58,7 @@ export class Threads extends FactoryBase {
     const body = {
       objectId,
       tokenId,
+      assistantId: assistant.id,
       address,
       ...(metadata && !_.isEmpty(metadata) && { metadata }),
     };
