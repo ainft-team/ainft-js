@@ -15,7 +15,7 @@ import {
 } from '../types';
 import { Path } from '../utils/path';
 import { buildSetValueOp, buildSetTxBody, sendTx } from '../utils/transaction';
-import { getAssistant, getValue, isMillisecond, toSecond } from '../utils/util';
+import { getAssistant, getValue, normalizeTimestamp } from '../utils/util';
 import {
   validateAssistant,
   validateObject,
@@ -207,7 +207,7 @@ export class Threads extends FactoryBase {
 
     return {
       id: thread.id,
-      createdAt: isMillisecond(thread.createdAt) ? toSecond(thread.createdAt) : thread.createdAt,
+      createdAt: normalizeTimestamp(thread.createdAt),
       metadata: thread.metadata || {},
     };
   }
@@ -320,9 +320,7 @@ export class Threads extends FactoryBase {
         _.forEach(histories, (history, address) => {
           const threads = _.get(history, 'threads');
           _.forEach(threads, (thread) => {
-            const createdAt = isMillisecond(thread.createdAt)
-              ? toSecond(thread.createdAt)
-              : thread.createdAt;
+            const createdAt = normalizeTimestamp(thread.createdAt);
             let updatedAt = createdAt;
             if (typeof thread.messages === 'object' && thread.messages !== null) {
               const keys = Object.keys(thread.messages);

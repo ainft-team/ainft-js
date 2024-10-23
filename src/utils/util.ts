@@ -69,9 +69,7 @@ export const getAssistant = async (
   }
   return {
     ...assistant,
-    createdAt: isMillisecond(assistant.createdAt)
-      ? toSecond(assistant.createdAt)
-      : assistant.createdAt,
+    createdAt: normalizeTimestamp(assistant.createdAt),
     tokenOwner: token.owner,
   };
 };
@@ -104,6 +102,10 @@ export const arrayToObject = <T>(array: T[]): { [key: string]: T } => {
     result[i.toString()] = v;
   });
   return result;
+};
+
+export const normalizeTimestamp = (timestamp: number) => {
+  return isMillisecond(timestamp) ? toSecond(timestamp) : timestamp;
 };
 
 export const isMillisecond = (timestamp: number) => {
