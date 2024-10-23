@@ -15,7 +15,7 @@ import {
 } from '../types';
 import { Path } from '../utils/path';
 import { buildSetValueOp, buildSetTxBody, sendTx } from '../utils/transaction';
-import { getAssistant, getValue } from '../utils/util';
+import { getAssistant, getValue, isMillisecond, toSecond } from '../utils/util';
 import {
   validateAssistant,
   validateObject,
@@ -203,14 +203,13 @@ export class Threads extends FactoryBase {
       .history(address)
       .thread(threadId)
       .value();
-    const data = await this.ain.db.ref(threadPath).getValue();
-    const thread = {
-      id: data.id,
-      metadata: data.metadata || {},
-      createdAt: data.createdAt,
-    };
+    const thread = await this.ain.db.ref(threadPath).getValue();
 
-    return thread;
+    return {
+      id: thread.id,
+      createdAt: isMillisecond(thread.createdAt) ? toSecond(thread.createdAt) : thread.createdAt,
+      metadata: thread.metadata || {},
+    };
   }
 
   /**
@@ -307,44 +306,48 @@ export class Threads extends FactoryBase {
 
   private async flattenThreads(objectId: string, tokens: any) {
     const flatten: any = [];
-    await Promise.all(_.map(tokens, async (token, tokenId) => {
-      if (!token.ai) {
-        return;
-      }
-      const assistantId = token.ai.id;
-      const assistant = await getAssistant(this.ain, objectId, tokenId, assistantId);
-      const histories = token.ai.history;
-      if (typeof histories !== 'object' || histories === true) {
-        return;
-      }
-      _.forEach(histories, (history, address) => {
-        const threads = _.get(history, 'threads');
-        _.forEach(threads, (thread) => {
-          let updatedAt = thread.createdAt;
-          if (typeof thread.messages === 'object' && thread.messages !== null) {
-            const keys = Object.keys(thread.messages);
-            updatedAt = Number(keys[keys.length - 1]);
-          }
-          flatten.push({
-            id: thread.id,
-            metadata: thread.metadata || {},
-            createdAt: thread.createdAt,
-            updatedAt,
-            assistant: {
-              id: assistant.id,
-              createdAt: assistant.createdAt,
-              objectId,
-              tokenId,
-              tokenOwner: token.owner,
-              model: assistant.model,
-              name: assistant.name,
-              description: assistant.description || null,
-              instructions: assistant.instructions || null,
-              metadata: assistant.metadata || {},
-              metrics: assistant.metrics || {},
-            },
-            author: { address },
-          });
+    await Promise.all(
+      _.map(tokens, async (token, tokenId) => {
+        if (!token.ai) {
+          return;
+        }
+        const assistantId = token.ai.id;
+        const assistant = await getAssistant(this.ain, objectId, tokenId, assistantId);
+        const histories = token.ai.history;
+        if (typeof histories !== 'object' || histories === true) {
+          return;
+        }
+        _.forEach(histories, (history, address) => {
+          const threads = _.get(history, 'threads');
+          _.forEach(threads, (thread) => {
+            const createdAt = isMillisecond(thread.createdAt)
+              ? toSecond(thread.createdAt)
+              : thread.createdAt;
+            let updatedAt = createdAt;
+            if (typeof thread.messages === 'object' && thread.messages !== null) {
+              const keys = Object.keys(thread.messages);
+              updatedAt = Number(keys[keys.length - 1]);
+            }
+            flatten.push({
+              id: thread.id,
+              metadata: thread.metadata || {},
+              createdAt: createdAt,
+              updatedAt,
+              assistant: {
+                id: assistant.id,
+                createdAt: assistant.createdAt,
+                objectId,
+                tokenId,
+                tokenOwner: token.owner,
+                model: assistant.model,
+                name: assistant.name,
+                description: assistant.description || null,
+                instructions: assistant.instructions || null,
+                metadata: assistant.metadata || {},
+                metrics: assistant.metrics || {},
+              },
+              author: { address },
+            });
           });
         });
       })

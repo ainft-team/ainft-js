@@ -67,7 +67,13 @@ export const getAssistant = async (
   if (!assistant) {
     return null;
   }
-  return { ...assistant, tokenOwner: token.owner };
+  return {
+    ...assistant,
+    createdAt: isMillisecond(assistant.createdAt)
+      ? toSecond(assistant.createdAt)
+      : assistant.createdAt,
+    tokenOwner: token.owner,
+  };
 };
 
 export const getToken = async (ain: Ain, objectId: string, tokenId: string) => {
@@ -98,4 +104,12 @@ export const arrayToObject = <T>(array: T[]): { [key: string]: T } => {
     result[i.toString()] = v;
   });
   return result;
+};
+
+export const isMillisecond = (timestamp: number) => {
+  return timestamp.toString().length === 13;
+};
+
+export const toSecond = (millisecond: number) => {
+  return Math.floor(millisecond / 1000);
 };
