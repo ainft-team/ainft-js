@@ -47,7 +47,7 @@ export class Threads extends FactoryBase {
     const address = await this.ain.signer.getAddress();
 
     await validateObject(this.ain, objectId);
-    await validateToken(this.ain, objectId, tokenId);
+    const token = await validateToken(this.ain, objectId, tokenId);
     const _assistant = await validateAssistant(this.ain, objectId, tokenId);
 
     const assistant = await getAssistant(this.ain, objectId, tokenId, _assistant.id);
@@ -77,6 +77,9 @@ export class Threads extends FactoryBase {
       assistant: {
         id: assistant.id,
         createdAt: assistant.createdAt,
+        objectId: objectId,
+        tokenId: tokenId,
+        tokenOwner: token.owner,
         model: assistant.model,
         name: assistant.name,
         description: assistant.description || null,
