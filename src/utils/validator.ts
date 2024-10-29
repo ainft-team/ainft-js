@@ -1,9 +1,9 @@
-import Ain from '@ainblockchain/ain-js';
-import AinftObject from '../ainft721Object';
-import { MessageMap } from '../types';
-import { Path } from './path';
-import { valueExists, getValue } from './util';
-import { AinftError } from '../error';
+import Ain from "@ainblockchain/ain-js";
+import AinftObject from "../ainft721Object";
+import { MessageMap } from "../types";
+import { Path } from "./path";
+import { valueExists, getValue } from "./util";
+import { AinftError } from "../error";
 
 export const isObjectOwner = async (ain: Ain, objectId: string, address: string) => {
   const appId = AinftObject.getAppId(objectId);
@@ -17,7 +17,7 @@ export const validateObject = async (ain: Ain, objectId: string) => {
   const objectPath = Path.app(appId).value();
   const object = await getValue(ain, objectPath, { is_shallow: true });
   if (!object) {
-    throw new AinftError('not-found', `object not found: ${objectId}`);
+    throw new AinftError("not-found", `object not found: ${objectId}`);
   }
 };
 
@@ -30,7 +30,7 @@ export const validateServerConfigurationForObject = async (
   const configPath = Path.app(appId).ai(serviceName).value();
   if (!(await valueExists(ain, configPath))) {
     throw new AinftError(
-      'precondition-failed',
+      "precondition-failed",
       `service configuration is missing for ${objectId}.`
     );
   }
@@ -38,23 +38,25 @@ export const validateServerConfigurationForObject = async (
 
 export const validateObjectOwner = async (ain: Ain, objectId: string, address: string) => {
   if (!isObjectOwner(ain, objectId, address)) {
-    throw new AinftError('permission-denied', `${address} do not have owner permission.`);
+    throw new AinftError("permission-denied", `${address} do not have owner permission.`);
   }
 };
 
 export const validateToken = async (ain: Ain, objectId: string, tokenId: string) => {
   const appId = AinftObject.getAppId(objectId);
   const tokenPath = Path.app(appId).token(tokenId).value();
-  if (!(await valueExists(ain, tokenPath))) {
-    throw new AinftError('not-found', `token not found: ${objectId}(${tokenId})`);
+  const token = await getValue(ain, tokenPath, { is_shallow: true });
+  if (!token) {
+    throw new AinftError("not-found", `token not found: ${objectId}(${tokenId})`);
   }
+  return token;
 };
 
 export const validateDuplicateAssistant = async (ain: Ain, objectId: string, tokenId: string) => {
   const appId = AinftObject.getAppId(objectId);
   const assistantPath = Path.app(appId).token(tokenId).ai().value();
   if (await valueExists(ain, assistantPath)) {
-    throw new AinftError('already-exists', 'assistant already exists.');
+    throw new AinftError("already-exists", "assistant already exists.");
   }
 };
 
@@ -66,13 +68,14 @@ export const validateAssistant = async (
 ) => {
   const appId = AinftObject.getAppId(objectId);
   const assistantPath = Path.app(appId).token(tokenId).ai().value();
-  const assistant = await getValue(ain, assistantPath);
+  const assistant = await getValue(ain, assistantPath, { is_shallow: true });
   if (!assistant) {
-    throw new AinftError('not-found', `assistant not found: ${assistantId}`);
+    throw new AinftError("not-found", `assistant not found: ${assistantId}`);
   }
   if (assistantId && assistantId !== assistant.id) {
-    throw new AinftError('bad-request', `invalid assistant id: ${assistantId} != ${assistant.id}`);
+    throw new AinftError("bad-request", `invalid assistant id: ${assistantId} != ${assistant.id}`);
   }
+  return assistant;
 };
 
 export const validateThread = async (
@@ -85,7 +88,7 @@ export const validateThread = async (
   const appId = AinftObject.getAppId(objectId);
   const threadPath = Path.app(appId).token(tokenId).ai().history(address).thread(threadId).value();
   if (!(await valueExists(ain, threadPath))) {
-    throw new AinftError('not-found', `thread not found: ${threadId}`);
+    throw new AinftError("not-found", `thread not found: ${threadId}`);
   }
 };
 
@@ -112,5 +115,5 @@ export const validateMessage = async (
       return;
     }
   }
-  throw new AinftError('not-found', `message not found: ${threadId}(${messageId})`);
+  throw new AinftError("not-found", `message not found: ${threadId}(${messageId})`);
 };

@@ -1253,29 +1253,72 @@ export interface AiConfiguration {
 export interface Assistant {
   /** The identifier. */
   id: string;
-  /** The ID of AINFT object.  */
-  objectId: string | null;
-  /** The ID of AINFT token. */
-  tokenId: string | null;
-  /** The owner address of AINFT token. */
-  owner: string | null;
+  /** The Unix timestamp in seconds for when the assistant was created. */
+  createdAt: number;
+  /** The ID of the AINFT object. */
+  objectId: string;
+  /** The ID of the AINFT token. */
+  tokenId: string;
+  /** The owner address of the AINFT token. */
+  tokenOwner: string;
   /** The name of the model to use. */
   model: string;
   /** The name of the assistant. */
   name: string;
-  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
-  instructions: string;
   /** The description of the assistant. The maximum length is 512 characters. */
   description: string | null;
-  /**
-   * The metadata can contain up to 16 pairs,
-   * with keys limited to 64 characters and values to 512 characters.
-   */
-  metadata: object | null;
-  /** The metric of the assistant. */
-  metric?: { [key: string]: number } | null;
-  /** The UNIX timestamp in seconds. */
-  created_at: number;
+  /** The system instructions that the assistant uses. The maximum length is 10000 characters. */
+  instructions: string | null;
+  /** Any metadata related to the assistant. */
+  metadata: AssistantMetadata | null;
+  /** The metrics of the assistant. */
+  metrics: AssistantMetrics | null;
+}
+
+export interface AssistantAuthor {
+  /** The address of the author. */
+  address?: string;
+  /** The username of the author. */
+  username?: string;
+  /** The image of the author. */
+  picture?: string;
+}
+
+export interface AssistantMetadata extends Metadata {
+  /** The author of the assistant. */
+  author?: AssistantAuthor | null;
+  /** The bio of the assistant. */
+  bio?: string | null;
+  /** The chat starter of the assistant. */
+  chatStarter?: string[] | null;
+  /** The greeting message of the assistant. */
+  greetingMessage?: string | null;
+  /** The image of the assistant. */
+  image?: string | null;
+  /** The tags of the assistant. */
+  tags?: string[] | null;
+}
+
+export interface Money {
+  amount: number;
+  unit: 'USD' | 'AIN';
+}
+
+export interface AssistantMetrics {
+  /** The number of API calls. */
+  numCalls?: number;
+  /** The number of conversations. */
+  numThreads?: number;
+  /** The number of users. */
+  numUsers?: number;
+  /** The total credits used by users. */
+  totalUsedCredits?: Money;
+  /** The total revenue of the assistant. */
+  totalRevenue?: Money;
+  /** The ad revenue of the assistant. */
+  adRevenue?: Money;
+  /** The platform revenue of the assistant. */
+  platformRevenue?: Money;
 }
 
 export interface AssistantDeleted {
@@ -1288,38 +1331,29 @@ export interface AssistantDeleted {
 export interface AssistantCreateParams {
   /** The name of the model to use. */
   model: Model;
-  /** The name of the assistant. The maximum length is 256 characters. */
+  /** The name of the assistant. */
   name: string;
-  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
-  instructions: string;
   /** The description of the assistant. The maximum length is 512 characters. */
   description?: string | null;
-  /**
-   * The metadata can contain up to 16 pairs,
-   * with keys limited to 64 characters and values to 512 characters.
-   */
-  metadata?: object | null;
-}
-
-export interface AssistantCreateOptions {
+  /** The system instructions that the assistant uses. The maximum length is 10000 characters. */
+  instructions?: string | null;
+  /** Any metadata related to the assistant. */
+  metadata?: AssistantMetadata | null;
   /** If true, automatically set the profile image for the assistant. */
-  image?: boolean;
+  autoImage?: boolean;
 }
 
 export interface AssistantUpdateParams {
   /** The name of the model to use. */
   model?: Model;
-  /** The name of the assistant. The maximum length is 256 characters. */
+  /** The name of the assistant. */
   name?: string | null;
-  /** The system instructions that the assistant uses. The maximum length is 32768 characters. */
-  instructions?: string | null;
   /** The description of the assistant. The maximum length is 512 characters. */
   description?: string | null;
-  /**
-   * The metadata can contain up to 16 pairs,
-   * with keys limited to 64 characters and values to 512 characters.
-   */
-  metadata?: object | null;
+  /** The system instructions that the assistant uses. The maximum length is 10000 characters. */
+  instructions?: string | null;
+  /** Any metadata related to the assistant. */
+  metadata?: AssistantMetadata | null;
 }
 
 export interface Thread {
@@ -1331,7 +1365,7 @@ export interface Thread {
    */
   metadata: object | {};
   /** The UNIX timestamp in seconds. */
-  created_at: number;
+  createdAt: number;
 }
 
 export interface ThreadDeleted {

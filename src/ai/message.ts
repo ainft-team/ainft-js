@@ -50,13 +50,13 @@ export class Messages extends FactoryBase {
 
     await validateObject(this.ain, objectId);
     await validateToken(this.ain, objectId, tokenId);
-    await validateAssistant(this.ain, objectId, tokenId);
+    const _assistant = await validateAssistant(this.ain, objectId, tokenId);
     await validateThread(this.ain, objectId, tokenId, address, threadId);
 
     const serviceName = getServiceName();
     await validateServerConfigurationForObject(this.ain, objectId, serviceName);
 
-    const assistant = await getAssistant(this.ain, appId, tokenId);
+    const assistant = await getAssistant(this.ain, objectId, tokenId, _assistant.id);
     const newMessages = await this.sendMessage(serviceName, threadId, objectId, tokenId, assistant.id, address, body);
     const allMessages = await this.getAllMessages(appId, tokenId, address, threadId, newMessages);
 

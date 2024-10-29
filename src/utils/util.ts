@@ -1,17 +1,19 @@
-import stringify = require('fast-json-stable-stringify');
-import Ain from '@ainblockchain/ain-js';
+import stringify = require("fast-json-stable-stringify");
+import Ain from "@ainblockchain/ain-js";
 import {
   SetOperation,
   SetMultiOperation,
   TransactionInput,
   GetOptions,
-} from '@ainblockchain/ain-js/lib/types';
-import * as ainUtil from '@ainblockchain/ain-util';
+} from "@ainblockchain/ain-js/lib/types";
+import * as ainUtil from "@ainblockchain/ain-util";
 
-import { MIN_GAS_PRICE } from '../constants';
-import { HttpMethod } from '../types';
-import { Path } from './path';
-import { AinftError } from '../error';
+import { AGENT_API_ENDPOINT, MIN_GAS_PRICE } from "../constants";
+import { HttpMethod } from "../types";
+import { Path } from "./path";
+import { AinftError } from "../error";
+import axios from "axios";
+import { getEnv } from "./env";
 
 export const buildData = (
   method: HttpMethod,
@@ -30,9 +32,9 @@ export const buildData = (
   }
 
   if (method === HttpMethod.POST || method === HttpMethod.PUT) {
-    _data['body'] = stringify(data);
+    _data["body"] = stringify(data);
   } else {
-    _data['querystring'] = stringify(data);
+    _data["querystring"] = stringify(data);
   }
 
   return _data;
@@ -45,29 +47,39 @@ export function sleep(ms: number) {
 }
 
 export function serializeEndpoint(endpoint: string) {
-  return endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint;
+  return endpoint.endsWith("/") ? endpoint.slice(0, -1) : endpoint;
 }
 
 export const valueExists = async (ain: Ain, path: string): Promise<boolean> => {
   return !!(await ain.db.ref(path).getValue());
 };
 
-export const getAssistant = async (ain: Ain, appId: string, tokenId: string) => {
-  // TODO(jiyoung): fix circular reference with Ainft721Object.getAppId.
-  // const appId = AinftObject.getAppId(objectId);
-  const assistantPath = Path.app(appId).token(tokenId).ai().value();
-  const assistant = await getValue(ain, assistantPath);
+export const getAssistant = async (
+  ain: Ain,
+  objectId: string,
+  tokenId: string,
+  assistantId: string
+) => {
+  const token = await getToken(ain, objectId, tokenId);
+  // TODO(jiyoung): hide api endpoint.
+  const response = await axios.get(`${AGENT_API_ENDPOINT[getEnv()]}/agents/${assistantId}`);
+  const assistant = response.data?.data;
   if (!assistant) {
-    throw new AinftError('not-found', `assistant not found: ${appId}(${tokenId})`);
+    return null;
   }
-  return assistant;
+  return {
+    ...assistant,
+    createdAt: normalizeTimestamp(assistant.createdAt),
+    tokenOwner: token.owner,
+  };
 };
 
-export const getToken = async (ain: Ain, appId: string, tokenId: string) => {
+export const getToken = async (ain: Ain, objectId: string, tokenId: string) => {
+  const appId = `ainft721_${objectId.toLowerCase()}`;
   const tokenPath = Path.app(appId).token(tokenId).value();
   const token = await getValue(ain, tokenPath);
   if (!token) {
-    throw new AinftError('not-found', `token not found: ${appId}(${tokenId})`);
+    throw new AinftError("not-found", `token ${tokenId} not found for ${objectId}`);
   }
   return token;
 };
@@ -82,4 +94,24 @@ export const getChecksumAddress = (address: string): string => {
 
 export const isJoiError = (error: any) => {
   return error.response?.data?.isJoiError === true;
+};
+
+export const arrayToObject = <T>(array: T[]): { [key: string]: T } => {
+  const result: { [key: string]: T } = {};
+  array.forEach((v, i) => {
+    result[i.toString()] = v;
+  });
+  return result;
+};
+
+export const normalizeTimestamp = (timestamp: number) => {
+  return isMillisecond(timestamp) ? toSecond(timestamp) : timestamp;
+};
+
+export const isMillisecond = (timestamp: number) => {
+  return timestamp.toString().length === 13;
+};
+
+export const toSecond = (millisecond: number) => {
+  return Math.floor(millisecond / 1000);
 };

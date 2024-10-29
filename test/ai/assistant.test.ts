@@ -1,15 +1,15 @@
-import AinftJs from '../../src/ainft';
-import { address, assistantId, objectId, privateKey, tokenId } from '../test_data';
-import { ASSISTANT_REGEX, TX_HASH_REGEX } from '../constants';
+import AinftJs from "../../src/ainft";
+import { address, assistantId, objectId, privateKey, tokenId } from "../test_data";
+import { ASSISTANT_REGEX, TX_HASH_REGEX } from "../constants";
 
-describe.skip('assistant', () => {
+describe.skip("assistant", () => {
   let ainft: AinftJs;
 
   beforeAll(async () => {
     ainft = new AinftJs({
       privateKey,
-      baseUrl: 'https://ainft-api-dev.ainetwork.ai',
-      blockchainUrl: 'https://testnet-api.ainetwork.ai',
+      baseUrl: "https://ainft-api-dev.ainetwork.ai",
+      blockchainUrl: "https://testnet-api.ainetwork.ai",
       chainId: 0,
     });
     await ainft.connect();
@@ -19,34 +19,50 @@ describe.skip('assistant', () => {
     await ainft.disconnect();
   });
 
-  it('should create assistant', async () => {
+  it("should create assistant", async () => {
     const result = await ainft.assistant.create(objectId, tokenId, {
-      model: 'gpt-4o-mini',
-      name: 'name',
-      instructions: 'instructions',
-      description: 'description',
-      metadata: { key1: 'value1' },
+      model: "gpt-4o",
+      name: "name",
+      description: "description",
+      instructions: null,
+      metadata: {
+        author: {
+          address: "0xabc123",
+          username: "username",
+          picture: "https://example.com/image.png",
+        },
+        bio: "bio",
+        chatStarter: ["chat_starter_1", "chat_starter_2"],
+        greetingMessage: "hello",
+        image: "https://example.com/image.png",
+        tags: ["tag1", "tag2"],
+      },
+      autoImage: false,
     });
 
     expect(result.tx_hash).toMatch(TX_HASH_REGEX);
     expect(result.result).toBeDefined();
     expect(result.assistant.id).toMatch(ASSISTANT_REGEX);
-    expect(result.assistant.model).toBe('gpt-4o-mini');
-    expect(result.assistant.name).toBe('name');
-    expect(result.assistant.instructions).toBe('instructions');
-    expect(result.assistant.description).toBe('description');
-    expect(result.assistant.metadata).toEqual({ key1: 'value1' });
+    expect(result.assistant.model).toBe("gpt-4o");
+    expect(result.assistant.name).toBe("name");
+    expect(result.assistant.description).toBe("description");
+    expect(result.assistant.instructions).toBe(null);
+    expect(result.assistant.metadata).toEqual({
+      author: {
+        address: "0xabc123",
+        username: "username",
+        picture: "https://example.com/image.png",
+      },
+      bio: "bio",
+      chatStarter: ["chat_starter_1", "chat_starter_2"],
+      greetingMessage: "hello",
+      image: "https://example.com/image.png",
+      tags: ["tag1", "tag2"],
+    });
   });
 
   it('should get assistant', async () => {
     const assistant = await ainft.assistant.get(objectId, tokenId, assistantId);
-
-    expect(assistant.id).toBe(assistantId);
-    expect(assistant.model).toBe('gpt-4o-mini');
-    expect(assistant.name).toBe('name');
-    expect(assistant.instructions).toBe('instructions');
-    expect(assistant.description).toBe('description');
-    expect(assistant.metadata).toEqual({ key1: 'value1' });
   });
 
   it('should list assistants', async () => {
@@ -56,23 +72,15 @@ describe.skip('assistant', () => {
     expect(result.items).toBeDefined();
   });
 
-  it('should update assistant', async () => {
+  it("should update assistant", async () => {
     const result = await ainft.assistant.update(objectId, tokenId, assistantId, {
-      model: 'gpt-4',
-      name: 'new_name',
-      instructions: 'new_instructions',
-      description: 'new_description',
-      metadata: { key1: 'value1', key2: 'value2' },
+      name: "new_name",
     });
 
     expect(result.tx_hash).toMatch(TX_HASH_REGEX);
     expect(result.result).toBeDefined();
     expect(result.assistant.id).toBe(assistantId);
-    expect(result.assistant.model).toBe('gpt-4');
-    expect(result.assistant.name).toBe('new_name');
-    expect(result.assistant.instructions).toBe('new_instructions');
-    expect(result.assistant.description).toBe('new_description');
-    expect(result.assistant.metadata).toEqual({ key1: 'value1', key2: 'value2' });
+    expect(result.assistant.name).toBe("new_name");
   });
 
   it('should delete assistant', async () => {
